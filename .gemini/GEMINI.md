@@ -10,69 +10,21 @@
 
 * **Context7 MCP 서버:**
   * 목적: 최신 라이브러리 및 프레임워크 문서 컨텍스트를 에이전트에게 제공합니다.
-  * 설정 예시:
-
-        ```json
-        "context7": {
-          "command": "npx",
-          "args": ["-y", "@upstash/context7-mcp"]
-        }
-        ```
 
 * **Playwright MCP 서버:**
   * 목적: 웹 상호작용 및 UI 테스트 자동화를 위한 기능을 에이전트에게 제공합니다.
-  * 설정 예시:
-
-        ```json
-        "playwright": {
-          "command": "npx",
-          "args": [
-            "-y",
-            "@executeautomation/playwright-mcp-server"
-          ]
-        }
-        ```
 
 * **Desktop Commander MCP 서버:**
   * 목적: 에이전트가 로컬 데스크톱 환경과 상호작용할 수 있도록 명령어를 실행하는 기능을 제공합니다. (예: 파일 시스템 접근, 애플리케이션 실행 등)
-  * 설정 예시:
-
-        ```json
-        "desktop-commander": {
-          "command": "npx",
-          "args": [
-            "-y",
-            "@wonderwhy-er/desktop-commander"
-          ]
-        }
-        ```
-
-  * **주의:** 이 서버는 시스템에 대한 광범위한 접근 권한을 부여할 수 있으므로, 사용 시 **보안에 각별히 주의**해야 합니다.
 
 * **Sequential Thinking MCP 서버:**
   * 목적: 에이전트가 복잡한 작업을 여러 단계로 나누어 순차적으로 계획하고 실행하는 데 도움을 줍니다. 이는 장기적인 목표 달성이나 복잡한 문제 해결에 유용합니다.
-  * 설정 예시:
-
-        ```json
-        "sequential-thinking": {
-          "command": "npx",
-          "args": [
-            "-y",
-            "@modelcontextprotocol/server-sequential-thinking"
-          ]
-        }
-        ```
 
 * **DBHub Demo MCP 서버:**
   * 목적: AI 모델이 다양한 데이터베이스와 상호작용할 수 있도록 돕는 범용 데이터베이스 게이트웨이입니다. `--demo` 플래그를 통해 실제 데이터베이스 연결 없이 내장된 샘플 데이터베이스로 테스트 및 탐색이 가능합니다.
-  * 설정 예시:
 
-        ```json
-        "dbhub-demo": {
-          "command": "npx",
-          "args": ["-y", "@bytebase/dbhub", "--transport", "stdio", "--demo"]
-        }
-        ```
+* **Prisma-Remote MCP 서버:**
+  * 목적: Prisma 관련 작업을 위한 공식 MCP 서버입니다. Prisma 스키마 마이그레이션, 쿼리 실행, Prisma Data Platform 상호작용 등의 기능을 에이전트에게 제공합니다.
 
 ---
 

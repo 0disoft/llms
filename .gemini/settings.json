@@ -37,6 +37,14 @@
         "stdio",
         "--demo"
       ]
+    },
+    "Prisma-Remote": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.prisma.io/mcp"
+      ]
     }
   }
 }
