@@ -1,0 +1,1499 @@
+TITLE: Example Markdown Following MD001 (Sequential Headings)
+DESCRIPTION: This Markdown snippet demonstrates correct heading usage according to the MD001 rule, where headings increase by only one level at a time and subsequent sections maintain the correct hierarchy. It shows a well-structured heading sequence.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md001.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+# Heading 1
+
+## Heading 2
+
+### Heading 3
+
+#### Heading 4
+
+## Another Heading 2
+
+### Another Heading 3
+```
+
+----------------------------------------
+
+TITLE: Specifying HTML Image Alt Attribute
+DESCRIPTION: Presents the HTML syntax for including an image (`<img>`) with the required `alt` attribute. The value of the `alt` attribute provides alternative text for the image, crucial for accessibility.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md045.md#_snippet_2
+
+LANGUAGE: html
+CODE:
+```
+<img src="image.jpg" alt="Alternate text" />
+```
+
+----------------------------------------
+
+TITLE: Example YAML Front Matter Format (Text)
+DESCRIPTION: This snippet provides an example of the YAML front matter format commonly found at the beginning of Markdown files. It illustrates the structure that the `options.frontMatter` regular expression is intended to match and ignore during linting.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_23
+
+LANGUAGE: text
+CODE:
+```
+--- dreary
+layout: post
+title: Title
+---
+```
+
+----------------------------------------
+
+TITLE: Markdown Reference Image with Alt Text and Title
+DESCRIPTION: This Markdown snippet uses a reference-style image link with alternate text, referring to a definition that includes a title. The presence of alternate text means it meets accessibility requirements and is not expected to trigger the `markdownlint` rule `MD045`.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/no-alt-text.md#_snippet_6
+
+LANGUAGE: Markdown
+CODE:
+```
+![Alternate text][title]
+```
+
+----------------------------------------
+
+TITLE: Configure Multiple markdownlint Rules for File (Markdown)
+DESCRIPTION: Demonstrates applying multiple markdownlint rule configurations (e.g., `hr-style` and `no-trailing-spaces`) to the entire file using a multi-line `<!-- markdownlint-configure-file -->` HTML comment containing a JSON object.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_8
+
+LANGUAGE: markdown
+CODE:
+```
+<!-- markdownlint-configure-file
+{
+  "hr-style": {
+    "style": "---"
+  },
+  "no-trailing-spaces": false
+}
+-->
+```
+
+----------------------------------------
+
+TITLE: Correcting MD025 Rule: Single Top-Level Heading - Markdown
+DESCRIPTION: This Markdown snippet shows how to fix the MD025 violation. It uses a single top-level heading (H1) for the document title, with subsequent main sections using lower-level headings (H2 or below), adhering to the rule's requirement.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md025.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+# Title
+
+## Heading
+
+## Another heading
+```
+
+----------------------------------------
+
+TITLE: Sync markdownlint Lint Function Signature (JavaScript)
+DESCRIPTION: Presents the JSDoc signature for the synchronous `lint` function from `markdownlint/sync`, specifying its parameter (`options` object) and return type (`LintResults` object), used for synchronous linting of Markdown files.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_10
+
+LANGUAGE: javascript
+CODE:
+```
+/**
+ * Lint specified Markdown files.
+ *
+ * @param {Options | null} options Configuration options.
+ * @returns {LintResults} Results object.
+ */
+function lint(options) { ... }
+```
+
+----------------------------------------
+
+TITLE: Linting Markdown Synchronously in Browser (Javascript)
+DESCRIPTION: Demonstrates how to use the synchronous `lintSync` function in a browser environment. The function is accessed via `globalThis.markdownlint` and takes an options object, typically containing a 'strings' property with the content to lint.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_40
+
+LANGUAGE: javascript
+CODE:
+```
+const options = {
+  "strings": {
+    "content": "Some Markdown to lint."
+  }
+};
+
+const results = globalThis.markdownlint.lintSync(options).toString();
+```
+
+----------------------------------------
+
+TITLE: Correcting Hard Tabs Rule - Markdown
+DESCRIPTION: Corrected example for rule MD010 showing how to replace hard tab characters with spaces for indentation, ensuring consistent rendering.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/Rules.md#_snippet_18
+
+LANGUAGE: Markdown
+CODE:
+```
+Some text
+
+    * Spaces used to indent the list item instead
+```
+
+----------------------------------------
+
+TITLE: Custom markdownlint Configuration File Extending Base (JSON)
+DESCRIPTION: Shows an example of a custom markdownlint configuration file (`custom.json`) that extends a base configuration (`base.json`) using the `extends` property and then overrides or adds specific rule settings, such as disabling the `line-length` rule.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_16
+
+LANGUAGE: json
+CODE:
+```
+{
+  "extends": "base.json",
+  "line-length": false
+}
+```
+
+----------------------------------------
+
+TITLE: Implementing Custom Rule using markdown-it Parser (JavaScript)
+DESCRIPTION: Defines a custom markdownlint rule object using the markdown-it parser. It filters markdown-it tokens for 'blockquote_open' type and reports an error for each found blockquote via the onError function, providing the line number, detail, and context.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/CustomRules.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+/** @type {import("markdownlint").Rule} */
+module.exports = {
+  "names": [ "any-blockquote-markdown-it" ],
+  "description": "Rule that reports an error for any blockquote",
+  "information": new URL("https://example.com/rules/any-blockquote"),
+  "tags": [ "test" ],
+  "parser": "markdownit",
+  "function": (params, onError) => {
+    const blockquotes = params.parsers.markdownit.tokens
+      .filter((token) => token.type === "blockquote_open");
+    for (const blockquote of blockquotes) {
+      const [ startIndex, endIndex ] = blockquote.map;
+      const lines = endIndex - startIndex;
+      onError({
+        "lineNumber": blockquote.lineNumber,
+        "detail": "Blockquote spans " + lines + " line(s).",
+        "context": blockquote.line
+      });
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Example markdownlint Configuration Object (JSON)
+DESCRIPTION: Provides an example of the JSON object used for `options.config` to define markdownlint rule behavior, showing how to set the default rule behavior (`default`), configure specific rules by ID (`MD003`, `MD007`) or alias (`no-hard-tabs`), and disable rules or tags (`whitespace`).
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_12
+
+LANGUAGE: json
+CODE:
+```
+{
+  "default": true,
+  "MD003": { "style": "atx_closed" },
+  "MD007": { "indent": 4 },
+  "no-hard-tabs": false,
+  "whitespace": false
+}
+```
+
+----------------------------------------
+
+TITLE: Multi-line Code Block (JavaScript)
+DESCRIPTION: A fenced code block containing multiple lines of code, explicitly marked as JavaScript. This snippet tests the proper parsing and handling of longer code examples, including line breaks, by markdown processors and linters.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/fenced_code_without_blank_lines.md#_snippet_5
+
+LANGUAGE: js
+CODE:
+```
+code\ncode\ncode
+```
+
+----------------------------------------
+
+TITLE: Correcting Markdown Lists with Blank Lines
+DESCRIPTION: This Markdown snippet shows the correct way to format lists according to a markdownlint rule. It includes blank lines before and after both the unordered and ordered lists, resolving the violations shown in the previous example.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md032.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+Some text
+
+* List item
+* List item
+
+1. List item
+2. List item
+
+***
+```
+
+----------------------------------------
+
+TITLE: Configuring first-line-heading Rule markdownlint JSON
+DESCRIPTION: This snippet shows a JSON object embedded within an HTML comment used to configure markdownlint specifically for the current file. The configuration disables the 'first-line-heading' rule (MD002), allowing the markdown file to start with content other than a heading, overriding the default or configuration file behavior for this rule.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/first_heading_bad_atx.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "first-line-heading": false
+}
+```
+
+----------------------------------------
+
+TITLE: Correcting Markdownlint Rule Violation (Single H1)
+DESCRIPTION: This snippet demonstrates the correct structure for a Markdown document to comply with rule MD003. It features a single h1 heading as the document title, followed by subsequent headings using lower levels (h2) to indicate hierarchy.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md025.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+# Title
+
+## Heading
+
+## Another heading
+```
+
+----------------------------------------
+
+TITLE: Violating MD023 Rule (Indented Heading) - Markdown
+DESCRIPTION: This snippet demonstrates a violation of the MD023 rule by showing a heading that is indented with spaces at the beginning of the line, which markdown parsers may not recognize as a heading.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md023.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+Some text
+
+  # Indented heading
+```
+
+----------------------------------------
+
+TITLE: Configuring Proper Names Rule Markdownlint
+DESCRIPTION: Provides a markdownlint configuration comment that disables the `no-inline-html` rule and configures the `proper-names` rule (MD044). It lists 'HTTPS' and 'JavaScript' as correctly cased names and explicitly disables checking within HTML elements (`html_elements: false`). Requires markdownlint.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/proper-names-no-html.md#_snippet_3
+
+LANGUAGE: YAML
+CODE:
+```
+{\n  "no-inline-html": false,\n  "proper-names": {\n    "names": [\n      "HTTPS",\n      "JavaScript"\n    ],\n    "html_elements": false\n  }\n}
+```
+
+----------------------------------------
+
+TITLE: Configuring Required Headings - markdownlint - JSON
+DESCRIPTION: This JSON snippet configures the 'required-headings' rule (MD043) for markdownlint. It specifies an array of strings representing the exact headings that must appear in the document and their required order. The asterisk '*' acts as a wildcard allowing any heading at that position.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/required-headings-missing-last-zero-or-more.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "required-headings": {
+    "headings": [
+      "# One",
+      "*",
+      "### Three",
+      "*",
+      "### Five",
+      "*",
+      "#### FOO"
+    ]
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Invalid Markdown: Indented Heading
+DESCRIPTION: This snippet demonstrates a markdown heading that is indented by one or more spaces. Markdownlint rule MD003 flags this as an error because markdown processors will not recognize '  # Indented heading' as a valid heading due to the leading indentation.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md023.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+Some text
+
+  # Indented heading
+```
+
+----------------------------------------
+
+TITLE: Demonstrating Markdown Emphasis Rule Violation (MD037)
+DESCRIPTION: This snippet shows examples of bold and italic text formatted incorrectly in Markdown. It violates the markdownlint rule MD037 because there are spaces between the emphasis markers (**,* ,__ ,_) and the text they enclose, which prevents standard markdown processors from rendering the text as emphasized.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md037.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+Here is some ** bold ** text.
+
+Here is some * italic * text.
+
+Here is some more __ bold __ text.
+
+Here is some more _ italic _ text.
+```
+
+----------------------------------------
+
+TITLE: Required Markdown Heading Structure Example
+DESCRIPTION: Demonstrates a simple, exact heading structure in Markdown that can be enforced by the markdownlint rule using the corresponding JSON configuration. It includes a top-level heading, a sub-heading, and a third-level heading.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md043.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+# Head
+## Item
+### Detail
+```
+
+----------------------------------------
+
+TITLE: Configuring markdownlint OL Prefix Rule (JSON)
+DESCRIPTION: This JSON snippet is embedded within a Markdown comment to configure the `ol-prefix` (MD029) markdownlint rule specifically for the current file. Setting the `style` to `one` mandates that all items in ordered lists must begin with '1.', overriding the default behavior of sequentially incrementing numbers.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/ordered_list_item_prefix.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "ol-prefix": {
+    "style": "one"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Headings With Surrounding Blank Lines (MD022) - Markdown
+DESCRIPTION: This snippet demonstrates the correct formatting according to the MD022 rule. Each heading is preceded and followed by at least one blank line, improving readability and ensuring proper parsing by various Markdown renderers.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/Rules.md#_snippet_38
+
+LANGUAGE: markdown
+CODE:
+```
+# Heading 1
+
+Some text
+
+Some more text
+
+## Heading 2
+```
+
+----------------------------------------
+
+TITLE: Violating MD022 - Missing Blank Lines Around Headings
+DESCRIPTION: This markdown snippet demonstrates content that violates markdownlint rule MD022 by having headings without the required blank lines before or after them. Parsers might fail to recognize these as headings.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md022.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+# Heading 1
+Some text
+
+Some more text
+## Heading 2
+```
+
+----------------------------------------
+
+TITLE: Compliant with MD022 - Blank Lines Around Headings
+DESCRIPTION: This markdown snippet shows the corrected structure that complies with markdownlint rule MD022, including blank lines around headings. This ensures proper rendering and parsing of the document.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md022.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+# Heading 1
+
+Some text
+
+Some more text
+
+## Heading 2
+```
+
+----------------------------------------
+
+TITLE: Demonstrating Incorrect Markdown Sectioning - Markdown
+DESCRIPTION: This snippet shows how emphasizing text (bold or italic) is used to separate sections, which is considered incorrect practice according to the markdownlint rule. It uses bold text for the main title and italic text for a subsection title instead of using proper Markdown headings.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md036.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+**My document**\n\nLorem ipsum dolor sit amet...\n\n_Another section_\n\nConsectetur adipiscing elit, sed do eiusmod.
+```
+
+----------------------------------------
+
+TITLE: Linting Markdown with Promises (Node.js)
+DESCRIPTION: Illustrates the Promise-based API of `markdownlint` in Node.js using `async/await`. It returns a Promise that resolves with the results object, allowing direct inspection of structured linting errors.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_37
+
+LANGUAGE: javascript
+CODE:
+```
+import { lint as lintPromise } from "markdownlint/promise";
+
+const results = await lintPromise(options);
+console.dir(results, { "colors": true, "depth": null });
+```
+
+----------------------------------------
+
+TITLE: Configuring Markdownlint Rule via Comment Markdown
+DESCRIPTION: Shows an example of an HTML comment used within a Markdown file to configure markdownlint rules, specifically allowing the 'a' element for the 'no-inline-html' rule.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/Rules.md#_snippet_56
+
+LANGUAGE: Markdown
+CODE:
+```
+<!-- markdownlint-configure-file {
+  "no-inline-html": {
+    "allowed_elements": [
+      "a"
+    ]
+  }
+} -->
+```
+
+----------------------------------------
+
+TITLE: Violating MD025 Rule: Multiple Top-Level Headings - Markdown
+DESCRIPTION: This Markdown snippet demonstrates content that violates the MD025 rule by including more than one top-level heading (H1). The rule expects a single H1 to serve as the document's title.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md025.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+# Top level heading
+
+# Another top-level heading
+```
+
+----------------------------------------
+
+TITLE: Line Length Examples (MD013) - Markdown
+DESCRIPTION: This snippet provides multiple examples illustrating the MD013 line length rule, assuming default behavior. It shows how lines are evaluated based on the presence and location of spaces beyond the configured maximum length.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/Rules.md#_snippet_24
+
+LANGUAGE: markdown
+CODE:
+```
+IF THIS LINE IS THE MAXIMUM LENGTH
+This line is okay because there are-no-spaces-beyond-that-length
+This line is a violation because there are spaces beyond that length
+This-line-is-okay-because-there-are-no-spaces-anywhere-within
+```
+
+----------------------------------------
+
+TITLE: Correcting MD010 Violation with Spaces (Markdown)
+DESCRIPTION: This markdown snippet shows the corrected version of the previous example. The list item is indented using spaces instead of a hard tab, adhering to the `MD010` rule and promoting consistent rendering.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md010.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+Some text
+
+    * Spaces used to indent the list item instead
+```
+
+----------------------------------------
+
+TITLE: Demonstrating Markdownlint Rule Violation (Multiple H1)
+DESCRIPTION: This snippet shows an example of a Markdown document violating Markdownlint rule MD003 by having multiple top-level h1 headings. This structure conflicts with the convention where the first h1 serves as the document's main title.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md025.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+# Top level heading
+
+# Another top-level heading
+```
+
+----------------------------------------
+
+TITLE: Example Violations of MD032 - Lists Without Blank Lines
+DESCRIPTION: This snippet demonstrates markdown code that violates rule MD032. The first list is immediately preceded by text, and the second list is immediately followed by a thematic break, both lacking required blank lines.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md032.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+Some text
+* List item
+* List item
+
+1. List item
+2. List item
+***
+```
+
+----------------------------------------
+
+TITLE: Configuring markdownlint single-title Rule - JSON
+DESCRIPTION: This JSON snippet, embedded within an HTML comment, configures the 'single-title' rule for markdownlint. It sets the 'front_matter_title' parameter to an empty string, potentially modifying how the rule checks for a single title derived from front matter in the document's front matter.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/hugo-quickstart-example-clean.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "single-title": {
+    "front_matter_title": ""
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Using Pure Markdown for Heading (MD033 Fix)
+DESCRIPTION: This code snippet shows the correct and recommended way to create a heading using standard Markdown syntax (`#`), which resolves the markdownlint rule MD033 violation caused by raw HTML.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md033.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+# Markdown heading
+```
+
+----------------------------------------
+
+TITLE: Configure Markdownlint Duplicate Heading Rule (Markdown Configuration)
+DESCRIPTION: This snippet is a file-level configuration comment for the markdownlint tool. It disables the 'no-duplicate-heading' rule for sibling headings only. This allows duplicate headings within different sections at the same level in the changelog without triggering a lint error.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/heading_duplicate_content_different_nesting.md#_snippet_0
+
+LANGUAGE: Markdown Configuration
+CODE:
+```
+<!-- markdownlint-configure-file {
+  "no-duplicate-heading": {
+    "siblings_only": true
+  }
+} -->
+```
+
+----------------------------------------
+
+TITLE: Fixing Nested Link MD034 Trigger - Markdown
+DESCRIPTION: Demonstrates the correct way to handle the nested link scenario from the previous snippet to avoid triggering the MD034 rule. By escaping the inner square brackets using backslashes (\[ and \]), the Markdown parser treats them as literal characters rather than part of a link syntax.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md034.md#_snippet_5
+
+LANGUAGE: markdown
+CODE:
+```
+[link \[text\] link](https://example.com)
+```
+
+----------------------------------------
+
+TITLE: JSON with Comments Example - JSONC
+DESCRIPTION: Illustrates a JSON-like structure that includes a line comment. While not standard JSON, this jsonc format is often supported by parsers for configuration files to allow explanatory notes.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/validate-json.md#_snippet_1
+
+LANGUAGE: jsonc
+CODE:
+```
+{
+    // Comment
+    "property": "value"
+}
+```
+
+----------------------------------------
+
+TITLE: Example Applying Fixes with Markdownlint (JavaScript)
+DESCRIPTION: This snippet demonstrates how to use `markdownlint/sync` to lint Markdown content provided as a string (`original`) and then use the `applyFixes` function to automatically fix the reported errors. It shows importing the necessary functions, performing the linting, and applying the fixes to the original content.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_32
+
+LANGUAGE: javascript
+CODE:
+```
+import { applyFixes } from "markdownlint";
+import { lint as lintSync } from "markdownlint/sync";
+
+const results = lintSync({ "strings": { "content": original } });
+const fixed = applyFixes(original, results.content);
+```
+
+----------------------------------------
+
+TITLE: Disable markdownlint Rule for Next Line (Markdown)
+DESCRIPTION: Shows how to disable a specific markdownlint rule (`no-space-in-emphasis`) for only the subsequent line by adding an HTML comment (`<!-- markdownlint-disable-next-line rule-name -->`) directly before the line.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+<!-- markdownlint-disable-next-line no-space-in-emphasis -->
+space * in * emphasis
+```
+
+----------------------------------------
+
+TITLE: Running Code Linting with npm (Shell)
+DESCRIPTION: Executes the project's linting process using the `npm run lint` script. This command checks the codebase for style issues and potential errors according to predefined rules, ensuring code quality before submitting a pull request.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/CONTRIBUTING.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+npm run lint
+```
+
+----------------------------------------
+
+TITLE: Configuring markdownlint List Indentation (JSON)
+DESCRIPTION: Provides a JSON configuration object for markdownlint to adjust list item indentation rules (`list-marker-space` and `ul-indent`). This configuration is necessary to resolve potential linting conflicts when Prettier is used with a tab width of 4 spaces, ensuring compatibility in formatting.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/Prettier.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "list-marker-space": {
+    "ul_multi": 3,
+    "ul_single": 3
+  },
+  "ul-indent": {
+    "indent": 4
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Configuring markdownlint no-inline-html Rule (JSON)
+DESCRIPTION: This JSON snippet is embedded within an HTML comment at the beginning of a file to configure the markdownlint tool. It specifically targets the `no-inline-html` rule, using the `allowed_elements` parameter to permit the use of the `a` HTML element within the markdown content of this file. This overrides the default behavior of the rule which would normally flag all inline HTML.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/footing.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "no-inline-html": {
+    "allowed_elements": [
+      "a"
+    ]
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: HTML Img Tag without Alt Text inside Paragraph
+DESCRIPTION: This HTML snippet demonstrates an `<img>` tag nested within a `<p>` element. The image tag is missing the required `alt` attribute, which is expected to trigger the `markdownlint` rule `MD045` regardless of its container element.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/no-alt-text.md#_snippet_22
+
+LANGUAGE: HTML
+CODE:
+```
+<p>\n  <img src="image.png" />\n</p>
+```
+
+----------------------------------------
+
+TITLE: Markdown Reference Image without Alt Text
+DESCRIPTION: This Markdown snippet uses a reference-style image link without any alternate text provided in the first set of square brackets. This syntax lacks accessibility information and is expected to trigger the `markdownlint` rule `MD045`.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/no-alt-text.md#_snippet_5
+
+LANGUAGE: Markdown
+CODE:
+```
+![][notitle]
+```
+
+----------------------------------------
+
+TITLE: Fixing Bare URL/Email with Brackets - Markdown
+DESCRIPTION: Demonstrates the recommended fix for MD034: enclosing URLs and email addresses in angle brackets (< >) to ensure they are correctly recognized and rendered as links by Markdown parsers.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md034.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+For more info, visit <https://www.example.com/> or email <user@example.com>.
+```
+
+----------------------------------------
+
+TITLE: Correct Markdown Link Syntax
+DESCRIPTION: Shows the standard and correct syntax for a Markdown link where the label `[]` precedes the URL `()`, resolving the MD034 lint rule violation.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md011.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+[Correct link syntax](https://www.example.com/)
+```
+
+----------------------------------------
+
+TITLE: Demonstrating Emphasis Ignored in Markdown Code Blocks
+DESCRIPTION: This fenced code block shows that characters typically used for Markdown emphasis (`*`, `_`) are treated as literal characters when inside a code block. Markdownlint rules like MD037 do not apply within these blocks.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/spaces_inside_emphasis_markers.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+Violations * are * allowed in code blocks where emphasis does not apply.
+```
+
+----------------------------------------
+
+TITLE: Correct List Indentation Example - Markdown
+DESCRIPTION: This Markdown snippet shows the correct indentation for a nested list item, complying with the markdownlint rule MD007. The nested item is indented by 2 spaces, which is the default and recommended indentation level.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md007.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+* List item
+  * Nested list item indented by 2 spaces
+```
+
+----------------------------------------
+
+TITLE: Markdown Linked Image without Alt Text
+DESCRIPTION: This Markdown snippet shows an image wrapped in a link. The inner image syntax lacks alternate text. The absence of alt text on the image itself means it lacks accessibility information and is expected to trigger the `markdownlint` rule `MD045`.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/no-alt-text.md#_snippet_9
+
+LANGUAGE: Markdown
+CODE:
+```
+[![](image.jpg)](image.jpg)
+```
+
+----------------------------------------
+
+TITLE: Demonstrating Trailing Spaces on Empty List Item Line in Markdown
+DESCRIPTION: This markdown snippet illustrates an empty line within a list item that contains trailing spaces. This usage is typically flagged by MD009 but can be allowed by setting the 'list_item_empty_lines' parameter to true.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md009.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+- list item text
+  
+  list item text
+```
+
+----------------------------------------
+
+TITLE: Showing Ignored Code - JavaScript Fenced Block
+DESCRIPTION: Illustrates that fenced code blocks with a specified language (JavaScript) are also ignored by the reversed link linting rule (MD011). The snippet shows a simple JavaScript function call and property access.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/reversed_link.md#_snippet_1
+
+LANGUAGE: javascript
+CODE:
+```
+myObj.getFiles(test)[0];
+```
+
+----------------------------------------
+
+TITLE: Correcting Markdown Shell Command Style (Markdown)
+DESCRIPTION: This snippet shows the preferred way to format shell commands within a Markdown code block when no command output is displayed. By omitting the leading dollar signs, the commands are easier to copy/paste and the code block is less visually noisy. This follows the recommended style guide.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md014.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+ls
+cat foo
+less bar
+```
+
+----------------------------------------
+
+TITLE: Base markdownlint Configuration File (JSON)
+DESCRIPTION: Provides an example of a simple base markdownlint configuration file (`base.json`) that sets the `default` rule to `true`, enabling all rules by default, intended for use in extending configurations.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_15
+
+LANGUAGE: json
+CODE:
+```
+{
+  "default": true
+}
+```
+
+----------------------------------------
+
+TITLE: Demonstrating Correct Markdown Headings - Markdown
+DESCRIPTION: This snippet provides the recommended way to structure sections in Markdown documents. It uses H1 (#) for the main title and H2 (##) for a subsection, which allows tools to correctly parse the document structure.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md036.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+# My document\n\nLorem ipsum dolor sit amet...\n\n## Another section\n\nConsectetur adipiscing elit, sed do eiusmod.
+```
+
+----------------------------------------
+
+TITLE: Markdown Multi-line Image without Alt Text but with Title
+DESCRIPTION: This Markdown snippet shows a multi-line inline image link that includes a title attribute but no alternate text, split across lines. The absence of alternate text means it lacks accessibility information and is expected to trigger the `markdownlint` rule `MD045`.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/no-alt-text.md#_snippet_11
+
+LANGUAGE: Markdown
+CODE:
+```
+![](image.jpg "Title"\n)
+```
+
+----------------------------------------
+
+TITLE: Dollar Signs Before Shell Commands Violation (MD014) - Markdown
+DESCRIPTION: This snippet shows a violation of the MD014 rule when presenting shell commands within a Markdown code block. Prefixing all commands with a dollar sign ($) without showing corresponding output is flagged as unnecessary noise.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/Rules.md#_snippet_25
+
+LANGUAGE: markdown
+CODE:
+```
+$ ls
+$ cat foo
+$ less bar
+```
+
+----------------------------------------
+
+TITLE: Markdown Reference Image with Alt Text
+DESCRIPTION: This Markdown snippet uses a reference-style image link with alternate text provided in the first set of square brackets, referring to a definition elsewhere. The presence of alternate text means it meets accessibility requirements and is not expected to trigger the `markdownlint` rule `MD045`.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/no-alt-text.md#_snippet_4
+
+LANGUAGE: Markdown
+CODE:
+```
+![Alternate text][notitle]
+```
+
+----------------------------------------
+
+TITLE: Illustrating MD035 Violation - Markdown
+DESCRIPTION: This Markdown code snippet demonstrates various inconsistent horizontal rule styles. It serves as an example of the formatting issues that the `MD035` markdownlint rule is designed to catch. The presence of multiple different horizontal rule syntaxes will trigger a linting error if the rule is enabled.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md035.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+лект---\n\n- - -\n\n***\n\n* * *\n\n****
+```
+
+----------------------------------------
+
+TITLE: Example File List for Linting (JSON)
+DESCRIPTION: Provides an example of the array format used for the `options.files` property, which is a list of strings where each string represents the path (relative or absolute) to a Markdown file that should be linted.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_21
+
+LANGUAGE: json
+CODE:
+```
+[ "one.md", "dir/two.md" ]
+```
+
+----------------------------------------
+
+TITLE: Disable/Enable markdownlint Rule Block (Markdown)
+DESCRIPTION: Demonstrates disabling a specific markdownlint rule (`no-space-in-emphasis`) for a block of content by placing an `<!-- markdownlint-disable rule-name -->` comment before the block and an `<!-- markdownlint-enable rule-name -->` comment after it.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_3
+
+LANGUAGE: markdown
+CODE:
+```
+<!-- markdownlint-disable no-space-in-emphasis -->
+space * in * emphasis
+<!-- markdownlint-enable no-space-in-emphasis -->
+```
+
+----------------------------------------
+
+TITLE: Invalid Link Fragment Example Markdown
+DESCRIPTION: This snippet demonstrates a link with a fragment that does not match the automatically generated fragment for the specified heading, triggering a violation of rule MD051.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md051.md#_snippet_0
+
+LANGUAGE: Markdown
+CODE:
+```
+# Heading Name
+
+[Link](#fragment)
+```
+
+----------------------------------------
+
+TITLE: Correct Heading Start Position (MD023) - Markdown
+DESCRIPTION: This snippet demonstrates the correct placement for a heading according to the MD023 rule. The heading marker (`#`) is placed at the first character position of the line, ensuring it is correctly parsed as a heading.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/Rules.md#_snippet_40
+
+LANGUAGE: markdown
+CODE:
+```
+Some text
+
+# Heading 1
+```
+
+----------------------------------------
+
+TITLE: Testing markdownlint MD040 with Allowed JS
+DESCRIPTION: This snippet uses the 'js' language tag, which is included in the configured allowed list. Consequently, it does not trigger markdownlint rule MD040, demonstrating the correct usage of an allowed language.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/md040-allowed_languages.md#_snippet_4
+
+LANGUAGE: js
+CODE:
+```
+console.log('markdownlint')
+```
+
+----------------------------------------
+
+TITLE: Example Fenced Code Block in List (Markdown/Text)
+DESCRIPTION: This snippet shows a fenced code block (`fenced`) embedded within a markdown list item. It demonstrates how code blocks can be included as part of list content, following the list indentation. The content is simple text.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/fenced_code_blocks_in_lists.md#_snippet_0
+
+LANGUAGE: text
+CODE:
+```
+this is a code block within the list item.
+```
+
+----------------------------------------
+
+TITLE: Markdown Shell Commands with Output (Markdown)
+DESCRIPTION: This snippet demonstrates a Markdown code block containing shell commands interspersed with their corresponding output. In this scenario, it is acceptable and often necessary to precede the commands with a dollar sign ($) to clearly distinguish commands from the output lines. This pattern does not trigger the described markdownlint rule.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md014.md#_snippet_2
+
+LANGUAGE: markdown
+CODE:
+```
+$ ls
+foo bar
+$ cat foo
+Hello world
+$ cat bar
+baz
+```
+
+----------------------------------------
+
+TITLE: Example Configuration Parser Array (JavaScript)
+DESCRIPTION: This snippet provides an example array of parser functions that can be provided to the `readConfig` functions. It shows how to include parsers for different formats like JSON, TOML, and YAML, which `readConfig` will attempt sequentially until one successfully parses the configuration file content.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_29
+
+LANGUAGE: javascript
+CODE:
+```
+[ JSON.parse, require("toml").parse, require("js-yaml").load ]
+```
+
+----------------------------------------
+
+TITLE: Linting Markdown Asynchronously with Callback (Node.js)
+DESCRIPTION: Demonstrates how to use the asynchronous `lintAsync` function from `markdownlint` in Node.js. It takes an options object specifying files and strings to lint and calls a callback function with the results or an error.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_35
+
+LANGUAGE: javascript
+CODE:
+```
+import { lint as lintAsync } from "markdownlint/async";
+
+const options = {
+  "files": [ "good.md", "bad.md" ],
+  "strings": {
+    "good.string": "# good.string\n\nThis string passes all rules.",
+    "bad.string": "#bad.string\n\n#This string fails\tsome rules."
+  }
+};
+
+lintAsync(options, function callback(error, results) {
+  if (!error && results) {
+    console.log(results.toString());
+  }
+});
+```
+
+----------------------------------------
+
+TITLE: Configuring MD043 for Strict Heading Structure (JSON)
+DESCRIPTION: This JSON array shows the value for the 'headings' parameter of the MD043 markdownlint rule. It defines a strictly required heading structure (# Head, ## Item, ### Detail) that must appear in sequence in the markdown file. Configuring the rule with this value enforces this exact structure.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md043.md#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+[
+    "# Head",
+    "## Item",
+    "### Detail"
+]
+```
+
+----------------------------------------
+
+TITLE: Correct Link Syntax Example (MD011) - Markdown
+DESCRIPTION: This snippet shows the correct syntax for a Markdown link, with the text in square brackets [] followed immediately by the URL in parentheses (). This structure adheres to the MD011 rule and ensures the link is rendered correctly.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/Rules.md#_snippet_20
+
+LANGUAGE: markdown
+CODE:
+```
+[Correct link syntax](https://www.example.com/)
+```
+
+----------------------------------------
+
+TITLE: Representing Inline Link/Image Syntax (Markdown)
+DESCRIPTION: Illustrates the syntax for inline links and images in Markdown, where the link text/image alt text and the destination URL/source are provided directly within the line. This style is disabled by the `inline` parameter.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md054.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+[link](https://example.com)
+
+![image](https://example.com)
+```
+
+----------------------------------------
+
+TITLE: Correcting ATX Heading Spacing - Markdown
+DESCRIPTION: Example of corrected ATX headings using a single space between the hash characters and the heading text. Demonstrates the recommended spacing to comply with the linting rule.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md021.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+# Heading 1 #
+
+## Heading 2 ##
+```
+
+----------------------------------------
+
+TITLE: Markdown Image with Alt Text and Title (Inline)
+DESCRIPTION: This Markdown snippet shows an inline image link that includes both alternate text and a title attribute. The presence of alternate text satisfies the requirement for accessibility, so this syntax is not expected to trigger the `markdownlint` rule `MD045`.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/no-alt-text.md#_snippet_2
+
+LANGUAGE: Markdown
+CODE:
+```
+![Alternate text](image.jpg "Title")
+```
+
+----------------------------------------
+
+TITLE: Demonstrating Inconsistent Markdown Heading Styles
+DESCRIPTION: This markdown snippet illustrates a violation of the consistent heading style rule. It shows the use of ATX (#), closed ATX (## ##), and Setext (===) heading styles within the same document, which triggers the linting rule.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md003.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+# ATX style H1
+
+## Closed ATX style H2 ##
+
+Setext style H1
+===============
+```
+
+----------------------------------------
+
+TITLE: Configuring markdownlint rules using JSON
+DESCRIPTION: This snippet shows a JSON configuration object embedded within an HTML comment for the `markdownlint-configure-file` directive. It disables the `line-length` rule and customizes the `single-title` rule to match the `alternate` key in the front matter.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/front-matter-alt-title-h1.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "line-length": false,
+  "single-title": {
+    "front_matter_title": "^\\s*alternate="
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Correcting MD007 Rule Violation with Unordered Lists (markdown)
+DESCRIPTION: This snippet provides the corrected example for the MD007 markdownlint rule. The nested unordered list item is correctly indented by 2 spaces, which is the default setting for this rule.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md007.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+* List item
+  * Nested list item indented by 2 spaces
+```
+
+----------------------------------------
+
+TITLE: Configuring markdownlint file rules using JSON
+DESCRIPTION: This configuration snippet, embedded within an HTML comment, is used by markdownlint to configure rules specifically for this file. It disables several rules (heading-style, no-multiple-blanks, single-title) and customizes the 'blanks-around-headings' rule (MD022) to specify allowed numbers of blank lines above and below headings, including negative values which can indicate flexible requirements.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/blanks-around-headings-arrays.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "heading-style": false,
+  "no-multiple-blanks": false,
+  "single-title": false,
+  "blanks-around-headings": {
+    "lines_above": [ 1, 2, 3, -1],
+    "lines_below": [ -1, 2, 1, 3, -1, 4, 10 ]
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: HTML Multi-line Img Tag with Empty Alt Attribute (Boolean)
+DESCRIPTION: This HTML snippet shows a multi-line `<img>` tag with the `alt` attribute present but without an assigned value (boolean attribute form). According to `markdownlint` rule `MD045`, this is treated as missing descriptive alt text and is expected to trigger the rule.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/no-alt-text.md#_snippet_18
+
+LANGUAGE: HTML
+CODE:
+```
+<img\n  src="image.png"\n  alt>
+```
+
+----------------------------------------
+
+TITLE: Illustrating Markdown Reference Link and Image Syntax
+DESCRIPTION: This snippet demonstrates the syntax for different types of Markdown reference links and images: full, collapsed, and shortcut. It also shows how the corresponding labels are defined elsewhere in the document, which allows for cleaner paragraph text and URL reuse.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md052.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+Full: [text][label]
+Collapsed: [label][]
+Shortcut: [label]
+
+Full: ![text][image]
+Collapsed: ![image][]
+Shortcut: ![image]
+
+[label]: https://example.com/label
+[image]: https://example.com/image
+```
+
+----------------------------------------
+
+TITLE: Valid Markdown Link Syntax
+DESCRIPTION: This snippet demonstrates the correct markdown syntax for a valid link. It includes both link text and a destination URL, resolving the markdownlint violation for empty links (MD042).
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md042.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+[a valid link](https://example.com/)
+```
+
+----------------------------------------
+
+TITLE: Linting Markdown Synchronously (Node.js)
+DESCRIPTION: Shows the synchronous usage of the `lintSync` function in Node.js. It takes the same options object used in the asynchronous version and returns the results object directly.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_36
+
+LANGUAGE: javascript
+CODE:
+```
+import { lint as lintSync } from "markdownlint/sync";
+
+const results = lintSync(options);
+console.log(results.toString());
+```
+
+----------------------------------------
+
+TITLE: Correcting Unordered List Style - Markdown
+DESCRIPTION: Corrected example for rule MD004 showing how to use a consistent list marker symbol (*) for all unordered list items at the same level, improving document consistency.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/Rules.md#_snippet_7
+
+LANGUAGE: Markdown
+CODE:
+```
+* Item 1
+* Item 2
+* Item 3
+```
+
+----------------------------------------
+
+TITLE: Correct MD023 Rule (No Indentation) - Markdown
+DESCRIPTION: This snippet shows the correct way to format a heading according to the MD023 rule, ensuring it starts at the very beginning of the line so that markdown parsers correctly identify it as a heading.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md023.md#_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+Some text
+
+# Heading
+```
+
+----------------------------------------
+
+TITLE: Default Single-Space List Markers - Markdown
+DESCRIPTION: This snippet demonstrates the default behavior of the MD030 rule where a single space is expected after the list marker for single-line items in both ordered and unordered lists, including nested lists. This is based on the default parameter values (1 space).
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md030.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+* Foo
+* Bar
+* Baz
+
+1. Foo
+1. Bar
+1. Baz
+
+1. Foo
+   * Bar
+1. Baz
+```
+
+----------------------------------------
+
+TITLE: Configure markdownlint Rule for File (Markdown)
+DESCRIPTION: Shows how to apply configuration settings for a specific markdownlint rule (e.g., `hr-style`) to the entire file regardless of comment location, by embedding a JSON object within a `<!-- markdownlint-configure-file -->` HTML comment.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_7
+
+LANGUAGE: markdown
+CODE:
+```
+<!-- markdownlint-configure-file { "hr-style": { "style": "---" } } -->
+```
+
+----------------------------------------
+
+TITLE: Configuring markdownlint file settings via HTML comment
+DESCRIPTION: This JSON snippet is embedded within an HTML comment (`<!-- ... -->`) and interpreted by the markdownlint tool. It provides file-specific configuration overrides. It disables the 'line-length' rule and configures the 'first-line-heading' rule to accept a title defined in the file's front matter under the key 'alternate' matching the specified regex.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/front-matter-alt-title-no-h1.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "line-length": false,
+  "first-line-heading": {
+    "front_matter_title": "^\\s*alternate="
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Representing Autolink Syntax (Markdown)
+DESCRIPTION: Shows the syntax for a Markdown autolink, which automatically turns a URL within angle brackets into a clickable link. This style can be disabled by the `autolink` parameter in the markdownlint rule configuration.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc-build/md054.md#_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+<https://example.com>
+```
+
+----------------------------------------
+
+TITLE: MD014 Compliance - Dollar Signs With Output (Example 1)
+DESCRIPTION: Demonstrates a Markdown code block with shell commands prefixed by dollar signs ($), followed by their actual output. This scenario does *not* violate the `MD014` rule, as the dollar signs are acceptable when indicating output is included.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md014.md#_snippet_2
+
+LANGUAGE: sh
+CODE:
+```
+$ ls
+foo bar
+$ cat foo
+Hello world
+$ cat bar
+baz
+```
+
+----------------------------------------
+
+TITLE: Markdown Image without Alt Text (Inline)
+DESCRIPTION: This Markdown snippet shows an inline image link without any alternate text provided within the square brackets. This syntax lacks descriptive alternative text for accessibility and is expected to trigger the `markdownlint` rule `MD045`.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/no-alt-text.md#_snippet_1
+
+LANGUAGE: Markdown
+CODE:
+```
+![](image.jpg)
+```
+
+----------------------------------------
+
+TITLE: Include Browser Script (HTML)
+DESCRIPTION: HTML script tag used to include the generated markdownlint browser script into an HTML page, making the library's functionality available via the global `markdownlint` object.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_39
+
+LANGUAGE: html
+CODE:
+```
+<script src="demo/markdownlint-browser.min.js"></script>
+```
+
+----------------------------------------
+
+TITLE: Configuring markdownlint Required Headings JSON
+DESCRIPTION: Sets the required headings for the document using a markdownlint configuration comment. It specifies that the first heading must be "# One", the second must be "## Two", and any subsequent heading is allowed (`*`). This configures the markdownlint rule MD002/required-headings for the entire file.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/required-headings-optional-last.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "required-headings": {
+    "headings": [
+      "# One",
+      "## Two",
+      "*"
+    ]
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Markdown Linked Image with Alt Text
+DESCRIPTION: This Markdown snippet shows an image wrapped in a link. The inner image syntax includes alternate text. Since the image itself has alt text, this structure meets accessibility requirements and is not expected to trigger the `markdownlint` rule `MD045`.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/no-alt-text.md#_snippet_8
+
+LANGUAGE: Markdown
+CODE:
+```
+[![Alternate text](image.jpg)](image.jpg)
+```
+
+----------------------------------------
+
+TITLE: Defining Jekyll Post Front Matter - YAML
+DESCRIPTION: Provides essential metadata for a Jekyll blog post, including layout, title, date, and categories. This front matter is parsed by Jekyll to render the post correctly.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/front-matter-title-h1.md#_snippet_0
+
+LANGUAGE: YAML
+CODE:
+```
+layout: post\ntitle:  \"Welcome to Jekyll!\"\ndate:   2015-11-17 16:16:01 -0600\ncategories: jekyll update
+```
+
+----------------------------------------
+
+TITLE: Capture and Restore markdownlint Configuration (Markdown)
+DESCRIPTION: Explains how to temporarily disable all markdownlint rules by capturing the current configuration with `<!-- markdownlint-capture -->`, disabling rules with `<!-- markdownlint-disable -->`, and then restoring the original configuration with `<!-- markdownlint-restore -->`.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/README.md#_snippet_4
+
+LANGUAGE: markdown
+CODE:
+```
+<!-- markdownlint-capture -->
+<!-- markdownlint-disable -->
+any violations you want
+<!-- markdownlint-restore -->
+```
+
+----------------------------------------
+
+TITLE: Indented Heading Violation (MD023) - Markdown
+DESCRIPTION: This snippet shows a violation of the MD023 rule. Headings must start at the very beginning of the line with no leading whitespace. Indenting a heading with spaces causes it to be rendered as a paragraph or code block instead of a heading.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/Rules.md#_snippet_39
+
+LANGUAGE: markdown
+CODE:
+```
+Some text
+
+  # Indented heading
+```
+
+----------------------------------------
+
+TITLE: Headings Without Surrounding Blank Lines Violation (MD022) - Markdown
+DESCRIPTION: This snippet shows a violation of the MD022 rule, which requires headings to be surrounded by blank lines. The first heading lacks a blank line below, and the second heading lacks one above.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/Rules.md#_snippet_37
+
+LANGUAGE: markdown
+CODE:
+```
+# Heading 1
+Some text
+
+Some more text
+## Heading 2
+```
+
+----------------------------------------
+
+TITLE: Demonstrating Single-Line Inline Code - Markdown
+DESCRIPTION: This basic snippet shows a standard single-line Markdown inline code span. It serves as a contrast to the multi-line examples and demonstrates the typical representation of short code phrases or keywords within a paragraph, highlighting the default behavior without explicit line break markers.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/test/hard-line-breaks.md#_snippet_3
+
+LANGUAGE: text
+CODE:
+```
+code span
+```
+
+----------------------------------------
+
+TITLE: Demonstrating Markdown Reference Link/Image Syntax
+DESCRIPTION: This snippet illustrates the 'Full', 'Collapsed', and 'Shortcut' syntax for reference links and images in Markdown. It shows how the link/image destination is defined separately using labels, which is the syntax checked by markdownlint rule MD052.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/doc/md052.md#_snippet_0
+
+LANGUAGE: Markdown
+CODE:
+```
+Full: [text][label]
+Collapsed: [label][]
+Shortcut: [label]
+
+Full: ![text][image]
+Collapsed: ![image][]
+Shortcut: ![image]
+
+[label]: https://example.com/label
+[image]: https://example.com/image
+```
+
+----------------------------------------
+
+TITLE: Referencing JSON Schema in markdownlint Config (JSON)
+DESCRIPTION: Shows how to include the `$schema` property in a `.markdownlint.json` file. This property points to the official JSON Schema URL, allowing editors or tools that support JSON Schema referencing to automatically validate the configuration against the defined schema.
+SOURCE: https://github.com/davidanson/markdownlint/blob/main/schema/ValidatingConfiguration.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+"$schema": "https://raw.githubusercontent.com/DavidAnson/markdownlint/main/schema/markdownlint-config-schema.json"
+```

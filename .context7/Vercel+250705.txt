@@ -1,0 +1,1420 @@
+TITLE: API Parameters and Authorization for Get Project Domain
+DESCRIPTION: Details the required authorization header and path parameters, including their types, descriptions, and an example for the domain parameter.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/projects/get-a-project-domain
+
+LANGUAGE: APIDOC
+CODE:
+```
+Authorizations:
+  Authorization: string (header, required) - Default authentication mechanism
+
+Path Parameters:
+  idOrName: string (required) - The unique project identifier or the project name
+  domain: string (required) - The project domain name
+    Example: "www.example.com"
+```
+
+----------------------------------------
+
+TITLE: API Specification for Get Integration Configurations Endpoint
+DESCRIPTION: Detailed API documentation for the `GET /v1/integrations/configurations` endpoint. It outlines the required `Authorization` header, available query parameters with their types and examples, and the structure of the 200 OK response, which returns an array of integration configuration objects.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/integrations/get-configurations-for-the-authenticated-user-or-team
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: GET /v1/integrations/configurations
+
+Authorizations:
+  Authorization:
+    type: string
+    in: header
+    required: true
+    description: Default authentication mechanism
+
+Query Parameters:
+  view:
+    type: enum<string>
+    required: true
+    options: account, project
+  installationType:
+    type: enum<string>
+    options: marketplace, external
+  integrationIdOrSlug:
+    type: string
+    description: ID of the integration
+  teamId:
+    type: string
+    description: The Team identifier to perform the request on behalf of.
+    example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+  slug:
+    type: string
+    description: The Team slug to perform the request on behalf of.
+    example: "my-team-url-slug"
+
+Response:
+  200 OK:
+    Content-Type: application/json
+    Description: The list of configurations for the authenticated user
+    Schema: object[]
+```
+
+----------------------------------------
+
+TITLE: APIDOC: Parameters for Get Single Domain API
+DESCRIPTION: Details the required and optional parameters for the 'Get Information for a Single Domain' API endpoint, covering authorization, path, and query parameters with their types and examples.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/domains/get-information-for-a-single-domain
+
+LANGUAGE: APIDOC
+CODE:
+```
+Authorizations:
+  Authorization:
+    Type: string
+    Location: header
+    Required: true
+    Description: Default authentication mechanism
+
+Path Parameters:
+  domain:
+    Type: string
+    Required: true
+    Description: The name of the domain.
+    Example: "example.com"
+
+Query Parameters:
+  teamId:
+    Type: string
+    Description: The Team identifier to perform the request on behalf of.
+    Example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+  slug:
+    Type: string
+    Description: The Team slug to perform the request on behalf of.
+    Example: "my-team-url-slug"
+```
+
+----------------------------------------
+
+TITLE: Vercel Marketplace Import Resource API Documentation
+DESCRIPTION: Comprehensive API documentation for the Vercel Marketplace 'Import Resource' endpoint, detailing the HTTP method, path, required parameters, request body example, and successful response example.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/marketplace/import-resource
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint:
+  Method: PUT
+  Path: /v1/installations/{integrationConfigurationId}/resources/{resourceId}
+  Description: This endpoint imports (upserts) a resource to Vercel’s installation. This may be needed if resources can be independently created on the partner’s side and need to be synchronized to Vercel.
+
+Authorizations:
+  Authorization:
+    type: string
+    in: header
+    required: true
+    description: Default authentication mechanism
+
+Path Parameters:
+  integrationConfigurationId:
+    type: string
+    required: true
+  resourceId:
+    type: string
+    required: true
+
+Request Body (application/json):
+  Example:
+    {
+      "name": "<string>"
+    }
+
+Responses:
+  200 OK (application/json):
+    Example:
+      {
+        "name": "<string>"
+      }
+```
+
+----------------------------------------
+
+TITLE: API Reference: Get Deployment Events
+DESCRIPTION: This section details the API endpoint for retrieving deployment events, including the HTTP method, path, authorization requirements, and all available path and query parameters with their types, descriptions, and examples.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/deployments
+
+LANGUAGE: APIDOC
+CODE:
+```
+Method: GET
+Path: /v3/deployments/{idOrUrl}/events
+OperationId: getDeploymentEvents
+
+Authorizations:
+  Authorization:
+    type: string
+    in: header
+    required: true
+    description: Default authentication mechanism
+
+Path Parameters:
+  idOrUrl:
+    type: string
+    required: true
+    description: The unique identifier or hostname of the deployment.
+    example: "dpl_5WJWYSyB7BpgTj3EuwF37WMRBXBtPQ2iTMJHJBJyRfd"
+
+Query Parameters:
+  direction:
+    type: enum<string>
+    default: forward
+    description: Order of the returned events based on the timestamp.
+    options: ["backward", "forward"]
+    example: "backward"
+  follow:
+    type: enum<number>
+    description: When enabled, this endpoint will return live events as they happen.
+    options: [0, 1]
+    example: 1
+  limit:
+    type: number
+    description: Maximum number of events to return. Provide -1 to return all available logs.
+    example: 100
+  name:
+    type: string
+    description: Deployment build ID.
+    example: "bld_cotnkcr76"
+  since:
+    type: number
+    description: Timestamp for when build logs should be pulled from.
+    example: 1540095775941
+  until:
+    type: number
+    description: Timestamp for when the build logs should be pulled up until.
+    example: 1540106318643
+  statusCode:
+    type: numberstring
+    description: HTTP status code range to filter events by.
+    example: "5xx"
+  delimiter:
+    type: enum<number>
+    options: [0, 1]
+    example: 1
+  builds:
+    type: enum<number>
+    options: [0, 1]
+    example: 1
+  teamId:
+    type: string
+    description: The Team identifier to perform the request on behalf of.
+    example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+  slug:
+    type: string
+    description: The Team slug to perform the request on behalf of.
+    example: "my-team-url-slug"
+```
+
+----------------------------------------
+
+TITLE: Example JSON Response for Get a Team API
+DESCRIPTION: Provides a comprehensive example of the JSON object returned upon a successful call to the 'Get a Team' API endpoint. This response details various team attributes such as ID, name, membership information, and resource configurations.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/teams/get-a-team
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "connect": {
+    "enabled": true
+  },
+  "creatorId": "R6efeCJQ2HKXywuasPDc0fOWB",
+  "updatedAt": 1611796915677,
+  "emailDomain": "example.com",
+  "saml": {
+    "connection": {
+      "type": "OktaSAML",
+      "status": "linked",
+      "state": "active",
+      "connectedAt": 1611796915677,
+      "lastReceivedWebhookEvent": 1611796915677
+    },
+    "directory": {
+      "type": "OktaSAML",
+      "state": "active",
+      "connectedAt": 1611796915677,
+      "lastReceivedWebhookEvent": 1611796915677
+    },
+    "enforced": true,
+    "roles": {}
+  },
+  "inviteCode": "hasihf9e89",
+  "description": "Our mission is to make cloud computing accessible to everyone.",
+  "stagingPrefix": "<string>",
+  "resourceConfig": {
+    "concurrentBuilds": 123,
+    "edgeConfigSize": 123,
+    "edgeConfigs": 123,
+    "kvDatabases": 123,
+    "blobStores": 123,
+    "postgresDatabases": 123,
+    "buildEntitlements": {
+      "enhancedBuilds": true
+    }
+  },
+  "previewDeploymentSuffix": "example.dev",
+  "remoteCaching": {
+    "enabled": true
+  },
+  "enablePreviewFeedback": "default",
+  "enableProductionFeedback": "default",
+  "sensitiveEnvironmentVariablePolicy": "default",
+  "hideIpAddresses": true,
+  "hideIpAddressesInLogDrains": true,
+  "ipBuckets": [
+    {
+      "bucket": "<string>",
+      "supportUntil": 123
+    }
+  ],
+  "id": "team_nllPyCtREAqxxdyFKbbMDlxd",
+  "slug": "my-team",
+  "name": "My Team",
+  "avatar": "6eb07268bcfadd309905ffb1579354084c24655c",
+  "membership": {
+    "uid": "<string>",
+    "entitlements": [
+      {
+        "entitlement": "<string>"
+      }
+    ],
+    "teamId": "<string>",
+    "confirmed": true,
+    "confirmedAt": 123,
+    "accessRequestedAt": 123,
+    "role": "OWNER",
+    "teamRoles": [
+      "OWNER"
+    ],
+    "teamPermissions": [
+      "CreateProject"
+    ],
+    "createdAt": 123,
+    "created": 123,
+    "joinedFrom": {
+      "origin": "saml",
+      "commitId": "<string>",
+      "repoId": "<string>",
+      "repoPath": "<string>",
+      "gitUserId": "<string>",
+      "gitUserLogin": "<string>",
+      "ssoUserId": "<string>",
+      "ssoConnectedAt": 123,
+      "idpUserId": "<string>",
+      "dsyncUserId": "<string>",
+      "dsyncConnectedAt": 123
+    }
+  },
+  "createdAt": 1630748523395
+}
+```
+
+----------------------------------------
+
+TITLE: Example JSON Response for Get Alias API
+DESCRIPTION: Provides a sample JSON response object returned by the Get Alias API endpoint. It illustrates the structure and typical values for properties such as `alias`, `created`, `creator`, `deployment`, `projectId`, and other alias-related metadata.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/aliases/get-an-alias
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "alias": "my-alias.vercel.app",
+  "created": "2017-04-26T23:00:34.232Z",
+  "createdAt": 1540095775941,
+  "creator": {
+    "uid": "96SnxkFiMyVKsK3pnoHfx3Hz",
+    "email": "john-doe@gmail.com",
+    "username": "john-doe"
+  },
+  "deletedAt": 1540095775941,
+  "deployment": {
+    "id": "dpl_5m8CQaRBm3FnWRW1od3wKTpaECPx",
+    "url": "my-instant-deployment-3ij3cxz9qr.now.sh",
+    "meta": {}
+  },
+  "deploymentId": "dpl_5m8CQaRBm3FnWRW1od3wKTpaECPx",
+  "projectId": "prj_12HKQaOmR5t5Uy6vdcQsNIiZgHGB",
+  "redirect": "<string>",
+  "redirectStatusCode": 301,
+  "uid": "<string>",
+  "updatedAt": 1540095775941,
+  "protectionBypass": {},
+  "microfrontends": {
+    "defaultApp": {
+      "projectId": "<string>"
+    },
+    "applications": [
+      {
+        "projectId": "<string>",
+        "fallbackHost": "<string>",
+        "deploymentId": "<string>",
+        "deploymentUrl": "<string>"
+      }
+    ]
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: API Reference: Retrieve Custom Environments Endpoint
+DESCRIPTION: Comprehensive API documentation for the 'Retrieve custom environments' endpoint. It details the HTTP method (GET), the API path, required authorization, path and query parameters with their types and descriptions, and provides an example of a successful (200 OK) response body.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/environment/retrieve-custom-environments
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint:
+  GET /v9/projects/{idOrName}/custom-environments
+
+Operation ID:
+  get_/v9/projects/{idOrName}/custom-environments
+
+Authorizations:
+  Authorization:
+    Type: string
+    Location: header
+    Required: true
+    Description: Default authentication mechanism
+
+Path Parameters:
+  idOrName:
+    Type: string
+    Required: true
+    Description: The unique project identifier or the project name
+
+Query Parameters:
+  gitBranch:
+    Type: string
+    Description: Fetch custom environments for a specific git branch
+  teamId:
+    Type: string
+    Description: The Team identifier to perform the request on behalf of.
+    Example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+  slug:
+    Type: string
+    Description: The Team slug to perform the request on behalf of.
+    Example: "my-team-url-slug"
+
+Responses:
+  200 OK:
+    Example Body:
+      {
+        "accountLimit": {
+          "total": 123
+        },
+        "environments": [
+          {
+            "id": "<string>",
+            "slug": "<string>",
+            "type": "production",
+            "description": "<string>",
+            "branchMatcher": {
+              "type": "startsWith",
+              "pattern": "<string>"
+            },
+            "domains": [
+              {
+                "name": "<string>",
+                "apexName": "<string>",
+                "projectId": "<string>",
+                "redirect": "<string>",
+                "redirectStatusCode": 307,
+                "gitBranch": "<string>",
+                "customEnvironmentId": "<string>",
+                "updatedAt": 123,
+                "createdAt": 123,
+                "verified": true,
+                "verification": [
+                  {
+                    "type": "<string>",
+                    "domain": "<string>",
+                    "value": "<string>",
+                    "reason": "<string>"
+                  }
+                ]
+              }
+            ],
+            "currentDeploymentAliases": [
+              "<string>"
+            ],
+            "createdAt": 123,
+            "updatedAt": 123
+          }
+        ]
+      }
+```
+
+----------------------------------------
+
+TITLE: API Response Codes and Example Body
+DESCRIPTION: Lists the possible HTTP status codes returned by the API endpoint, including success (200) and various error codes (400, 401, 403, 404). An example of a successful (200 OK) response body is also provided.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/projects/gets-a-list-of-aliases-with-status-for-the-current-promote
+
+LANGUAGE: APIDOC
+CODE:
+```
+200
+400
+401
+403
+404
+
+{}
+```
+
+----------------------------------------
+
+TITLE: Example Response for Get Webhooks API
+DESCRIPTION: This JSON snippet illustrates the structure of a successful response when fetching webhooks. It includes details such as project metadata, event types, webhook ID, URL, owner, and timestamps.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/webhooks/get-a-list-of-webhooks
+
+LANGUAGE: JSON
+CODE:
+```
+[
+  {
+    "projectsMetadata": [
+      {
+        "id": "<string>",
+        "name": "<string>",
+        "framework": "blitzjs",
+        "latestDeployment": "<string>"
+      }
+    ],
+    "events": "deployment.created",
+    "id": "account_hook_GflD6EYyo7F4ViYS",
+    "url": "https://my-webhook.com",
+    "ownerId": "ZspSRT4ljIEEmMHgoDwKWDei",
+    "createdAt": 1567024758130,
+    "updatedAt": 1567024758130,
+    "projectIds": [
+      "prj_12HKQaOmR5t5Uy6vdcQsNIiZgHGB"
+    ]
+  }
+]
+```
+
+----------------------------------------
+
+TITLE: Example JSON Response for List Domains API
+DESCRIPTION: Illustrates the structure of a successful JSON response from the `GET /v5/domains` endpoint, detailing domain properties and pagination metadata.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/domains/list-all-the-domains
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "domains": [
+    {
+      "verified": true,
+      "nameservers": [
+        "ns1.nameserver.net",
+        "ns2.nameserver.net"
+      ],
+      "intendedNameservers": [
+        "ns1.vercel-dns.com",
+        "ns2.vercel-dns.com"
+      ],
+      "customNameservers": [
+        "ns1.nameserver.net",
+        "ns2.nameserver.net"
+      ],
+      "creator": {
+        "id": "ZspSRT4ljIEEmMHgoDwKWDei",
+        "username": "vercel_user",
+        "email": "demo@example.com"
+      },
+      "teamId": "<string>",
+      "createdAt": 1613602938882,
+      "boughtAt": 1613602938882,
+      "expiresAt": 1613602938882,
+      "id": "EmTbe5CEJyTk2yVAHBUWy4A3sRusca3GCwRjTC1bpeVnt1",
+      "name": "example.com",
+      "orderedAt": 1613602938882,
+      "renew": true,
+      "serviceType": "zeit.world",
+      "transferredAt": 1613602938882,
+      "transferStartedAt": 1613602938882,
+      "userId": "<string>"
+    }
+  ],
+  "pagination": {
+    "count": 20,
+    "next": 1540095775951,
+    "prev": 1540095775951
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: API Query Parameters
+DESCRIPTION: Describes the available query parameters for Vercel API requests, including their types, descriptions, allowed options, and example values where applicable.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/deployments/create-a-new-deployment
+
+LANGUAGE: APIDOC
+CODE:
+```
+forceNew:
+  type: enum<string>
+  description: Forces a new deployment even if there is a previous similar deployment
+  options: ["0", "1"]
+skipAutoDetectionConfirmation:
+  type: enum<string>
+  description: Allows to skip framework detection so the API would not fail to ask for confirmation
+  options: ["0", "1"]
+teamId:
+  type: string
+  description: The Team identifier to perform the request on behalf of.
+  example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+slug:
+  type: string
+  description: The Team slug to perform the request on behalf of.
+  example: "my-team-url-slug"
+```
+
+----------------------------------------
+
+TITLE: JSON: Example Response for Get Single Domain API
+DESCRIPTION: Illustrates the typical JSON structure and data returned by the 'Get Information for a Single Domain' API endpoint, including domain properties, nameservers, and creator details.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/domains/get-information-for-a-single-domain
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "domain": {
+    "suffix": true,
+    "verified": true,
+    "nameservers": [
+      "ns1.nameserver.net",
+      "ns2.nameserver.net"
+    ],
+    "intendedNameservers": [
+      "ns1.vercel-dns.com",
+      "ns2.vercel-dns.com"
+    ],
+    "customNameservers": [
+      "ns1.nameserver.net",
+      "ns2.nameserver.net"
+    ],
+    "creator": {
+      "id": "ZspSRT4ljIEEmMHgoDwKWDei",
+      "username": "vercel_user",
+      "email": "demo@example.com"
+    },
+    "teamId": "<string>",
+    "boughtAt": 1613602938882,
+    "name": "example.com",
+    "createdAt": 1613602938882,
+    "expiresAt": 1613602938882,
+    "id": "EmTbe5CEJyTk2yVAHBUWy4A3sRusca3GCwRjTC1bpeVnt1",
+    "orderedAt": 1613602938882,
+    "renew": true,
+    "serviceType": "zeit.world",
+    "transferredAt": 1613602938882,
+    "transferStartedAt": 1613602938882,
+    "userId": "<string>"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Get Edge Configs API Endpoint Details (APIDOC)
+DESCRIPTION: This section provides detailed API documentation for the `GET /v1/edge-config` endpoint. It specifies the required authorization header, available query parameters (`teamId`, `slug`) with their types and examples, and lists common HTTP response codes.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/edge-config/get-edge-configs
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: GET /v1/edge-config
+Description: Returns all Edge Configs.
+
+Authorizations:
+  Authorization:
+    Type: string
+    Location: header
+    Required: true
+    Description: Default authentication mechanism
+
+Query Parameters:
+  teamId:
+    Type: string
+    Description: The Team identifier to perform the request on behalf of.
+    Example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+  slug:
+    Type: string
+    Description: The Team slug to perform the request on behalf of.
+    Example: "my-team-url-slug"
+
+Response Codes:
+  200: Success
+  400: Bad Request
+  401: Unauthorized
+  403: Forbidden
+```
+
+----------------------------------------
+
+TITLE: Accept Vercel Project Transfer Request API and Code Examples
+DESCRIPTION: This section details the API endpoint for accepting a project transfer request, including its HTTP method, path, and parameter specifications. It also provides a practical example using the Vercel JavaScript SDK to demonstrate how to programmatically interact with this API.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/projects/accept-project-transfer-request
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: PUT /projects/transfer-request/{code}
+OperationId: acceptProjectTransferRequest
+
+Authorizations:
+  - Type: Header
+    Name: Authorization
+    Required: true
+    Description: Default authentication mechanism
+
+Path Parameters:
+  - Name: code
+    Type: string
+    Required: true
+    Description: The code of the project transfer request.
+
+Query Parameters:
+  - Name: teamId
+    Type: string
+    Description: The Team identifier to perform the request on behalf of.
+    Example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+  - Name: slug
+    Type: string
+    Description: The Team slug to perform the request on behalf of.
+    Example: "my-team-url-slug"
+
+Request Body:
+  - Content Type: application/json
+  - Schema: {}
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { Vercel } from "@vercel/sdk";
+
+const vercel = new Vercel({
+  bearerToken: "<YOUR_BEARER_TOKEN_HERE>",
+});
+
+async function run() {
+  const result = await vercel.projects.acceptProjectTransferRequest({
+    code: "<value>",
+    teamId: "team_1a2b3c4d5e6f7g8h9i0j1k2l",
+    slug: "my-team-url-slug",
+    requestBody: {
+      newProjectName: "a-project-name",
+    },
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+----------------------------------------
+
+TITLE: Vercel Sandbox API Reference
+DESCRIPTION: API documentation for the `@vercel/sandbox` SDK, detailing the `Sandbox` class and its key methods for creating and interacting with sandbox environments.
+SOURCE: https://vercel.com/docs/vercel-sandbox/reference/readme
+
+LANGUAGE: APIDOC
+CODE:
+```
+class Sandbox {
+  static create(options: object): Promise<Sandbox>
+    options: Configuration options for the sandbox.
+      teamId: string (required) - The ID of the Vercel team.
+      projectId: string (required) - The ID of the Vercel project.
+      token: string (required) - The Vercel access token for authentication.
+      source: object - Details about the code source.
+        url: string - The URL of the Git repository.
+        type: string ('git') - The type of source (e.g., 'git').
+      resources: object - Resource allocation for the sandbox.
+        vcpus: number - Number of virtual CPUs (e.g., 4).
+      timeout: string - Maximum runtime duration (e.g., '5m', max '45m').
+      ports: number[] - Array of ports to expose (e.g., [3000]).
+      runtime: string - The desired runtime environment (e.g., 'node22').
+
+  runCommand(options: object): Promise<any>
+    options: Command execution options.
+      cmd: string - The command to execute (e.g., 'dnf').
+      args: string[] - Arguments for the command (e.g., ['install', '-y', 'golang']).
+      sudo: boolean - Whether to run the command with sudo privileges (e.g., true).
+}
+```
+
+----------------------------------------
+
+TITLE: Example JSON Response for List Auth Tokens
+DESCRIPTION: An illustrative JSON object demonstrating the structure and typical data returned by a successful call to the List Auth Tokens API endpoint, including token details and pagination metadata.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/authentication/list-auth-tokens
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "tokens": [
+    {
+      "id": "5d9f2ebd38ddca62e5d51e9c1704c72530bdc8bfdd41e782a6687c48399e8391",
+      "name": "<string>",
+      "type": "oauth2-token",
+      "origin": "github",
+      "scopes": [
+        {
+          "type": "user",
+          "sudo": {
+            "origin": "totp",
+            "expiresAt": 123
+          },
+          "origin": "saml",
+          "createdAt": 123,
+          "expiresAt": 123
+        }
+      ],
+      "expiresAt": 1632816536002,
+      "activeAt": 1632816536002,
+      "createdAt": 1632816536002
+    }
+  ],
+  "pagination": {
+    "count": 20,
+    "next": 1540095775951,
+    "prev": 1540095775951
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: API Endpoint: List User Authentication Tokens
+DESCRIPTION: Documents the `GET /v5/user/tokens` API endpoint for retrieving a user's authentication tokens. It details the required authorization header and provides an example of a successful JSON response, including token details and pagination information.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/authentication/list-auth-tokens
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /v5/user/tokens
+Operation ID: listAuthTokens
+
+Parameters:
+  - Authorization (header): string, required, Default authentication mechanism
+
+Responses:
+  - 200 OK (application/json):
+    {
+      "tokens": [
+        {
+          "id": "5d9f2ebd38ddca62e5d51e9c1704c72530bdc8bfdd41e782a6687c48399e8391",
+          "name": "<string>",
+          "type": "oauth2-token",
+          "origin": "github",
+          "scopes": [
+            {
+              "type": "user",
+              "sudo": {
+                "origin": "totp",
+                "expiresAt": 123
+              },
+              "origin": "saml",
+              "createdAt": 123,
+              "expiresAt": 123
+            }
+          ],
+          "expiresAt": 1632816536002,
+          "activeAt": 1632816536002,
+          "createdAt": 1632816536002
+        }
+      ],
+      "pagination": {
+        "count": 20,
+        "next": 1540095775951,
+        "prev": 1540095775951
+      }
+    }
+```
+
+----------------------------------------
+
+TITLE: Implement Gatsby Splat API Route Handler in TypeScript
+DESCRIPTION: This TypeScript example demonstrates a Vercel API route handler for Gatsby's splat routes. It shows how to access dynamic parameters from `request.query.path` and construct a JSON response, logging the path for debugging purposes.
+SOURCE: https://vercel.com/docs/frameworks/gatsby
+
+LANGUAGE: TypeScript
+CODE:
+```
+import type { VercelRequest, VercelResponse } from '@vercel/node';
+
+export default function handler(
+  request: VercelRequest & { params: { path: string } },
+  response: VercelResponse,
+) {
+  console.log(`/api/products/${request.query.path}`);
+  response.status(200).json({
+    body: request.body,
+    query: request.query,
+    cookies: request.cookies,
+  });
+}
+```
+
+----------------------------------------
+
+TITLE: Get Member API Endpoint Definition
+DESCRIPTION: Defines the REST API endpoint for retrieving member information, including HTTP method, path parameters, authorization, and expected response structure with an example.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/marketplace/get-member-information
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /v1/installations/{integrationConfigurationId}/member/{memberId}
+
+Authorizations:
+  Authorization:
+    type: string
+    in: header
+    required: true
+    description: Default authentication mechanism
+
+Path Parameters:
+  integrationConfigurationId:
+    type: string
+    required: true
+  memberId:
+    type: string
+    required: true
+
+Responses:
+  200:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            id:
+              type: string
+            role:
+              type: string
+              enum: [ADMIN]
+          example:
+            id: "<string>"
+            role: "ADMIN"
+```
+
+----------------------------------------
+
+TITLE: Define a GET API Route in Next.js App Router
+DESCRIPTION: This example demonstrates how to define a simple GET API route using the Next.js App Router. The function exports a `GET` handler that receives a `Request` object and returns a `Response` with a 'Hello from Vercel!' message. This pattern allows Vercel to deploy the file as a serverless function.
+SOURCE: https://vercel.com/docs/functions/edge-functions/edge-functions-api
+
+LANGUAGE: TypeScript
+CODE:
+```
+export function GET(request: Request) {
+  return new Response('Hello from Vercel!');
+}
+```
+
+----------------------------------------
+
+TITLE: Get Vercel Certificate by ID
+DESCRIPTION: This section provides documentation and examples for retrieving a specific certificate from the Vercel API using its unique ID. It includes a JavaScript SDK example, the expected JSON response structure, and detailed API endpoint specifications.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/certs/get-cert-by-id
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { Vercel } from "@vercel/sdk";
+
+const vercel = new Vercel({
+  bearerToken: "<YOUR_BEARER_TOKEN_HERE>",
+});
+
+async function run() {
+  const result = await vercel.certs.getCertById({
+    id: "<id>",
+    teamId: "team_1a2b3c4d5e6f7g8h9i0j1k2l",
+    slug: "my-team-url-slug",
+  });
+
+  console.log(result);
+}
+
+run();
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "id": "<string>",
+  "createdAt": 123,
+  "expiresAt": 123,
+  "autoRenew": true,
+  "cns": [
+    "<string>"
+  ]
+}
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /v8/certs/{id}
+OperationId: getCertById
+
+Authorizations:
+  Authorization:
+    Type: string
+    Location: header
+    Required: true
+    Description: Default authentication mechanism
+
+Path Parameters:
+  id:
+    Type: string
+    Required: true
+    Description: The cert id
+
+Query Parameters:
+  teamId:
+    Type: string
+    Description: The Team identifier to perform the request on behalf of.
+    Example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+  slug:
+    Type: string
+    Description: The Team slug to perform the request on behalf of.
+    Example: "my-team-url-slug"
+
+Responses:
+  200:
+    Description: The response is of type object.
+    ContentType: application/json
+    Schema:
+      id: <string>
+      createdAt: 123
+      expiresAt: 123
+      autoRenew: true
+      cns: [<string>]
+  400: Bad Request
+  401: Unauthorized
+  403: Forbidden
+  404: Not Found
+```
+
+----------------------------------------
+
+TITLE: API Reference: POST /v1/installations/{id}/resources/{id}/experimentation/items
+DESCRIPTION: Detailed API documentation for the endpoint used to create experimentation items. This includes the HTTP method, full path with templated parameters, required authorization header, path parameters (`integrationConfigurationId`, `resourceId`), expected request body content type, and possible HTTP response codes (204, 400, 401, 403, 404) with their meanings.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/marketplace/create-one-or-multiple-experimentation-items
+
+LANGUAGE: APIDOC
+CODE:
+```
+POST /v1/installations/{integrationConfigurationId}/resources/{resourceId}/experimentation/items
+
+Authorizations:
+  Authorization:
+    type: string
+    in: header
+    required: true
+    description: Default authentication mechanism
+
+Path Parameters:
+  integrationConfigurationId:
+    type: string
+    required: true
+  resourceId:
+    type: string
+    required: true
+
+Body:
+  Content-Type: application/json
+
+Responses:
+  204: The items were created
+  400:
+  401:
+  403:
+  404:
+```
+
+----------------------------------------
+
+TITLE: Get Team API Authorization and Parameters
+DESCRIPTION: This section details the required authorization header and available parameters for the Get Team API endpoint. It specifies that an 'Authorization' header is mandatory, and outlines both path parameters (like `teamId`) and query parameters (such as `slug`), including their types and example values.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/teams/get-a-team
+
+LANGUAGE: APIDOC
+CODE:
+```
+Authorizations:
+  Authorization:
+    type: string
+    location: header
+    required: true
+    description: Default authentication mechanism
+
+Path Parameters:
+  teamId:
+    type: string
+    required: true
+    description: The Team identifier to perform the request on behalf of.
+    example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+
+Query Parameters:
+  slug:
+    type: string
+    description: Example: "my-team-url-slug"
+```
+
+----------------------------------------
+
+TITLE: API Reference: Create Project Transfer Request Endpoint
+DESCRIPTION: This section provides a detailed API reference for the POST /projects/{idOrName}/transfer-request endpoint. It outlines the required authorization, path and query parameters, request body format, and the structure of the successful 200 OK response, including an example response body.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/projects/create-project-transfer-request
+
+LANGUAGE: APIDOC
+CODE:
+```
+Method: POST
+Path: /projects/{idOrName}/transfer-request
+Endpoint Name: createProjectTransferRequest
+
+Authorizations:
+  - Name: Authorization
+    Type: string
+    Location: header
+    Required: true
+    Description: Default authentication mechanism
+
+Path Parameters:
+  - Name: idOrName
+    Type: string
+    Required: true
+    Description: The ID or name of the project to transfer.
+
+Query Parameters:
+  - Name: teamId
+    Type: string
+    Description: The Team identifier to perform the request on behalf of.
+    Example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+  - Name: slug
+    Type: string
+    Description: The Team slug to perform the request on behalf of.
+    Example: "my-team-url-slug"
+
+Request Body:
+  Content-Type: application/json
+
+Responses:
+  200 OK:
+    Description: The project transfer request has been initiated successfully.
+    Content-Type: application/json
+    Schema: object
+    Example:
+      code: "f99cc49a-602e-4786-a748-762dfb205880"
+```
+
+----------------------------------------
+
+TITLE: API Request Authorization and Query Parameters
+DESCRIPTION: Details the required authorization header for API requests, describes available query parameters for identifying teams by ID or slug, and specifies the expected content type for the request body.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/projects/create-a-new-project
+
+LANGUAGE: APIDOC
+CODE:
+```
+Authorizations:
+  Authorization:
+    Type: string
+    Location: header
+    Required: true
+    Description: Default authentication mechanism
+
+Query Parameters:
+  teamId:
+    Type: string
+    Description: The Team identifier to perform the request on behalf of. Example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+  slug:
+    Type: string
+    Description: The Team slug to perform the request on behalf of. Example: "my-team-url-slug"
+
+Body:
+  Content-Type: application/json
+```
+
+----------------------------------------
+
+TITLE: API Reference: Create Experimentation Items
+DESCRIPTION: Defines the HTTP POST endpoint for creating experimentation items, including path, authorization, parameters, request body, and possible response codes.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/marketplace/create-one-or-multiple-experimentation-items
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: POST /v1/installations/{integrationConfigurationId}/resources/{resourceId}/experimentation/items
+
+Authorizations:
+  Authorization:
+    Type: string
+    Location: header
+    Required: true
+    Description: Default authentication mechanism
+
+Path Parameters:
+  integrationConfigurationId:
+    Type: string
+    Required: true
+  resourceId:
+    Type: string
+    Required: true
+
+Request Body:
+  Content-Type: application/json
+
+Responses:
+  204: The items were created
+  400: Bad Request
+  401: Unauthorized
+  403: Forbidden
+  404: Not Found
+```
+
+----------------------------------------
+
+TITLE: Read Server Assets using Nitro Storage API in Nuxt
+DESCRIPTION: This example shows how to read server-side assets, such as `users.json`, using Nitro's storage API within a Nuxt API route. It leverages `useStorage('assets:server')` to access files included in the `server/assets` directory during deployment, enabling access to static server-side data.
+SOURCE: https://vercel.com/docs/frameworks/nuxt
+
+LANGUAGE: TypeScript
+CODE:
+```
+export default defineEventHandler(async () => {
+  // https://nitro.unjs.io/guide/assets#server-assets
+  const assets = useStorage('assets:server');
+  const users = await assets.getItem('users.json');
+  return {
+    users,
+  };
+});
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+export default defineEventHandler(async () => {
+  // https://nitro.unjs.io/guide/assets#server-assets
+  const assets = useStorage('assets:server');
+  const users = await assets.getItem('users.json');
+  return {
+    users,
+  };
+});
+```
+
+----------------------------------------
+
+TITLE: Vercel Domains API: List all domains (GET /v5/domains)
+DESCRIPTION: Documents the `GET /v5/domains` API endpoint for retrieving a list of domains. It includes details on authorization and available query parameters with their types, descriptions, and examples.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/domains/list-all-the-domains
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: GET /v5/domains
+Operation ID: getDomains
+
+Authorization:
+  - Name: Authorization
+    Type: string
+    Location: header
+    Required: true
+    Description: Default authentication mechanism
+
+Query Parameters:
+  - Name: limit
+    Type: number
+    Description: Maximum number of domains to list from a request.
+    Example: 20
+  - Name: since
+    Type: number
+    Description: Get domains created after this JavaScript timestamp.
+    Example: 1609499532000
+  - Name: until
+    Type: number
+    Description: Get domains created before this JavaScript timestamp.
+    Example: 1612264332000
+  - Name: teamId
+    Type: string
+    Description: The Team identifier to perform the request on behalf of.
+    Example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+  - Name: slug
+    Type: string
+    Description: The Team slug to perform the request on behalf of.
+    Example: "my-team-url-slug"
+```
+
+----------------------------------------
+
+TITLE: Example Request to v0 Chat Completions API
+DESCRIPTION: Demonstrates how to make a basic non-streaming request to the v0 chat completions API using curl, specifying the model and a user message to generate a response.
+SOURCE: https://vercel.com/docs/v0/api
+
+LANGUAGE: shell
+CODE:
+```
+curl https://api.v0.dev/v1/chat/completions \
+  -H "Authorization: Bearer $V0_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "v0-1.5-md",
+    "messages": [
+      { "role": "user", "content": "Create a Next.js AI chatbot" }
+    ]
+  }'
+```
+
+----------------------------------------
+
+TITLE: JavaScript SDK: Create Experimentation Items
+DESCRIPTION: Example using the Vercel JavaScript SDK to call the API for creating experimentation items. Requires a bearer token for authentication.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/marketplace/create-one-or-multiple-experimentation-items
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { Vercel } from "@vercel/sdk";
+
+const vercel = new Vercel({
+  bearerToken: "<YOUR_BEARER_TOKEN_HERE>",
+});
+
+async function run() {
+  await vercel.marketplace.createInstallationIntegrationConfiguration({
+    integrationConfigurationId: "<id>",
+    resourceId: "<id>",
+  });
+
+}
+
+run();
+```
+
+----------------------------------------
+
+TITLE: Vercel REST API Basics and Authentication Overview
+DESCRIPTION: Detailed documentation of the fundamental concepts for interacting with the Vercel REST API, including base URL, supported HTTP/TLS protocols, content type requirements, and comprehensive authentication procedures.
+SOURCE: https://vercel.com/docs/rest-api/reference/docs/integrations
+
+LANGUAGE: APIDOC
+CODE:
+```
+API_ROOT: https://api.vercel.com
+SERVER_SPECS:
+  HTTP_VERSIONS: HTTP/1, HTTP/1.1, HTTP/2 (preferred)
+  TLS_VERSIONS: 1.2, 1.3
+CONTENT_TYPE:
+  REQUESTS: application/json
+  RESPONSES: application/json
+AUTHENTICATION:
+  METHOD: Bearer Token
+  HEADER_FORMAT: Authorization: Bearer <TOKEN>
+  TOKEN_CREATION_PROCESS:
+    1. Navigate to account settings -> Tokens.
+    2. Enter descriptive name.
+    3. Choose scope (Team).
+    4. Select expiration date.
+    5. Click Create Token.
+    6. Securely store token value.
+  TOKEN_EXPIRATION:
+    RECOMMENDED: Yes
+    OPTIONS: 1 day to 1 year
+  TEAM_RESOURCE_ACCESS:
+    METHOD: Append teamId as query string
+    EXAMPLE_URL_PARAMETER: ?teamId=[teamID]
+  FAILED_AUTHENTICATION_STATUS_CODE: 403
+```
+
+----------------------------------------
+
+TITLE: Example Vercel Get Member Information API Response
+DESCRIPTION: This JSON snippet illustrates the expected structure of a successful 200 OK response from the 'Get Member Information' API endpoint, detailing the member's ID and role.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/marketplace/get-member-information
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "id": "<string>",
+  "role": "ADMIN"
+}
+```
+
+----------------------------------------
+
+TITLE: API Endpoint: Get Domains
+DESCRIPTION: Details for the GET /v5/domains API endpoint, which retrieves a list of domains. Includes authorization requirements, available query parameters with their types and examples, and possible HTTP response status codes.
+SOURCE: https://vercel.com/docs/rest-api/reference/endpoints/domains/list-all-the-domains
+
+LANGUAGE: APIDOC
+CODE:
+```
+API Endpoint:
+  Method: GET
+  Path: /v5/domains
+  Operation ID: getDomains
+
+Authorization:
+  - Name: Authorization
+    Type: string
+    Location: header
+    Required: true
+    Description: Default authentication mechanism
+
+Query Parameters:
+  - Name: limit
+    Type: number
+    Description: Maximum number of domains to list from a request.
+    Example: 20
+  - Name: since
+    Type: number
+    Description: Get domains created after this JavaScript timestamp.
+    Example: 1609499532000
+  - Name: until
+    Type: number
+    Description: Get domains created before this JavaScript timestamp.
+    Example: 1612264332000
+  - Name: teamId
+    Type: string
+    Description: The Team identifier to perform the request on behalf of.
+    Example: "team_1a2b3c4d5e6f7g8h9i0j1k2l"
+  - Name: slug
+    Type: string
+    Description: The Team slug to perform the request on behalf of.
+    Example: "my-team-url-slug"
+
+Response Status Codes:
+  - 200: Successful response retrieving a list of domains (application/json, type object).
+  - 400: Bad Request
+  - 401: Unauthorized
+  - 403: Forbidden
+  - 409: Conflict
+```

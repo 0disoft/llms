@@ -1,0 +1,1653 @@
+TITLE: Example JSON Response from Neon Data API GET Request
+DESCRIPTION: This snippet presents a sample JSON response received from the Neon Data API after a successful GET request to the 'playing_with_neon' endpoint. It illustrates the structure of the returned data, including 'id', 'name', and 'value' fields for multiple records.
+SOURCE: https://neon.com/docs/data-api/get-started
+
+LANGUAGE: APIDOC
+CODE:
+```
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  {
+    "id": 1,
+    "name": "c4ca4238a0",
+    "value": 0.36675808
+  },
+  ... (shortened)
+  {
+    "id": 10,
+    "name": "6512bd43d9",
+    "value": 0.72407603
+  }
+]
+```
+
+----------------------------------------
+
+TITLE: Example cURL Request to Accept Project Transfer to Organization
+DESCRIPTION: A cURL example demonstrating how to use the API to accept a project transfer, specifically transferring the project to a specified organization. This request requires an API key for authorization and the organization ID in the request body.
+SOURCE: https://neon.com/docs/workflows/claimable-database-integration
+
+LANGUAGE: bash
+CODE:
+```
+curl -X PUT 'https://console.neon.tech/api/v2/projects/{project_id}/transfer_requests/{request_id}' \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Bearer {users_api_key_here}' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "org_id": "org-cool-breeze-12345678"
+  }'
+```
+
+----------------------------------------
+
+TITLE: Create a Neon Project using API
+DESCRIPTION: This section details how to create a new Neon project using the Neon API. It covers the API endpoint, an example curl request with a JSON body for project configuration (name, region, PostgreSQL version, organization ID), and an example JSON response showing the created project's details, connection URIs, and other associated resources.
+SOURCE: https://neon.com/docs/workflows/claimable-database-integration
+
+LANGUAGE: APIDOC
+CODE:
+```
+API Endpoint:
+POST https://console.neon.tech/api/v2/projects
+```
+
+LANGUAGE: shell
+CODE:
+```
+curl -X POST 'https://console.neon.tech/api/v2/projects' \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Bearer {your_api_key_here}' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "project": {
+      "name": "new-project-name",
+      "region_id": "aws-us-east-1",
+      "pg_version": 17,
+      "org_id": "org-cool-breeze-12345678"
+    }
+  }'
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "project": {
+    "id": "your-project-id",
+    "name": "new-project-name",
+    "owner_id": "org-the-owner-id",
+    "org_id": "org-the-owner-id"
+  },
+  "connection_uris": [
+    {
+      "connection_uri": "postgresql://neondb_owner:{password}@ep-cool-shape-123456.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+    }
+  ],
+  "branch": {},
+  "databases": [{}],
+  "endpoints": [{}],
+  "operations": [{}],
+  "roles": [{}]
+}
+```
+
+----------------------------------------
+
+TITLE: Neon Auth API: Create User
+DESCRIPTION: This section provides the API documentation for creating a new user in your auth provider's system. It details the required and optional parameters for the POST request and shows an example response.
+SOURCE: https://neon.com/docs/guides/neon-auth-api
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: POST /api/v2/projects/auth/user
+Headers:
+  authorization: Bearer $NEON_API_KEY
+  content-type: application/json
+Body Parameters:
+  project_id: string (Required) - Your Neon project ID
+  auth_provider: string (Required) - The authentication provider (currently "stack")
+  email: string (Required) - User's email address
+  name: string (Optional) - User's display name (1-255 characters)
+Example Response:
+{
+  "id": "user-id-123"
+}
+```
+
+----------------------------------------
+
+TITLE: Neon API: Direct Platform Interaction
+DESCRIPTION: The Neon API allows direct interaction with the Neon platform for managing various objects. It supports standard RESTful operations to manipulate resources like projects, branches, databases, and roles. Further details and endpoints are available in the Neon API Reference.
+SOURCE: https://neon.com/docs/guides/platform-integration-get-started
+
+LANGUAGE: APIDOC
+CODE:
+```
+Neon API
+  Description: Interact directly with Neon platform objects.
+  Supported Operations:
+    - POST
+    - GET
+    - PATCH
+    - DELETE
+  Managed Objects:
+    - projects
+    - branches
+    - databases
+    - roles
+  Reference: https://api-docs.neon.tech/reference/getting-started-with-neon-api
+```
+
+----------------------------------------
+
+TITLE: Generate Neon Project Transfer Request via API
+DESCRIPTION: This section explains how to create a transfer request for an existing Neon project using the Neon API. It provides the API endpoint, a curl example demonstrating how to set the ttl_seconds for the request's expiration, and examples of both a successful JSON response with transfer details and an error response if transfers are not enabled.
+SOURCE: https://neon.com/docs/workflows/claimable-database-integration
+
+LANGUAGE: APIDOC
+CODE:
+```
+API Endpoint:
+POST https://console.neon.tech/api/v2/projects/{project_id}/transfer_requests
+```
+
+LANGUAGE: shell
+CODE:
+```
+curl -X POST 'https://console.neon.tech/api/v2/projects/{project_id}/transfer_requests' \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Bearer {your_api_key_here}' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "ttl_seconds": 604800
+  }'
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "id": "389ad814-9514-1cac-bc04-2f194815db76",
+  "project_id": "your-project-id",
+  "created_at": "2025-05-18T19:35:23Z",
+  "expires_at": "2025-05-25T19:35:23Z"
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "request_id": "cb1e1228-19f9-4904-8bd5-2dbf17d911a2",
+  "code": "",
+  "message": "project transfer requests are not enabled for this account"
+}
+```
+
+----------------------------------------
+
+TITLE: Neon API: Get Projects Endpoint Documentation
+DESCRIPTION: Documentation for the Neon API endpoint to retrieve a list of user projects. It details the required authentication and expected response format, including parameters and response structure.
+SOURCE: https://neon.com/docs/manage/api-keys
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: GET /api/v2/projects
+Description: Retrieves a list of projects associated with the authenticated user.
+Authentication: Required (Bearer Token via Authorization header)
+Headers:
+  Accept: application/json (Required)
+  Authorization: Bearer <YOUR_NEON_API_KEY> (Required)
+Response Body (JSON):
+  projects: array of objects
+    id: string (Project ID)
+    name: string (Project Name)
+    platform_id: string (e.g., "aws")
+    region_id: string (e.g., "aws-us-east-2")
+    cpu_used_sec: number
+    provisioner: string
+    pg_version: number
+    locked: boolean
+    created_at: string (ISO 8601 datetime)
+    updated_at: string (ISO 8601 datetime)
+    proxy_host: string (Project proxy hostname)
+    branch_logical_size_limit: number
+Error Codes:
+  401 Unauthorized: If API key is missing, invalid, or revoked.
+```
+
+----------------------------------------
+
+TITLE: Constructing a Full Neon API Request URL
+DESCRIPTION: An example demonstrating how to append a method path to the base URL to form a complete API request URL, including path parameters like project_id and branch_id.
+SOURCE: https://neon.com/docs/reference/api-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+Example Full URL: https://console.neon.tech/api/v2/projects/{project_id}/branches/{branch_id}
+```
+
+----------------------------------------
+
+TITLE: Neon Auth API: Request Ownership Transfer
+DESCRIPTION: This section provides the API documentation for initiating the transfer of a Neon-managed auth project to your own auth provider account. It outlines the required parameters for the POST request and shows an example response containing the transfer URL.
+SOURCE: https://neon.com/docs/guides/neon-auth-api
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: POST /api/v2/projects/auth/transfer_ownership
+Headers:
+  authorization: Bearer $NEON_API_KEY
+  content-type: application/json
+Body Parameters:
+  project_id: string (Required) - Your Neon project ID
+  auth_provider: string (Required) - The authentication provider (currently "stack")
+Example Response:
+{
+  "url": "https://app.stack-auth.com/integrations/neon/projects/transfer/confirm?code=example123"
+}
+```
+
+----------------------------------------
+
+TITLE: FastAPI Application with Author and Book Endpoints
+DESCRIPTION: Defines a FastAPI application (`main.py`) with API endpoints for retrieving authors and books from the database. It includes a dependency for managing SQLAlchemy database sessions and demonstrates basic GET route definitions for data access.
+SOURCE: https://neon.com/docs/guides/sqlalchemy-migrations
+
+LANGUAGE: python
+CODE:
+```
+from fastapi import FastAPI, Depends
+from sqlalchemy.orm import Session
+import uvicorn
+
+from app.models import Author, Book, Base
+from app.database import SessionLocal, engine
+
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@app.get("/authors/")
+def read_authors(db: Session = Depends(get_db)):
+    authors = db.query(Author).all()
+    return authors
+
+@app.get("/books/{author_id}")
+def read_books(author_id: int, db: Session = Depends(get_db)):
+    books = db.query(Book).filter(Book.author_id == author_id).all()
+    return books
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
+```
+
+----------------------------------------
+
+TITLE: Create Neon Compute Endpoint via API
+DESCRIPTION: This snippet demonstrates how to create a new compute endpoint (read-write or read replica) for a specific project using the Neon API. It includes the API method, a cURL example with required authentication and JSON payload, and an example of the successful response body. A branch can only have one primary read-write compute.
+SOURCE: https://neon.com/docs/manage/computes
+
+LANGUAGE: APIDOC
+CODE:
+```
+POST /projects/{project_id}/endpoints
+```
+
+LANGUAGE: bash
+CODE:
+```
+curl -X 'POST' \
+  'https://console.neon.tech/api/v2/projects/hidden-cell-763301/endpoints' \
+  -H 'accept: application/json' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "endpoint": {
+    "branch_id": "br-blue-tooth-671580",
+    "type": "read_write"
+  }
+}'
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "endpoint": {
+    "host": "ep-aged-math-668285.us-east-2.aws.neon.tech",
+    "id": "ep-aged-math-668285",
+    "project_id": "hidden-cell-763301",
+    "branch_id": "br-blue-tooth-671580",
+    "autoscaling_limit_min_cu": 1,
+    "autoscaling_limit_max_cu": 1,
+    "region_id": "aws-us-east-2",
+    "type": "read_write",
+    "current_state": "init",
+    "pending_state": "active",
+    "settings": {
+      "pg_settings": {}
+    },
+    "pooler_enabled": false,
+    "pooler_mode": "transaction",
+    "disabled": false,
+    "passwordless_access": true,
+    "created_at": "2023-01-04T18:39:41Z",
+    "updated_at": "2023-01-04T18:39:41Z",
+    "proxy_host": "us-east-2.aws.neon.tech"
+  },
+  "operations": [
+    {
+      "id": "e0e4da91-8576-4348-913b-aaf61a46d314",
+      "project_id": "hidden-cell-763301",
+      "branch_id": "br-blue-tooth-671580",
+      "endpoint_id": "ep-aged-math-668285",
+      "action": "start_compute",
+      "status": "running",
+      "failures_count": 0,
+      "created_at": "2023-01-04T18:39:41Z",
+      "updated_at": "2023-01-04T18:39:41Z"
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Making a GET Request to Neon Data API with cURL
+DESCRIPTION: This `curl` command shows how to perform a GET request to retrieve data from the 'playing_with_neon' table via the Neon Data API. It includes necessary headers for accepting JSON and providing a JWT for authentication, demonstrating a typical API consumption pattern.
+SOURCE: https://neon.com/docs/data-api/get-started
+
+LANGUAGE: Shell
+CODE:
+```
+curl --location --request GET 'https://app-restless-salad-23184734.dpl.myneon.app/playing_with_neon' \
+     --header 'Accept: application/json' \
+     --header 'Bearer: <jwt>'
+```
+
+----------------------------------------
+
+TITLE: Example JSON Response for Neon Projects API
+DESCRIPTION: This JSON object represents a typical successful response from the Neon API's `/projects` endpoint. It contains an array of project objects, each with details like ID, name, region, creation date, and proxy host.
+SOURCE: https://neon.com/docs/manage/api-keys
+
+LANGUAGE: json
+CODE:
+```
+{
+  "projects": [
+    {
+      "cpu_used_sec": 0,
+      "id": "purple-shape-411361",
+      "platform_id": "aws",
+      "region_id": "aws-us-east-2",
+      "name": "purple-shape-411361",
+      "provisioner": "k8s-pod",
+      "pg_version": 15,
+      "locked": false,
+      "created_at": "2023-01-03T18:22:56Z",
+      "updated_at": "2023-01-03T18:22:56Z",
+      "proxy_host": "us-east-2.aws.neon.tech",
+      "branch_logical_size_limit": 3072
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Clone the Neon Data API Demo Application
+DESCRIPTION: This command initiates the cloning process for the `neon-data-api-neon-auth` GitHub repository, which contains the source code for the demo note-taking application. This application serves as a practical example for integrating Neon's Data API with frontend technologies.
+SOURCE: https://neon.com/docs/data-api/demo
+
+LANGUAGE: Shell
+CODE:
+```
+git clone https://github.com/neondatabase-labs/neon-data-api-neon-auth
+```
+
+----------------------------------------
+
+TITLE: Common Neon Auth API Parameters
+DESCRIPTION: Describes common parameters used across multiple Neon Auth API endpoints, including project identification and authentication provider details. These parameters are essential for interacting with the Neon Auth API.
+SOURCE: https://neon.com/docs/guides/neon-auth-api
+
+LANGUAGE: APIDOC
+CODE:
+```
+Common Parameters:
+  project_id: Your Neon project ID. You can find it in the Neon Console on the Settings page, or use the List Projects endpoint.
+  auth_provider: The authentication provider you're using. Currently supported providers: 'stack'.
+```
+
+----------------------------------------
+
+TITLE: Example Neon Auth User Data JSON
+DESCRIPTION: An example JSON object representing user data, typically returned by a Neon Auth API endpoint or stored in the database. It illustrates a basic structure for user identification and associated metadata.
+SOURCE: https://neon.com/docs/neon-auth/quick-start/react
+
+LANGUAGE: JSON
+CODE:
+```
+{"id": "51e491df...", ...}
+```
+
+----------------------------------------
+
+TITLE: Example: Transfer Projects via Neon API with cURL
+DESCRIPTION: Demonstrates how to make a POST request to the Neon API using cURL to transfer multiple projects from a source organization to a destination organization. This example includes setting necessary headers for content type and authorization.
+SOURCE: https://neon.com/docs/manage/orgs-project-transfer
+
+LANGUAGE: Shell
+CODE:
+```
+curl --request POST \
+     --url 'https://console.neon.tech/api/v2/organizations/{source_org_id}/projects/transfer' \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $API_KEY' \
+     --header 'content-type: application/json' \
+     --data '{
+   "project_ids": [
+     "project-id-1",
+     "project-id-2"
+   ],
+   "destination_org_id": "destination-org-id"
+ }'
+```
+
+----------------------------------------
+
+TITLE: Start FastAPI Development Server
+DESCRIPTION: Executes the `main.py` script to start the FastAPI application using Uvicorn, making the defined API endpoints accessible locally. This command launches the web server for development and testing of the application's API.
+SOURCE: https://neon.com/docs/guides/sqlalchemy-migrations
+
+LANGUAGE: bash
+CODE:
+```
+python main.py
+```
+
+----------------------------------------
+
+TITLE: Neon MCP Server Supported Actions (Tools) API Reference
+DESCRIPTION: Detailed API documentation for the various actions (tools) provided by the Neon MCP Server, categorized by their functional area. Each entry describes the purpose and capabilities of the tool for interacting with Neon projects and databases.
+SOURCE: https://neon.com/docs/ai/neon-mcp-server
+
+LANGUAGE: APIDOC
+CODE:
+```
+Project management:
+  list_projects: Retrieves a list of your Neon projects, providing a summary of each project associated with your Neon account. Supports limiting the number of projects returned (default: 10).
+  describe_project: Fetches detailed information about a specific Neon project, including its ID, name, and associated branches and databases.
+  create_project: Creates a new Neon project in your Neon account. A project acts as a container for branches, databases, roles, and computes.
+  delete_project: Deletes an existing Neon project and all its associated resources.
+Branch management:
+  create_branch: Creates a new branch within a specified Neon project. Leverages [Neon's branching](/docs/introduction/branching) feature for development, testing, or migrations.
+  delete_branch: Deletes an existing branch from a Neon project.
+  describe_branch: Retrieves details about a specific branch, such as its name, ID, and parent branch.
+  list_branch_computes: Lists compute endpoints for a project or specific branch, including compute ID, type, size, and autoscaling information.
+SQL query execution:
+  get_connection_string: Returns your database connection string.
+  run_sql: Executes a single SQL query against a specified Neon database. Supports both read and write operations.
+  run_sql_transaction: Executes a series of SQL queries within a single transaction against a Neon database.
+  get_database_tables: Lists all tables within a specified Neon database.
+  describe_table_schema: Retrieves the schema definition of a specific table, detailing columns, data types, and constraints.
+  list_slow_queries: Identifies performance bottlenecks by finding the slowest queries in a database. Requires the pg_stat_statements extension.
+Database migrations (schema changes):
+  prepare_database_migration: Initiates a database migration process. Critically, it creates a temporary branch to apply and test the migration safely before affecting the main branch.
+  complete_database_migration: Finalizes and applies a prepared database migration to the main branch. This action merges changes from the temporary migration branch and cleans up temporary resources.
+Query performance tuning:
+  explain_sql_statement: Analyzes a SQL query and returns detailed execution plan information to help understand query performance.
+  prepare_query_tuning: Identifies potential performance issues in a SQL query and suggests optimizations. Creates a temporary branch for testing improvements.
+  complete_query_tuning: Finalizes and applies query optimizations after testing. Merges changes from the temporary tuning branch to the main branch.
+Neon Auth:
+  provision_neon_auth: Provisions Neon Auth for a Neon project. Sets up authentication infrastructure by creating an integration with Stack Auth (`@stackframe/stack`).
+```
+
+----------------------------------------
+
+TITLE: Accept Project Transfer Request API Endpoint
+DESCRIPTION: The API endpoint for programmatically accepting a project transfer request. This PUT request targets a specific project and transfer request ID.
+SOURCE: https://neon.com/docs/workflows/claimable-database-integration
+
+LANGUAGE: APIDOC
+CODE:
+```
+PUT https://console.neon.tech/api/v2/projects/{project_id}/transfer_requests/{request_id}
+```
+
+----------------------------------------
+
+TITLE: Initialize StackClientApp Instance
+DESCRIPTION: Example demonstrating how to create a new StackClientApp instance with common configuration options, including token store, base URL, project ID, and publishable client key.
+SOURCE: https://neon.com/docs/neon-auth/sdk/react/objects/stack-app
+
+LANGUAGE: JavaScript
+CODE:
+```
+const stackClientApp = new StackClientApp({
+  tokenStore: 'nextjs-cookie',
+  baseUrl: 'https://api.stack-auth.com',
+  projectId: '123',
+  publishableClientKey: '123',
+  urls: {
+    home: '/',
+  },
+});
+```
+
+----------------------------------------
+
+TITLE: Neon API: Start Endpoint Method
+DESCRIPTION: This snippet describes the purpose of the Neon API's 'Start endpoint' method. It is specifically designed for programmatically activating and suspending a compute instance.
+SOURCE: https://neon.com/docs/guides/auto-suspend-guide
+
+LANGUAGE: APIDOC
+CODE:
+```
+Neon API:
+  Method: Start endpoint
+  Purpose: Activates and suspends a compute.
+```
+
+----------------------------------------
+
+TITLE: Example API Response for Planets Endpoint
+DESCRIPTION: Shows a sample JSON array returned by the '/planets' endpoint of the deployed application, demonstrating the structure of planet data including ID and name.
+SOURCE: https://neon.com/docs/guides/koyeb
+
+LANGUAGE: json
+CODE:
+```
+[
+  {
+    "id": 1,
+    "name": "Mercury"
+  },
+  {
+    "id": 2,
+    "name": "Venus"
+  },
+  {
+    "id": 3,
+    "name": "Mars"
+  }
+]
+```
+
+----------------------------------------
+
+TITLE: API: Create Neon Auth Integration
+DESCRIPTION: This endpoint creates a Neon-managed authentication project, currently supporting Stack Auth. It automates provisioning and configuration, similar to the Quick Start in the Neon Console. Required parameters include project and branch IDs, database name, and role name.
+SOURCE: https://neon.com/docs/neon-auth/api
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: POST https://console.neon.tech/api/v2/projects/auth/create
+
+Required Parameters:
+  project_id: Your Neon project ID.
+  branch_id: Your project's production branch ID.
+    Location: Neon Console (Branches page) or List Branches endpoint (look for "default": true).
+  database_name: Name of your database (defaults to "neondb").
+    Location: Neon Console (Project Dashboard, Connect button) or List Databases endpoint.
+  role_name: Database role for authenticated users (defaults to "neondb_owner").
+    Location: Neon Console (Project Dashboard, Connect button) or List Databases endpoint.
+
+Example Response:
+{
+  "auth_provider": "stack",
+  "auth_provider_project_id": "proj-example-123",
+  "pub_client_key": "pck_example123",
+  "secret_server_key": "ssk_example123",
+  "jwks_url": "https://api.stack-auth.com/api/v1/projects/proj-example-123/.well-known/jwks.json",
+  "schema_name": "neon_auth",
+  "table_name": "users_sync"
+}
+```
+
+----------------------------------------
+
+TITLE: Retrieve Neon Project Details using cURL
+DESCRIPTION: This example demonstrates how to fetch specific project information from the Neon API using a cURL GET request. It highlights the API endpoint, required headers, and pipes the output to 'jq' for pretty-printing the JSON response.
+SOURCE: https://neon.com/docs/introduction/monitor-usage
+
+LANGUAGE: bash
+CODE:
+```
+curl --request GET \
+     --url https://console.neon.tech/api/v2/projects/summer-bush-30064139 \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $NEON_API_KEY' |jq
+```
+
+----------------------------------------
+
+TITLE: Neon API: Create Schema-Only Branch
+DESCRIPTION: This section provides the API specification and a cURL example for creating a schema-only branch using the Neon API. It details the required parameters for the 'Create branch' endpoint and demonstrates its usage with a practical cURL command.
+SOURCE: https://neon.com/docs/guides/branching-neon-api
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: POST https://console.neon.tech/api/v2/projects/{project_id}/branches
+Description: Create a new branch, including schema-only branches.
+Authentication: Bearer Token ($NEON_API_KEY)
+Headers:
+  accept: application/json
+  authorization: Bearer $NEON_API_KEY
+  content-type: application/json
+Request Body (application/json):
+  branch:
+    parent_id: string (required)
+      Description: The branch ID of the branch containing the schema to copy.
+      Example: "br-super-mode-w371g4od"
+    name: string (optional)
+      Description: A name for the new branch.
+      Example: "my_schema_only_branch"
+    init_source: string (optional)
+      Description: Specifies the initialization source for the new branch. Use "schema-only" to create a branch with only the schema copied from the parent.
+      Example: "schema-only"
+Required Values:
+  project_id: string
+    Description: Your Neon project ID.
+  parent_id: string
+    Description: The branch ID of the branch containing the schema you want to copy.
+```
+
+LANGUAGE: bash
+CODE:
+```
+curl --request POST \
+     --url https://console.neon.tech/api/v2/projects/wispy-salad-58347608/branches \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $NEON_API_KEY' \
+     --header 'content-type: application/json' \
+     --data '
+{
+  "branch": {
+    "parent_id": "br-super-mode-w371g4od",
+    "name": "my_schema_only_branch",
+    "init_source": "schema-only"
+  }
+}
+'
+```
+
+----------------------------------------
+
+TITLE: Generate Text Embedding using OpenAI API (cURL)
+DESCRIPTION: Demonstrates how to make a cURL request to OpenAI's Embeddings API to generate a text embedding. This example uses the 'text-embedding-3-small' model and requires an OpenAI API key for authentication.
+SOURCE: https://neon.com/docs/ai/ai-concepts
+
+LANGUAGE: bash
+CODE:
+```
+curl https://api.openai.com/v1/embeddings \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer $OPENAI_API_KEY" \
+  -d '{
+    "input": "Your text string goes here",
+    "model": "text-embedding-3-small"
+  }'
+```
+
+----------------------------------------
+
+TITLE: Neon API Endpoints for Compute Management
+DESCRIPTION: Overview of key Neon API endpoints relevant for managing computes, specifically for restarting and starting compute instances. This provides a structured reference to the official API documentation for detailed usage, including required parameters and operational notes.
+SOURCE: https://neon.com/docs/manage/endpoints
+
+LANGUAGE: APIDOC
+CODE:
+```
+Neon API Endpoints:
+  Restart compute endpoint:
+    URL: https://api-docs.neon.tech/reference/restartprojectendpoint
+    Method: POST
+    Path: /api/v2/projects/{project_id}/endpoints/{endpoint_id}/restart
+    Headers:
+      accept: application/json
+      authorization: Bearer $NEON_API_KEY
+    Note: Only works on an active compute.
+  Start compute endpoint:
+    URL: https://api-docs.neon.tech/reference/startprojectendpoint
+    Note: Can be used to wake up an idle compute.
+```
+
+----------------------------------------
+
+TITLE: Utilize TypeScript Types for Listing Neon Projects
+DESCRIPTION: This example illustrates how to leverage TypeScript types, specifically `ProjectsResponse` and `AxiosResponse`, when listing projects with the Neon SDK. It demonstrates how to import and apply these types to ensure type safety, catch errors during development, and improve code completion for API responses.
+SOURCE: https://neon.com/docs/reference/typescript-sdk
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { createApiClient, ProjectsResponse } from '@neondatabase/api-client';
+import { AxiosResponse } from 'axios';
+
+const apiClient = createApiClient({
+  apiKey: process.env.NEON_API_KEY!,
+});
+
+async function listNeonProjects(): Promise<void> {
+  try {
+    const response: AxiosResponse<ProjectsResponse> = await apiClient.listProjects({});
+    const projects = response.data.projects;
+    console.log('Projects:', projects);
+  } catch (error) {
+    console.error('Error listing projects:', error);
+  }
+}
+
+listNeonProjects();
+```
+
+----------------------------------------
+
+TITLE: Example Neon OAuth Scope String for Authorization
+DESCRIPTION: An example of a space-separated list of predefined OAuth scopes to be included in the `scope` query parameter when initiating the Neon OAuth authorization flow.
+SOURCE: https://neon.com/docs/guides/oauth-integration
+
+LANGUAGE: APIDOC
+CODE:
+```
+urn:neoncloud:projects:create urn:neoncloud:projects:read urn:neoncloud:projects:update urn:neoncloud:projects:delete urn:neoncloud:orgs:read
+```
+
+----------------------------------------
+
+TITLE: Neon SDK Key API Method Signatures
+DESCRIPTION: This section provides an overview of key methods available in the Neon SDK, categorized by resource, such as managing API keys. It lists method names, parameters, and their purpose, directing users to the full Neon API Reference for complete details and comprehensive parameter information.
+SOURCE: https://neon.com/docs/reference/typescript-sdk
+
+LANGUAGE: APIDOC
+CODE:
+```
+Manage API keys:
+* listApiKeys(): Retrieves a list of API keys for your account.
+* createApiKey(data: ApiKeyCreateRequest): Creates a new API key.
+* revokeApiKey(keyId: number): Revokes an existing API key.
+```
+
+----------------------------------------
+
+TITLE: Set up Express.js Server with API Endpoints
+DESCRIPTION: This JavaScript code initializes an Express.js application, connects to a PostgreSQL database via Sequelize using a `DATABASE_URL` environment variable, loads `Author` and `Book` models, and defines two GET API endpoints: `/authors` to retrieve all authors and `/books/:author_id` to fetch books by a specific author. It includes basic error handling and starts the server.
+SOURCE: https://neon.com/docs/guides/sequelize
+
+LANGUAGE: JavaScript
+CODE:
+```
+// index.js
+
+const express = require('express');
+const { Sequelize, DataTypes } = require('sequelize');
+const { config } = require('dotenv');
+
+config();
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL is not set');
+}
+
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
+  dialectOptions: { ssl: { require: true } }
+});
+
+// Set up the models
+const Author = require('./models/author')(sequelize, DataTypes);
+const Book = require('./models/book')(sequelize, DataTypes);
+
+// Create a new Express application
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.get('/', async (req, res) => {
+  res.send('Hello World! This is a book catalog.');
+});
+
+app.get('/authors', async (req, res) => {
+  try {
+    const authors = await Author.findAll();
+    res.json(authors);
+  } catch (error) {
+    console.error('Error fetching authors:', error);
+    res.status(500).send('Error fetching authors');
+  }
+});
+
+app.get('/books/:author_id', async (req, res) => {
+  const authorId = parseInt(req.params.author_id);
+  try {
+    const books = await Book.findAll({
+      where: {
+        authorId: authorId
+      }
+    });
+    res.json(books);
+  } catch (error) {
+    console.error('Error fetching books for author:', error);
+    res.status(500).send('Error fetching books for author');
+  }
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+```
+
+----------------------------------------
+
+TITLE: Setting Up and Querying a Table with RLS in PostgreSQL
+DESCRIPTION: This comprehensive SQL snippet demonstrates the creation of a new table, enabling Row-Level Security on it, and optionally defining a permissive read policy. It also includes commands to insert sample data and perform a `SELECT` query, providing a full example of table setup for the Data API.
+SOURCE: https://neon.com/docs/data-api/get-started
+
+LANGUAGE: SQL
+CODE:
+```
+CREATE TABLE IF NOT EXISTS playing_with_neon(
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  value REAL
+);
+
+-- Enable Row Level Security
+ALTER TABLE playing_with_neon ENABLE ROW LEVEL SECURITY;
+
+-- (Optional) Example permissive policy for demo/testing:
+CREATE POLICY "Allow read access" ON playing_with_neon
+  FOR SELECT
+  USING (true);
+
+INSERT INTO playing_with_neon(name, value)
+  SELECT LEFT(md5(i::TEXT), 10), random()
+  FROM generate_series(1, 10) s(i);
+
+SELECT * FROM playing_with_neon;
+```
+
+----------------------------------------
+
+TITLE: Run FastAPI Development Server
+DESCRIPTION: This command starts the FastAPI application, typically for local development and testing. It allows users to interact with the API and verify database schema changes.
+SOURCE: https://neon.com/docs/guides/sqlalchemy-migrations
+
+LANGUAGE: Shell
+CODE:
+```
+python main.py
+```
+
+----------------------------------------
+
+TITLE: List Neon Project Branches using API and cURL
+DESCRIPTION: This snippet demonstrates how to retrieve a list of branches for a specified Neon project. It includes the API endpoint, a cURL command for execution, and an example JSON response showing the structure of the returned branch data.
+SOURCE: https://neon.com/docs/guides/branching-neon-api
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /projects/{project_id}/branches
+```
+
+LANGUAGE: shell
+CODE:
+```
+curl 'https://console.neon.tech/api/v2/projects/autumn-disk-484331/branches' \
+  -H 'accept: application/json' \
+  -H "Authorization: Bearer $NEON_API_KEY" | jq
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "branches": [
+    {
+      "id": "br-dawn-scene-747675",
+      "project_id": "autumn-disk-484331",
+      "parent_id": "br-wispy-dew-591433",
+      "parent_lsn": "0/1AA6408",
+      "name": "br-dawn-scene-747675",
+      "current_state": "ready",
+      "logical_size": 28,
+      "created_at": "2022-12-08T19:55:43Z",
+      "updated_at": "2022-12-08T19:55:43Z"
+    },
+    {
+      "id": "br-wispy-dew-591433",
+      "project_id": "autumn-disk-484331",
+      "name": "main",
+      "current_state": "ready",
+      "logical_size": 28,
+      "physical_size": 31,
+      "created_at": "2022-12-07T00:45:05Z",
+      "updated_at": "2022-12-07T00:45:05Z"
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Neon API: Manage Compute Endpoints
+DESCRIPTION: API methods for managing compute endpoints within a Neon project, including CRUD operations and actions like starting, suspending, and restarting endpoints.
+SOURCE: https://neon.com/docs/reference/typescript-sdk
+
+LANGUAGE: APIDOC
+CODE:
+```
+listProjectEndpoints(projectId: string)
+  projectId: The unique identifier of the project.
+Returns: A list of endpoints within a project.
+
+createProjectEndpoint(projectId: string, data: EndpointCreateRequest)
+  projectId: The unique identifier of the project.
+  data: The request body containing endpoint creation details.
+Returns: A newly created endpoint within a project.
+
+getProjectEndpoint(projectId: string, endpointId: string)
+  projectId: The unique identifier of the project.
+  endpointId: The unique identifier of the endpoint.
+Returns: Details for a specific endpoint.
+
+updateProjectEndpoint(projectId: string, endpointId: string, data: EndpointUpdateRequest)
+  projectId: The unique identifier of the project.
+  endpointId: The unique identifier of the endpoint.
+  data: The request body containing endpoint update details.
+Returns: Updated settings for a specific endpoint.
+
+deleteProjectEndpoint(projectId: string, endpointId: string)
+  projectId: The unique identifier of the project.
+  endpointId: The unique identifier of the endpoint.
+Returns: Confirmation of deleting an endpoint from a project.
+
+startProjectEndpoint(projectId: string, endpointId: string)
+  projectId: The unique identifier of the project.
+  endpointId: The unique identifier of the endpoint.
+Returns: Confirmation of starting an endpoint.
+
+suspendProjectEndpoint(projectId: string, endpointId: string)
+  projectId: The unique identifier of the project.
+  endpointId: The unique identifier of the endpoint.
+Returns: Confirmation of suspending an endpoint.
+
+restartProjectEndpoint(projectId: string, endpointId: string)
+  projectId: The unique identifier of the project.
+  endpointId: The unique identifier of the endpoint.
+Returns: Confirmation of restarting an endpoint.
+```
+
+----------------------------------------
+
+TITLE: Retrieve Neon Branch Details using cURL
+DESCRIPTION: This example demonstrates how to fetch specific branch information from the Neon API using a cURL GET request. It highlights the API endpoint, required headers, and pipes the output to 'jq' for pretty-printing the JSON response.
+SOURCE: https://neon.com/docs/introduction/monitor-usage
+
+LANGUAGE: bash
+CODE:
+```
+curl --request GET \
+     --url https://console.neon.tech/api/v2/projects/summer-bush-30064139/branches/br-polished-flower-a5tq1sdv \
+     --header 'accept: application/json' \
+     --header 'authorization: Bearer $NEON_API_KEY' | jq
+```
+
+----------------------------------------
+
+TITLE: Access StackClientApp in React Component
+DESCRIPTION: Example showing how to use the `useStackApp` hook within a React functional component to get the `stackClientApp` instance.
+SOURCE: https://neon.com/docs/neon-auth/sdk/react/objects/stack-app
+
+LANGUAGE: React
+CODE:
+```
+'use client';
+
+function MyReactComponent() {
+  const stackClientApp = useStackApp();
+}
+```
+
+----------------------------------------
+
+TITLE: Get Current User with stackClientApp.getUser
+DESCRIPTION: Examples demonstrating how to retrieve the current user using `stackClientApp.getUser`, showing both default behavior and handling with the `or` option
+SOURCE: https://neon.com/docs/neon-auth/sdk/react/objects/stack-app
+
+
+
+----------------------------------------
+
+TITLE: API Endpoint: GET /consumption_history/projects
+DESCRIPTION: Documents the `GET /consumption_history/projects` API endpoint for retrieving granular project-level consumption metrics. It supports daily, hourly, or monthly granularity over a selected time period. The endpoint allows filtering by organization ID and includes pagination options using `limit` and `cursor` parameters.
+SOURCE: https://neon.com/docs/guides/consumption-metrics
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /consumption_history/projects
+Description: Retrieve granular project-level metrics for your account.
+Parameters:
+  limit: integer (query) - Sets the number of project objects to be included in the response.
+  from: string (query, ISO 8601) - Start date for the consumption history (e.g., 2024-06-30T00:00:00Z).
+  to: string (query, ISO 8601) - End date for the consumption history (e.g., 2024-07-02T00:00:00Z).
+  granularity: string (query) - Level of granularity (hourly, daily, monthly).
+  org_id: string (query) - Organization ID to filter metrics.
+  cursor: string (query) - Used for pagination; the project `id` from the last project in the list.
+Headers:
+  accept: application/json
+  authorization: Bearer $NEON_API_KEY
+Response Body (JSON):
+  projects: array of objects
+    project_id: string
+    periods: array of objects
+      period_id: string
+      consumption: array of objects
+        timeframe_start: string (ISO 8601)
+        timeframe_end: string (ISO 8601)
+        active_time_seconds: integer
+        compute_time_seconds: integer
+        written_data_bytes: integer
+        synthetic_storage_size_bytes: integer
+```
+
+----------------------------------------
+
+TITLE: Create Neon Project using API
+DESCRIPTION: This snippet details how to create a new project in Neon using its API. It includes the API endpoint, a cURL command example for making the request with a user-specified project name, and the expected JSON response body containing project details, connection URIs, roles, databases, operations, branches, and endpoints.
+SOURCE: https://neon.com/docs/manage/projects
+
+LANGUAGE: APIDOC
+CODE:
+```
+POST /projects
+```
+
+LANGUAGE: cURL
+CODE:
+```
+curl 'https://console.neon.tech/api/v2/projects' \
+  -H 'Accept: application/json' \
+  -H "Authorization: Bearer $NEON_API_KEY" \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "project": {
+    "name": "myproject"
+  }
+}' | jq
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "project": {
+    "cpu_used_sec": 0,
+    "id": "ep-cool-darkness-123456",
+    "platform_id": "aws",
+    "region_id": "aws-us-east-2",
+    "name": "myproject",
+    "provisioner": "k8s-pod",
+    "pg_version": 15,
+    "locked": false,
+    "created_at": "2023-01-04T17:33:11Z",
+    "updated_at": "2023-01-04T17:33:11Z",
+    "proxy_host": "us-east-2.aws.neon.tech",
+    "branch_logical_size_limit": 3072
+  },
+  "connection_uris": [
+    {
+      "connection_uri": "postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require&channel_binding=require"
+    }
+  ],
+  "roles": [
+    {
+      "branch_id": "br-falling-frost-286006",
+      "name": "alex",
+      "password": "AbC123dEf",
+      "protected": false,
+      "created_at": "2023-01-04T17:33:11Z",
+      "updated_at": "2023-01-04T17:33:11Z"
+    },
+    {
+      "branch_id": "br-falling-frost-286006",
+      "name": "web_access",
+      "protected": true,
+      "created_at": "2023-01-04T17:33:11Z",
+      "updated_at": "2023-01-04T17:33:11Z"
+    }
+  ],
+  "databases": [
+    {
+      "id": 1138408,
+      "branch_id": "br-falling-frost-286006",
+      "name": "dbname",
+      "owner_name": "alex",
+      "created_at": "2023-01-04T17:33:11Z",
+      "updated_at": "2023-01-04T17:33:11Z"
+    }
+  ],
+  "operations": [
+    {
+      "id": "b7c32d83-6402-49c8-b40b-0388309549da",
+      "project_id": "ep-cool-darkness-123456",
+      "branch_id": "br-falling-frost-286006",
+      "action": "create_timeline",
+      "status": "running",
+      "failures_count": 0,
+      "created_at": "2023-01-04T17:33:11Z",
+      "updated_at": "2023-01-04T17:33:11Z"
+    },
+    {
+      "id": "756f2b87-f45c-4a61-9b21-6cd3f3c48c68",
+      "project_id": "ep-cool-darkness-123456",
+      "branch_id": "br-falling-frost-286006",
+      "endpoint_id": "ep-jolly-moon-631024",
+      "action": "start_compute",
+      "status": "scheduling",
+      "failures_count": 0,
+      "created_at": "2023-01-04T17:33:11Z",
+      "updated_at": "2023-01-04T17:33:11Z"
+    }
+  ],
+  "branch": {
+    "id": "br-falling-frost-286006",
+    "project_id": "ep-cool-darkness-123456",
+    "name": "main",
+    "current_state": "init",
+    "pending_state": "ready",
+    "created_at": "2023-01-04T17:33:11Z",
+    "updated_at": "2023-01-04T17:33:11Z"
+  },
+  "endpoints": [
+    {
+      "host": "ep-jolly-moon-631024.us-east-2.aws.neon.tech",
+      "id": "ep-jolly-moon-631024",
+      "project_id": "ep-cool-darkness-123456",
+      "branch_id": "br-falling-frost-286006",
+      "autoscaling_limit_min_cu": 1,
+      "autoscaling_limit_max_cu": 1,
+      "region_id": "aws-us-east-2",
+      "type": "read_write",
+      "current_state": "init",
+      "pending_state": "active",
+      "settings": {
+        "pg_settings": {}
+      },
+      "pooler_enabled": false,
+      "pooler_mode": "transaction",
+      "disabled": false,
+      "passwordless_access": true,
+      "created_at": "2023-01-04T17:33:11Z",
+      "updated_at": "2023-01-04T17:33:11Z",
+      "proxy_host": "us-east-2.aws.neon.tech"
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Neon API Reference for Creating Project Endpoints
+DESCRIPTION: This entry provides a reference to the official Neon API documentation for the createprojectendpoint method. This API endpoint allows programmatic creation and management of project endpoints, including read replicas, offering an alternative to the console or CLI.
+SOURCE: https://neon.com/docs/guides/read-replica-adhoc-queries
+
+LANGUAGE: APIDOC
+CODE:
+```
+https://api-docs.neon.tech/reference/createprojectendpoint
+```
+
+----------------------------------------
+
+TITLE: Example: Extract Subarray by Start and Length
+DESCRIPTION: Demonstrates extracting a subarray from `'{1,2,3,4,5}'` using `subarray(array, start_idx, len)`. The example extracts 3 elements starting from the 2nd position.
+SOURCE: https://neon.com/docs/extensions/intarray
+
+LANGUAGE: SQL
+CODE:
+```
+SELECT subarray('{1,2,3,4,5}'::integer[], 2, 3);
+```
+
+----------------------------------------
+
+TITLE: Get User with StackServerApp Example
+DESCRIPTION: Illustrates how to use the `getUser` method to asynchronously fetch a user's data from the server. This example retrieves a user by their specific ID.
+SOURCE: https://neon.com/docs/neon-auth/sdk/nextjs/objects/stack-server-app
+
+LANGUAGE: JavaScript
+CODE:
+```
+const user = await stackServerApp.getUser('user_id');
+```
+
+----------------------------------------
+
+TITLE: Example Neon Database Connection String
+DESCRIPTION: This snippet shows an example of a Neon database connection string. It includes the protocol, username, password, host, database name, and SSL parameters, which are essential for connecting applications to the Neon Postgres database.
+SOURCE: https://neon.com/docs/guides/cloudflare-pages
+
+LANGUAGE: APIDOC
+CODE:
+```
+postgresql://alex:AbC123dEf@ep-cool-darkness-123456.us-east-2.aws.neon.tech/dbname?sslmode=require&channel_binding=require
+```
+
+----------------------------------------
+
+TITLE: StackClientApp API Reference
+DESCRIPTION: Detailed API reference for the client-side `StackClientApp` object in the Next.js SDK, covering its constructor, methods for authentication and user management, and configuration options.
+SOURCE: https://neon.com/docs/neon-auth/sdk/nextjs/objects/stack-app
+
+LANGUAGE: APIDOC
+CODE:
+```
+StackClientApp:
+  Description: The main object for interacting with Stack Auth on the client. It provides methods for authentication, user management, and team management.
+  Constructor:
+    new(options): StackClientApp
+    Description: Creates a new StackClientApp instance. Because each app creates a new connection to Stack Auth's backend, you should re-use existing instances wherever possible.
+    Parameters:
+      options:
+        Type: object
+        Description: An object containing multiple properties.
+        Properties:
+          tokenStore:
+            Type: string | object | Request
+            Required: true
+            Description: Where to store the user's session tokens.
+            Possible values:
+              - "nextjs-cookie": Uses Next.js cookies (Next.js only)
+              - "cookie": Uses browser cookies (both React and Next.js)
+              - "memory": Uses in-memory storage (both React and Next.js)
+              - "{ accessToken: string, refreshToken: string }": Uses provided tokens (both React and Next.js)
+              - "Request": Uses the provided request object (server-side only)
+          baseUrl:
+            Type: string
+            Description: The base URL for Next.js's API. Only override this if you are self-hosting. Defaults to https://api.stack-auth.com, unless overridden by the NEXT_PUBLIC_STACK_API_URL environment variable.
+  Methods:
+    getUser([options]):
+      Returns: Promise<User>
+      Related Hook: useUser([options]): User
+    getProject():
+      Returns: Promise<Project>
+      Related Hook: useProject(): Project
+    signInWithOAuth(provider):
+      Returns: void
+    signInWithCredential([options]):
+      Returns: Promise<...>
+    signUpWithCredential([options]):
+      Returns: Promise<...>
+    sendForgotPasswordEmail(email):
+      Returns: Promise<...>
+    sendMagicLinkEmail(email):
+      Returns: Promise<...>
+```
+
+----------------------------------------
+
+TITLE: Neon API Endpoint: Retrieve Project Details
+DESCRIPTION: Formal API documentation for the `GET /api/v2/projects/{project_id}` endpoint. It outlines the endpoint's purpose, required parameters, headers, and the structure of the JSON response, specifically focusing on update-related fields.
+SOURCE: https://neon.com/docs/manage/updates
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: GET /api/v2/projects/{project_id}
+Description: Retrieves details for a specific Neon project.
+
+Parameters:
+  project_id (string, required): The unique identifier of the Neon project.
+
+Headers:
+  accept (string, required): application/json
+  authorization (string, required): Bearer <your_neon_api_key>
+
+Response Body (JSON):
+  settings (object):
+    maintenance_window (object):
+      weekdays (array of integers): Days of the week for updates (1-7, 1=Monday).
+      start_time (string): Start time of the update window (HH:MM).
+      end_time (string): End time of the update window (HH:MM).
+  maintenance_scheduled_for (string, optional): Timestamp of the next planned update (YYYY-MM-DDTHH:MM).
+    Note: If not present, no update is currently scheduled.
+```
+
+----------------------------------------
+
+TITLE: List Neon Auth Integrations using cURL
+DESCRIPTION: This cURL command demonstrates how to fetch a list of all active Neon Auth integrations for a specific project. It sends a GET request to the API endpoint, requiring only the project ID in the URL path, and pipes the output to 'jq' for readability.
+SOURCE: https://neon.com/docs/neon-auth/api
+
+LANGUAGE: curl
+CODE:
+```
+curl --request GET \
+     --url 'https://console.neon.tech/api/v2/projects/{project_id}/auth/integrations' \
+     --header 'authorization: Bearer $NEON_API_KEY' | jq
+```
+
+----------------------------------------
+
+TITLE: List Neon Projects using API
+DESCRIPTION: This snippet demonstrates how to retrieve a list of all projects associated with your Neon account via the API. It provides the API endpoint, a cURL command example for making the authenticated request, and the structure of the JSON response containing an array of project objects.
+SOURCE: https://neon.com/docs/manage/projects
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /projects
+```
+
+LANGUAGE: cURL
+CODE:
+```
+curl 'https://console.neon.tech/api/v2/projects' \
+ -H 'Accept: application/json' \
+ -H "Authorization: Bearer $NEON_API_KEY" | jq
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "projects": [
+    {
+      "cpu_used_sec": 0,
+      "id": "purple-shape-491160",
+      "platform_id": "aws",
+      "region_id": "aws-us-east-2",
+      "name": "purple-shape-491160",
+      "provisioner": "k8s-pod",
+      "pg_version": 15,
+      "locked": false,
+      "created_at": "2023-01-03T18:22:56Z",
+      "updated_at": "2023-01-03T18:22:56Z",
+      "proxy_host": "us-east-2.aws.neon.tech",
+      "branch_logical_size_limit": 3072
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Node.js Express API to Query Neon Database
+DESCRIPTION: This JavaScript code defines an Express.js server that connects to a Neon PostgreSQL database using the `pg` library. It exposes a root GET endpoint that queries the `books_to_read` table and returns the results as JSON.
+SOURCE: https://neon.com/docs/guides/render
+
+LANGUAGE: JavaScript
+CODE:
+```
+import express from 'express';
+import pkg from 'pg';
+
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Parse JSON bodies for this app
+app.use(express.json());
+
+// Create a new pool using your Neon database connection string
+const { Pool } = pkg;
+const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+
+app.get('/', async (req, res) => {
+  try {
+    // Fetch books from your database using the postgres connection
+    const { rows } = await pool.query('SELECT * FROM books_to_read;');
+    res.json(rows);
+  } catch (error) {
+    console.error('Failed to fetch books', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});
+```
+
+----------------------------------------
+
+TITLE: Example Neon OAuth Authorization URL Construction
+DESCRIPTION: A complete example of a Neon OAuth authorization URL, demonstrating the structure and required query parameters such as `client_id`, `scope`, `response_type`, `redirect_uri`, `state`, and `code_challenge` for initiating the user consent flow.
+SOURCE: https://neon.com/docs/guides/oauth-integration
+
+LANGUAGE: APIDOC
+CODE:
+```
+https://oauth2.neon.tech/oauth2/auth?client_id=neon-experimental&scope=openid%20offline%20offline_access%20urn%3Aneoncloud%3Aprojects%3Acreate%20urn%3Aneoncloud%3Aprojects%3Aread%20urn%3Aneoncloud%3Aprojects%3Aupdate%20urn%3Aneoncloud%3Aprojects%3Adelete&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fauth%2Fcallback%2Fneon&grant_type=authorization_code&state=H58y-rSTebc3QmNbRjNTX9dL73-IyoU2T_WNievO9as&code_challenge=99XcbwOFU6iEsvXr77Xxwsk9I0GL4c4c4Q8yPIVrF_0&code_challenge_method=S256
+```
+
+----------------------------------------
+
+TITLE: List Neon Compute Endpoints via API
+DESCRIPTION: This snippet shows how to retrieve a list of all compute endpoints associated with a specific project using the Neon API. It provides the API method, a cURL command for execution, and an example of the JSON response containing the list of endpoints.
+SOURCE: https://neon.com/docs/manage/computes
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /projects/{project_id}/endpoints
+```
+
+LANGUAGE: bash
+CODE:
+```
+curl -X 'GET' \
+  'https://console.neon.tech/api/v2/projects/hidden-cell-763301/endpoints' \
+  -H 'accept: application/json' \
+  -H "Authorization: Bearer $NEON_API_KEY"
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "endpoints": [
+    {
+      "host": "ep-young-art-646685.us-east-2.aws.neon.tech",
+      "id": "ep-young-art-646685",
+      "project_id": "hidden-cell-763301",
+      "branch_id": "br-shy-credit-899131",
+      "autoscaling_limit_min_cu": 1,
+      "autoscaling_limit_max_cu": 1,
+      "region_id": "aws-us-east-2",
+      "type": "read_write",
+      "current_state": "idle",
+      "settings": {
+        "pg_settings": {}
+      },
+      "pooler_enabled": false,
+      "pooler_mode": "transaction",
+      "disabled": false,
+      "passwordless_access": true,
+      "last_active": "2023-01-04T18:38:25Z",
+      "created_at": "2023-01-04T18:38:23Z",
+      "updated_at": "2023-01-04T18:43:36Z",
+      "proxy_host": "us-east-2.aws.neon.tech"
+    },
+    {
+      "host": "ep-aged-math-668285.us-east-2.aws.neon.tech",
+      "id": "ep-aged-math-668285",
+      "project_id": "hidden-cell-763301",
+      "branch_id": "br-blue-tooth-671580",
+      "autoscaling_limit_min_cu": 1,
+      "autoscaling_limit_max_cu": 1,
+      "region_id": "aws-us-east-2",
+      "type": "read_write",
+      "current_state": "idle",
+      "settings": {
+        "pg_settings": {}
+      },
+      "pooler_enabled": false,
+      "pooler_mode": "transaction",
+      "disabled": false,
+      "passwordless_access": true,
+      "last_active": "2023-01-04T18:39:42Z",
+      "created_at": "2023-01-04T18:39:41Z",
+      "updated_at": "2023-01-04T18:44:48Z",
+      "proxy_host": "us-east-2.aws.neon.tech"
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Initializing PostgREST.js Client for Neon Data API
+DESCRIPTION: This JavaScript snippet demonstrates how to import and initialize the `PostgrestClient` from the `@supabase/postgrest-js` library. It sets up the client with the Neon Data API's project URL, enabling subsequent interactions with the database via the API.
+SOURCE: https://neon.com/docs/data-api/get-started
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { PostgrestClient } from '@supabase/postgrest-js';
+
+// https://github.com/supabase/postgrest-js/blob/master/src/PostgrestClient.ts#L41
+const client = new PostgrestClient('https://app-restless-salad-23184734.dpl.myneon.app', {
+```
+
+----------------------------------------
+
+TITLE: Create Team API Key
+DESCRIPTION: Creates a new API key for the team. This function requires an options object to configure the API key, including a description and an optional expiration date. It returns a promise resolving to the newly created API key's first view.
+SOURCE: https://neon.com/docs/neon-auth/sdk/react/types/team
+
+LANGUAGE: typescript
+CODE:
+```
+declare function createApiKey(options: {
+  description: string;
+  expiresAt?: Date;
+}): Promise<TeamApiKeyFirstView>
+```
+
+----------------------------------------
+
+TITLE: API: Neon Default Branch Size Limits
+DESCRIPTION: Describes the default branch size limits set by Neon, which are not directly configurable but can be queried via the Get Project or Get Project List API endpoints. These limits are returned as part of the project details.
+SOURCE: https://neon.com/docs/guides/consumption-limits
+
+LANGUAGE: APIDOC
+CODE:
+```
+Default branch limits (returned by Get project / Get project list API):
+  branch_logical_size_limit: (MiB) Default logical size limit for a branch in MiB.
+  branch_logical_size_limit_bytes: (Bytes) Default logical size limit for a branch in Bytes.
+```
+
+----------------------------------------
+
+TITLE: Fetching Google Drive Files with OAuth Access Token
+DESCRIPTION: Shows how to retrieve an OAuth access token using `account.useAccessToken()` and then use it to make an authenticated API call to Google Drive. The example fetches a list of files.
+SOURCE: https://neon.com/docs/neon-auth/concepts/oauth
+
+LANGUAGE: TypeScript
+CODE:
+```
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useUser } from '@stackframe/stack';
+
+export default function Page() {
+  const user = useUser({ or: 'redirect' });
+  const account = user.useConnectedAccount('google', {
+    or: 'redirect',
+    scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+  });
+  const { accessToken } = account.useAccessToken();
+  const [response, setResponse] = useState<any>();
+
+  useEffect(() => {
+    fetch('https://www.googleapis.com/drive/v3/files', {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    })
+      .then((res) => res.json())
+      .then((data) => setResponse(data))
+      .catch((err) => console.error(err));
+  }, [accessToken]);
+
+  return <div>{response ? JSON.stringify(response) : 'Loading...'}</div>;
+}
+```
+
+----------------------------------------
+
+TITLE: Neon Auth React SDK API Reference
+DESCRIPTION: Reference documentation for the Neon Auth React SDK, detailing its objects, types, and hooks for integrating authentication into React applications.
+SOURCE: https://neon.com/docs/neon-auth/sdk/react/objects/stack-app
+
+LANGUAGE: APIDOC
+CODE:
+```
+React SDK:
+  Overview:
+    - SDK Overview
+  Objects:
+    - StackClientApp
+  Types:
+    - User
+    - Team
+    - Project
+  Hooks:
+    - useStackApp
+    - useUser
+```
+
+----------------------------------------
+
+TITLE: List Neon Auth Integrations
+DESCRIPTION: Retrieves a list of all active authentication provider integrations configured for your Neon project. This endpoint provides an overview of existing auth setups, including their provider, project ID, branch, and creation timestamp.
+SOURCE: https://neon.com/docs/guides/neon-auth-api
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: GET /api/v2/projects/{project_id}/auth/integrations
+Example Response:
+{
+  "data": [
+    {
+      "auth_provider": "stack",
+      "auth_provider_project_id": "proj-example-123",
+      "branch_id": "br-example-123",
+      "db_name": "neondb",
+      "created_at": "2024-03-19T12:00:00Z",
+      "owned_by": "neon",
+      "jwks_url": "https://api.stack-auth.com/api/v1/projects/proj-example-123/.well-known/jwks.json"
+    }
+  ]
+}
+```
+
+LANGUAGE: curl
+CODE:
+```
+curl --request GET \
+     --url 'https://console.neon.tech/api/v2/projects/{project_id}/auth/integrations' \
+     --header 'authorization: Bearer $NEON_API_KEY' | jq
+```

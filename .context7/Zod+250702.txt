@@ -1,0 +1,1435 @@
+TITLE: Define and Validate Data with Zod Object Schema in TypeScript
+DESCRIPTION: This TypeScript example demonstrates how to define a Zod object schema for user data. It shows how to validate untrusted input using the `parse` method, which ensures type safety and extracts the validated data, making it safe for subsequent use.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/index.mdx#_snippet_0
+
+LANGUAGE: typescript
+CODE:
+```
+import * as z from "zod/v4";
+
+const User = z.object({
+  name: z.string(),
+});
+
+// some untrusted data...
+const input = { /* stuff */ };
+
+// the parsed result is validated and type safe!
+const data = User.parse(input);
+
+// so you can use it with confidence :)
+console.log(data.name);
+```
+
+----------------------------------------
+
+TITLE: Handle Zod Validation Errors with Try-Catch
+DESCRIPTION: This snippet demonstrates how to catch `ZodError` instances thrown by the `.parse()` method when validation fails. It shows how to access granular validation issues from the `error.issues` property. Examples are provided for both standard Zod and Zod Mini error handling.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/basics.mdx#_snippet_4
+
+LANGUAGE: ts
+CODE:
+```
+try {
+  Player.parse({ username: 42, xp: "100" });
+} catch(error){
+  if(error instanceof z.ZodError){
+    error.issues; 
+    /* [
+      {
+        expected: 'string',
+        code: 'invalid_type',
+        path: [ 'username' ],
+        message: 'Invalid input: expected string'
+      },
+      {
+        expected: 'number',
+        code: 'invalid_type',
+        path: [ 'xp' ],
+        message: 'Invalid input: expected number'
+      }
+    ] */
+  }
+}
+```
+
+LANGUAGE: ts
+CODE:
+```
+try {
+  Player.parse({ username: 42, xp: "100" });
+} catch(error){
+  if(error instanceof z.core.$ZodError){
+    error.issues; 
+    /* [
+      {
+        expected: 'string',
+        code: 'invalid_type',
+        path: [ 'username' ],
+        message: 'Invalid input: expected string'
+      },
+      {
+        expected: 'number',
+        code: 'invalid_type',
+        path: [ 'xp' ],
+        message: 'Invalid input: expected number'
+      }
+    ] */
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Validate Data with Zod's `.parse()` Method
+DESCRIPTION: Explains how to use the `.parse()` method on any Zod schema to synchronously validate input data, returning the fully typed value on success or throwing an error on failure.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_99
+
+LANGUAGE: ts
+CODE:
+```
+const stringSchema = z.string();
+
+stringSchema.parse("fish"); // => returns "fish"
+stringSchema.parse(12); // throws error
+```
+
+----------------------------------------
+
+TITLE: Define Basic Zod Transform for Type Coercion
+DESCRIPTION: Demonstrates how to define a basic transform schema in Zod and Zod Mini to coerce input values to strings, showing its usage with different input types.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_105
+
+LANGUAGE: ts
+CODE:
+```
+const castToString = z.transform((val) => String(val));
+
+castToString.parse("asdf"); // => "asdf"
+castToString.parse(123); // => "123"
+castToString.parse(true); // => "true"
+```
+
+LANGUAGE: ts
+CODE:
+```
+const castToString = z.transform((val) => String(val));
+
+z.parse(castToString, "asdf"); // => "asdf"
+z.parse(castToString, 123); // => "123"
+z.parse(castToString, true); // => "true"
+```
+
+----------------------------------------
+
+TITLE: Define Zod Object Schema (TypeScript)
+DESCRIPTION: Demonstrates how to define a basic Zod object schema with required properties and how to infer its corresponding TypeScript type.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_47
+
+LANGUAGE: ts
+CODE:
+```
+// all properties are required by default
+const Dog = z.object({
+  name: z.string(),
+  age: z.number(),
+});
+
+// extract the inferred type like this
+type Dog = z.infer<typeof Dog>;
+
+// equivalent to:
+type Dog = {
+  name: string;
+  age: number;
+};
+```
+
+----------------------------------------
+
+TITLE: Use Zod's Convenience `.transform()` Method
+DESCRIPTION: Demonstrates the shorthand `.transform()` method available directly on Zod schemas for common piping patterns, simplifying schema definition. Note that Zod Mini does not have an equivalent.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_108
+
+LANGUAGE: ts
+CODE:
+```
+const stringToLength = z.string().transform(val => val.length); 
+```
+
+----------------------------------------
+
+TITLE: Validating and Transforming Data Simultaneously in Zod
+DESCRIPTION: This example shows how to combine validation and transformation logic within a single `.transform()` method. It utilizes the `ctx.addIssue()` method to register validation errors and `z.NEVER` to return early, providing a concise way to handle invalid inputs during the transformation process.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_111
+
+LANGUAGE: ts
+CODE:
+```
+const numberInString = z.string().transform((val, ctx) => {
+  const parsed = parseInt(val);
+  if (isNaN(parsed)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Not a number",
+    });
+
+    // This is a special symbol you can use to
+    // return early from the transform function.
+    // It has type `never` so it does not affect the
+    // inferred return type.
+    return z.NEVER;
+  }
+  return parsed;
+});
+```
+
+----------------------------------------
+
+TITLE: Define Recipe Zod Object Schema (TypeScript)
+DESCRIPTION: Defines a sample `Recipe` Zod object schema with `id`, `name`, and `ingredients` properties, used as a base for demonstrating the `.pick()` and `.omit()` methods.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_52
+
+LANGUAGE: ts
+CODE:
+```
+const Recipe = z.object({
+  id: z.string(),
+  name: z.string(),
+  ingredients: z.array(z.string()),
+});
+```
+
+----------------------------------------
+
+TITLE: Zod Object Intersection and Merging
+DESCRIPTION: Demonstrates how to create logical AND types for Zod objects using `z.intersection` and the `and()` method. It also highlights the recommendation to use `merge()` for object types due to better utility methods.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_82
+
+LANGUAGE: typescript
+CODE:
+```
+const Person = z.object({
+  name: z.string(),
+});
+
+const Employee = z.object({
+  role: z.string(),
+});
+
+const EmployedPerson = z.intersection(Person, Employee);
+
+// equivalent to:
+const EmployedPerson = Person.and(Employee);
+```
+
+----------------------------------------
+
+TITLE: Extend Zod object schema using shape destructuring (recommended)
+DESCRIPTION: Shows the recommended way to extend a Zod object schema by destructuring the original schema's `shape` property into a new `z.object()`. This approach offers advantages like using language-level features, compatibility with Zod and Zod Mini, and better TypeScript performance, avoiding limitations of the `.extend()` method.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_58
+
+LANGUAGE: ts
+CODE:
+```
+const DogWithBreed = z.object({
+  ...Dog.shape,
+  breed: z.string(),
+});
+```
+
+----------------------------------------
+
+TITLE: Disallow Unknown Keys in Zod Object Schemas with .strict()
+DESCRIPTION: Explains the `.strict()` method, which enforces that only defined keys are allowed in the input. If any unknown keys are present, Zod will throw a `ZodError`, preventing unexpected data from being processed.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_62
+
+LANGUAGE: typescript
+CODE:
+```
+const person = z
+  .object({
+    name: z.string(),
+  })
+  .strict();
+
+person.parse({
+  name: "bob dylan",
+  extraKey: 61,
+});
+// => throws ZodError
+```
+
+----------------------------------------
+
+TITLE: Asynchronous Data Transformation with Zod
+DESCRIPTION: This example illustrates how to perform asynchronous operations within a Zod `.transform()` method, such as fetching data from an external source. It's crucial to note that schemas containing async transforms require the use of `parseAsync()` or `safeParseAsync()` for proper execution.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_113
+
+LANGUAGE: ts
+CODE:
+```
+const IdToUser = z
+  .string()
+  .uuid()
+  .transform(async (id) => {
+    return await getUserById(id);
+  });
+```
+
+----------------------------------------
+
+TITLE: Setting Default Values in Zod Schemas
+DESCRIPTION: This snippet demonstrates how to assign default values to a Zod schema using the `.default()` method. It covers both static default values and dynamic default values provided by a function, which are re-executed whenever `undefined` input is encountered.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_114
+
+LANGUAGE: ts
+CODE:
+```
+const stringWithDefault = z.string().default("tuna");
+
+stringWithDefault.parse(undefined); // => "tuna"
+
+const numberWithRandomDefault = z.number().default(Math.random);
+
+numberWithRandomDefault.parse(undefined); // => 0.4413456736055323
+numberWithRandomDefault.parse(undefined); // => 0.1871840107401901
+numberWithRandomDefault.parse(undefined); // => 0.7223408162401552
+```
+
+----------------------------------------
+
+TITLE: Omit specific keys from Zod object schema
+DESCRIPTION: Demonstrates how to create a new Zod schema by excluding specified keys from an existing schema, inspired by TypeScript's `Omit` utility type. Examples include both the instance method (`.omit()`) and the utility function (`z.omit()`) for Zod and Zod Mini.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_61
+
+LANGUAGE: ts zod
+CODE:
+```
+const RecipeNoId = Recipe.omit({ id: true });
+```
+
+LANGUAGE: ts zod/v4-mini
+CODE:
+```
+const RecipeNoId = z.omit(Recipe, { id: true });
+```
+
+----------------------------------------
+
+TITLE: Pick specific keys from Zod object schema
+DESCRIPTION: Illustrates how to create a new Zod schema containing only specified keys from an existing schema, inspired by TypeScript's `Pick` utility type. Examples include both the instance method (`.pick()`) and the utility function (`z.pick()`) for Zod and Zod Mini.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_60
+
+LANGUAGE: ts zod
+CODE:
+```
+const JustTheTitle = Recipe.pick({ title: true });
+```
+
+LANGUAGE: ts zod/v4-mini
+CODE:
+```
+const JustTheTitle = z.pick(Recipe, { title: true });
+```
+
+----------------------------------------
+
+TITLE: Create a Zod Record Schema with Union Type Keys
+DESCRIPTION: Illustrates defining a Zod record schema where keys can be a union of string, number, or symbol types, allowing for flexible object structures. This is useful when object keys might originate from different primitive types.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_85
+
+LANGUAGE: ts
+CODE:
+```
+const Keys = z.union([z.string(), z.number(), z.symbol()]);
+const AnyObject = z.record(Keys, z.unknown());
+// Record<string | number | symbol, unknown>
+```
+
+----------------------------------------
+
+TITLE: Define Zod Object Schema with Optional Properties
+DESCRIPTION: Shows how to make specific properties within a Zod object schema optional using `.optional()` for standard Zod or `z.optional()` for Zod Mini.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_50
+
+LANGUAGE: ts
+CODE:
+```
+const Dog = z.object({
+  name: z.string(),
+  age: z.number().optional(),
+});
+
+Dog.parse({ name: "Yeller" }); // ✅
+```
+
+LANGUAGE: ts zod/v4-mini
+CODE:
+```
+const Dog = z.object({
+  name: z.string(),
+  age: z.optional(z.number())
+});
+
+Dog.parse({ name: "Yeller" }); // ✅
+```
+
+----------------------------------------
+
+TITLE: Create Zod Intersection Type with .and()
+DESCRIPTION: A convenience method for creating intersection types in Zod. It combines the current schema with another schema, requiring a value to be valid if it matches both of the combined types simultaneously.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_124
+
+LANGUAGE: ts
+CODE:
+```
+const nameAndAge = z
+  .object({ name: z.string() })
+  .and(z.object({ age: z.number() })); // { name: string } & { age: number }
+
+// equivalent to
+z.intersection(z.object({ name: z.string() }), z.object({ age: z.number() }));
+```
+
+----------------------------------------
+
+TITLE: Define and Parse a Zod Schema
+DESCRIPTION: This snippet demonstrates how to define a basic Zod object schema for user data and then parse an untrusted input. The result is a strongly typed and validated object, ensuring type safety and data integrity.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/zod/README.md#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+import * as z from "zod/v4";
+
+const User = z.object({
+  name: z.string()
+});
+
+// some untrusted data...
+const input = {
+  /* stuff */
+};
+
+// the parsed result is validated and type safe!
+const data = User.parse(input);
+
+// so you can use it with confidence :)
+console.log(data.name);
+```
+
+----------------------------------------
+
+TITLE: Extract Input and Output Types from Transformed Zod Schemas
+DESCRIPTION: Explains how Zod schemas track both input and output types, especially relevant for schemas with transforms. It demonstrates using `z.input<typeof schema>` and `z.output<typeof schema>` to separately extract these types, clarifying that `z.infer` returns the output type.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_130
+
+LANGUAGE: TypeScript
+CODE:
+```
+const stringToNumber = z.string().transform((val) => val.length);
+
+// ⚠️ Important: z.infer returns the OUTPUT type!
+type input = z.input<typeof stringToNumber>; // string
+type output = z.output<typeof stringToNumber>; // number
+
+// equivalent to z.output!
+type inferred = z.infer<typeof stringToNumber>; // number
+```
+
+----------------------------------------
+
+TITLE: Define a Dynamic Custom Error Message with a Function
+DESCRIPTION: Illustrates how to provide a function as the `error` parameter to generate dynamic error messages at parse time, known as an error map. This allows for flexible message generation.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/error-customization.mdx#_snippet_5
+
+LANGUAGE: ts
+CODE:
+```
+z.string({ error: ()=>`[${Date.now()}]: Validation failure.` });
+```
+
+----------------------------------------
+
+TITLE: Extend Zod object schema using .extend() method
+DESCRIPTION: Demonstrates how to add new fields to an existing Zod object schema using the `.extend()` method, showing both the instance method (Zod) and the utility function (Zod Mini) approach. This API can overwrite existing fields.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_57
+
+LANGUAGE: ts
+CODE:
+```
+const DogWithBreed = Dog.extend({
+  breed: z.string(),
+});
+```
+
+LANGUAGE: ts zod/v4-mini
+CODE:
+```
+const DogWithBreed = z.extend(Dog, {
+  breed: z.string(),
+});
+```
+
+----------------------------------------
+
+TITLE: Chain Zod Schemas with .pipe() for Validation Pipelines
+DESCRIPTION: Shows how to use the `.pipe()` method to chain Zod schemas, creating a validation pipeline. This example transforms a string to its length and then validates that the resulting number is at least 5, demonstrating its utility for post-transform validation.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_128
+
+LANGUAGE: TypeScript
+CODE:
+```
+z.string()
+  .transform((val) => val.length)
+  .pipe(z.number().min(5));
+```
+
+----------------------------------------
+
+TITLE: Define Readonly Object Schema in Zod
+DESCRIPTION: Demonstrates how to mark an object schema as readonly using both the `.readonly()` method on an object schema (Zod) and the `z.readonly()` utility function (Zod Mini), showing the inferred TypeScript type `Readonly<{ name: string }>`. This makes the properties of the parsed object immutable at the type level.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_121
+
+LANGUAGE: ts
+CODE:
+```
+const ReadonlyUser = z.object({ name: z.string() }).readonly();
+type ReadonlyUser = z.infer<typeof ReadonlyUser>;
+// Readonly<{ name: string }>
+```
+
+LANGUAGE: ts
+CODE:
+```
+const ReadonlyUser = z.readonly(z.object({ name: z.string() }));
+type ReadonlyUser = z.infer<typeof ReadonlyUser>;
+// Readonly<{ name: string }>
+```
+
+----------------------------------------
+
+TITLE: Infer Zod Schema Output Type with z.infer
+DESCRIPTION: Demonstrates the basic usage of `z.infer<typeof mySchema>` to extract the TypeScript output type of a Zod schema. It includes an example showing how type checking works with the inferred type.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_129
+
+LANGUAGE: TypeScript
+CODE:
+```
+const A = z.string();
+type A = z.infer<typeof A>; // string
+
+const u: A = 12; // TypeError
+const u: A = "asdf"; // compiles
+```
+
+----------------------------------------
+
+TITLE: Create Discriminated Union Schema with z.discriminatedUnion
+DESCRIPTION: Demonstrates how to create a Zod schema for a discriminated union, enabling efficient parsing and precise error reporting based on a specified discriminator key.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_73
+
+LANGUAGE: ts
+CODE:
+```
+const myUnion = z.discriminatedUnion("status", [
+  z.object({ status: z.literal("success"), data: z.string() }),
+  z.object({ status: z.literal("failed"), error: z.instanceof(Error) })
+]);
+
+myUnion.parse({ status: "success", data: "yippie ki yay" });
+```
+
+----------------------------------------
+
+TITLE: Define Custom Zod Schema with Type and Validation
+DESCRIPTION: Illustrates how to create a custom Zod schema for a specific TypeScript type (e.g., a template string literal like `${number}px`) using `z.custom()`. It includes a validation function to ensure the input value matches the desired format, demonstrating parsing and error handling.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_126
+
+LANGUAGE: ts
+CODE:
+```
+const px = z.custom<`${number}px`>((val) => {
+  return typeof val === "string" ? /^\d+px$/.test(val) : false;
+});
+
+type px = z.infer<typeof px>; // `${number}px`
+
+px.parse("42px"); // "42px"
+px.parse("42vw"); // throws;
+```
+
+----------------------------------------
+
+TITLE: Allow Unknown Keys in Zod Object Schemas with .passthrough()
+DESCRIPTION: Illustrates the `.passthrough()` method, which prevents Zod from stripping unrecognized keys during parsing. By default, Zod removes unknown properties, but `.passthrough()` allows them to remain in the parsed output.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_61
+
+LANGUAGE: typescript
+CODE:
+```
+const person = z.object({
+  name: z.string(),
+});
+
+person.parse({
+  name: "bob dylan",
+  extraKey: 61,
+});
+// => { name: "bob dylan" }
+// extraKey has been stripped
+```
+
+LANGUAGE: typescript
+CODE:
+```
+person.passthrough().parse({
+  name: "bob dylan",
+  extraKey: 61,
+});
+// => { name: "bob dylan", extraKey: 61 }
+```
+
+----------------------------------------
+
+TITLE: Combine Zod Schemas with Transforms using Pipes
+DESCRIPTION: Illustrates how to use Zod's `pipe` method to chain a string schema with a transform that calculates string length, demonstrating data flow through validation and transformation.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_107
+
+LANGUAGE: ts
+CODE:
+```
+const stringToLength = z.string().pipe(z.transform(val => val.length));
+
+stringToLength.parse("hello"); // => 5
+```
+
+LANGUAGE: ts
+CODE:
+```
+const stringToLength = z.pipe(z.string(), z.transform(val => val.length));
+
+z.parse(stringToLength, "hello"); // => 5
+```
+
+----------------------------------------
+
+TITLE: Define Zod Nested Discriminated Unions
+DESCRIPTION: Demonstrates how to create nested discriminated unions in Zod. This advanced use case allows for complex schema structures where discriminators are used at multiple levels, enabling Zod to optimize parsing strategies.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_80
+
+LANGUAGE: ts
+CODE:
+```
+const BaseError = { status: z.literal("failed"), message: z.string() };
+const MyErrors = z.discriminatedUnion("code", [
+  z.object({ ...BaseError, code: z.literal(400) }),
+  z.object({ ...BaseError, code: z.literal(401) }),
+  z.object({ ...BaseError, code: z.literal(500) }),
+]);
+
+const MyResult = z.discriminatedUnion("status", [
+  z.object({ status: z.literal("success"), data: z.string() }),
+  MyErrors
+]);
+```
+
+----------------------------------------
+
+TITLE: Define Zod Discriminated Union Schema
+DESCRIPTION: Shows how to define a Zod schema for a discriminated union using `z.discriminatedUnion()`. It specifies 'status' as the discriminator key and provides two object options, one for 'success' and one for 'failed' status.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_79
+
+LANGUAGE: ts
+CODE:
+```
+const MyResult = z.discriminatedUnion("status", [
+  z.object({ status: z.literal("success"), data: z.string() }),
+  z.object({ status: z.literal("failed"), error: z.string() }),
+]);
+```
+
+----------------------------------------
+
+TITLE: Define Strict Zod Object Schema
+DESCRIPTION: Explains how to use `z.strictObject()` to create an object schema that throws an error if any unknown keys are present in the input data.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_52
+
+LANGUAGE: ts
+CODE:
+```
+const StrictDog = z.strictObject({
+  name: z.string(),
+});
+
+StrictDog.parse({ name: "Yeller", extraKey: true });
+// ❌ throws
+```
+
+----------------------------------------
+
+TITLE: Zod Type Refinements with Type Predicates
+DESCRIPTION: This snippet illustrates how to use a TypeScript type predicate within Zod's `.superRefine()` method to narrow down the inferred type of the validated value. This is particularly useful for maintaining type safety and enabling subsequent chained operations to operate on a more specific type, even after initial validation checks.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_108
+
+LANGUAGE: ts
+CODE:
+```
+const schema = z
+  .object({
+    first: z.string(),
+    second: z.number(),
+  })
+  .nullable()
+  .superRefine((arg, ctx): arg is { first: string; second: number } => {
+    if (!arg) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom, // customize your issue
+        message: "object should exist",
+      });
+    }
+
+    return z.NEVER; // The return value is not used, but we need to return something to satisfy the typing
+  })
+  // here, TS knows that arg is not null
+  .refine((arg) => arg.first === "bob", "`first` is not `bob`!");
+```
+
+----------------------------------------
+
+TITLE: Make Zod Schema Optional with .optional()
+DESCRIPTION: A convenience method that returns an optional version of a Zod schema. This means the schema will accept `undefined` in addition to its original type, effectively making the field optional.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_118
+
+LANGUAGE: ts
+CODE:
+```
+const optionalString = z.string().optional(); // string | undefined
+
+// equivalent to
+z.optional(z.string());
+```
+
+----------------------------------------
+
+TITLE: Define a Zod Record Schema for String Key-Value Pairs
+DESCRIPTION: Demonstrates how to create a Zod schema for a `Record<string, string>` type, including type inference and parsing an example object. This validates objects where both keys and values are strings.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_84
+
+LANGUAGE: ts
+CODE:
+```
+const IdCache = z.record(z.string(), z.string());
+type IdCache = z.infer<typeof IdCache>; // Record<string, string>
+
+IdCache.parse({
+  carlotta: "77d2586b-9e8e-4ecf-8b21-ea7e0530eadd",
+  jimmie: "77d2586b-9e8e-4ecf-8b21-ea7e0530eadd",
+});
+```
+
+----------------------------------------
+
+TITLE: Validating `as const` Objects as Native Enums with Zod
+DESCRIPTION: Illustrates how `z.nativeEnum()` can validate an object defined with `as const`, inferring its literal types, and provides parsing examples.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_39
+
+LANGUAGE: ts
+CODE:
+```
+const Fruits = {
+  Apple: "apple",
+  Banana: "banana",
+  Cantaloupe: 3,
+} as const;
+
+const FruitEnum = z.nativeEnum(Fruits);
+type FruitEnum = z.infer<typeof FruitEnum>; // "apple" | "banana" | 3
+
+FruitEnum.parse("apple"); // passes
+FruitEnum.parse("banana"); // passes
+FruitEnum.parse(3); // passes
+FruitEnum.parse("Cantaloupe"); // fails
+```
+
+----------------------------------------
+
+TITLE: Merge Zod Object Schemas with .merge (TypeScript)
+DESCRIPTION: Shows how to combine two Zod object schemas into a new one using the `.merge()` method. Explains how properties are handled if keys overlap (properties of the second schema override the first).
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_51
+
+LANGUAGE: ts
+CODE:
+```
+const BaseTeacher = z.object({ students: z.array(z.string()) });
+const HasID = z.object({ id: z.string() });
+
+const Teacher = BaseTeacher.merge(HasID);
+type Teacher = z.infer<typeof Teacher>; // => { students: string[], id: string }
+```
+
+----------------------------------------
+
+TITLE: Zod Asynchronous Refinements with .refine
+DESCRIPTION: Shows how to implement asynchronous validation logic using the `.refine` method. Note that `parseAsync` must be used when dealing with async refinements.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_104
+
+LANGUAGE: TypeScript
+CODE:
+```
+const userId = z.string().refine(async (id) => {
+  // verify that ID exists in database
+  return true;
+});
+```
+
+----------------------------------------
+
+TITLE: Zod Interleaving Transforms and Refinements
+DESCRIPTION: Demonstrates how Zod allows interleaving of schema transforms and custom refinements, enabling complex data processing and validation pipelines.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_105
+
+LANGUAGE: TypeScript
+CODE:
+```
+z.string()
+  .transform((val) => val.length)
+  .refine((val) => val > 25);
+```
+
+----------------------------------------
+
+TITLE: Validating Instances with Zod's z.instanceof()
+DESCRIPTION: Illustrates how to use `z.instanceof()` to validate if an input is an instance of a specific class. This is particularly useful for validating against types exported from third-party libraries.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_93
+
+LANGUAGE: typescript
+CODE:
+```
+class Test {
+  name: string;
+}
+
+const TestSchema = z.instanceof(Test);
+
+TestSchema.parse(new Test()); // ✅
+TestSchema.parse("whatever"); // ❌
+```
+
+----------------------------------------
+
+TITLE: Zod refine Method for Custom Synchronous Validation
+DESCRIPTION: Explains how to use `.refine` to add custom synchronous validation logic to any Zod schema. It covers basic usage, customizing error messages, and specifying error paths.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_103
+
+LANGUAGE: APIDOC
+CODE:
+```
+.refine(validator: (data:T)=>any, params?: RefineParams)
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+const myString = z.string().refine((val) => val.length <= 255, {
+  message: "String can't be more than 255 characters"
+});
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+type RefineParams = {
+  message?: string;
+  path?: (string | number)[];
+  params?: object;
+}
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+const longString = z.string().refine(
+  (val) => val.length > 10,
+  (val) => ({ message: `${val} is not more than 10 characters` })
+);
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+const passwordForm = z
+  .object({
+    password: z.string(),
+    confirm: z.string()
+  })
+  .refine((data) => data.password === data.confirm, {
+    message: "Passwords don't match",
+    path: ["confirm"]
+  });
+
+passwordForm.parse({ password: "asdf", confirm: "qwer" });
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+ZodError {
+  issues: [{
+    "code": "custom",
+    "path": [ "confirm" ],
+    "message": "Passwords don't match"
+  }]
+}
+```
+
+----------------------------------------
+
+TITLE: Constraining Zod Schema Inputs in Generic Functions
+DESCRIPTION: This function demonstrates how to constrain the allowable input schemas for a generic function by specifying types for the `ZodType`'s generic parameters. Here, `T extends z.ZodType<string>` ensures only schemas that infer to `string` are accepted.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/generic-functions.mdx#_snippet_9
+
+LANGUAGE: ts
+CODE:
+```
+function makeSchemaOptional<T extends z.ZodType<string>>(schema: T) {
+  return schema.optional();
+}
+```
+
+----------------------------------------
+
+TITLE: Detailed Email Validation in Zod
+DESCRIPTION: Explores Zod's email validation capabilities, including the default strict regex, how to provide a custom regex pattern, and how to use Zod's pre-defined regexes for HTML5, RFC 5322, and Unicode email validation.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_12
+
+LANGUAGE: ts
+CODE:
+```
+z.email();
+```
+
+LANGUAGE: ts
+CODE:
+```
+/^(?!\.)(?!.*\.\.)([a-z0-9_'+\-\.]*)[a-z0-9_+-]@([a-z0-9][a-z0-9\-]*\.)+[a-z]{2,}$/i
+```
+
+LANGUAGE: ts
+CODE:
+```
+z.email({ pattern: /your regex here/ });
+```
+
+LANGUAGE: ts
+CODE:
+```
+// Zod's default email regex
+z.email();
+z.email({ pattern: z.regexes.email }); // equivalent
+
+// the regex used by browsers to validate input[type=email] fields
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/email
+z.email({ pattern: z.regexes.html5Email });
+
+// the classic emailregex.com regex (RFC 5322)
+z.email({ pattern: z.regexes.rfc5322Email });
+
+// a loose regex that allows Unicode (good for intl emails)
+z.email({ pattern: z.regexes.unicodeEmail });
+```
+
+----------------------------------------
+
+TITLE: Define Optional Zod Schema
+DESCRIPTION: Demonstrates how to make a Zod schema optional, allowing `undefined` inputs, using `z.optional()` or the `.optional()` method. Covers both standard Zod and Zod Mini syntax.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_42
+
+LANGUAGE: ts
+CODE:
+```
+z.optional(z.literal("yoda")); // or z.literal("yoda").optional()
+```
+
+LANGUAGE: ts
+CODE:
+```
+z.optional(z.literal("yoda"));
+```
+
+----------------------------------------
+
+TITLE: Define Zod Object Schema with Extension (Zod v4)
+DESCRIPTION: This TypeScript snippet demonstrates defining a Zod object schema and extending it using `z.object` and `A.extend` with Zod v4. It highlights how Zod v4 drastically reduces TypeScript compiler instantiations compared to Zod v3, improving compilation performance for schema definitions.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/v4/index.mdx#_snippet_7
+
+LANGUAGE: ts
+CODE:
+```
+import * as z from "zod/v4";
+
+export const A = z.object({
+  a: z.string(),
+  b: z.string(),
+  c: z.string(),
+  d: z.string(),
+  e: z.string()
+});
+
+export const B = A.extend({
+  f: z.string(),
+  g: z.string(),
+  h: z.string()
+});
+```
+
+----------------------------------------
+
+TITLE: Validate Local ISO Datetimes with Zod (No Timezone)
+DESCRIPTION: Explains how to validate ISO 8601 datetime strings that do not include any timezone information (unqualified datetimes) using `z.iso.datetime({ local: true })`. This is useful for handling datetimes in a local context where the timezone is implicitly understood.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_20
+
+LANGUAGE: ts
+CODE:
+```
+const schema = z.iso.datetime({ local: true });
+schema.parse("2020-01-01T06:15:01"); // ✅
+schema.parse("2020-01-01T06:15"); // ✅ seconds optional
+```
+
+----------------------------------------
+
+TITLE: Define a Zod Set Schema
+DESCRIPTION: Shows how to create a Zod schema for a `Set<number>`, including type inference and parsing an example Set instance. This validates that all elements within a Set conform to the specified type.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_89
+
+LANGUAGE: ts
+CODE:
+```
+const NumberSet = z.set(z.number());
+type NumberSet = z.infer<typeof NumberSet>; // Set<number>
+
+const mySet: NumberSet = new Set();
+mySet.add(1);
+mySet.add(2);
+NumberSet.parse(mySet);
+```
+
+----------------------------------------
+
+TITLE: Asynchronous Validation with Zod's `.parseAsync()`
+DESCRIPTION: Demonstrates using `.parseAsync()` for schemas that involve asynchronous refinements or transforms, returning a Promise that resolves with the validated data on success or rejects with an error on failure.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_100
+
+LANGUAGE: ts
+CODE:
+```
+const stringSchema = z.string().refine(async (val) => val.length <= 8);
+
+await stringSchema.parseAsync("hello"); // => returns "hello"
+await stringSchema.parseAsync("hello world"); // => throws error
+```
+
+----------------------------------------
+
+TITLE: Define Zod Function Schema for Input-Only Validation
+DESCRIPTION: Shows that the `output` field is optional when defining a `z.function()` schema. If omitted, the schema will only validate the function's inputs, providing flexibility when only input validation is required.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_131
+
+LANGUAGE: ts
+CODE:
+```
+const MyFunction = z.function({
+  input: [z.string()], // parameters (must be an array or a ZodTuple)
+});
+
+const computeTrimmedLength = MyFunction.implement((input) => input.trim.length);
+```
+
+----------------------------------------
+
+TITLE: Validate URL Hostname with Regex in Zod
+DESCRIPTION: Shows how to constrain the hostname of a URL using a regular expression with `z.url({ hostname: /^example\.com$/ })`. This allows for stricter validation of the domain part of the URL.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_15
+
+LANGUAGE: ts
+CODE:
+```
+const schema = z.url({ hostname: /^example\.com$/ });
+
+schema.parse("https://example.com"); // ✅
+schema.parse("https://zombo.com"); // ❌
+```
+
+----------------------------------------
+
+TITLE: Validate ISO 8601 Datetimes with Zod (No Offset)
+DESCRIPTION: Demonstrates `z.iso.datetime()` for validating ISO 8601 formatted strings. By default, this method does not allow timezone offsets or local (timezone-less) datetimes, enforcing a strict UTC format.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_18
+
+LANGUAGE: ts
+CODE:
+```
+const datetime = z.iso.datetime();
+
+datetime.parse("2020-01-01T06:15:00Z"); // ✅
+datetime.parse("2020-01-01T06:15:00.123Z"); // ✅
+datetime.parse("2020-01-01T06:15:00.123456Z"); // ✅ (arbitrary precision)
+datetime.parse("2020-01-01T06:15:00+02:00"); // ❌ (offsets not allowed)
+datetime.parse("2020-01-01T06:15:00"); // ❌ (local not allowed)
+```
+
+----------------------------------------
+
+TITLE: Create Optional Schema with z.optional (TypeScript)
+DESCRIPTION: Demonstrates how to create an optional schema by wrapping an existing schema with `z.optional()`. Shows parsing `undefined` and the inferred TypeScript type, which includes `undefined`.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_41
+
+LANGUAGE: ts
+CODE:
+```
+const schema = z.optional(z.string());
+
+schema.parse(undefined); // => returns undefined
+type A = z.infer<typeof schema>; // string | undefined
+```
+
+----------------------------------------
+
+TITLE: Runtime Immutability with Zod Readonly Schemas
+DESCRIPTION: Demonstrates the runtime effect of Zod's `readonly` schemas. After parsing, the resulting object is frozen using `Object.freeze()`, which prevents any modifications to its properties and will throw a `TypeError` if an attempt is made to reassign a property.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_123
+
+LANGUAGE: ts
+CODE:
+```
+const result = ReadonlyUser.parse({ name: "fido" });
+result.name = "simba"; // throws TypeError
+```
+
+LANGUAGE: ts
+CODE:
+```
+const result = z.parse(ReadonlyUser, { name: "fido" });
+result.name = "simba"; // throws TypeError
+```
+
+----------------------------------------
+
+TITLE: Unwrap ZodOptional Schema (TypeScript)
+DESCRIPTION: Shows how to extract the original schema from a `ZodOptional` instance using the `.unwrap()` method, confirming it returns the wrapped schema.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_43
+
+LANGUAGE: ts
+CODE:
+```
+const stringSchema = z.string();
+const optionalString = stringSchema.optional();
+optionalString.unwrap() === stringSchema; // true
+```
+
+----------------------------------------
+
+TITLE: Define TypeScript Discriminated Union Type
+DESCRIPTION: Illustrates a standard TypeScript discriminated union type and how to narrow its type based on the discriminator key ('status'). This demonstrates the native TypeScript concept that Zod's discriminated unions aim to replicate.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_77
+
+LANGUAGE: ts
+CODE:
+```
+type MyResult =
+  | { status: "success"; data: string }
+  | { status: "failed"; error: string };
+
+function handleResult(result: MyResult){
+  if(result.status === "success"){
+    result.data; // string
+  } else {
+    result.error; // string
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Control Precision for ISO Time Validation in Zod
+DESCRIPTION: Explains how to use the `precision` parameter with `z.iso.time()` to constrain the allowable decimal precision for ISO 8601 time strings. This allows enforcing minute, second, decisecond, centisecond, or millisecond precision.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_24
+
+LANGUAGE: ts
+CODE:
+```
+z.iso.time({ precision: -1 }); // HH:MM (minute precision)
+z.iso.time({ precision: 0 }); // HH:MM:SS (second precision)
+z.iso.time({ precision: 1 }); // HH:MM:SS.s (decisecond precision)
+z.iso.time({ precision: 2 }); // HH:MM:SS.ss (centisecond precision)
+z.iso.time({ precision: 3 }); // HH:MM:SS.sss (millisecond precision)
+```
+
+----------------------------------------
+
+TITLE: Defining Recursive and Mutually Recursive Zod Types
+DESCRIPTION: Explains the new approach in Zod 4 for defining recursive object types without manual type casting. It demonstrates both a self-referencing recursive type (Category) and mutually recursive types (User and Post), along with showing that standard Zod methods are fully available on these types.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/v4/index.mdx#_snippet_23
+
+LANGUAGE: TypeScript
+CODE:
+```
+const Category = z.object({
+  name: z.string(),
+  get subcategories(){
+    return z.array(Category)
+  }
+});
+
+type Category = z.infer<typeof Category>;
+// { name: string; subcategories: Category[] }
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+const User = z.object({
+  email: z.email(),
+  get posts(){
+    return z.array(Post)
+  }
+});
+
+const Post = z.object({
+  title: z.string(),
+  get author(){
+    return User
+  }
+});
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+Post.pick({ title: true })
+Post.partial();
+Post.extend({ publishDate: z.date() });
+```
+
+----------------------------------------
+
+TITLE: Access Zod Array Element Schema with .element
+DESCRIPTION: Demonstrates how to access the underlying schema for elements within a Zod array using the `.element` property. This is useful for inspecting or reusing the schema applied to individual array items.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_65
+
+LANGUAGE: typescript
+CODE:
+```
+stringArray.element; // => string schema
+```
+
+----------------------------------------
+
+TITLE: Create Nullable Schema with z.nullable (TypeScript)
+DESCRIPTION: Demonstrates how to create a nullable schema by wrapping an existing schema with `z.nullable()`. Shows parsing both a valid value and `null`.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_44
+
+LANGUAGE: ts
+CODE:
+```
+const nullableString = z.nullable(z.string());
+nullableString.parse("asdf"); // => "asdf"
+nullableString.parse(null); // => null
+```
+
+----------------------------------------
+
+TITLE: Interleaving Zod `transform` and `refine` Methods
+DESCRIPTION: This snippet demonstrates that Zod's `.transform()` and `.refine()` methods can be freely interleaved within a schema definition. They are executed sequentially in the order they are declared, allowing for complex pipelines of data manipulation and validation.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_112
+
+LANGUAGE: ts
+CODE:
+```
+const nameToGreeting = z
+  .string()
+  .transform((val) => val.toUpperCase())
+  .refine((val) => val.length > 15)
+  .transform((val) => `Hello ${val}`)
+  .refine((val) => val.indexOf("!") === -1);
+```
+
+----------------------------------------
+
+TITLE: Validate Time Strings with Zod
+DESCRIPTION: Demonstrates the basic usage of `z.string().time()` to validate strings in `HH:MM` or `HH:MM:SS[.s+]` format. It shows examples of passing and failing validations, specifically highlighting that timezone offsets are not allowed.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_15
+
+LANGUAGE: TypeScript
+CODE:
+```
+const time = z.string().time();
+
+time.parse("00:00:00"); // pass
+time.parse("09:52:31"); // pass
+time.parse("09:52"); // pass
+time.parse("23:59:59.9999999"); // pass (arbitrary precision)
+
+time.parse("00:00:00.123Z"); // fail (no `Z` allowed)
+time.parse("00:00:00.123+02:00"); // fail (no offsets allowed)
+```
+
+----------------------------------------
+
+TITLE: Zod safeParseAsync Method for Asynchronous Validation
+DESCRIPTION: Illustrates the asynchronous version of `.safeParse`, aliased as `.spa`, for handling validation that involves asynchronous operations.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_102
+
+LANGUAGE: TypeScript
+CODE:
+```
+await stringSchema.safeParseAsync("billie");
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+await stringSchema.spa("billie");
+```
+
+----------------------------------------
+
+TITLE: Zod String Date Validation (YYYY-MM-DD)
+DESCRIPTION: Examples of `z.string().date()` validating strings in the `YYYY-MM-DD` format, highlighting its strictness regarding the exact format and valid date components.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_14
+
+LANGUAGE: ts
+CODE:
+```
+const date = z.string().date();
+
+date.parse("2020-01-01"); // pass
+date.parse("2020-1-1"); // fail
+date.parse("2020-01-32"); // fail
+```
+
+----------------------------------------
+
+TITLE: Define Any and Unknown Schemas in Zod
+DESCRIPTION: Explains how to use `z.any()` and `z.unknown()` to represent types that accept any value, mirroring TypeScript's `any` and `unknown` types.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_47
+
+LANGUAGE: ts
+CODE:
+```
+// allows any values
+z.any(); // inferred type: `any`
+z.unknown(); // inferred type: `unknown`
+```
+
+----------------------------------------
+
+TITLE: Control Precision for ISO Datetime Validation in Zod
+DESCRIPTION: Demonstrates how to constrain the allowable time precision for ISO 8601 datetime strings using the `precision` option in `z.iso.datetime()`. This allows specifying minute, second, millisecond, or other precisions for validation.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_21
+
+LANGUAGE: ts
+CODE:
+```
+const a = z.iso.datetime();
+a.parse("2020-01-01T06:15Z"); // ✅
+a.parse("2020-01-01T06:15:00Z"); // ✅
+a.parse("2020-01-01T06:15:00.123Z"); // ✅
+
+const b = z.iso.datetime({ precision: -1 }); // minute precision (no seconds)
+b.parse("2020-01-01T06:15Z"); // ✅
+b.parse("2020-01-01T06:15:00Z"); // ❌
+b.parse("2020-01-01T06:15:00.123Z"); // ❌
+
+const c = z.iso.datetime({ precision: 0 }); // second precision only
+c.parse("2020-01-01T06:15Z"); // ❌
+c.parse("2020-01-01T06:15:00Z"); // ✅
+c.parse("2020-01-01T06:15:00.123Z"); // ❌
+
+const d = z.iso.datetime({ precision: 3 }); // millisecond precision only
+d.parse("2020-01-01T06:15Z"); // ❌
+d.parse("2020-01-01T06:15:00Z"); // ❌
+d.parse("2020-01-01T06:15:00.123Z"); // ✅
+```
+
+----------------------------------------
+
+TITLE: Make Zod Schema Nullable with .nullable()
+DESCRIPTION: A convenience method that returns a nullable version of a Zod schema. This allows the schema to accept `null` as a valid value in addition to its original type.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_119
+
+LANGUAGE: ts
+CODE:
+```
+const nullableString = z.string().nullable(); // string | null
+
+// equivalent to
+z.nullable(z.string());
+```
+
+----------------------------------------
+
+TITLE: Implement Zod Transform with Custom Validation Logic
+DESCRIPTION: Shows how to use the `ctx` parameter within a Zod transform to perform custom validation logic, push issues, and return `z.NEVER` for invalid inputs, allowing for graceful error handling.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/api.mdx#_snippet_106
+
+LANGUAGE: ts
+CODE:
+```
+const coercedInt = z.transform((val, ctx) => {
+  try {
+    const parsed = Number.parseInt(String(val));
+    return parsed;
+  } catch (e) {
+    ctx.issues.push({
+      code: "custom",
+      message: "Not a number",
+      input: val,
+    });
+
+    // this is a special constant with type `never`
+    // returning it lets you exit the transform without impacting the inferred return type
+    return z.NEVER; 
+  }
+});
+```
+
+----------------------------------------
+
+TITLE: Format Zod Validation Errors into Nested Object
+DESCRIPTION: Illustrates how to use the `.format()` method on a `ZodError` object to transform the detailed `issues` array into a more user-friendly nested object structure. This formatted output is useful for presenting concise error messages to end-users.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_138
+
+LANGUAGE: TypeScript
+CODE:
+```
+const result = z
+  .object({
+    name: z.string(),
+  })
+  .safeParse({ name: 12 });
+
+if (!result.success) {
+  const formatted = result.error.format();
+  /* {
+    name: { _errors: [ 'Expected string, received number' ] }
+  } */
+
+  formatted.name?._errors;
+  // => ["Expected string, received number"]
+}
+```
+
+----------------------------------------
+
+TITLE: Define Union Type using Zod's .or() Method
+DESCRIPTION: Shows a convenient alternative to `z.union` using the `.or()` method directly on a schema to combine it with another type.
+SOURCE: https://github.com/colinhacks/zod/blob/main/packages/docs/content/packages/v3.mdx#_snippet_70
+
+LANGUAGE: ts
+CODE:
+```
+const stringOrNumber = z.string().or(z.number());
+```

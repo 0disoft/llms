@@ -1,0 +1,1286 @@
+TITLE: simpleParser() Function API Reference
+DESCRIPTION: API documentation for the `simpleParser` function, detailing its parameters and their expected types for parsing RFC 822 messages.
+SOURCE: https://nodemailer.com/extras/mailparser
+
+LANGUAGE: APIDOC
+CODE:
+```
+simpleParser(source, options)
+  source: Buffer | String | ReadableStream - containing the RFC 822 message.
+  options: Object - optional configuration (see Options).
+```
+
+----------------------------------------
+
+TITLE: MailComposer Class API Reference
+DESCRIPTION: API documentation for key methods of the MailComposer class, including "createReadStream()" for generating a readable stream of the email and "build(callback)" for constructing the message.
+SOURCE: https://nodemailer.com/extras/mailcomposer
+
+LANGUAGE: APIDOC
+CODE:
+```
+MailComposer:
+  createReadStream():
+    Description: Creates a readable stream of the email message.
+  build(callback):
+    Parameters:
+      callback: Function - Callback function (err, message)
+    Description: Builds the email message and provides it via a callback.
+```
+
+----------------------------------------
+
+TITLE: Nodemailer API: mail.message.transform Method
+DESCRIPTION: This API method allows attaching a stream.Transform object or a function returning one to the raw email message stream. The transformation is applied before the message reaches the transport, enabling modifications to the email content.
+SOURCE: https://nodemailer.com/plugins/create
+
+LANGUAGE: APIDOC
+CODE:
+```
+mail.message.transform(transformStream)
+Add a stream.Transform (or a function returning one) through which the raw message is piped before it reaches the transport.
+```
+
+----------------------------------------
+
+TITLE: Nodemailer Quick Email Send Example
+DESCRIPTION: A full code example demonstrating how to set up a Nodemailer transport and send an email, incorporating various address formatting options discussed.
+SOURCE: https://nodemailer.com/message/addresses
+
+LANGUAGE: JavaScript
+CODE:
+```
+const nodemailer = require("nodemailer");
+
+(async () => {
+  const transport = nodemailer.createTransport({
+    host: "smtp.example.com",
+    port: 587,
+    auth: {
+      user: "smtp-user",
+      pass: "smtp-pass"
+    }
+  });
+
+  await transport.sendMail({
+    from: '"Example Sender" <sender@example.com>',
+    to: ["recipient@example.com", { name: "Nodemailer User", address: "user@example.com" }],
+    subject: "Hello from Nodemailer",
+    text: "This demonstrates the different address formats."
+  });
+})();
+```
+
+----------------------------------------
+
+TITLE: Nodemailer API: mail.message.getAddresses Method
+DESCRIPTION: This API method returns an object containing parsed email addresses from various headers (From, Sender, Reply-To, To, Cc, Bcc). Each property is an array of { name, address } objects, providing structured access to recipient information.
+SOURCE: https://nodemailer.com/plugins/create
+
+LANGUAGE: APIDOC
+CODE:
+```
+mail.message.getAddresses()
+Returns an object containing parsed addresses from From, Sender, Reply‑To, To, Cc, and Bcc headers. Each property is an array of { name, address }. Absent fields are omitted.
+```
+
+----------------------------------------
+
+TITLE: Nodemailer Plugin Example: Log Final HTML Content
+DESCRIPTION: A practical example of a Nodemailer plugin function that utilizes `mail.resolveContent` to asynchronously retrieve and log the final HTML content of an email. This snippet demonstrates proper error handling and the invocation of the `done()` callback.
+SOURCE: https://nodemailer.com/plugins/create
+
+LANGUAGE: JavaScript
+CODE:
+```
+function plugin(mail, done) {
+  mail.resolveContent(mail.data, "html", (err, html) => {
+    if (err) return done(err);
+    console.log("HTML contents: %s", html.toString());
+    done();
+  });
+}
+```
+
+----------------------------------------
+
+TITLE: Nodemailer Community Transports Reference
+DESCRIPTION: This API documentation lists popular community-maintained transports for Nodemailer. These transports are available as separate NPM packages and require installation, with usage instructions found in their respective project READMEs.
+SOURCE: https://nodemailer.com/transports
+
+LANGUAGE: APIDOC
+CODE:
+```
+Transport: Mailtrap
+  Description: Deliver messages to your Mailtrap inbox for safe testing
+  NPM: https://github.com/railsware/mailtrap-nodejs#nodemailer-transport
+
+Transport: Mailgun
+  Description: Send via Mailgun’s HTTP API
+  NPM: https://www.npmjs.com/package/nodemailer-mailgun-transport
+
+Transport: Custom
+  Description: Implement business-specific logic by authoring your own transport
+  Reference: /plugins/create#transports
+```
+
+----------------------------------------
+
+TITLE: Nodemailer Bundled Transports Reference
+DESCRIPTION: This API documentation outlines the transports that are built into Nodemailer by default. It provides a brief purpose for each and a reference to their detailed documentation pages.
+SOURCE: https://nodemailer.com/transports
+
+LANGUAGE: APIDOC
+CODE:
+```
+Transport: SMTP
+  Purpose: Default transport that speaks the SMTP protocol
+  Reference: /smtp
+
+Transport: sendmail
+  Purpose: Pipes the generated message to a local sendmail-compatible binary
+  Reference: /transports/sendmail
+
+Transport: SES
+  Purpose: Sends mail via the AWS SES API using the AWS SDK
+  Reference: /transports/ses
+
+Transport: stream
+  Purpose: Returns the generated rfc822 stream instead of sending (useful for testing)
+  Reference: /transports/stream
+```
+
+----------------------------------------
+
+TITLE: MAIL FROM DSN Parameters and Example
+DESCRIPTION: Defines the Delivery Status Notification (DSN) parameters available for the `MAIL FROM` command in SMTP, including `RET` for return type and `ENVID` for envelope identification. Includes an example of a client sending a `MAIL FROM` command with these parameters.
+SOURCE: https://nodemailer.com/extras/smtp-server
+
+LANGUAGE: APIDOC
+CODE:
+```
+RET=FULL or RET=HDRS
+ENVID=<envelope-id>
+```
+
+LANGUAGE: SMTP
+CODE:
+```
+// Client sends: MAIL FROM:<sender@example.com> RET=FULL ENVID=abc123
+```
+
+----------------------------------------
+
+TITLE: Nodemailer DKIM Options API
+DESCRIPTION: This API documentation defines the configuration options available for DKIM signing within Nodemailer. It lists required parameters such as `domainName`, `keySelector`, and `privateKey`, along with optional settings for multiple keys, hash algorithms, header field selection, and caching behavior.
+SOURCE: https://nodemailer.com/dkim
+
+LANGUAGE: APIDOC
+CODE:
+```
+DKIM Options:
+  domainName: string (required) - Primary domain used in the `d=` tag.
+  keySelector: string (required) - DNS selector, forms the left‑hand side of the TXT record (`<selector>._domainkey.<domain>`).
+  privateKey: string | Buffer (required) - PEM‑formatted private key that matches the public key published in DNS.
+  keys: Array<{domainName, keySelector, privateKey}> - Sign with multiple keys (key rotation, sub‑domains, etc.). Setting this ignores the three single‑key fields above.
+  hashAlgo: 'sha256' | 'sha1' - Body‑hash algorithm. Default: 'sha256'.
+  headerFieldNames: string - Explicit colon‑separated list of header fields to sign. Default: see spec.
+  skipFields: string - Colon‑separated list of header fields *not* to sign (e.g. `message-id:date` when your ESP rewrites them).
+  cacheDir: string | false - Folder used for temporary files when streaming large messages. Default: false.
+  cacheTreshold: number - Bytes kept in memory before switching to disk when `cacheDir` is enabled. Default: 131072 (128 kB).
+```
+
+----------------------------------------
+
+TITLE: Nodemailer createTransport API Reference
+DESCRIPTION: Documentation for the `createTransport` function, which returns a reusable transporter instance. It details the `transport` parameter, accepting an object, URL string, or plugin instance, and the optional `defaults` object for common message values.
+SOURCE: https://nodemailer.com/usage
+
+LANGUAGE: APIDOC
+CODE:
+```
+createTransport(transport[, defaults])
+Parameters:
+  transport: Object | String | Plugin
+    Description: Either a configuration object (like the SMTP example above), a connection URL ("smtp://user:pass@smtp.example.com:587"), or a pre-configured transport plugin instance.
+  defaults: Object (optional)
+    Description: Values that will be merged into every message you send with this transporter.
+Returns: reusable transporter instance
+```
+
+----------------------------------------
+
+TITLE: Import Nodemailer in CommonJS
+DESCRIPTION: This snippet demonstrates how to import the Nodemailer library using the CommonJS `require` syntax, which is the assumed setup for all subsequent JavaScript examples provided in the documentation.
+SOURCE: https://nodemailer.com/dkim
+
+LANGUAGE: JavaScript
+CODE:
+```
+const nodemailer = require("nodemailer");
+```
+
+----------------------------------------
+
+TITLE: Nodemailer `compile` Plugin Example: Generate Text from HTML
+DESCRIPTION: An example of a `compile` plugin that automatically generates a plain text version of an email from its HTML content if the `text` property is missing in `mail.data`. This plugin operates early in the pipeline, before the MIME tree is built, allowing direct modification of the original message data.
+SOURCE: https://nodemailer.com/plugins/create
+
+LANGUAGE: JavaScript
+CODE:
+```
+transporter.use("compile", (mail, done) => {
+  if (!mail.data.text && mail.data.html) {
+    mail.data.text = mail.data.html.replace(/<[^>]*>/g, " ");
+  }
+  done();
+});
+```
+
+----------------------------------------
+
+TITLE: Nodemailer Plugin API Arguments
+DESCRIPTION: Outlines the standard arguments passed to every Nodemailer plugin function, including custom transports. Plugins receive a `mail` object containing message details and a `done` callback function that must be invoked upon completion, optionally with an error.
+SOURCE: https://nodemailer.com/plugins/create
+
+LANGUAGE: APIDOC
+CODE:
+```
+Every plugin -- including custom transports -- receives two arguments:
+1. mail – Details about the message being processed
+2. done – Callback function (err?) which must be invoked when your plugin finishes (pass an Error to abort the send)
+```
+
+----------------------------------------
+
+TITLE: Nodemailer Transporter Runtime Helpers API
+DESCRIPTION: Documentation for utility methods available on a Nodemailer transporter instance, including methods to check idle status and close the connection pool.
+SOURCE: https://nodemailer.com/smtp/pooled
+
+LANGUAGE: APIDOC
+CODE:
+```
+transporter.isIdle():
+  Returns: boolean
+  Description: Checks if the transporter's connection pool is currently idle, meaning no messages are waiting to be sent.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+transporter.close():
+  Description: Closes the transporter's connection pool. This method ensures all pending messages are sent and then terminates the underlying connections gracefully.
+```
+
+----------------------------------------
+
+TITLE: Example of generated List-* email headers
+DESCRIPTION: This snippet shows the resulting `List-*` headers that are generated in an email when using the `list` option as configured in the complete Nodemailer example. It illustrates how the different `list` object formats translate into standard email header lines.
+SOURCE: https://nodemailer.com/message/list-headers
+
+LANGUAGE: plaintext
+CODE:
+```
+List-Help: <mailto:admin@example.com?subject=help>
+List-Unsubscribe: <http://example.com> (Comment)
+List-Subscribe: <mailto:admin@example.com?subject=subscribe>
+List-Subscribe: <http://example.com> (Subscribe)
+List-Post: <http://example.com/post>, <mailto:admin@example.com?subject=post> (Post)
+```
+
+----------------------------------------
+
+TITLE: Install MailParser via npm
+DESCRIPTION: This snippet demonstrates how to install the MailParser library using npm, the Node.js package manager, to get started with email parsing.
+SOURCE: https://nodemailer.com/extras/mailparser
+
+LANGUAGE: bash
+CODE:
+```
+npm install mailparser
+```
+
+----------------------------------------
+
+TITLE: Complete DSN Handling Example with SMTP Server (JavaScript)
+DESCRIPTION: This comprehensive JavaScript example illustrates how to configure an `SMTPServer` to handle Delivery Status Notification (DSN) parameters for `MAIL FROM`, `RCPT TO`, and `DATA` commands. It shows accessing `ret`, `envid`, `notify`, and `orcpt` in their respective callbacks and processing the message with DSN context.
+SOURCE: https://nodemailer.com/extras/smtp-server
+
+LANGUAGE: JavaScript
+CODE:
+```
+const server = new SMTPServer({
+  hideENHANCEDSTATUSCODES: false, // Required for DSN functionality
+  onMailFrom(address, session, callback) {
+    const { ret, envid } = session.envelope.dsn;
+    console.log(`Mail from ${address.address}, RET=${ret}, ENVID=${envid}`);
+    callback();
+  },
+
+  onRcptTo(address, session, callback) {
+    const { notify, orcpt } = address.dsn;
+    console.log(`Rcpt to ${address.address}, NOTIFY=${notify.join(',')}, ORCPT=${orcpt}`);
+    callback();
+  },
+
+  onData(stream, session, callback) {
+    // Process message with DSN context
+    const { dsn } = session.envelope;
+    console.log(`Processing message with DSN: ${JSON.stringify(dsn)}`);
+
+    stream.on('end', () => {
+      callback(null, 'Message accepted for delivery');
+    });
+    stream.resume();
+  }
+});
+```
+
+----------------------------------------
+
+TITLE: SMTP Enhanced Status Code Examples
+DESCRIPTION: Illustrates common SMTP response codes with their corresponding Enhanced Status Codes (X.Y.Z format) and descriptions, as defined in RFC 2034/3463.
+SOURCE: https://nodemailer.com/extras/smtp-server
+
+LANGUAGE: APIDOC
+CODE:
+```
+Enhanced Status Code Examples:
+  250 2.0.0 - General success
+  250 2.1.0 - MAIL FROM accepted
+  250 2.1.5 - RCPT TO accepted
+  250 2.6.0 - Message accepted
+  501 5.5.4 - Syntax error in parameters
+  550 5.1.1 - Mailbox unavailable
+  552 5.2.2 - Storage exceeded
+```
+
+----------------------------------------
+
+TITLE: Quick Start: Send Email with Nodemailer and AWS SES
+DESCRIPTION: Demonstrates how to configure Nodemailer to send emails using Amazon SES. This example initializes the AWS SESv2Client, creates a Nodemailer transport pointing to SES, and sends a message, including optional SES-specific parameters like ConfigurationSetName and EmailTags.
+SOURCE: https://nodemailer.com/transports/ses
+
+LANGUAGE: JavaScript
+CODE:
+```
+const nodemailer = require("nodemailer");
+const { SESv2Client, SendEmailCommand } = require("@aws-sdk/client-sesv2");
+
+// 1. Configure the AWS SDK client (uses default credential chain if omitted)
+const sesClient = new SESv2Client({ region: "us‑east‑1" });
+
+// 2. Create a Nodemailer transport that points at SES
+const transporter = nodemailer.createTransport({
+  SES: { sesClient, SendEmailCommand }
+});
+
+// 3. Send the message
+const info = await transporter.sendMail({
+  from: "sender@example.com",
+  to: "recipient@example.com",
+  subject: "Hello from Nodemailer + SES",
+  text: "I hope this message gets sent!",
+  // Any SendEmailCommand input can be set under the `ses` key:
+  ses: {
+    ConfigurationSetName: "my‑config‑set",
+    EmailTags: [{ Name: "tag_name", Value: "tag_value" }]
+  }
+});
+
+console.log(info.envelope); // { from: ..., to: [...] }
+console.log(info.messageId); // SES MessageId
+```
+
+----------------------------------------
+
+TITLE: Nodemailer JSON Message Payload Example
+DESCRIPTION: Illustrates the typical structure of the JSON payload generated by Nodemailer when `jsonTransport` is enabled. This example shows how sender, recipient, subject, text, headers, and message ID are represented in the serialized JSON string.
+SOURCE: https://nodemailer.com/transports/stream
+
+LANGUAGE: json
+CODE:
+```
+{
+  "from": { "address": "sender@example.com", "name": "" },
+  "to": [{ "address": "recipient@example.com", "name": "" }],
+  "subject": "JSON message",
+  "text": "I hope this message gets JSON‑ified!",
+  "headers": {},
+  "messageId": "<77a3458f-8070-339d-095f-85bb73f3db8e@example.com>"
+}
+```
+
+----------------------------------------
+
+TITLE: Nodemailer `mail.resolveContent` Method
+DESCRIPTION: Explains the `mail.resolveContent` helper method, designed to convert various Nodemailer content types (e.g., file paths, URLs, Streams, Buffers) into a plain `String` or `Buffer`. It provides a code example demonstrating its asynchronous usage with a callback.
+SOURCE: https://nodemailer.com/plugins/create
+
+LANGUAGE: APIDOC
+CODE:
+```
+mail.resolveContent(obj, key, callback): Convert any Nodemailer content type (file path, URL, Stream, Buffer, etc.) into a plain String or Buffer.
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+mail.resolveContent(sourceObject, propertyName, (err, value) => {
+  if (err) return done(err);
+  // value is String or Buffer depending on the input type
+});
+```
+
+----------------------------------------
+
+TITLE: RCPT TO DSN Parameters and Example
+DESCRIPTION: Defines the Delivery Status Notification (DSN) parameters available for the `RCPT TO` command in SMTP, including `NOTIFY` for DSN notification conditions and `ORCPT` for the original recipient. Includes an example of a client sending a `RCPT TO` command with these parameters.
+SOURCE: https://nodemailer.com/extras/smtp-server
+
+LANGUAGE: APIDOC
+CODE:
+```
+NOTIFY=SUCCESS,FAILURE,DELAY,NEVER
+ORCPT=<original-recipient>
+```
+
+LANGUAGE: SMTP
+CODE:
+```
+// Client sends: RCPT TO:<user@example.com> NOTIFY=SUCCESS,FAILURE ORCPT=rfc822;user@example.com
+```
+
+----------------------------------------
+
+TITLE: Nodemailer Attachment Object Properties API Reference
+DESCRIPTION: This section outlines the properties used to define an attachment object in Nodemailer. It includes options for filename, content, encoding, path, content type, and disposition.
+SOURCE: https://nodemailer.com/extras/mailcomposer
+
+LANGUAGE: APIDOC
+CODE:
+```
+Attachment Properties:
+  filename: File name reported to the recipient. Unicode allowed. Set false to omit.
+  cid: Content‑ID used for embedding inline images (cid: URLs). Setting cid automatically sets contentDisposition: 'inline' and moves the part under multipart/related.
+  content: string, Buffer, or Stream with the attachment data.
+  encoding: Encoding to convert a string content into a Buffer – e.g. base64, hex.
+  path: File path or HTTP(S)/data URI to stream from instead of including data directly. Great for large files.
+  contentType: MIME type. Auto‑detected from filename if absent.
+  contentTransferEncoding: Transfer encoding (quoted-printable, base64, …). Auto‑detected if absent.
+  contentDisposition: attachment (default) or inline.
+  headers: Extra headers for this part – { 'X-My-Header': 'value' }.
+  raw: Provide raw MIME for the part; all other options are ignored. Accepts string, Buffer, Stream, or another attachment‑like object.
+```
+
+----------------------------------------
+
+TITLE: Nodemailer example: Sending email with custom SMTP envelope
+DESCRIPTION: This JavaScript example demonstrates how to initialize a Nodemailer transport and send an email where the SMTP envelope's `MAIL FROM` and `RCPT TO` addresses are explicitly defined using the `envelope` property, distinct from the message's `From` and `To` headers. It showcases how to achieve fine-grained control over email routing.
+SOURCE: https://nodemailer.com/smtp/envelope
+
+LANGUAGE: JavaScript
+CODE:
+```
+const nodemailer = require("nodemailer");
+
+async function main() {
+  // Create a transport. Replace with your own transport options.
+  const transport = nodemailer.createTransport({
+    sendmail: true,
+  });
+
+  const info = await transport.sendMail({
+    from: "Mailer <mailer@example.com>", // Header From:
+    to: "Daemon <daemon@example.com>", // Header To:
+    envelope: {
+      from: "bounce+12345@example.com", // MAIL FROM:
+      to: [
+        // RCPT TO:
+        "daemon@example.com",
+        "mailer@example.com",
+      ],
+    },
+    subject: "Custom SMTP envelope",
+    text: "Hello!",
+  });
+
+  console.log("Envelope used:", info.envelope);
+  // => { from: 'bounce+12345@example.com', to: [ 'daemon@example.com', 'mailer@example.com' ] }
+}
+
+main().catch(console.error);
+```
+
+----------------------------------------
+
+TITLE: Implement a Custom Nodemailer Transport (Node.js)
+DESCRIPTION: This comprehensive example demonstrates how to create a custom Nodemailer transport. A transport is an object with name, version, and a send(mail, done) method, allowing developers to define their own email sending logic, such as piping to stdout for testing.
+SOURCE: https://nodemailer.com/plugins/create
+
+LANGUAGE: javascript
+CODE:
+```
+const nodemailer = require("nodemailer");
+
+const transport = {
+  name: require("./package.json").name, // e.g. "SMTP"
+  version: require("./package.json").version, // e.g. "1.0.0"
+
+  /**
+   * Actually sends the message.
+   * @param {Object} mail – the same `mail` object plugins receive
+   * @param {Function} done – callback `(err, info)`
+   */
+  send(mail, done) {
+    const input = mail.message.createReadStream();
+    const envelope = mail.message.getEnvelope();
+    const messageId = mail.message.messageId();
+
+    // For demo purposes we just pipe to stdout
+    input.pipe(process.stdout);
+    input.on("end", () => {
+      done(null, {
+        envelope,
+        messageId,
+      });
+    });
+  },
+
+  /* Optional: close long‑lived connections (e.g. pooled SMTP) */
+  close() {
+    // Clean‑up resources here
+  },
+
+  /* Optional: report idling state (used by pooling)
+       Should return `true` when the transport has capacity to send more messages. */
+  isIdle() {
+    return true;
+  },
+};
+
+const transporter = nodemailer.createTransport(transport);
+
+transporter.sendMail(
+  {
+    from: "sender@example.com",
+    to: "receiver@example.com",
+    subject: "Hello",
+    text: "Hello world!",
+  },
+  console.log
+);
+```
+
+----------------------------------------
+
+TITLE: Nodemailer Attachment Examples
+DESCRIPTION: Illustrates various methods for attaching files in Nodemailer, including plain text, binary buffers, local files (streamed), readable streams, remote URLs, base64-encoded strings, data URIs, and pre-built MIME nodes. It demonstrates how to specify content, paths, and encoding for different attachment scenarios.
+SOURCE: https://nodemailer.com/message/attachments
+
+LANGUAGE: javascript
+CODE:
+```
+const fs = require("fs");
+
+// inside a message object
+attachments: [
+  // 1. Plain text
+  {
+    filename: "hello.txt",
+    content: "Hello world!",
+  },
+
+  // 2. Binary (Buffer)
+  {
+    filename: "buffer.txt",
+    content: Buffer.from("Hello world!", "utf8"),
+  },
+
+  // 3. Local file (streamed)
+  {
+    filename: "report.pdf",
+    path: "/absolute/path/to/report.pdf",
+  },
+
+  // 4. Implicit filename & type (derived from path)
+  {
+    path: "/absolute/path/to/image.png",
+  },
+
+  // 5. Readable stream
+  {
+    filename: "notes.txt",
+    content: fs.createReadStream("./notes.txt"),
+  },
+
+  // 6. Custom content‑type
+  {
+    filename: "data.bin",
+    content: Buffer.from("deadbeef", "hex"),
+    contentType: "application/octet-stream",
+  },
+
+  // 7. Remote file
+  {
+    filename: "license.txt",
+    href: "https://raw.githubusercontent.com/nodemailer/nodemailer/master/LICENSE",
+  },
+
+  // 8. Base64‑encoded string
+  {
+    filename: "photo.jpg",
+    content: "/9j/4AAQSkZJRgABAQAAAQABAAD…", // truncated
+    encoding: "base64",
+  },
+
+  // 9. Data URI
+  {
+    path: "data:text/plain;base64,SGVsbG8gd29ybGQ=",
+  },
+
+  // 10. Pre‑built MIME node
+  {
+    raw: ["Content-Type: text/plain; charset=utf-8", 'Content-Disposition: attachment; filename="greeting.txt"', "", "Hello world!"].join("\r\n"),
+  },
+];
+```
+
+----------------------------------------
+
+TITLE: Verify Nodemailer Transport Configuration
+DESCRIPTION: Demonstrates how to use `transporter.verify()` to check the SMTP configuration for connectivity and authentication, providing examples for both Promise-based (async/await) and callback-style error handling.
+SOURCE: https://nodemailer.com/smtp
+
+LANGUAGE: JavaScript
+CODE:
+```
+// Promise style (Node.js 8+)
+try {
+  await transporter.verify();
+  console.log("Server is ready to take our messages");
+} catch (err) {
+  console.error("Verification failed", err);
+}
+
+// Callback style
+transporter.verify((error, success) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log("Server is ready to take our messages");
+  }
+});
+```
+
+----------------------------------------
+
+TITLE: Start SMTPServer Listening
+DESCRIPTION: Begin listening for incoming SMTP/LMTP connections on a specified port and optional host. An optional callback function can be provided to execute once the server starts listening.
+SOURCE: https://nodemailer.com/extras/smtp-server
+
+LANGUAGE: JavaScript
+CODE:
+```
+server.listen(port[, host][, callback]);
+```
+
+----------------------------------------
+
+TITLE: Nodemailer Attachment Configuration Example (JavaScript)
+DESCRIPTION: This JavaScript code snippet demonstrates various ways to define attachments in Nodemailer, including plain strings, buffers, local files, streams, remote URLs, base64 encoded strings, and data URIs. It shows how to configure `mailOptions.attachments` with different content sources.
+SOURCE: https://nodemailer.com/extras/mailcomposer
+
+LANGUAGE: javascript
+CODE:
+```
+const fs = require("fs");
+
+const mailOptions = {
+  /* …other fields… */
+  attachments: [
+    // UTF‑8 string
+    { filename: "hello.txt", content: "hello world!" },
+
+    // Binary Buffer
+    { filename: "buffer.txt", content: Buffer.from("hello world!", "utf‑8") },
+
+    // File on disk (streams the file)
+    { filename: "file.txt", path: "/path/to/file.txt" },
+
+    // Derive filename & contentType from path
+    { path: "/path/to/logo.png" },
+
+    // Readable stream
+    { filename: "stream.txt", content: fs.createReadStream("file.txt") },
+
+    // Custom content type
+    { filename: "data.bin", content: "hello world!", contentType: "application/octet-stream" },
+
+    // Remote URL
+    { filename: "license.txt", path: "https://raw.githubusercontent.com/nodemailer/nodemailer/master/LICENSE" },
+
+    // Base64‑encoded string
+    { filename: "base64.txt", content: "aGVsbG8gd29ybGQh", encoding: "base64" },
+
+    // Data URI
+    { path: "data:text/plain;base64,aGVsbG8gd29ybGQ=" }
+  ]
+};
+```
+
+----------------------------------------
+
+TITLE: Send an Email with Nodemailer
+DESCRIPTION: This asynchronous JavaScript example demonstrates how to send an email using the `transporter.sendMail()` method. It covers setting sender, recipients, subject, plain text, and HTML body, and logs the message ID and preview URL upon successful delivery, or an error if sending fails.
+SOURCE: https://nodemailer.com/usage
+
+LANGUAGE: javascript
+CODE:
+```
+(async () => {
+  try {
+    const info = await transporter.sendMail({
+      from: "\"Example Team\" <team@example.com>", // sender address
+      to: "alice@example.com, bob@example.com", // list of receivers
+      subject: "Hello", // Subject line
+      text: "Hello world?", // plain text body
+      html: "<b>Hello world?</b>", // html body
+    });
+
+    console.log("Message sent: %s", info.messageId);
+    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+  } catch (err) {
+    console.error("Error while sending mail", err);
+  }
+})();
+```
+
+----------------------------------------
+
+TITLE: Nodemailer Message Fields API Reference
+DESCRIPTION: This section details the available fields for configuring an email message object in Nodemailer. It covers sender/recipient information, subject, various body content types (text, HTML, AMP), and other message metadata.
+SOURCE: https://nodemailer.com/extras/mailcomposer
+
+LANGUAGE: APIDOC
+CODE:
+```
+Message Fields:
+  from: Sender address. Accepts plain email ('sender@server.com') or formatted ('Sender Name <sender@server.com>'). See Address formatting.
+  sender: The address that goes into the Sender: header.
+  to: Primary recipients (comma‑separated string or array).
+  cc: Carbon‑copy recipients.
+  bcc: Blind carbon‑copy recipients (see BCC for showing the header).
+  replyTo: Address that goes into the Reply‑To: header.
+  inReplyTo: The Message‑ID this message replies to.
+  references: Space‑separated or array of Message‑IDs.
+  subject: Message subject.
+  text: Plain‑text body. Accepts string, Buffer, Stream, or { path: '…' }.
+  html: HTML body. Same input formats as text.
+  watchHtml: Apple Watch–specific HTML. Most modern watches render regular text/html, so this is rarely used.
+  amp: AMP4EMAIL HTML version. Must be a complete, valid AMP email document. Clients that cannot render AMP fall back to html. See this blog post.
+  icalEvent: iCalendar event. Same input formats as text/html. Provide { method: 'REQUEST', content: icsString } to override the default PUBLISH method. UTF‑8 only.
+  headers: Additional headers – object or array. { 'X-Key': 'value' } or [{ key: 'X-Key', value: 'v1' }].
+  attachments: Array of attachment objects.
+  alternatives: Array of alternatives to include in a multipart/alternative part.
+  envelope: Custom SMTP envelope (see SMTP envelope).
+  messageId: Custom Message‑ID. Autogenerated if omitted.
+  date: Custom Date header. Defaults to current UTC time.
+  encoding: Transfer encoding for text parts.
+  raw: Provide the entire raw message yourself. Set headers/envelope manually.
+  textEncoding: Force quoted‑printable or base64 for text parts. If omitted, encoding is detected.
+  disableUrlAccess: true → error if a part tries to fetch a URL.
+  disableFileAccess: true → error if a part tries to read the file system.
+  newline: Line break style – \r\n, \n, or leave undefined to keep input unchanged.
+```
+
+----------------------------------------
+
+TITLE: Nodemailer: Gmail 3-Legged OAuth2 Authentication API
+DESCRIPTION: This API documentation outlines the `auth` object structure for configuring Nodemailer to use 3-legged OAuth2 authentication with Gmail. This flow requires user consent to obtain a `refreshToken`, which Nodemailer then uses to automatically generate and refresh `accessToken`s. Key parameters include the user's email, OAuth2 client ID and secret, and the refresh token.
+SOURCE: https://nodemailer.com/smtp/oauth2
+
+LANGUAGE: APIDOC
+CODE:
+```
+auth – authentication object
+  type – 'OAuth2'
+  user – e‑mail address (required)
+  clientId – OAuth2 client ID (required)
+  clientSecret – OAuth2 client secret (required)
+  refreshToken – refresh token (required)
+  accessToken – access token (optional; Nodemailer auto‑refreshes if missing or expired)
+  expires – UNIX expiration timestamp for accessToken (optional)
+  accessUrl – custom token endpoint (optional; defaults to Gmail)
+```
+
+----------------------------------------
+
+TITLE: Nodemailer `icalEvent` Message Option API
+DESCRIPTION: Documents the `icalEvent` object structure and its properties used within a Nodemailer message to attach iCalendar data. It specifies required properties, types, defaults, and mutual exclusivity constraints for content sources.
+SOURCE: https://nodemailer.com/message/calendar-events
+
+LANGUAGE: APIDOC
+CODE:
+```
+icalEvent Object:
+  Description: Configuration object for embedding iCalendar data in an email.
+  Properties:
+    method:
+      Type: string
+      Default: 'PUBLISH'
+      Description: Calendar METHOD (e.g., 'REQUEST', 'REPLY', 'CANCEL'). Case-insensitive.
+    filename:
+      Type: string
+      Default: 'invite.ics'
+      Description: Attachment file name displayed in the email client.
+    content:
+      Type: string | Buffer | Stream
+      Description: Raw iCalendar data. (Mutually exclusive with 'path' and 'href')
+    path:
+      Type: string
+      Description: Absolute or relative path to a local .ics file. (Mutually exclusive with 'content' and 'href')
+    href:
+      Type: string
+      Description: HTTPS/HTTP URL from which Nodemailer should fetch calendar data. (Mutually exclusive with 'content' and 'path')
+    encoding:
+      Type: string
+      Description: Encoding to apply when 'content' is a string (e.g., 'base64', 'hex').
+  Constraints:
+    - Exactly one of 'content', 'path', or 'href' must be provided.
+```
+
+----------------------------------------
+
+TITLE: Implement Password-Based Authentication (PLAIN/LOGIN)
+DESCRIPTION: This example provides a concrete implementation for password-based authentication methods like PLAIN or LOGIN within the `onAuth` callback. It checks for a hardcoded username and password, returning an error for invalid credentials or accepting with the username for valid ones.
+SOURCE: https://nodemailer.com/extras/smtp-server
+
+LANGUAGE: javascript
+CODE:
+```
+onAuth(auth, session, cb) {
+  if (auth.username !== "alice" || auth.password !== "s3cr3t") {
+    return cb(new Error("Invalid username or password"));
+  }
+  cb(null, { user: auth.username });
+}
+```
+
+----------------------------------------
+
+TITLE: Registering a Custom Proxy Handler in Nodemailer
+DESCRIPTION: This example demonstrates how to register a custom proxy handler for a specific URL scheme (e.g., 'myproxy:') using `transporter.set()`. It shows how to establish a connection using Node.js's `net` module and return the socket to Nodemailer after a custom handshake with the proxy.
+SOURCE: https://nodemailer.com/smtp/proxies
+
+LANGUAGE: JavaScript
+CODE:
+```
+const transporter = nodemailer.createTransport({
+  host: "smtp.example.com",
+  port: 465,
+  secure: true,
+  proxy: "myproxy://127.0.0.1:9999"
+});
+
+// Register a handler for the "myproxy:" URL scheme
+transporter.set("proxy_handler_myproxy", (proxy, options, done) => {
+  const net = require("net");
+
+  console.log(`Proxy host=%s port=%s`, proxy.hostname, proxy.port);
+
+  const socket = net.connect(proxy.port, proxy.hostname, () => {
+    // ...hand‑shake with your proxy here...
+
+    // Return the socket to Nodemailer
+    done(null, { connection: socket });
+  });
+});
+```
+
+----------------------------------------
+
+TITLE: Repeat header keys with an array in Nodemailer
+DESCRIPTION: This example shows how to create multiple header lines with the same key by providing an array of values to the `headers` property.
+SOURCE: https://nodemailer.com/message/custom-headers
+
+LANGUAGE: javascript
+CODE:
+```
+const message = {
+  // …
+  headers: {
+    "x-my-key": ["value for row 1", "value for row 2", "value for row 3"]
+  }
+};
+```
+
+----------------------------------------
+
+TITLE: Add simple custom headers in Nodemailer
+DESCRIPTION: This example demonstrates how to add basic custom headers to a Nodemailer message object using the `headers` property with key-value pairs.
+SOURCE: https://nodemailer.com/message/custom-headers
+
+LANGUAGE: javascript
+CODE:
+```
+const message = {
+  // other fields …
+  headers: {
+    "x-my-key": "header value",
+    "x-another-key": "another value"
+  }
+};
+```
+
+----------------------------------------
+
+TITLE: Nodemailer `envelope` property API definition
+DESCRIPTION: Defines the structure and available fields for the `envelope` property within Nodemailer's message configuration. This property allows explicit control over the `MAIL FROM` and `RCPT TO` commands used by the SMTP server, separate from the email headers.
+SOURCE: https://nodemailer.com/smtp/envelope
+
+LANGUAGE: APIDOC
+CODE:
+```
+envelope: {
+  from: 'string', // Used for the MAIL FROM command (return-path).
+  to: 'string | string[]', // Added to the RCPT TO list.
+  cc: 'string | string[]', // Optional. Merged into to when Envelope is generated.
+  bcc: 'string | string[]' // Optional. Merged into to when Envelope is generated.
+}
+```
+
+----------------------------------------
+
+TITLE: Configure and send email with List-* headers in Nodemailer
+DESCRIPTION: This JavaScript example demonstrates how to create a Nodemailer transport and send an email with various RFC 2369 `List-*` headers. It showcases different value formats for the `list` option, including single URLs, URLs with comments, and multiple entries for the same header key, illustrating how to define help, unsubscribe, subscribe, and post headers.
+SOURCE: https://nodemailer.com/message/list-headers
+
+LANGUAGE: JavaScript
+CODE:
+```
+const nodemailer = require("nodemailer");
+
+// 1. Create a transport (replace with your configuration)
+const transporter = nodemailer.createTransport({
+  host: "smtp.example.com",
+  port: 587,
+  auth: {
+    user: "username",
+    pass: "password",
+  },
+});
+
+// 2. Send a message with various List-* headers
+async function sendListMessage() {
+  await transporter.sendMail({
+    from: "sender@example.com",
+    to: "recipient@example.com",
+    subject: "List Message",
+    text: "I hope no‑one unsubscribes from this list!",
+    list: {
+      // List-Help: <mailto:admin@example.com?subject=help>
+      help: "admin@example.com?subject=help",
+
+      // List-Unsubscribe: <http://example.com> (Comment)
+      unsubscribe: {
+        url: "http://example.com",
+        comment: "Comment",
+      },
+
+      // List-Subscribe: <mailto:admin@example.com?subject=subscribe>
+      // List-Subscribe: <http://example.com> (Subscribe)
+      subscribe: [
+        "admin@example.com?subject=subscribe",
+        {
+          url: "http://example.com",
+          comment: "Subscribe",
+        },
+      ],
+
+      // List-Post: <http://example.com/post>, <mailto:admin@example.com?subject=post> (Post)
+      post: [
+        [
+          "http://example.com/post",
+          {
+            url: "admin@example.com?subject=post",
+            comment: "Post",
+          },
+        ],
+      ],
+    },
+  });
+
+  console.log("List message sent ✔");
+}
+
+sendListMessage().catch(console.error);
+```
+
+----------------------------------------
+
+TITLE: Nodemailer: Send Email with DSN Failure and Delay Notifications
+DESCRIPTION: This example shows how to configure Nodemailer to request Delivery Status Notifications (DSN) for both delivery failures and delays. It extends the previous example by setting the `notify` property in the `dsn` object to an array containing 'failure' and 'delay'.
+SOURCE: https://nodemailer.com/smtp/dsn
+
+LANGUAGE: JavaScript
+CODE:
+```
+await transporter.sendMail({
+  from: "sender@example.com",
+  to: "recipient@example.com",
+  subject: "Message",
+  text: "I hope this message gets read!",
+  dsn: {
+    id: "msg-124",
+    return: "headers",
+    notify: ["failure", "delay"],
+    recipient: "sender@example.com",
+  },
+});
+```
+
+----------------------------------------
+
+TITLE: Configure and Send Email with Nodemailer using Amazon SES
+DESCRIPTION: This JavaScript example demonstrates how to set up Nodemailer to send emails via Amazon SES. It initializes an `SESv2Client` from the AWS SDK and creates a Nodemailer transporter configured to use SES, then sends a basic email asynchronously.
+SOURCE: https://nodemailer.com/transports
+
+LANGUAGE: JavaScript
+CODE:
+```
+const nodemailer = require("nodemailer");
+const { SESv2Client, SendEmailCommand } = require("@aws-sdk/client-sesv2");
+
+const sesClient = new SESv2Client({});
+
+const transporter = nodemailer.createTransport({
+  SES: { sesClient, SendEmailCommand },
+});
+
+(async () => {
+  await transporter.sendMail({
+    from: "you@example.com",
+    to: "friend@example.net",
+    subject: "Hello from SES",
+    text: "This message was sent with Nodemailer & Amazon SES!",
+  });
+})();
+```
+
+----------------------------------------
+
+TITLE: Nodemailer: Gmail 2LO Service Account Authentication API
+DESCRIPTION: This API documentation details the `auth` object structure for configuring Nodemailer to use 2-legged OAuth2 authentication (service accounts) with Gmail. This method allows impersonation of a user without interactive consent, making it suitable for server-to-server interactions. Required parameters include the email address to send as, the service account client ID, and its private key.
+SOURCE: https://nodemailer.com/smtp/oauth2
+
+LANGUAGE: APIDOC
+CODE:
+```
+auth – authentication object
+  type – 'OAuth2'
+  user – e‑mail address to send as (required)
+  serviceClient – service account client_id (required)
+  privateKey – service account private key (required)
+```
+
+----------------------------------------
+
+TITLE: Nodemailer: Send iCalendar REQUEST Event from String
+DESCRIPTION: This example demonstrates how to send an iCalendar 'REQUEST' event by embedding the iCalendar data directly as a string within the `icalEvent.content` property of the message object. It shows a basic message structure including sender, recipient, subject, text, and the `icalEvent` configuration.
+SOURCE: https://nodemailer.com/message/calendar-events
+
+LANGUAGE: JavaScript
+CODE:
+```
+const appointment = `BEGIN:VCALENDAR\r\n\\PRODID:-//ACME/DesktopCalendar//EN\r\n\\METHOD:REQUEST\r\n...\nEND:VCALENDAR`;
+
+let message = {
+  from: "sender@example.com",
+  to: "recipient@example.com",
+  subject: "Appointment",
+  text: "Please see the attached appointment",
+  icalEvent: {
+    filename: "invitation.ics",
+    method: "REQUEST",
+    content: appointment,
+  },
+};
+```
+
+----------------------------------------
+
+TITLE: Log All Email Address Fields (Node.js)
+DESCRIPTION: This example shows how to access and log all parsed address fields (From, To, Cc, Bcc) from an email message using Nodemailer's mail.message.getAddresses() method within a stream plugin. It's useful for debugging or auditing email recipients.
+SOURCE: https://nodemailer.com/plugins/create
+
+LANGUAGE: javascript
+CODE:
+```
+transporter.use("stream", (mail, done) => {
+  const a = mail.message.getAddresses();
+  console.log("From :", JSON.stringify(a.from));
+  console.log("To   :", JSON.stringify(a.to));
+  console.log("Cc   :", JSON.stringify(a.cc));
+  console.log("Bcc  :", JSON.stringify(a.bcc));
+  done();
+});
+```
+
+----------------------------------------
+
+TITLE: Configure Nodemailer Transport with Well-Known Service (JavaScript)
+DESCRIPTION: This JavaScript example shows how to initialize a Nodemailer transporter using a 'service' string (e.g., 'Gmail') instead of manually specifying host, port, and security. It leverages environment variables for user authentication, simplifying the setup for common SMTP providers.
+SOURCE: https://nodemailer.com/smtp/well-known-services
+
+LANGUAGE: JavaScript
+CODE:
+```
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail", // any id from the table below, case insensitive
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+```
+
+----------------------------------------
+
+TITLE: Bypass Nodemailer encoding and folding for headers
+DESCRIPTION: This example illustrates how to prevent Nodemailer from encoding or line-wrapping header values by setting `prepared: true` within the header object, useful when values are pre-formatted.
+SOURCE: https://nodemailer.com/message/custom-headers
+
+LANGUAGE: javascript
+CODE:
+```
+const message = {
+  // …
+  headers: {
+    "x-processed": "a really long header or value with non‑ascii 🚀",
+    "x-unprocessed": {
+      prepared: true,
+      value: "a really long header or value with non‑ascii 🚀"
+    }
+  }
+};
+```
+
+----------------------------------------
+
+TITLE: Nodemailer: Send iCalendar PUBLISH Event from File Path
+DESCRIPTION: This example illustrates sending an iCalendar 'PUBLISH' event by referencing a local `.ics` file path using the `icalEvent.path` property. Nodemailer will read the iCalendar data from the specified file, simplifying the message object by externalizing the iCalendar content.
+SOURCE: https://nodemailer.com/message/calendar-events
+
+LANGUAGE: JavaScript
+CODE:
+```
+let message = {
+  from: "sender@example.com",
+  to: "recipient@example.com",
+  subject: "Appointment",
+  text: "Please see the attached appointment",
+  icalEvent: {
+    method: "PUBLISH",
+    path: "/absolute/path/to/invite.ics",
+  },
+};
+```
+
+----------------------------------------
+
+TITLE: Add custom headers to an attachment in Nodemailer
+DESCRIPTION: This example demonstrates how to apply custom headers directly to an attachment object within a Nodemailer message, using the `headers` property inside the attachment configuration.
+SOURCE: https://nodemailer.com/message/custom-headers
+
+LANGUAGE: javascript
+CODE:
+```
+const message = {
+  // …
+  attachments: [
+    {
+      filename: "report.csv",
+      content: csvBuffer,
+      headers: {
+        "x-report-id": "2025‑Q1"
+      }
+    }
+  ]
+};
+```
+
+----------------------------------------
+
+TITLE: Configure Nodemailer with HTTP Proxy from Environment Variable
+DESCRIPTION: This example shows how to configure Nodemailer to use an HTTP proxy by referencing an environment variable (`process.env.HTTP_PROXY` or `HTTPS_PROXY`). HTTP proxies are fully supported without additional dependencies.
+SOURCE: https://nodemailer.com/smtp/proxies
+
+LANGUAGE: JavaScript
+CODE:
+```
+const transporter = nodemailer.createTransport({
+  host: "smtp.example.com",
+  port: 465,
+  secure: true,
+  proxy: process.env.HTTP_PROXY // or HTTPS_PROXY
+});
+```
+
+----------------------------------------
+
+TITLE: Nodemailer transporter.isIdle() Method Reference
+DESCRIPTION: This API documentation describes the `transporter.isIdle()` method. It returns a boolean value indicating whether at least one connection slot within the pooled transporter is currently free and available for sending messages.
+SOURCE: https://nodemailer.com/smtp/pooled
+
+LANGUAGE: APIDOC
+CODE:
+```
+transporter.isIdle() -> boolean
+Returns true if at least one connection slot is free.
+```
+
+----------------------------------------
+
+TITLE: Configure Nodemailer with HTTP Proxy (Quick Start)
+DESCRIPTION: This snippet demonstrates how to quickly set up a Nodemailer transporter to use an HTTP proxy by providing the proxy URL in the `proxy` option. Nodemailer automatically parses the URL and tunnels the connection.
+SOURCE: https://nodemailer.com/smtp/proxies
+
+LANGUAGE: JavaScript
+CODE:
+```
+const nodemailer = require("nodemailer");
+
+const transporter = nodemailer.createTransport({
+  host: "smtp.example.com",
+  port: 465,
+  secure: true,
+  proxy: "http://proxy.example.test:3128" // ← HTTP proxy URL
+});
+```
+
+----------------------------------------
+
+TITLE: Nodemailer Mixed Address Formats and Array Usage
+DESCRIPTION: Provides a comprehensive example of a message object, showcasing the flexibility of Nodemailer in accepting various address formats (plain, formatted, object) and arrays for recipient fields like 'to', 'cc', and 'bcc'.
+SOURCE: https://nodemailer.com/message/addresses
+
+LANGUAGE: JavaScript
+CODE:
+```
+// Example message object (CommonJS)
+const message = {
+  from: '"Example Sender" <sender@example.com>',
+  to: 'foobar@example.com, "Ноде Майлер" <bar@example.com>, "Name, User" <baz@example.com>',
+  cc: ["first@example.com", '"Ноде Майлер" <second@example.com>', '"Name, User" <third@example.com>'],
+  bcc: [
+    "hidden@example.com",
+    {
+      name: "Майлер, Ноде",
+      address: "another@example.com"
+    }
+  ]
+};
+```

@@ -1,0 +1,2115 @@
+TITLE: Formatting Text with Prettier's format() Method
+DESCRIPTION: Demonstrates how to format code using Prettier's format() method with custom options. This example disables semicolons and uses the babel parser.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/api.md#2025-04-11_snippet_1
+
+LANGUAGE: javascript
+CODE:
+```
+await prettier.format("foo ( );", { semi: false, parser: "babel" });
+// -> 'foo()\n'
+```
+
+----------------------------------------
+
+TITLE: Displaying Simple Function Call in JavaScript with Prettier
+DESCRIPTION: Example of a simple function call that fits on a single line. Prettier maintains this formatting since it doesn't exceed the line length limit.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/index.md#2025-04-11_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+foo(arg1, arg2, arg3, arg4);
+```
+
+----------------------------------------
+
+TITLE: Importing Prettier in JavaScript
+DESCRIPTION: Shows how to import the Prettier library for use in JavaScript code.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/api.md#2025-04-11_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+import * as prettier from "prettier";
+```
+
+----------------------------------------
+
+TITLE: Resolving Configuration and Formatting a File
+DESCRIPTION: Demonstrates a workflow for reading a file, resolving its Prettier configuration, and formatting it with the detected options. Uses async/await pattern for asynchronous operations.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/api.md#2025-04-11_snippet_3
+
+LANGUAGE: javascript
+CODE:
+```
+const text = await fs.readFile(filePath, "utf8");
+const options = await prettier.resolveConfig(filePath);
+const formatted = await prettier.format(text, {
+  ...options,
+  filepath: filePath,
+});
+```
+
+----------------------------------------
+
+TITLE: Running Prettier Formatting Commands
+DESCRIPTION: Commands for formatting files using different package managers with the --write flag.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/install.md#2025-04-11_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+npx prettier . --write
+```
+
+LANGUAGE: bash
+CODE:
+```
+yarn exec prettier . --write
+```
+
+LANGUAGE: bash
+CODE:
+```
+pnpm exec prettier . --write
+```
+
+LANGUAGE: bash
+CODE:
+```
+bun exec prettier . --write
+```
+
+----------------------------------------
+
+TITLE: Using TypeScript API Methods with Plugins in Prettier
+DESCRIPTION: Shows correct usage of Prettier's getFileInfo and getSupportInfo API methods with TypeScript type definitions. The example demonstrates passing a plugin object to these methods with the appropriate configuration options.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2024-01-12-3.2.0.md#2025-04-11_snippet_13
+
+LANGUAGE: typescript
+CODE:
+```
+const plugin: Plugin = {};
+
+prettier.getFileInfo("./file.ext", {
+  plugins: [plugin],
+});
+
+prettier.getSupportInfo({ plugins: [plugin], showDeprecated: true });
+```
+
+----------------------------------------
+
+TITLE: Demonstrating Experimental Operator Position Option in JavaScript
+DESCRIPTION: Shows the new experimental option for breaking lines before binary operators in JavaScript. The 'experimentalOperatorPosition' option can be set to 'start' or 'end' (default).
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2025-02-09-3.5.0.md#2025-04-11_snippet_0
+
+LANGUAGE: jsx
+CODE:
+```
+// Input
+var a = Math.random() * (yRange * (1 - minVerticalFraction)) + minVerticalFraction * yRange - offset;
+
+// `experimentalOperatorPosition: end` (default behavior)
+var a =
+  Math.random() * (yRange * (1 - minVerticalFraction)) +
+  minVerticalFraction * yRange -
+  offset;
+
+// `experimentalOperatorPosition: start`
+var a =
+  Math.random() * (yRange * (1 - minVerticalFraction))
+  + minVerticalFraction * yRange
+  - offset;
+```
+
+----------------------------------------
+
+TITLE: Configuring HTML/JSX Bracket Line Formatting with bracketSameLine=false
+DESCRIPTION: Shows how to configure Prettier to place the closing angle bracket on a new line for multi-line HTML/JSX elements. This example demonstrates the default behavior with the false value for the bracketSameLine option.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/options.md#2025-04-11_snippet_3
+
+LANGUAGE: html
+CODE:
+```
+<button
+  className="prettier-class"
+  id="prettier-id"
+  onClick={this.handleClick}
+>
+  Click Here
+</button>
+```
+
+----------------------------------------
+
+TITLE: Basic Prettier Configuration in JSON Format
+DESCRIPTION: JSON configuration example for Prettier showing common formatting options including trailing commas, tab width, semicolons, and quote style.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/configuration.md#2025-04-11_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+{
+  "trailingComma": "es5",
+  "tabWidth": 4,
+  "semi": false,
+  "singleQuote": true
+}
+```
+
+----------------------------------------
+
+TITLE: Installing lint-staged for Prettier pre-commit hook
+DESCRIPTION: This command installs lint-staged and husky, then adds a configuration to package.json for automatic formatting of supported files in a pre-commit hook.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/precommit.md#2025-04-11_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npx mrm@2 lint-staged
+```
+
+----------------------------------------
+
+TITLE: Testing Prettier Plugins with Relative Path Resolution
+DESCRIPTION: Example demonstrating how to test a Prettier plugin during development using relative path resolution. This approach allows testing the plugin without publishing it by referencing the current directory as the plugin location.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/plugins.md#2025-04-11_snippet_20
+
+LANGUAGE: javascript
+CODE:
+```
+import * as prettier from "prettier";
+const code = "(add 1 2)";
+await prettier.format(code, {
+  parser: "lisp",
+  plugins: ["."],
+});
+```
+
+----------------------------------------
+
+TITLE: Formatting Code Blocks in Markdown with Prettier
+DESCRIPTION: Demonstrates how Prettier formats code blocks within Markdown files, automatically detecting and applying language-specific formatting rules.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2017-11-07-1.8.0.md#2025-04-11_snippet_1
+
+LANGUAGE: markdown
+CODE:
+```
+```js
+reallyUgly(javascript);
+```
+
+```css
+.h1 {
+  color: red;
+}
+```
+```
+
+----------------------------------------
+
+TITLE: Basic Prettier Configuration in JSON Format
+DESCRIPTION: A JSON configuration example for Prettier that defines common formatting options including trailing commas, tab width, semicolons, and quote style.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/configuration.md#2025-04-11_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+{
+  "trailingComma": "es5",
+  "tabWidth": 4,
+  "semi": false,
+  "singleQuote": true
+}
+```
+
+----------------------------------------
+
+TITLE: Creating a Custom Prettier Plugin with Parser
+DESCRIPTION: Demonstrates how to create a custom parser plugin for Prettier that modifies AST nodes. This example renames a function callee from 'lodash' to '_' using the Plugin API.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/api.md#2025-04-11_snippet_5
+
+LANGUAGE: javascript
+CODE:
+```
+import { format } from "prettier";
+import * as prettierPluginBabel from "prettier/plugins/babel";
+
+const myCustomPlugin = {
+  parsers: {
+    "my-custom-parser": {
+      async parse(text) {
+        const ast = await prettierPluginBabel.parsers.babel.parse(text);
+        ast.program.body[0].expression.callee.name = "_";
+        return ast;
+      },
+      astFormat: "estree",
+    },
+  },
+};
+
+await format("lodash ( )", {
+  parser: "my-custom-parser",
+  plugins: [myCustomPlugin],
+});
+// -> "_();\n"
+```
+
+----------------------------------------
+
+TITLE: Running Prettier with TypeScript Configuration Files Using Node.js
+DESCRIPTION: Commands to run Prettier with TypeScript configuration files, which require Node.js>=22.6.0 with the experimental strip types flag.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/configuration.md#2025-04-11_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write
+```
+
+LANGUAGE: sh
+CODE:
+```
+NODE_OPTIONS="--experimental-strip-types" prettier . --write
+```
+
+----------------------------------------
+
+TITLE: Implementing Parsers for Prettier Plugin Development
+DESCRIPTION: Example showing how to define parsers that convert code strings into ASTs for Prettier plugins, including all required and optional properties.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/plugins.md#2025-04-11_snippet_4
+
+LANGUAGE: js
+CODE:
+```
+export const parsers = {
+  "dance-parse": {
+    parse,
+    // The name of the AST that the parser produces.
+    astFormat: "dance-ast",
+    hasPragma,
+    locStart,
+    locEnd,
+    preprocess,
+  },
+};
+```
+
+----------------------------------------
+
+TITLE: Formatting JavaScript Function Calls - Input Example
+DESCRIPTION: Example of unformatted JavaScript code showing a function call with multiple long arguments that exceeds recommended line length.
+SOURCE: https://github.com/prettier/prettier/blob/main/README.md#2025-04-11_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+foo(reallyLongArg(), omgSoManyParameters(), IShouldRefactorThis(), isThereSeriouslyAnotherOne());
+```
+
+----------------------------------------
+
+TITLE: Basic Prettier Configuration in JavaScript (CommonJS)
+DESCRIPTION: JavaScript configuration for Prettier using CommonJS module format, which exports configuration options via module.exports. This example includes standard formatting options.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/configuration.md#2025-04-11_snippet_3
+
+LANGUAGE: javascript
+CODE:
+```
+// prettier.config.js, .prettierrc.js, prettier.config.cjs, or .prettierrc.cjs
+
+/**
+ * @see https://prettier.io/docs/configuration
+ * @type {import("prettier").Config}
+ */
+const config = {
+  trailingComma: "es5",
+  tabWidth: 4,
+  semi: false,
+  singleQuote: true,
+};
+
+module.exports = config;
+```
+
+----------------------------------------
+
+TITLE: Demonstrating 'Curious Ternaries' Formatting Style in TypeScript
+DESCRIPTION: Example of the new 'curious ternaries' formatting style where each line ending with a question mark represents an 'if' condition, lines starting with a colon represent 'else' branches, and lines without either represent 'then' branches.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2023-11-13-curious-ternaries.md#2025-04-11_snippet_0
+
+LANGUAGE: typescript
+CODE:
+```
+const animalName =
+  pet.canBark() ?
+    pet.isScary() ?
+      'wolf'
+    : 'dog'
+  : pet.canMeow() ? 'cat'
+  : 'probably a bunny';
+```
+
+----------------------------------------
+
+TITLE: Running Prettier with TypeScript Configuration Support
+DESCRIPTION: Commands to run Prettier with TypeScript configuration files, which require Node.js>=22.6.0 and the --experimental-strip-types flag to properly process TypeScript configurations.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/configuration.md#2025-04-11_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+node --experimental-strip-types node_modules/prettier/bin/prettier.cjs . --write
+```
+
+LANGUAGE: sh
+CODE:
+```
+NODE_OPTIONS="--experimental-strip-types" prettier . --write
+```
+
+----------------------------------------
+
+TITLE: Formatting Import Statements in JavaScript
+DESCRIPTION: Demonstrates how Prettier handles long import statements by breaking them across lines when needed, while keeping single imports on one line
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/rationale.md#2025-04-11_snippet_3
+
+LANGUAGE: javascript
+CODE:
+```
+import {
+  CollectionDashboard,
+  DashboardPlaceholder,
+} from "../components/collections/collection-dashboard/main";
+```
+
+LANGUAGE: javascript
+CODE:
+```
+import { CollectionDashboard } from "../components/collections/collection-dashboard/main";
+```
+
+----------------------------------------
+
+TITLE: Setting up directory structure for a shareable Prettier config
+DESCRIPTION: Shows the minimal file structure needed for a shareable Prettier configuration package, containing at least a package.json and an index.js file.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/sharing-configurations.md#2025-04-11_snippet_0
+
+LANGUAGE: text
+CODE:
+```
+prettier-config/
+├── index.js
+└── package.json
+```
+
+----------------------------------------
+
+TITLE: Importing Prettier API in JavaScript
+DESCRIPTION: Shows how to import the Prettier library for programmatic use in JavaScript applications.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/api.md#2025-04-11_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+import * as prettier from "prettier";
+```
+
+----------------------------------------
+
+TITLE: Configuring JSX Bracket Positioning with jsxBracketSameLine=true (Deprecated)
+DESCRIPTION: Shows the deprecated jsxBracketSameLine option set to true, which places the closing angle bracket at the end of the last line in multi-line JSX elements. This option has been deprecated in v2.4.0 in favor of bracketSameLine.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/options.md#2025-04-11_snippet_4
+
+LANGUAGE: jsx
+CODE:
+```
+<button
+  className="prettier-class"
+  id="prettier-id"
+  onClick={this.handleClick}>
+  Click Here
+</button>
+```
+
+----------------------------------------
+
+TITLE: Basic Prettier Configuration in TypeScript (ES Modules)
+DESCRIPTION: TypeScript configuration for Prettier using ES Modules format. This example imports the Config type from Prettier and uses type annotations for better type safety.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/configuration.md#2025-04-11_snippet_4
+
+LANGUAGE: typescript
+CODE:
+```
+// prettier.config.ts, .prettierrc.ts, prettier.config.mts, or .prettierrc.mts
+
+import { type Config } from "prettier";
+
+const config: Config = {
+  trailingComma: "none",
+};
+
+export default config;
+```
+
+----------------------------------------
+
+TITLE: Using TypeScript 4.9 satisfies Operator in Prettier 2.8
+DESCRIPTION: Example showing how Prettier 2.8 correctly formats TypeScript 4.9's new satisfies operator, which allows type checking without changing the inferred type.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2022-11-23-2.8.0.md#2025-04-11_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+const palette = {
+  red: [255, 0, 0],
+  green: "#00ff00",
+  blue: [0, 0, 255]
+} satisfies Record<Colors, string | RGB>;
+```
+
+----------------------------------------
+
+TITLE: Defining Section Header in Prettier Configuration
+DESCRIPTION: This snippet shows a commented-out section header or separator in a Prettier configuration file. It uses Markdown-style heading syntax with multiple hash symbols.
+SOURCE: https://github.com/prettier/prettier/blob/main/tests/format/markdown/spec/example-31.md#2025-04-11_snippet_0
+
+LANGUAGE: Markdown
+CODE:
+```
+####### foo
+```
+
+----------------------------------------
+
+TITLE: Installing Prettier with Package Managers
+DESCRIPTION: Commands for installing Prettier as a development dependency using different package managers (npm, yarn, pnpm, bun).
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/install.md#2025-04-11_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm install --save-dev --save-exact prettier
+```
+
+LANGUAGE: bash
+CODE:
+```
+yarn add --dev --exact prettier
+```
+
+LANGUAGE: bash
+CODE:
+```
+pnpm add --save-dev --save-exact prettier
+```
+
+LANGUAGE: bash
+CODE:
+```
+bun add --dev --exact prettier
+```
+
+----------------------------------------
+
+TITLE: Configuring Bracket Line Placement in HTML/JSX (Prettier)
+DESCRIPTION: Demonstrates the 'bracketSameLine' option for placing the closing bracket of multi-line HTML/JSX elements. Shows examples for both true and false settings.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/options.md#2025-04-11_snippet_0
+
+LANGUAGE: html
+CODE:
+```
+<button
+  className="prettier-class"
+  id="prettier-id"
+  onClick={this.handleClick}>
+  Click Here
+</button>
+```
+
+LANGUAGE: html
+CODE:
+```
+<button
+  className="prettier-class"
+  id="prettier-id"
+  onClick={this.handleClick}
+>
+  Click Here
+</button>
+```
+
+----------------------------------------
+
+TITLE: Checking Prettier Formatting
+DESCRIPTION: Command to verify if files are properly formatted without making changes.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/install.md#2025-04-11_snippet_4
+
+LANGUAGE: bash
+CODE:
+```
+npx prettier . --check
+```
+
+----------------------------------------
+
+TITLE: Setting HTML Whitespace Sensitivity in Prettier
+DESCRIPTION: Controls how Prettier handles whitespace in HTML, Vue, Angular and Handlebars files. Options include 'css' (respect CSS display property), 'strict' (all whitespace is significant), or 'ignore' (whitespace is insignificant).
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/options.md#2025-04-11_snippet_7
+
+LANGUAGE: json
+CODE:
+```
+htmlWhitespaceSensitivity: "<css|strict|ignore>"
+```
+
+----------------------------------------
+
+TITLE: Simple Format All Files Example
+DESCRIPTION: A practical example showing how to format all supported files in the current directory and its subdirectories using the --write flag, which overwrites the files with the formatted content.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/cli.md#2025-04-11_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+prettier . --write
+```
+
+----------------------------------------
+
+TITLE: Basic Prettier Configuration in TypeScript (ES Modules)
+DESCRIPTION: TypeScript configuration example for Prettier using ES Modules syntax with proper type imports from the Prettier package.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/configuration.md#2025-04-11_snippet_4
+
+LANGUAGE: ts
+CODE:
+```
+// prettier.config.ts, .prettierrc.ts, prettier.config.mts, or .prettierrc.mts
+
+import { type Config } from "prettier";
+
+const config: Config = {
+  trailingComma: "none",
+};
+
+export default config;
+```
+
+----------------------------------------
+
+TITLE: Single Quote Option for JSX in React
+DESCRIPTION: Example of Prettier 1.15's new option for using single quotes in JSX attributes. The new '--jsx-single-quote' option (or 'jsxSingleQuote' in config) allows developers to choose their preferred quote style for JSX.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2018-11-07-1.15.0.md#2025-04-11_snippet_8
+
+LANGUAGE: jsx
+CODE:
+```
+// with --jsx-single-quote
+<div class='hello'>world</div>
+
+// without --jsx-single-quote
+<div class="hello">world</div>
+```
+
+----------------------------------------
+
+TITLE: Including Tarball Installation Instructions in Markdown
+DESCRIPTION: This snippet includes a Markdown file containing instructions for installing Prettier using a tarball.
+SOURCE: https://github.com/prettier/prettier/blob/main/tests/format/markdown/liquid/example-1.md#2025-04-11_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+{% include_relative _installations/tarball.md %}
+```
+
+----------------------------------------
+
+TITLE: Demonstrating Markdown Link Syntax in Prettier Integration Guide
+DESCRIPTION: This snippet shows how to create a markdown link to the 'Prettier vs. Linters' comparison page, which is referenced in the context of explaining the separation of concerns between Prettier and linters.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/integrating-with-linters.md#2025-04-11_snippet_0
+
+LANGUAGE: markdown
+CODE:
+```
+[Prettier vs. Linters](comparison.md)
+```
+
+----------------------------------------
+
+TITLE: Basic .prettierignore File Configuration
+DESCRIPTION: Example of .prettierignore file configuration using gitignore syntax to exclude build artifacts and HTML files from formatting.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/ignore.md#2025-04-11_snippet_0
+
+LANGUAGE: text
+CODE:
+```
+# Ignore artifacts:
+build
+coverage
+
+# Ignore all HTML files:
+**/*.html
+```
+
+----------------------------------------
+
+TITLE: Defining Languages for Prettier Plugin Development
+DESCRIPTION: Example of how to define languages that a Prettier plugin will contribute, including the required name and parsers fields.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/plugins.md#2025-04-11_snippet_3
+
+LANGUAGE: js
+CODE:
+```
+export const languages = [
+  {
+    // The language name
+    name: "InterpretedDanceScript",
+    // Parsers that can parse this language.
+    // This can be built-in parsers, or parsers you have contributed via this plugin.
+    parsers: ["dance-parse"],
+  },
+];
+```
+
+----------------------------------------
+
+TITLE: Configuring Prose Wrap Option in Prettier
+DESCRIPTION: Controls how Prettier handles text wrapping in markdown content. Options include 'always' for wrapping at print width, 'never' for single line, and 'preserve' to maintain existing formatting.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/options.md#2025-04-11_snippet_4
+
+LANGUAGE: javascript
+CODE:
+```
+proseWrap: "<always|never|preserve>"
+```
+
+----------------------------------------
+
+TITLE: Configuring Arrow Function Parentheses in JavaScript (Prettier)
+DESCRIPTION: Shows the 'arrowParens' option for including parentheses around sole arrow function parameters. Demonstrates both 'always' and 'avoid' settings.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/options.md#2025-04-11_snippet_1
+
+LANGUAGE: javascript
+CODE:
+```
+(x) => x
+```
+
+LANGUAGE: javascript
+CODE:
+```
+x => x
+```
+
+----------------------------------------
+
+TITLE: Complex Formatting Command with Multiple Options
+DESCRIPTION: A more advanced formatting command that specifies particular files and directories to format, along with formatting options like single quotes and trailing commas. Shows how to use glob patterns with proper quoting.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/cli.md#2025-04-11_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+prettier docs package.json "{app,__{tests,mocks}__}/**/*.js" --write --single-quote --trailing-comma all
+```
+
+----------------------------------------
+
+TITLE: Using Prettier with ES Modules in Browser
+DESCRIPTION: Example of importing Prettier standalone and GraphQL plugin as ES modules. The code formats a GraphQL query string using modern ES module imports via unpkg CDN.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/browser.md#2025-04-11_snippet_1
+
+LANGUAGE: html
+CODE:
+```
+<script type="module">
+  import * as prettier from "https://unpkg.com/prettier@%PRETTIER_VERSION%/standalone.mjs";
+  import * as prettierPluginGraphql from "https://unpkg.com/prettier@%PRETTIER_VERSION%/plugins/graphql.mjs";
+
+  const formatted = await prettier.format("type Query { hello: String }", {
+    parser: "graphql",
+    plugins: [prettierPluginGraphql],
+  });
+</script>
+```
+
+----------------------------------------
+
+TITLE: Implementing Print Function in TypeScript
+DESCRIPTION: Core print function signature for Prettier plugin printers. Takes a path to an AST node, options object, and print callback for recursive printing.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/plugins.md#2025-04-11_snippet_7
+
+LANGUAGE: typescript
+CODE:
+```
+function print(
+  // Path to the AST node to print
+  path: AstPath,
+  options: object,
+  // Recursively print a child node
+  print: (selector?: string | number | Array<string | number> | AstPath) => Doc,
+): Doc;
+```
+
+----------------------------------------
+
+TITLE: Including plugins in shared Prettier config
+DESCRIPTION: Example of how to include Prettier plugins in a shared configuration by adding them to the plugins array in the config file.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/sharing-configurations.md#2025-04-11_snippet_12
+
+LANGUAGE: js
+CODE:
+```
+// index.js
+const config = {
+  singleQuote: true,
+  plugins: ["prettier-plugin-xml"],
+};
+
+export default config;
+```
+
+----------------------------------------
+
+TITLE: Configuring lint-staged in package.json
+DESCRIPTION: JSON configuration for lint-staged to run Prettier on all files before commits.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/install.md#2025-04-11_snippet_5
+
+LANGUAGE: json
+CODE:
+```
+{
+  "lint-staged": {
+    "**/*": "prettier --write --ignore-unknown"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Setting Cache Strategy to Metadata
+DESCRIPTION: Command demonstrating how to set the cache strategy to 'metadata' instead of the default 'content' strategy, which is faster but less thorough in detecting changes.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/cli.md#2025-04-11_snippet_12
+
+LANGUAGE: bash
+CODE:
+```
+prettier . --write --cache --cache-strategy metadata
+```
+
+----------------------------------------
+
+TITLE: Defining Custom Plugin Options in JavaScript
+DESCRIPTION: Example of how to define custom options for a Prettier plugin. The options object specifies each option's type, category, default value, and description to provide configuration capabilities to users of the plugin.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/plugins.md#2025-04-11_snippet_17
+
+LANGUAGE: javascript
+CODE:
+```
+export default {
+  // ... plugin implementation
+  options: {
+    openingBraceNewLine: {
+      type: "boolean",
+      category: "Global",
+      default: true,
+      description: "Move open brace for code blocks onto new line.",
+    },
+  },
+};
+```
+
+----------------------------------------
+
+TITLE: Referencing shared config in .prettierrc
+DESCRIPTION: Example of how to reference a shared Prettier configuration in a project's .prettierrc file.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/sharing-configurations.md#2025-04-11_snippet_9
+
+LANGUAGE: json
+CODE:
+```
+"@company/prettier-config"
+```
+
+----------------------------------------
+
+TITLE: Running Prettier CLI with Basic Options
+DESCRIPTION: Shows the basic usage of the Prettier CLI command with optional arguments for files, directories, or glob patterns.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/cli.md#2025-04-11_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+prettier [options] [file/dir/glob ...]
+```
+
+----------------------------------------
+
+TITLE: Object Formatting Example in JavaScript
+DESCRIPTION: Demonstrates Prettier's handling of multi-line object formatting, showing how to convert between single-line and multi-line formats.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/rationale.md#2025-04-11_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+const user = {
+  name: "John Doe",
+  age: 30,
+};
+```
+
+LANGUAGE: javascript
+CODE:
+```
+const user = {  name: "John Doe",
+  age: 30
+};
+```
+
+LANGUAGE: javascript
+CODE:
+```
+const user = { name: "John Doe", age: 30 };
+```
+
+----------------------------------------
+
+TITLE: Creating package.json for Shareable Prettier Config
+DESCRIPTION: Example package.json file for a shareable Prettier configuration package. Includes package metadata, exports configuration, and sets up peer dependencies.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/sharing-configurations.md#2025-04-11_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "@username/prettier-config",
+  "version": "1.0.0",
+  "description": "My personal Prettier config",
+  "type": "module",
+  "exports": "./index.js",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "prettier": ">=3.0.0"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Implementing an OwnLine Comment Handler in JavaScript
+DESCRIPTION: Example of implementing the 'ownLine' comment handler function that prevents comments from following nodes of type 'punctuation'. The function manually attaches the comment to the preceding node when necessary and returns true to indicate the comment has been handled.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/plugins.md#2025-04-11_snippet_16
+
+LANGUAGE: javascript
+CODE:
+```
+import { util } from "prettier";
+
+function ownLine(comment, text, options, ast, isLastComment) {
+  const { precedingNode } = comment;
+  if (precedingNode && precedingNode.type === "punctuation") {
+    util.addTrailingComment(precedingNode, comment);
+    return true;
+  }
+  return false;
+}
+```
+
+----------------------------------------
+
+TITLE: Formatting Files In-Place with Prettier CLI
+DESCRIPTION: Demonstrates how to use the --write option to format all supported files in the current directory and its subdirectories.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/cli.md#2025-04-11_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+prettier . --write
+```
+
+----------------------------------------
+
+TITLE: List Files with Different Formatting
+DESCRIPTION: Command using --list-different flag to print filenames that differ from Prettier's formatting without changing them. Useful in CI scenarios to identify files that need formatting.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/cli.md#2025-04-11_snippet_7
+
+LANGUAGE: bash
+CODE:
+```
+prettier . --single-quote --list-different
+```
+
+----------------------------------------
+
+TITLE: Using --cache-strategy CLI Option in Prettier
+DESCRIPTION: Example of using the new --cache-strategy option which can be set to either 'metadata' or 'content' to control how Prettier detects changed files.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2022-06-14-2.7.0.md#2025-04-11_snippet_4
+
+LANGUAGE: bash
+CODE:
+```
+prettier --write --cache --cache-strategy metadata src
+```
+
+----------------------------------------
+
+TITLE: Resolving Prettier Configuration and Formatting File
+DESCRIPTION: Demonstrates how to resolve Prettier configuration for a file and use it to format the file's contents.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/api.md#2025-04-11_snippet_3
+
+LANGUAGE: javascript
+CODE:
+```
+const text = await fs.readFile(filePath, "utf8");
+const options = await prettier.resolveConfig(filePath);
+const formatted = await prettier.format(text, {
+  ...options,
+  filepath: filePath,
+});
+```
+
+----------------------------------------
+
+TITLE: Configuring Prettier options directly in Vim
+DESCRIPTION: Setting Prettier formatting options directly in .vimrc with escaped spaces between options.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/vim.md#2025-04-11_snippet_4
+
+LANGUAGE: vim
+CODE:
+```
+autocmd FileType javascript setlocal formatprg=prettier\ --single-quote\ --trailing-comma\ es5
+" Use formatprg when available
+let g:neoformat_try_formatprg = 1
+```
+
+----------------------------------------
+
+TITLE: Improving TypeScript conditional type alias layout
+DESCRIPTION: Demonstrates how Prettier 3.2 improves the formatting of conditional type aliases in TypeScript for better readability.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2024-01-12-3.2.0.md#2025-04-11_snippet_6
+
+LANGUAGE: typescript
+CODE:
+```
+// Input
+type FallbackFlags<F extends Flags | undefined> =
+  Equals<NonNullableFlag<F>["flags"], {}> extends true
+    ? Dict<any>
+    : NonNullableFlag<F>["flags"];
+
+// Prettier 3.1
+type FallbackFlags<F extends Flags | undefined> = Equals<
+  NonNullableFlag<F>["flags"],
+  {}
+> extends true
+  ? Dict<any>
+  : NonNullableFlag<F>["flags"];
+
+// Prettier 3.2
+type FallbackFlags<F extends Flags | undefined> =
+  Equals<NonNullableFlag<F>["flags"], {}> extends true
+    ? Dict<any>
+    : NonNullableFlag<F>["flags"];
+```
+
+----------------------------------------
+
+TITLE: Fixing inconsistencies in optional-chaining formatting
+DESCRIPTION: Examples of how Prettier 3.2 addresses inconsistencies in optional-chaining formatting with various parsers like TypeScript and Meriyah.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2024-01-12-3.2.0.md#2025-04-11_snippet_4
+
+LANGUAGE: javascript
+CODE:
+```
+// Input
+function someFunctionName() {
+  return isEqual(a.map(([t, _]) => t?.id), b.map(([t, _]) => t?.id));
+  return isEqual(a?.map(([t, _]) => t?.id), b?.map(([t, _]) => t?.id));
+}
+theValue = Object.entries(someLongObjectName).filter(
+  ([listingId]) => someListToCompareToHere.includes(listingId),
+);
+theValue = Object.entries(someLongObjectName).filter(
+  ([listingId]) => someListToCompareToHere?.includes(listingId),
+);
+
+// Prettier 3.1
+function someFunctionName() {
+  return isEqual(
+    a.map(([t, _]) => t?.id),
+    b.map(([t, _]) => t?.id),
+  );
+  return isEqual(a?.map(([t, _]) => t?.id), b?.map(([t, _]) => t?.id));
+}
+theValue = Object.entries(someLongObjectName).filter(([listingId]) =>
+  someListToCompareToHere.includes(listingId),
+);
+theValue = Object.entries(someLongObjectName).filter(
+  ([listingId]) => someListToCompareToHere?.includes(listingId),
+);
+
+// Prettier 3.2
+function someFunctionName() {
+  return isEqual(
+    a.map(([t, _]) => t?.id),
+    b.map(([t, _]) => t?.id),
+  );
+  return isEqual(
+    a?.map(([t, _]) => t?.id),
+    b?.map(([t, _]) => t?.id),
+  );
+}
+theValue = Object.entries(someLongObjectName).filter(([listingId]) =>
+  someListToCompareToHere.includes(listingId),
+);
+theValue = Object.entries(someLongObjectName).filter(([listingId]) =>
+  someListToCompareToHere?.includes(listingId),
+);
+```
+
+----------------------------------------
+
+TITLE: Implementing Printers for Prettier Plugin Development
+DESCRIPTION: Example showing how to define printers that convert ASTs into Prettier's intermediate representation (Doc), including all required and optional methods.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/plugins.md#2025-04-11_snippet_5
+
+LANGUAGE: js
+CODE:
+```
+export const printers = {
+  "dance-ast": {
+    print,
+    embed,
+    preprocess,
+    getVisitorKeys,
+    insertPragma,
+    canAttachComment,
+    isBlockComment,
+    printComment,
+    getCommentChildNodes,
+    handleComments: {
+      ownLine,
+      endOfLine,
+      remaining,
+    },
+  },
+};
+```
+
+----------------------------------------
+
+TITLE: Loading Prettier via Global Script Tags
+DESCRIPTION: Example of loading Prettier and a GraphQL plugin using global script tags. The code demonstrates formatting a GraphQL query using the global 'prettier' object and handling the Promise returned by the format function.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/browser.md#2025-04-11_snippet_0
+
+LANGUAGE: html
+CODE:
+```
+<script src="https://unpkg.com/prettier@3.5.3/standalone.js"></script>
+<script src="https://unpkg.com/prettier@3.5.3/plugins/graphql.js"></script>
+<script>
+  (async () => {
+    const formatted = await prettier.format("type Query { hello: String }", {
+      parser: "graphql",
+      plugins: prettierPlugins,
+    });
+  })();
+</script>
+```
+
+----------------------------------------
+
+TITLE: Basic Prettier Configuration in JavaScript (CommonJS)
+DESCRIPTION: JavaScript configuration example for Prettier using CommonJS module syntax with TypeScript intellisense integration through JSDoc.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/configuration.md#2025-04-11_snippet_3
+
+LANGUAGE: js
+CODE:
+```
+// prettier.config.js, .prettierrc.js, prettier.config.cjs, or .prettierrc.cjs
+
+/**
+ * @see https://prettier.io/docs/configuration
+ * @type {import("prettier").Config}
+ */
+const config = {
+  trailingComma: "es5",
+  tabWidth: 4,
+  semi: false,
+  singleQuote: true,
+};
+
+module.exports = config;
+```
+
+----------------------------------------
+
+TITLE: Migrating from Custom Parser API to Plugin API
+DESCRIPTION: Demonstrates how to migrate from the removed Custom Parser API to the new Plugin API for custom parsing and AST modification.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/api.md#2025-04-11_snippet_5
+
+LANGUAGE: javascript
+CODE:
+```
+import { format } from "prettier";
+import * as prettierPluginBabel from "prettier/plugins/babel";
+
+const myCustomPlugin = {
+  parsers: {
+    "my-custom-parser": {
+      async parse(text) {
+        const ast = await prettierPluginBabel.parsers.babel.parse(text);
+        ast.program.body[0].expression.callee.name = "_";
+        return ast;
+      },
+      astFormat: "estree",
+    },
+  },
+};
+
+await format("lodash ( )", {
+  parser: "my-custom-parser",
+  plugins: [myCustomPlugin],
+});
+// -> "_();\n"
+```
+
+----------------------------------------
+
+TITLE: Basic Prettier CLI Usage Syntax
+DESCRIPTION: The basic command syntax for running Prettier from the command line. This shows the general pattern of providing options and specifying target files, directories, or glob patterns.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/cli.md#2025-04-11_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+prettier [options] [file/dir/glob ...]
+```
+
+----------------------------------------
+
+TITLE: Configuring Neoformat to Run Prettier on Multiple Events
+DESCRIPTION: Sets up autocmds to run Neoformat on multiple events: before writing a file, after text changes in Normal mode, and when leaving Insert mode.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/vim.md#2025-04-11_snippet_3
+
+LANGUAGE: vim
+CODE:
+```
+autocmd BufWritePre,TextChanged,InsertLeave *.js Neoformat
+```
+
+----------------------------------------
+
+TITLE: Resolving Prettier Config with URL Objects in JavaScript
+DESCRIPTION: Demonstrates how to use the updated prettier.resolveConfig() function with URL objects for custom config file locations. It shows two methods: using a URL object directly and using a URL string starting with 'file:'.
+SOURCE: https://github.com/prettier/prettier/blob/main/changelog_unreleased/api/17167.md#2025-04-11_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+// `URL`
+await prettier.resolveConfig("path/to/file", {
+  config: new URL("/path/to/prettier-config-file", import.meta.url),
+});
+
+// URL string
+await prettier.resolveConfig("path/to/file", {
+  config: "file:///path/to/prettier-config-file",
+});
+```
+
+----------------------------------------
+
+TITLE: Basic Prettier Configuration in YAML Format
+DESCRIPTION: YAML configuration example for Prettier demonstrating how to specify common formatting options in YAML syntax.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/configuration.md#2025-04-11_snippet_6
+
+LANGUAGE: yaml
+CODE:
+```
+# .prettierrc or .prettierrc.yaml
+trailingComma: "es5"
+tabWidth: 4
+semi: false
+singleQuote: true
+```
+
+----------------------------------------
+
+TITLE: Configuring shared Prettier configuration in package.json
+DESCRIPTION: Demonstrates how to reference a shared Prettier configuration package in package.json.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2019-04-12-1.17.0.md#2025-04-11_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "my-cool-library",
+  "version": "9000.0.1",
+  "prettier": "@company/prettier-config"
+}
+```
+
+----------------------------------------
+
+TITLE: Improved Line Breaking in CSS
+DESCRIPTION: Demonstrates improved line breaking for comma-separated values in CSS, particularly for complex properties like background-image.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2025-02-09-3.5.0.md#2025-04-11_snippet_4
+
+LANGUAGE: css
+CODE:
+```
+/* Input */
+a {
+  background-image:
+    linear-gradient(to bottom, rgb(255 255 0 / 50%), rgb(0 0 255 / 50%)),
+    url("catfront.png");
+}
+
+/* Prettier 3.4 */
+a {
+  background-image: linear-gradient(
+      to bottom,
+      rgb(255 255 0 / 50%),
+      rgb(0 0 255 / 50%)
+    ),
+    url("catfront.png");
+}
+
+/* Prettier 3.5 */
+a {
+  background-image:
+    linear-gradient(to bottom, rgb(255 255 0 / 50%), rgb(0 0 255 / 50%)),
+    url("catfront.png");
+}
+```
+
+----------------------------------------
+
+TITLE: Creating package.json for a shareable Prettier config
+DESCRIPTION: Example package.json file for a shareable Prettier configuration, defining the package name, version, exports, and peer dependencies.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/sharing-configurations.md#2025-04-11_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "@username/prettier-config",
+  "version": "1.0.0",
+  "description": "My personal Prettier config",
+  "type": "module",
+  "exports": "./index.js",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "peerDependencies": {
+    "prettier": ">=3.0.0"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Using Prettier with AMD Module Loading
+DESCRIPTION: Example of loading Prettier standalone and GraphQL plugin using AMD (Asynchronous Module Definition) pattern. The code formats a GraphQL query by defining dependencies through the AMD loader.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/browser.md#2025-04-11_snippet_2
+
+LANGUAGE: js
+CODE:
+```
+define([
+  "https://unpkg.com/prettier@%PRETTIER_VERSION%/standalone.js",
+  "https://unpkg.com/prettier@%PRETTIER_VERSION%/plugins/graphql.js",
+], async (prettier, ...plugins) => {
+  const formatted = await prettier.format("type Query { hello: String }", {
+    parser: "graphql",
+    plugins,
+  });
+});
+```
+
+----------------------------------------
+
+TITLE: Configuring Prettier Options in Vim
+DESCRIPTION: Demonstrates how to set Prettier options directly in the .vimrc file, including setting the formatprg and enabling the use of formatprg when available.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/vim.md#2025-04-11_snippet_4
+
+LANGUAGE: vim
+CODE:
+```
+autocmd FileType javascript setlocal formatprg=prettier\ --single-quote\ --trailing-comma\ es5
+" Use formatprg when available
+let g:neoformat_try_formatprg = 1
+```
+
+----------------------------------------
+
+TITLE: Demonstrating singleAttributePerLine Option in HTML
+DESCRIPTION: Shows how the new singleAttributePerLine option affects HTML formatting. When set to true, each attribute is placed on its own line for elements with multiple attributes.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2022-03-16-2.6.0.md#2025-04-11_snippet_0
+
+LANGUAGE: html
+CODE:
+```
+<!-- Input -->
+<div data-a="1">
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+</div>
+<div data-a="1" data-b="2" data-c="3">
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+</div>
+
+<!-- Prettier 2.5 -->
+<div data-a="1">
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+</div>
+<div data-a="1" data-b="2" data-c="3">
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+</div>
+
+<!-- Prettier 2.6, with {"singleAttributePerLine": false} -->
+<div data-a="1">
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+</div>
+<div data-a="1" data-b="2" data-c="3">
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+</div>
+
+<!-- Prettier 2.6, with {"singleAttributePerLine": true} -->
+<div data-a="1">
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+</div>
+<div
+  data-a="1"
+  data-b="2"
+  data-c="3"
+>
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+</div>
+```
+
+----------------------------------------
+
+TITLE: Loading Prettier Plugins via CLI
+DESCRIPTION: Example of using the Prettier CLI to load a plugin for formatting files with the specified plugin.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/plugins.md#2025-04-11_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+prettier --write main.foo --plugin=prettier-plugin-foo
+```
+
+----------------------------------------
+
+TITLE: Formatting Hack-Style Pipeline Syntax in JavaScript
+DESCRIPTION: Demonstrates support for the proposed hack-style pipeline syntax in JavaScript, using '%' as the topic token.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2021-09-09-2.4.0.md#2025-04-11_snippet_4
+
+LANGUAGE: js
+CODE:
+```
+const foo = fn() |> fn1(%) |> fn(%);
+```
+
+----------------------------------------
+
+TITLE: Configuring Prettier Plugins in Configuration File
+DESCRIPTION: JSON configuration example for specifying plugins in a Prettier configuration file.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/plugins.md#2025-04-11_snippet_2
+
+LANGUAGE: json
+CODE:
+```
+{
+  "plugins": ["prettier-plugin-foo"]
+}
+```
+
+----------------------------------------
+
+TITLE: Formatting Code with Prettier's format Function
+DESCRIPTION: Demonstrates how to use Prettier's format function to format JavaScript code with specific options.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/api.md#2025-04-11_snippet_1
+
+LANGUAGE: javascript
+CODE:
+```
+await prettier.format("foo ( );", { semi: false, parser: "babel" });
+// -> 'foo()\n'
+```
+
+----------------------------------------
+
+TITLE: Check Formatting Without Making Changes
+DESCRIPTION: Command to check if files are properly formatted without modifying them. The --check flag outputs a human-friendly message and lists unformatted files, useful for CI pipelines.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/cli.md#2025-04-11_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+prettier . --check
+```
+
+----------------------------------------
+
+TITLE: Basic Prettier Configuration in JavaScript (ES Modules)
+DESCRIPTION: JavaScript configuration example for Prettier using ES Modules syntax with TypeScript intellisense integration through JSDoc.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/configuration.md#2025-04-11_snippet_2
+
+LANGUAGE: js
+CODE:
+```
+// prettier.config.js, .prettierrc.js, prettier.config.mjs, or .prettierrc.mjs
+
+/**
+ * @see https://prettier.io/docs/configuration
+ * @type {import("prettier").Config}
+ */
+const config = {
+  trailingComma: "es5",
+  tabWidth: 4,
+  semi: false,
+  singleQuote: true,
+};
+
+export default config;
+```
+
+----------------------------------------
+
+TITLE: Loading Prettier via AMD
+DESCRIPTION: Example of loading Prettier using AMD (Asynchronous Module Definition) pattern. This approach loads the formatter and plugins from unpkg and uses them to format GraphQL code.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/browser.md#2025-04-11_snippet_2
+
+LANGUAGE: javascript
+CODE:
+```
+define([
+  "https://unpkg.com/prettier@3.5.3/standalone.js",
+  "https://unpkg.com/prettier@3.5.3/plugins/graphql.js",
+], async (prettier, ...plugins) => {
+  const formatted = await prettier.format("type Query { hello: String }", {
+    parser: "graphql",
+    plugins,
+  });
+});
+```
+
+----------------------------------------
+
+TITLE: Installing pretty-quick with simple-git-hooks (npm)
+DESCRIPTION: These commands install pretty-quick and simple-git-hooks, create a configuration file, and set up the pre-commit hook for npm projects.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/precommit.md#2025-04-11_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+npm install --save-dev simple-git-hooks pretty-quick
+echo '{\n  "pre-commit": "npx pretty-quick --staged"\n}\n' > .simple-git-hooks.json
+npx simple-git-hooks
+```
+
+----------------------------------------
+
+TITLE: Using Cache for Faster Formatting
+DESCRIPTION: Command that enables caching to improve performance by only formatting files that have changed. The cache uses various keys including Prettier version, options, Node.js version, and file content or metadata.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/cli.md#2025-04-11_snippet_10
+
+LANGUAGE: bash
+CODE:
+```
+prettier . --write --cache
+```
+
+----------------------------------------
+
+TITLE: Configuring ALE to run only explicit linters
+DESCRIPTION: Setting ALE to run only explicitly configured linters instead of all available tools for supported languages.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/vim.md#2025-04-11_snippet_7
+
+LANGUAGE: vim
+CODE:
+```
+let g:ale_linters_explicit = 1
+```
+
+----------------------------------------
+
+TITLE: Resolving Prettier Configuration File Path
+DESCRIPTION: Shows how to find the path of the Prettier configuration file that will be used for a given file.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/api.md#2025-04-11_snippet_4
+
+LANGUAGE: javascript
+CODE:
+```
+const configFile = await prettier.resolveConfigFile(filePath);
+// you got the path of the configuration file
+```
+
+----------------------------------------
+
+TITLE: Configuring HTML/JSX Bracket Line Formatting with bracketSameLine=true
+DESCRIPTION: Shows how to configure Prettier to place the closing angle bracket at the end of the last line in multi-line HTML/JSX elements instead of on a new line. This example demonstrates the true value for the bracketSameLine option.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/options.md#2025-04-11_snippet_2
+
+LANGUAGE: html
+CODE:
+```
+<button
+  className="prettier-class"
+  id="prettier-id"
+  onClick={this.handleClick}>
+  Click Here
+</button>
+```
+
+----------------------------------------
+
+TITLE: Configuring Prose Wrap Options in Prettier
+DESCRIPTION: Controls how Prettier wraps prose text in markdown files. Options include 'always' (wrap at print width), 'never' (unwrap all blocks), or 'preserve' (leave as-is).
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/options.md#2025-04-11_snippet_6
+
+LANGUAGE: json
+CODE:
+```
+proseWrap: "<always|never|preserve>"
+```
+
+----------------------------------------
+
+TITLE: Fixing Typecast of Superclass in Class Declarations
+DESCRIPTION: Shows how type annotations for superclasses in class declarations are now properly formatted without adding unnecessary parentheses or moving comments.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2022-03-16-2.6.0.md#2025-04-11_snippet_8
+
+LANGUAGE: javascript
+CODE:
+```
+// Input
+class Foo extends /** @type {Type} */ (Bar) {}
+
+// Prettier 2.5
+class Foo /** @type {Type} */ extends ((Bar)) {}
+
+// Prettier 2.6
+class Foo extends /** @type {Type} */ (Bar) {}
+```
+
+----------------------------------------
+
+TITLE: Configuring Prettier Overrides in JSON
+DESCRIPTION: Example of configuring Prettier using JSON format to override settings for specific file patterns. Shows how to set different semicolon rules for test files.
+SOURCE: https://github.com/prettier/prettier/blob/main/tests/format/markdown/markdown/real-world-case.md#2025-04-11_snippet_20
+
+LANGUAGE: json
+CODE:
+```
+{
+  "semi": false,
+  "overrides": [{
+    "files": "*.test.js",
+    "options": {
+      "semi": true
+    }
+  }]
+}
+```
+
+----------------------------------------
+
+TITLE: Fixed Range Formatting for Function Bodies in JavaScript
+DESCRIPTION: Shows how Prettier 2.8 properly handles range formatting within function bodies, correctly preserving the closing parenthesis of function expressions.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2022-11-23-2.8.0.md#2025-04-11_snippet_4
+
+LANGUAGE: jsx
+CODE:
+```
+// Input
+let fn = (() => {
+  return; //
+//^^^^^^^^^^ - range
+});
+
+// Prettier 2.7
+let fn = (() => {
+  return; //
+};);
+
+// Prettier 2.8
+let fn = (() => {
+  return; //
+});
+```
+
+----------------------------------------
+
+TITLE: Default Prettier Ignore Patterns
+DESCRIPTION: The default patterns that Prettier ignores, including version control system directories and node_modules.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/ignore.md#2025-04-11_snippet_1
+
+LANGUAGE: text
+CODE:
+```
+**/.git
+**/.svn
+**/.hg
+**/node_modules
+```
+
+----------------------------------------
+
+TITLE: CLI File Pattern Exclusion Example
+DESCRIPTION: Example of using negative patterns in CLI commands to exclude specific file types from formatting.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/ignore.md#2025-04-11_snippet_10
+
+LANGUAGE: bash
+CODE:
+```
+prettier . "!**/*.{js,jsx,vue}" --write
+```
+
+----------------------------------------
+
+TITLE: Example Print Function Implementation
+DESCRIPTION: Practical example of a print function implementation showing how to handle different node types and use doc builders for formatting.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/plugins.md#2025-04-11_snippet_8
+
+LANGUAGE: javascript
+CODE:
+```
+import { doc } from "prettier";
+
+const { group, indent, join, line, softline } = doc.builders;
+
+function print(path, options, print) {
+  const node = path.node;
+
+  switch (node.type) {
+    case "list":
+      return group([
+        "(",
+        indent([softline, join(line, path.map(print, "elements"))]),
+        softline,
+        ")",
+      ]);
+
+    case "pair":
+      return group([
+        "(",
+        indent([softline, print("left"), line, ". ", print("right")]),
+        softline,
+        ")",
+      ]);
+
+    case "symbol":
+      return node.name;
+  }
+
+  throw new Error(`Unknown node type: ${node.type}`);
+}
+```
+
+----------------------------------------
+
+TITLE: Including Plugins in Shared Configuration
+DESCRIPTION: Example of including Prettier plugins in a shared configuration file (index.js) by specifying them in the plugins array.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/sharing-configurations.md#2025-04-11_snippet_13
+
+LANGUAGE: js
+CODE:
+```
+// index.js
+const config = {
+  singleQuote: true,
+  plugins: ["prettier-plugin-xml"],
+};
+
+export default config;
+```
+
+----------------------------------------
+
+TITLE: Using prettier-ignore in GraphQL
+DESCRIPTION: Example of using # prettier-ignore comment to prevent formatting of a specific GraphQL query part.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/ignore.md#2025-04-11_snippet_11
+
+LANGUAGE: graphql
+CODE:
+```
+{
+  # prettier-ignore
+  addReaction(input:{superLongInputFieldName:"MDU6SXNzdWUyMzEzOTE1NTE=",content:HOORAY}) {
+    reaction {content}
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Fixing Inconsistent Type Formatting in TypeScript and Flow
+DESCRIPTION: This snippet demonstrates how Prettier 2.2 unifies the formatting of generic types between TypeScript and Flow parsers, ensuring consistent output.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2020-11-20-2.2.0.md#2025-04-11_snippet_17
+
+LANGUAGE: typescript
+CODE:
+```
+// Input
+const name: SomeGeneric<
+  Pick<Config, "ONE_LONG_PROP" | "ANOTHER_LONG_PROP">
+> = null;
+
+// Prettier 2.1 (--parser=typescript)
+const name: SomeGeneric<Pick<
+  Config,
+  "ONE_LONG_PROP" | "ANOTHER_LONG_PROP"
+>> = null;
+
+// Prettier 2.1 (--parser=flow)
+const name: SomeGeneric<
+  Pick<Config, "ONE_LONG_PROP" | "ANOTHER_LONG_PROP">
+> = null;
+
+// Prettier 2.2 (typescript and flow parser)
+const name: SomeGeneric<
+  Pick<Config, "ONE_LONG_PROP" | "ANOTHER_LONG_PROP">
+> = null;
+```
+
+----------------------------------------
+
+TITLE: Supporting Flow Type Spread in TypeScript
+DESCRIPTION: Prettier now supports formatting Flow type spread syntax in TypeScript files.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2017-04-13-1.0.0.md#2025-04-11_snippet_24
+
+LANGUAGE: ts
+CODE:
+```
+type TypeB = { ...TypeA };
+```
+
+----------------------------------------
+
+TITLE: Setting Parser Option for Custom File Types in Prettier
+DESCRIPTION: JSON configuration example showing how to configure Prettier to use specific parsers for different file types, including the .prettierrc file itself.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/configuration.md#2025-04-11_snippet_10
+
+LANGUAGE: json
+CODE:
+```
+{
+  "overrides": [
+    {
+      "files": ".prettierrc",
+      "options": { "parser": "json" }
+    }
+  ]
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "overrides": [
+    {
+      "files": "*.js",
+      "options": {
+        "parser": "flow"
+      }
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Configuring GitHub Actions Workflow for Prettier Autoformatting
+DESCRIPTION: This YAML workflow configuration sets up automated Prettier formatting in GitHub Actions. It uses the autofix.ci action to automatically apply and commit Prettier formatting changes on pull requests and pushes.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/ci.md#2025-04-11_snippet_0
+
+LANGUAGE: yaml
+CODE:
+```
+name: autofix.ci
+on:
+  pull_request:
+  push:
+permissions: {}
+jobs:
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: |
+          yarn
+          yarn prettier . --write
+      - uses: autofix-ci/action@v1
+        with:
+          commit-message: "Apply Prettier format"
+```
+
+----------------------------------------
+
+TITLE: EditorConfig File with Prettier-Compatible Settings
+DESCRIPTION: Sample EditorConfig file showing how different properties map to Prettier's configuration, with explanations of both configurable and non-configurable behaviors.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/configuration.md#2025-04-11_snippet_11
+
+LANGUAGE: ini
+CODE:
+```
+# Stop the editor from looking for .editorconfig files in the parent directories
+# root = true
+
+[*]
+# Non-configurable Prettier behaviors
+charset = utf-8
+insert_final_newline = true
+# Caveat: Prettier won't trim trailing whitespace inside template strings, but your editor might.
+# trim_trailing_whitespace = true
+
+# Configurable Prettier behaviors
+# (change these if your Prettier config differs)
+end_of_line = lf
+indent_style = space
+indent_size = 2
+max_line_length = 80
+```
+
+----------------------------------------
+
+TITLE: Formatting Code with Cursor Position using formatWithCursor
+DESCRIPTION: Shows how to format code while preserving cursor position using Prettier's formatWithCursor function.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/api.md#2025-04-11_snippet_2
+
+LANGUAGE: javascript
+CODE:
+```
+await prettier.formatWithCursor(" 1", { cursorOffset: 2, parser: "babel" });
+// -> { formatted: '1;\n', cursorOffset: 1 }
+```
+
+----------------------------------------
+
+TITLE: Referencing shared config in package.json
+DESCRIPTION: Example of how to reference a shared Prettier configuration in a project's package.json file.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/sharing-configurations.md#2025-04-11_snippet_8
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "my-cool-library",
+  "version": "1.0.0",
+  "prettier": "@username/prettier-config"
+}
+```
+
+----------------------------------------
+
+TITLE: Extending Shareable Config in .prettierrc.mjs
+DESCRIPTION: Example of how to extend a shareable Prettier configuration to override specific properties in a .prettierrc.mjs file.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/sharing-configurations.md#2025-04-11_snippet_10
+
+LANGUAGE: js
+CODE:
+```
+import usernamePrettierConfig from "@username/prettier-config";
+
+/**
+ * @type {import("prettier").Config}
+ */
+const config = {
+  ...usernamePrettierConfig,
+  semi: false,
+};
+
+export default config;
+```
+
+----------------------------------------
+
+TITLE: Setting Parser Options for Specific Files in JSON
+DESCRIPTION: JSON configuration example showing how to specify which parser Prettier should use for particular file types using the overrides feature. This is useful for files that don't have standard extensions.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/configuration.md#2025-04-11_snippet_10
+
+LANGUAGE: json
+CODE:
+```
+{
+  "overrides": [
+    {
+      "files": ".prettierrc",
+      "options": { "parser": "json" }
+    }
+  ]
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "overrides": [
+    {
+      "files": "*.js",
+      "options": {
+        "parser": "flow"
+      }
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Embed Function Type Definition
+DESCRIPTION: Type definition for the embed function used to print one language inside another, such as CSS-in-JS or fenced code blocks in Markdown.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/plugins.md#2025-04-11_snippet_9
+
+LANGUAGE: typescript
+CODE:
+```
+function embed(
+  // Path to the current AST node
+  path: AstPath,
+  // Current options
+  options: Options,
+):
+  | ((
+      // Parses and prints the passed text using a different parser.
+      // You should set `options.parser` to specify which parser to use.
+      textToDoc: (text: string, options: Options) => Promise<Doc>,
+      // Prints the current node or its descendant node with the current printer
+      print: (
+        selector?: string | number | Array<string | number> | AstPath,
+      ) => Doc,
+      // The following two arguments are passed for convenience.
+      // They're the same `path` and `options` that are passed to `embed`.
+      path: AstPath,
+      options: Options,
+    ) => Promise<Doc | undefined> | Doc | undefined)
+  | Doc
+  | undefined;
+```
+
+----------------------------------------
+
+TITLE: Specifying Custom Cache Location
+DESCRIPTION: Command showing how to specify a custom location for the cache file with the --cache-location flag, rather than using the default location in node_modules.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/cli.md#2025-04-11_snippet_11
+
+LANGUAGE: bash
+CODE:
+```
+prettier . --write --cache --cache-location=path/to/cache-file
+```
+
+----------------------------------------
+
+TITLE: Installing lint-staged with Prettier for pre-commit hooks
+DESCRIPTION: Installs and configures lint-staged with husky to automatically format files before committing. This approach works well when using other code quality tools alongside Prettier and supports partially staged files.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/versioned_docs/version-stable/precommit.md#2025-04-11_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npx mrm@2 lint-staged
+```
+
+----------------------------------------
+
+TITLE: Installing Prettier with Package Managers
+DESCRIPTION: Commands to install Prettier as a development dependency using different package managers. The --save-exact flag ensures version consistency across the project.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/install.md#2025-04-11_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm install --save-dev --save-exact prettier
+```
+
+LANGUAGE: bash
+CODE:
+```
+yarn add --dev --exact prettier
+```
+
+LANGUAGE: bash
+CODE:
+```
+pnpm add --save-dev --save-exact prettier
+```
+
+LANGUAGE: bash
+CODE:
+```
+bun add --dev --exact prettier
+```
+
+----------------------------------------
+
+TITLE: Using prettier-ignore in Handlebars
+DESCRIPTION: Example of using {{! prettier-ignore }} comment to prevent formatting of Handlebars template content.
+SOURCE: https://github.com/prettier/prettier/blob/main/docs/ignore.md#2025-04-11_snippet_12
+
+LANGUAGE: hbs
+CODE:
+```
+{{! prettier-ignore }}
+<div>
+  "hello! my parent was ignored"
+  {{#my-crazy-component     "shall"     be="preserved"}}
+    <This
+      is  =  "also preserved as is"
+    />
+  {{/my-crazy-component}}
+</div>
+```
+
+----------------------------------------
+
+TITLE: Configuring Absolute Paths as Plugins in Prettier Config
+DESCRIPTION: Demonstrates how to configure absolute file paths as Prettier plugins in a configuration file. This allows referencing plugins using both POSIX-style paths, Windows-style paths, or using require.resolve for Node.js module resolution.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2024-01-12-3.2.0.md#2025-04-11_snippet_12
+
+LANGUAGE: javascript
+CODE:
+```
+// prettier.config.cjs
+module.exports = {
+  plugins: [
+    // posix style
+    "/path/to/plugin.js",
+    // Windows style
+    "D:\\\\path\\to\\plugin.js",
+    // Use `require.resolve`
+    require.resolve("my-awesome-prettier-plugin"),
+  ],
+};
+```
+
+----------------------------------------
+
+TITLE: Fixing Parentheses Around Sequence Expressions in Arrow Functions
+DESCRIPTION: Shows how Prettier 2.5 properly preserves parentheses around sequence expressions in the body of chained arrow functions, fixing the syntax error that was introduced in previous versions.
+SOURCE: https://github.com/prettier/prettier/blob/main/website/blog/2021-11-25-2.5.0.md#2025-04-11_snippet_6
+
+LANGUAGE: jsx
+CODE:
+```
+// Input
+const f = () => () => (0, 1);
+
+// Prettier 2.4
+const f = () => () => 0, 1;
+
+// Prettier 2.5
+const f = () => () => (0, 1);
+```
