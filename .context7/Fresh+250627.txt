@@ -1,0 +1,1504 @@
+TITLE: Create and Start a New Fresh Project
+DESCRIPTION: This sequence of commands initializes a new Fresh project using the Deno CLI, leveraging the official Fresh project creation tool. After scaffolding the project, it changes the current directory to the new project's root and then starts the development server, making the application accessible for development.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/getting-started/create-a-project.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+deno run -A -r https://fresh.deno.dev
+cd fresh-project
+deno task start
+```
+
+----------------------------------------
+
+TITLE: Fresh Island with Shared Components and Interactivity
+DESCRIPTION: This snippet shows an island integrating shared components like `Card.tsx` and `Button.tsx` from the `components/` directory. It highlights how interactivity (e.g., `onClick` handlers) can be added to these components when used within an island.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/islands.md#_snippet_4
+
+LANGUAGE: tsx
+CODE:
+```
+import { useSignal } from "@preact/signals";
+import { ComponentChildren } from "preact";
+import Card from "../components/Card.tsx";
+import Button from "../components/Button.tsx";
+
+interface Props {
+  children: ComponentChildren;
+}
+
+export default function MyIsland({ children }: Props) {
+  const count = useSignal(0);
+
+  return (
+    <Card>
+      Counter is at {count}. 
+      <Button onClick={() => (count.value += 1)}>+</Button>
+      {children}
+    </Card>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Create a Countdown Island Component in Fresh
+DESCRIPTION: This code defines a client-side interactive component for Fresh's islands architecture. It uses Preact signals and effects to create a real-time countdown timer to a specified target date. The component demonstrates how to handle props (which must be JSON serializable) and update UI based on time, stopping when the target date is reached.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/getting-started/adding-interactivity.md#_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+import { useSignal } from "@preact/signals";
+import { useEffect } from "preact/hooks";
+
+const timeFmt = new Intl.RelativeTimeFormat("en-US");
+
+// The target date is passed as a string instead of as a `Date`, because the
+// props to island components need to be JSON (de)serializable.
+export default function Countdown(props: { target: string }) {
+  const target = new Date(props.target);
+  const now = useSignal(new Date());
+
+  // Set up an interval to update the `now` date every second with the current
+  // date as long as the component is mounted.
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (now.value > target) {
+        clearInterval(timer);
+      }
+      now.value = new Date();
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [props.target]);
+
+  const secondsLeft = Math.floor(
+    (target.getTime() - now.value.getTime()) / 1000,
+  );
+
+  // If the target date has passed, we stop counting down.
+  if (secondsLeft <= 0) {
+    return <span>🎉</span>;
+  }
+
+  // Otherwise, we format the remaining time using `Intl.RelativeTimeFormat` and
+  // render it.
+  return <span>{timeFmt.format(secondsLeft, "seconds")}</span>;
+}
+```
+
+----------------------------------------
+
+TITLE: Basic Fresh Middleware Handler Example
+DESCRIPTION: Illustrates a fundamental Fresh middleware handler in TypeScript. It demonstrates how to intercept requests, modify `ctx.state` to pass data downstream, and set response headers before returning control to the next handler.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/middleware.md#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+import { FreshContext } from "$fresh/server.ts";
+
+interface State {
+  data: string;
+}
+
+export async function handler(
+  req: Request,
+  ctx: FreshContext<State>,
+) {
+  ctx.state.data = "myData";
+  const resp = await ctx.next();
+  resp.headers.set("server", "fresh server");
+  return resp;
+}
+```
+
+----------------------------------------
+
+TITLE: Create Synchronized Slider Island with Shared Signal Prop
+DESCRIPTION: Defines a Fresh island component (`SynchronizedSlider.tsx`) that accepts a `Signal<number>` as a prop. This design enables multiple instances of the slider to share and update the same underlying signal value, ensuring their states are synchronized.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/examples/sharing-state-between-islands.md#_snippet_2
+
+LANGUAGE: TSX
+CODE:
+```
+import { Signal } from "@preact/signals";
+
+interface SliderProps {
+  slider: Signal<number>;
+}
+
+// This island displays a slider with a value equal to the `slider` signal's
+// value. When the slider is moved, the `slider` signal is updated.
+export default function SynchronizedSlider(props: SliderProps) {
+  return (
+    <input
+      class="w-full"
+      type="range"
+      min={1}
+      max={100}
+      value={props.slider.value}
+      onInput={(e) => (props.slider.value = Number(e.currentTarget.value))}
+    />
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Define a Basic Fresh Island with Counter
+DESCRIPTION: This snippet demonstrates how to define a simple Fresh island component in `islands/my-island.tsx`. It uses `useSignal` from `@preact/signals` to create a reactive counter that updates on button clicks, showcasing client-side interactivity.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/islands.md#_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+import { useSignal } from "@preact/signals";
+
+export default function MyIsland() {
+  const count = useSignal(0);
+
+  return (
+    <div>
+      Counter is at {count}. 
+      <button onClick={() => (count.value += 1)}>+</button>
+    </div>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Define a Nested Fresh Island Component with Props and Signals
+DESCRIPTION: This Fresh island component (`OtherIsland`) demonstrates how to define an island that can be nested within another. It accepts children and a string prop (`foo`), uses Preact signals (`useSignal`) for reactive state, and includes a button to update a random number. Props are serialized when passed to nested islands.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/islands.md#_snippet_6
+
+LANGUAGE: tsx
+CODE:
+```
+import { useSignal } from "@preact/signals";
+import { ComponentChildren } from "preact";
+
+interface Props {
+  children: ComponentChildren;
+  foo: string;
+}
+
+function randomNumber() {
+  return Math.floor(Math.random() * 100);
+}
+
+export default function OtherIsland({ children, foo }: Props) {
+  const number = useSignal(randomNumber());
+
+  return (
+    <div>
+      <p>String from props: {foo}</p>
+      <p>
+        <button onClick={() => (number.value = randomNumber())}>Random</button>
+        {" "}
+        number is: {number}.
+      </p>
+    </div>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Guard Client-Only Code in Fresh Islands with IS_BROWSER
+DESCRIPTION: This Fresh island component (`MyIsland`) demonstrates how to conditionally render or execute code only in the browser environment using the `IS_BROWSER` flag. This prevents server-side rendering errors when using browser-specific APIs like `EventSource` or `navigator.getUserMedia`, ensuring the component only runs where supported.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/islands.md#_snippet_8
+
+LANGUAGE: tsx
+CODE:
+```
+import { IS_BROWSER } from "$fresh/runtime.ts";
+
+export function MyIsland() {
+  // Return any prerenderable JSX here which makes sense for your island
+  if (!IS_BROWSER) return <div></div>;
+
+  // All the code which must run in the browser comes here!
+  // Like: EventSource, navigator.getUserMedia, etc.
+  return <div></div>;
+}
+```
+
+----------------------------------------
+
+TITLE: Define a Basic Fresh Handler Route
+DESCRIPTION: Demonstrates how to create a simple Fresh route handler that returns a plain text 'Hello World' response for GET requests. It uses `FreshContext` and `Handlers` from `$fresh/server.ts`.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/routes.md#_snippet_0
+
+LANGUAGE: TSX
+CODE:
+```
+import { FreshContext, Handlers } from "$fresh/server.ts";
+
+export const handler: Handlers = {
+  GET(_req: Request, _ctx: FreshContext) {
+    return new Response("Hello World");
+  },
+};
+```
+
+----------------------------------------
+
+TITLE: Define Asynchronous Routes with `defineRoute` Helper in Fresh (TypeScript/TSX)
+DESCRIPTION: Illustrates the usage of Fresh's `defineRoute` helper, which simplifies the creation of asynchronous route handlers. This helper automatically infers the correct types for the function arguments (like `req` and `ctx`), enhancing type safety and developer experience when defining routes.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/routes.md#_snippet_7
+
+LANGUAGE: tsx
+CODE:
+```
+import { defineRoute } from "$fresh/server.ts";
+
+export default defineRoute(async (req, ctx) => {
+  const data = await loadData();
+
+  return (
+    <div class="page">
+      <h1>Hello {data.name}</h1>
+    </div>
+  );
+});
+```
+
+----------------------------------------
+
+TITLE: Combine Handler and Component in a Fresh Route
+DESCRIPTION: Shows how to use both a handler and a component in a Fresh route. The handler asynchronously renders the component and then adds a custom HTTP header before returning the response.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/routes.md#_snippet_2
+
+LANGUAGE: TSX
+CODE:
+```
+import { HandlerContext, Handlers, PageProps } from "$fresh/server.ts";
+
+export const handler: Handlers = {
+  async GET(_req: Request, ctx: HandlerContext) {
+    const resp = await ctx.render();
+    resp.headers.set("X-Custom-Header", "Hello World");
+    return resp;
+  },
+};
+
+export default function Page(props: PageProps) {
+  return <div>You are on the page '{props.url.href}'.</div>;
+}
+```
+
+----------------------------------------
+
+TITLE: Handle HTTP Responses in Fresh Route Components (TypeScript/TSX)
+DESCRIPTION: Demonstrates how to return `Response` objects directly from Fresh route components to handle various HTTP scenarios, such as rendering a 404 Not Found page or performing a 302 Redirect. It shows conditional logic based on data availability and setting custom headers for redirects.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/routes.md#_snippet_6
+
+LANGUAGE: tsx
+CODE:
+```
+// Async route component
+export default async function MyPage(req: Request, ctx: RouteContext) {
+  const value = await loadFooValue();
+
+  // Return 404 if `value` is null
+  if (value === null) {
+    return ctx.renderNotFound();
+  }
+
+  // Returning a response object directly works too
+  if (value === "redirect") {
+    const headers = new Headers();
+    headers.set("location", "/some-other-page");
+    return new Response(null, {
+      status: 302,
+      headers,
+    });
+  }
+
+  return <p>foo is: {value}</p>;
+}
+```
+
+----------------------------------------
+
+TITLE: Fresh: Create a JSON API Route
+DESCRIPTION: This snippet demonstrates how to build a dedicated API route in Fresh that directly returns a JSON response. It shows a GET handler generating a random UUID and sending it back with the appropriate 'Content-Type' header, bypassing page rendering.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/getting-started/custom-handlers.md#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+import { Handlers } from "$fresh/server.ts";
+
+export const handler: Handlers = {
+  GET(_req) {
+    const uuid = crypto.randomUUID();
+    return new Response(JSON.stringify(uuid), {
+      headers: { "Content-Type": "application/json" },
+    });
+  },
+};
+```
+
+----------------------------------------
+
+TITLE: Accessing Middleware State in a Fresh Route Handler
+DESCRIPTION: Shows how a standard Fresh route handler can retrieve and utilize data that was previously set or modified by an upstream middleware via `ctx.state`.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/middleware.md#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+export const handler: Handlers<any, { data: string }> = {
+  GET(_req, ctx) {
+    return new Response(`middleware data is ${ctx.state.data}`);
+  },
+};
+```
+
+----------------------------------------
+
+TITLE: Accessing Dynamic Route Parameters in Fresh Middleware
+DESCRIPTION: Explains how Fresh middleware can access dynamic route parameters, such as `[tenant]`, through `ctx.params`, enabling logic based on URL segments.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/middleware.md#_snippet_4
+
+LANGUAGE: ts
+CODE:
+```
+import { FreshContext } from "$fresh/server.ts";
+
+export async function handler(_req: Request, ctx: FreshContext) {
+  const currentTenant = ctx.params.tenant;
+  // do something with the tenant
+  const resp = await ctx.next();
+  return resp;
+}
+```
+
+----------------------------------------
+
+TITLE: Perform Relative Path Redirect in Fresh Middleware
+DESCRIPTION: Shows how to implement a relative path redirect within Fresh middleware. This is achieved by creating a new `Response` object with the desired HTTP status (e.g., 307) and setting the `Location` header to the target relative path (e.g., '/my/new/relative/path').
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/middleware.md#_snippet_9
+
+LANGUAGE: ts
+CODE:
+```
+export function handler(req: Request): Response {
+  return new Response("", {
+    status: 307,
+    headers: { Location: "/my/new/relative/path" },
+  });
+}
+```
+
+----------------------------------------
+
+TITLE: Perform Absolute URL Redirect in Fresh Middleware
+DESCRIPTION: Illustrates how to return an absolute URL redirect from a Fresh middleware handler. It uses `Response.redirect()` to send the client to an external URL (e.g., 'https://example.com') with a specified HTTP status code, such as 307 for a temporary redirect or 301 for a permanent one.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/middleware.md#_snippet_8
+
+LANGUAGE: ts
+CODE:
+```
+export function handler(req: Request): Response {
+  return Response.redirect("https://example.com", 307);
+}
+```
+
+----------------------------------------
+
+TITLE: Initialize Fresh with a Twind Plugin
+DESCRIPTION: Demonstrates how to import and initialize a Fresh plugin, specifically the Twind plugin, in the `main.ts` file to extend Fresh's functionality. Plugins are added to the `plugins` array during the `start` function call.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/plugins.md#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+import { start } from "$fresh/server.ts";
+import manifest from "./fresh.gen.ts";
+
+import twindPlugin from "$fresh/plugins/twind.ts";
+import twindConfig from "./twind.config.js";
+
+await start(manifest, {
+  plugins: [
+    // This line configures Fresh to use the first-party twind plugin.
+    twindPlugin(twindConfig),
+  ],
+});
+```
+
+----------------------------------------
+
+TITLE: Fresh Plugin Example: Loading Islands
+DESCRIPTION: Example of a Fresh plugin demonstrating how to load islands by specifying their file paths. These files are treated as if they were in the `islands/` directory and are processed for browser bundling.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/plugins.md#_snippet_7
+
+LANGUAGE: tsx
+CODE:
+```
+import { Plugin } from "$fresh/server.ts";
+
+export default function myIslandPlugin(): Plugin {
+  return {
+    name: "my-island-plugin",
+    islands: {
+      baseLocation: import.meta.url,
+      paths: [
+        "./plugin/MyPluginIsland.tsx",
+        "./plugin/OtherPluginIsland.tsx"
+      ]
+    }
+  };
+}
+```
+
+----------------------------------------
+
+TITLE: Fresh Plugin Hook: renderAsync
+DESCRIPTION: Details the `renderAsync` hook for Fresh plugins, enabling asynchronous style and script generation. It requires an asynchronous return of `PluginRenderResult` and invocation of `renderAsync()` method from `PluginAsyncRenderContext`.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/plugins.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+Hook: renderAsync
+  Purpose: Enables asynchronous style and script generation.
+  Returns: PluginRenderResult (asynchronously, via Promise or async/await)
+  Context: PluginAsyncRenderContext
+    Method: renderAsync()
+      Purpose: Must be invoked during the hook to render the page.
+      Constraint: Failure to call is a terminal error.
+  Behavior:
+    - Allows multiple async render hooks to run concurrently.
+    - Cannot use global variables for state propagation (unlike synchronous render).
+    - Wraps JSX->string rendering, plugin render hooks, and Fresh's RenderFunction.
+```
+
+----------------------------------------
+
+TITLE: Fresh Plugin Hook: buildStart
+DESCRIPTION: Describes the `buildStart` hook, executed at the beginning of the Fresh ahead-of-time build task. It receives the `ResolvedFreshConfig` object and can be used for generating precompiled static assets.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/plugins.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Hook: buildStart
+  Purpose: Executed at the start of the Fresh ahead-of-time build task.
+  Context: ResolvedFreshConfig
+  Usage:
+    - May be synchronous or asynchronous.
+    - Can generate precompiled static assets.
+    - Files saved to config.build.outDir/static will be served.
+```
+
+----------------------------------------
+
+TITLE: Define a Basic Fresh Component Route
+DESCRIPTION: Illustrates how to create a Fresh route using a default exported JSX component. This component renders HTML displaying the current URL, utilizing `PageProps` from `$fresh/server.ts`.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/routes.md#_snippet_1
+
+LANGUAGE: TSX
+CODE:
+```
+import { PageProps } from "$fresh/server.ts";
+
+export default function Page(props: PageProps) {
+  return <div>You are on the page '{props.url.href}'.</div>;
+}
+```
+
+----------------------------------------
+
+TITLE: Fresh Plugin Example: Defining Routes and Middlewares
+DESCRIPTION: Example of a Fresh plugin demonstrating how to define custom routes and middlewares. It shows the structure for `PluginMiddlewareState`, `Options`, and how to register `MiddlewareHandler` functions and route components within the plugin's `middlewares` and `routes` arrays.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/plugins.md#_snippet_6
+
+LANGUAGE: typescript
+CODE:
+```
+import { MiddlewareHandlerContext, Plugin } from "$fresh/server.ts";
+import { handler as testMiddleware } from "./sample_routes/_middleware.ts";
+import { SimpleRoute } from "./sample_routes/simple-route.tsx";
+export type { Options };
+
+interface Options {
+  title: string;
+}
+export type PluginMiddlewareState = {
+  num: number;
+  test: string;
+};
+
+const twoPointlessMiddlewares = [
+  async (
+    _req: Request,
+    ctx: MiddlewareHandlerContext<PluginMiddlewareState>,
+  ) => {
+    ctx.state.num = ctx.state.num === undefined ? 1 : ctx.state.num + 1;
+    return await ctx.next();
+  },
+  async (
+    _req: Request,
+    ctx: MiddlewareHandlerContext<PluginMiddlewareState>,
+  ) => {
+    ctx.state.num = ctx.state.num === undefined ? 1 : ctx.state.num + 1;
+    return await ctx.next();
+  },
+];
+
+export default function routePlugin(
+  options: Options,
+): Plugin<PluginMiddlewareState> {
+  return {
+    name: "routePlugin",
+    middlewares: [{
+      middleware: { handler: testMiddleware },
+      path: "/",
+    }, {
+      middleware: {
+        handler: twoPointlessMiddlewares,
+      },
+      path: "lots-of-middleware",
+    }],
+    routes: [
+      { path: "no-leading-slash-here", component: SimpleRoute },
+    ],
+  };
+}
+```
+
+----------------------------------------
+
+TITLE: Fresh Project Structure with Layouts
+DESCRIPTION: Illustrates the directory structure for Fresh applications, showing where `_layout.tsx` files are placed and their scope of application, including how layouts can be nested and applied.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/layouts.md#_snippet_0
+
+LANGUAGE: txt
+CODE:
+```
+└── routes
+    ├── sub
+    │   ├── page.tsx
+    │   └── index.tsx
+    ├── other
+    │   ├── _layout.tsx  # will be applied on top of `routes/_layout.tsx`
+    │   └── page.tsx
+    ├── _layout.tsx  # will be applied to all routes
+    └── _app.tsx
+```
+
+----------------------------------------
+
+TITLE: Fresh Plugin Interface and Render Hook API
+DESCRIPTION: Documents the `Plugin` interface, its required `name` property, and details the `render` hook. It specifies the `PluginRenderContext` parameter, the mandatory `render()` method within it, and the `PluginRenderResult` return type, including properties like `styles`, `links`, and `scripts` for content injection.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/plugins.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+Plugin interface:
+  name: string (required)
+    Description: The unique name of the plugin. Must only contain 'a'-'z' and '_' characters.
+
+Hook: render
+  Description: Allows plugins to control the synchronous rendering of a page and inject additional CSS/JS.
+  Parameters:
+    context: PluginRenderContext
+      render(): PluginRenderFunctionResult
+        Description: This method must be invoked during the render hook to actually render the page. Failure to call it is a terminal error.
+        Returns:
+          PluginRenderFunctionResult properties:
+            htmlText: string - The HTML text of the rendered page.
+            hasIslands: boolean - Indicates whether the page contains any islands that will be hydrated on the client.
+  Returns: PluginRenderResult
+    PluginRenderResult properties:
+      styles: Array<{ cssText: string, id?: string, media?: string }>
+        Description: Injected into the <head> of the page as inline CSS. Each entry defines CSS text, an optional 'id' for the style tag, and an optional 'media' attribute.
+      links: Array<object>
+        Description: Injected into the <head> of the page as <link> tags. Attributes for the <link> tag are taken from the entry's properties.
+      scripts: Array<{ module: string, state: any }>
+        Description: JavaScript/TypeScript modules to be injected into the page. Modules must be defined in the Plugin#entrypoints property. Each module's default export must be a function taking one arbitrary argument (state) and returning nothing (or a promise resolving to nothing). Fresh calls this function with the provided state.
+      htmlText?: string
+        Description: Optional. If provided, replaces the HTML inside the <body> element of the page.
+```
+
+----------------------------------------
+
+TITLE: Define a Basic Synchronous Fresh Layout
+DESCRIPTION: Demonstrates how to create a simple `_layout.tsx` file using a default export of a regular Preact component. It shows how the `Component` to be wrapped and `state` (from middleware) are passed via `PageProps`.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/layouts.md#_snippet_1
+
+LANGUAGE: tsx
+CODE:
+```
+import { PageProps } from "$fresh/server.ts";
+
+export default function Layout({ Component, state }: PageProps) {
+  // do something with state here
+  return (
+    <div class="layout">
+      <Component />
+    </div>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Use `defineLayout` Helper for Async Fresh Layouts
+DESCRIPTION: Illustrates the use of Fresh's `defineLayout` helper, which simplifies async layout definitions by automatically inferring the correct types for the function arguments, making the code cleaner.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/layouts.md#_snippet_3
+
+LANGUAGE: tsx
+CODE:
+```
+import { defineLayout } from "$fresh/server.ts";
+
+export default defineLayout(async (req, ctx) => {
+  const data = await loadData();
+
+  return (
+    <div class="layout">
+      <p>{data.greeting}</p>
+      <ctx.Component />
+    </div>
+  );
+});
+```
+
+----------------------------------------
+
+TITLE: Fresh Project Structure for Layout Inheritance Opt-Out
+DESCRIPTION: Illustrates a directory structure where a specific route (`special.tsx`) might need to opt out of inherited layouts from parent directories, demonstrating a common scenario for layout control.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/layouts.md#_snippet_4
+
+LANGUAGE: txt
+CODE:
+```
+└── routes
+    ├── sub
+    │   ├── _layout_.tsx
+    │   ├── special.tsx  # should not inherit layouts
+    │   └── index.tsx
+    └── _layout.tsx
+```
+
+----------------------------------------
+
+TITLE: Opt Out of Inherited Layouts within a Fresh Layout File
+DESCRIPTION: Shows how a layout file itself can opt out of inheriting layouts from parent directories by setting `skipInheritedLayouts: true` in its `LayoutConfig` export. This is useful for creating independent layout branches.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/layouts.md#_snippet_6
+
+LANGUAGE: tsx
+CODE:
+```
+import { LayoutConfig } from "$fresh/server.ts";
+
+export const config: LayoutConfig = {
+  skipInheritedLayouts: true, // Skip already inherited layouts
+};
+
+export default function MyPage() {
+  return <p>Hello world</p>;
+}
+```
+
+----------------------------------------
+
+TITLE: Customize 404 Not Found Page in Fresh
+DESCRIPTION: Defines a custom 404 Not Found page by creating a `_404.tsx` file in the `routes/` folder. This component will be rendered automatically when no matching route is found for a request. It receives `PageProps` which includes the URL that was not found.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/error-pages.md#_snippet_0
+
+LANGUAGE: TSX
+CODE:
+```
+import { PageProps } from "$fresh/server.ts";
+
+export default function NotFoundPage({ url }: PageProps) {
+  return <p>404 not found: {url.pathname}</p>;
+}
+```
+
+----------------------------------------
+
+TITLE: Manually Render 404 Page in Fresh Handler
+DESCRIPTION: Demonstrates how to manually trigger the rendering of the 404 page from within a Fresh route handler. This is useful when a route matches, but the requested resource (e.g., a blog post) does not exist. The `ctx.renderNotFound` method can also pass custom data to the 404 page component.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/error-pages.md#_snippet_1
+
+LANGUAGE: TSX
+CODE:
+```
+import { Handlers, PageProps } from "$fresh/server.ts";
+
+export const handler: Handlers = {
+  async GET(req, ctx) {
+    const blogpost = await fetchBlogpost(ctx.params.slug);
+    if (!blogpost) {
+      return ctx.renderNotFound({
+        custom: "prop",
+      });
+    }
+    return ctx.render({ blogpost });
+  },
+};
+
+export default function BlogpostPage({ data }) {
+  return (
+    <article>
+      <h1>{data.blogpost.title}</h1>
+      {/* rest of your page */}
+    </article>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Injecting Head Elements in Fresh Routes
+DESCRIPTION: This example demonstrates how to use the `<Head>` component from `$fresh/runtime.ts` within a Fresh route to add various elements like `<meta>`, `<title>`, `<link>`, and `<script>` to the HTML `<head>` section of the page. It shows a typical setup for a home page, ensuring proper SEO and resource linking.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/examples/modifying-the-head.md#_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+import { Head } from "$fresh/runtime.ts";
+
+export default function Home() {
+  return (
+    <>
+      <Head>
+        <meta charset="UTF-8" />
+        <title>Fresh App</title>
+        <meta
+          name="description"
+          content="This is a brief description of Fresh"
+        />
+        <link rel="stylesheet" href="styles.css" />
+        <script src="script.js"></script>
+      </Head>
+      <div class="p-4 mx-auto max-w-screen-md">
+        <h1>Hello World</h1>
+      </div>
+    </>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Customize 500 Internal Server Error Page in Fresh
+DESCRIPTION: Defines a custom 500 Internal Server Error page by creating a `_500.tsx` file in the `routes/` folder. This component will be rendered when a middleware, route handler, or page component throws an unhandled error. It receives `PageProps` which includes the error object.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/error-pages.md#_snippet_3
+
+LANGUAGE: TSX
+CODE:
+```
+import { PageProps } from "$fresh/server.ts";
+
+export default function Error500Page({ error }: PageProps) {
+  return <p>500 internal error: {(error as Error).message}</p>;
+}
+```
+
+----------------------------------------
+
+TITLE: Trigger 404 by Throwing Deno.errors.NotFound
+DESCRIPTION: Shows an alternative method to trigger the 404 page by throwing a `Deno.errors.NotFound()` error within a Fresh handler. This approach is simpler when there's no need to pass specific data to the 404 page component.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/error-pages.md#_snippet_2
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { Handlers } from "$fresh/server.ts";
+
+export const handler: Handlers = {
+  GET(_req, _ctx) {
+    throw new Deno.errors.NotFound();
+  },
+};
+```
+
+----------------------------------------
+
+TITLE: Fetch Data with Fresh Handlers and Page Props
+DESCRIPTION: Demonstrates server-side data fetching in Fresh using `Handlers` and `ctx.render()` to pass data to a `PageProps` component. It includes error handling for not found projects and shows how the data is accessed in the page component.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/data-fetching.md#_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+interface Project {
+  name: string;
+  stars: number;
+}
+
+export const handler: Handlers<Project> = {
+  async GET(_req, ctx) {
+    const project = await db.projects.findOne({ id: ctx.params.id });
+    if (!project) {
+      return ctx.renderNotFound({
+        message: "Project does not exist",
+      });
+    }
+    return ctx.render(project);
+  },
+};
+
+export default function ProjectPage(props: PageProps<Project>) {
+  return (
+    <div>
+      <h1>{props.data.name}</h1>
+      <p>{props.data.stars} stars</p>
+    </div>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Define Asynchronous Fresh Route for Data Fetching
+DESCRIPTION: Illustrates a simplified approach to data fetching in Fresh by defining an `async` route directly. This shortcut combines the GET handler logic with the page component, allowing the route function to directly return JSX after fetching data.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/data-fetching.md#_snippet_1
+
+LANGUAGE: tsx
+CODE:
+```
+interface Project {
+  name: string;
+  stars: number;
+}
+
+export default async function ProjectPage(_req, ctx: FreshContext) {
+  const project: Project | null = await db.projects.findOne({
+    id: ctx.params.id,
+  });
+
+  if (!project) {
+    return <h1>Project not found</h1>;
+  }
+
+  return (
+    <div>
+      <h1>{project.name}</h1>
+      <p>{project.stars} stars</p>
+    </div>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Fresh Content Security Policy Directives API Definition
+DESCRIPTION: This API documentation details the `ContentSecurityPolicyDirectives` interface in Fresh, outlining all supported CSP directives. It specifies fetch, document, and navigation directives, along with their types and descriptions, enabling developers to configure fine-grained content security policies.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/examples/using-csp.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+ContentSecurityPolicyDirectives:
+  childSrc: string[]
+    Defines the valid sources for web workers and nested browsing contexts loaded using elements such as <frame> and <iframe>.
+  connectSrc: string[]
+    Restricts the URLs which can be loaded using script interfaces.
+  defaultSrc: string[]
+    Serves as a fallback for the other fetch directives.
+  fontSrc: string[]
+    Specifies valid sources for fonts loaded using @font-face.
+  frameSrc: string[]
+    Specifies valid sources for nested browsing contexts loading using elements such as <frame> and <iframe>.
+  imgSrc: string[]
+    Specifies valid sources of images and favicons.
+  manifestSrc: string[]
+    Specifies valid sources of application manifest files.
+  mediaSrc: string[]
+    Specifies valid sources for loading media using the <audio> , <video> and <track> elements.
+  objectSrc: string[]
+    Specifies valid sources for the <object>, <embed>, and <applet> elements.
+  prefetchSrc: string[]
+    Specifies valid sources to be prefetched or prerendered.
+  scriptSrc: string[]
+    Specifies valid sources for JavaScript.
+  scriptSrcElem: string[]
+    Specifies valid sources for JavaScript <script> elements.
+  scriptSrcAttr: string[]
+    Specifies valid sources for JavaScript inline event handlers.
+  styleSrc: string[]
+    Specifies valid sources for stylesheets.
+  styleSrcElem: string[]
+    Specifies valid sources for stylesheets <style> elements and <link> elements with rel="stylesheet".
+  styleSrcAttr: string[]
+    Specifies valid sources for inline styles applied to individual DOM elements.
+  workerSrc: string[]
+    Specifies valid sources for Worker, SharedWorker, or ServiceWorker scripts.
+  baseUri: string[]
+    Restricts the URLs which can be used in a document's <base> element.
+  sandbox: string[]
+    Enables a sandbox for the requested resource similar to the <iframe> sandbox attribute.
+  formAction: string[]
+    Restricts the URLs which can be used as the target of a form submissions from a given context.
+  frameAncestors: string[]
+    Specifies valid parents that may embed a page using <frame>, <iframe>, <object>, <embed>, or <applet>.
+  navigateTo: string[]
+    Restricts the URLs to which a document can initiate navigation by any means, including <form> (if form-action is not specified), <a>, window.location, window.open, etc.
+  reportUri: string
+    The URI to report CSP violations to.
+```
+
+----------------------------------------
+
+TITLE: Define a Basic Synchronous Fresh App Wrapper
+DESCRIPTION: This snippet demonstrates how to create a fundamental app wrapper in Fresh using `_app.tsx`. It defines a Preact component that receives `PageProps` to render the global HTML structure and embed the main `Component`.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/app-wrapper.md#_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+import { PageProps } from "$fresh/server.ts";
+
+export default function App({ Component, state }: PageProps) {
+  // do something with state here
+  return (
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My Fresh app</title>
+      </head>
+      <body>
+        <Component />
+      </body>
+    </html>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Style Active Links with CSS using aria-current
+DESCRIPTION: Demonstrates how to apply CSS styles to links based on the `aria-current` attribute. This allows visual differentiation of the current page and its ancestor links, enhancing user experience and accessibility.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/examples/active-links.md#_snippet_0
+
+LANGUAGE: css
+CODE:
+```
+/* Give links pointing to the current page a green color */
+a[aria-current="page"] {
+  color: green;
+}
+
+/* Color all ancestor links of the current page */
+a[aria-current="true"] {
+  color: peachpuff;
+}
+```
+
+----------------------------------------
+
+TITLE: Implement an Asynchronous Fresh App Wrapper for Data Loading
+DESCRIPTION: This example shows how to make the Fresh app wrapper asynchronous. It allows for data fetching operations (e.g., `loadData()`) before rendering, receiving `Request` and `FreshContext` as arguments.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/app-wrapper.md#_snippet_1
+
+LANGUAGE: tsx
+CODE:
+```
+import { FreshContext } from "$fresh/server.ts";
+
+export default async function App(req: Request, ctx: FreshContext) {
+  const data = await loadData();
+
+  return (
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My Fresh app</title>
+      </head>
+      <body>
+        <h1>Hello {data.name}</h1>
+        <ctx.Component />
+      </body>
+    </html>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Simplify Async Fresh App Wrapper with defineApp Helper
+DESCRIPTION: This snippet illustrates using Fresh's `defineApp` helper to streamline the creation of asynchronous app wrappers. It infers the correct types for `req` and `ctx`, making the code cleaner and less verbose.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/app-wrapper.md#_snippet_2
+
+LANGUAGE: tsx
+CODE:
+```
+import { defineApp } from "$fresh/server.ts";
+
+export default defineApp(async (req, ctx) => {
+  const data = await loadData();
+
+  return (
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>My Fresh app</title>
+      </head>
+      <body>
+        <h1>Hello {data.name}</h1>
+        <ctx.Component />
+      </body>
+    </html>
+  );
+});
+```
+
+----------------------------------------
+
+TITLE: Create Global Stylesheet for Tailwind Directives
+DESCRIPTION: Establishes a global CSS file to import Tailwind's base styles, component styles, and utility classes, which are essential for Tailwind CSS to function.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/examples/migrating-to-tailwind.md#_snippet_1
+
+LANGUAGE: css
+CODE:
+```
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+----------------------------------------
+
+TITLE: Fresh Server Start Function Signature
+DESCRIPTION: The primary entry point for starting the Fresh server, accepting a manifest object and an optional configuration object. The `manifest` is typically generated by Fresh, while `config` allows for extensive customization.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/server-configuration.md#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+export async function start(manifest: Manifest, config: FreshConfig = {});
+```
+
+----------------------------------------
+
+TITLE: Fresh RenderFunction Type and RouterOptions Interface
+DESCRIPTION: Defines the `RenderFunction` type for custom rendering logic, allowing developers to control how components are rendered. The `RouterOptions` interface provides configuration for routing behavior, including options for trailing slashes, file ignore patterns, and base paths for serving the application from a sub-directory.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/server-configuration.md#_snippet_2
+
+LANGUAGE: ts
+CODE:
+```
+export type RenderFunction = (
+  ctx: RenderContext,
+  render: InnerRenderFunction,
+) => void | Promise<void>;
+
+export interface RouterOptions {
+  /**
+   *  Controls whether Fresh will append a trailing slash to the URL.
+   *  @default {false}
+   */
+  trailingSlash?: boolean;
+  /**
+   *  Configures the pattern of files to ignore in islands and routes.
+   *
+   *  By default Fresh will ignore test files,
+   *  for example files with a `.test.ts` or a `_test.ts` suffix.
+   *
+   *  @default {/(?:[^/]*_|[^/]*\.|)test\.(?:ts|tsx|mts|js|mjs|jsx|)\/*$/}
+   */
+  ignoreFilePattern?: RegExp;
+  /**
+   * Serve fresh from a base path instead of from the root.
+   *   "/foo/bar" -> http://localhost:8000/foo/bar
+   * @default {undefined}
+   */
+  basePath?: string;
+}
+```
+
+----------------------------------------
+
+TITLE: Fresh Server Configuration Object Schema
+DESCRIPTION: Defines the structure and available properties for the `server` object within `FreshConfig`. This object allows developers to configure various aspects of the Deno Fresh server, such as network binding, SSL/TLS, and custom event handlers for errors or server startup.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/server-configuration.md#_snippet_9
+
+LANGUAGE: typescript
+CODE:
+```
+server: {
+  /** Server private key in PEM format */
+  cert: string;
+
+  /** Cert chain in PEM format */
+  key: string;
+
+  /** The port to listen on.
+   *
+   * @default {8000} */
+  port?: number;
+
+  /** A literal IP address or host name that can be resolved to an IP address.
+   *
+   * __Note about `0.0.0.0`__ While listening `0.0.0.0` works on all platforms,
+   * the browsers on Windows don't work with the address `0.0.0.0`.
+   * You should show the message like `server running on localhost:8080` instead of
+   * `server running on 0.0.0.0:8080` if your program supports Windows.
+   *
+   * @default {"0.0.0.0"} */
+  hostname?: string;
+
+  /** An {@linkcode AbortSignal} to close the server and all connections. */
+  signal?: AbortSignal;
+
+  /** Sets `SO_REUSEPORT` on POSIX systems. */
+  reusePort?: boolean;
+
+  /** The handler to invoke when route handlers throw an error. */
+  onError?: (error: unknown) => Response | Promise<Response>;
+
+  /** The callback which is called when the server starts listening. */
+  onListen?: (params: { hostname: string; port: number }) => void;
+}
+```
+
+----------------------------------------
+
+TITLE: Custom Route Pattern Configuration in Fresh
+DESCRIPTION: Demonstrates how to define a custom URL pattern for a route using `RouteConfig` and `routeOverride` in Fresh, overriding the default file-based routing derived from the file path. This is useful for advanced routing scenarios.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/routing.md#_snippet_0
+
+LANGUAGE: typescript
+CODE:
+```
+import { RouteConfig } from "$fresh/server.ts";
+
+export const config: RouteConfig = {
+  routeOverride: "/x/:module@:version/:path*",
+};
+
+// ...
+```
+
+----------------------------------------
+
+TITLE: Configure Build Target Environment (target)
+DESCRIPTION: Example showing how to specify the target ECMAScript version for generated code using the `target` option in the `build` configuration. This ensures compatibility with older JavaScript environments by transforming newer language constructs.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/server-configuration.md#_snippet_4
+
+LANGUAGE: tsx
+CODE:
+```
+await dev(import.meta.url, "./main.ts", {
+  build: {
+    target: "es2015",
+  },
+});
+```
+
+----------------------------------------
+
+TITLE: Configure Build Output Directory (outDir)
+DESCRIPTION: Example demonstrating how to set the output directory for generated build files using the `outDir` option within the `build` configuration. This allows specifying a custom location for compiled assets.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/server-configuration.md#_snippet_3
+
+LANGUAGE: tsx
+CODE:
+```
+await dev(import.meta.url, "./main.ts", {
+  build: {
+    outDir: Deno.env.get("FRESH_TEST_OUTDIR") ?? undefined,
+  },
+});
+```
+
+----------------------------------------
+
+TITLE: Handle URL-Encoded Form Submissions in Fresh
+DESCRIPTION: This snippet demonstrates how to process `application/x-www-form-urlencoded` POST requests in a Fresh application. It shows how to define `GET` and `POST` handlers, access form data using `req.formData()`, extract specific fields like 'email', and perform a server-side redirect after successful processing.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/forms.md#_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+import { Handlers } from "$fresh/server.ts";
+
+export const handler: Handlers = {
+  async GET(req, ctx) {
+    return await ctx.render();
+  },
+  async POST(req, ctx) {
+    const form = await req.formData();
+    const email = form.get("email")?.toString();
+
+    // Add email to list.
+
+    // Redirect user to thank you page.
+    const headers = new Headers();
+    headers.set("location", "/thanks-for-subscribing");
+    return new Response(null, {
+      status: 303, // See Other
+      headers,
+    });
+  },
+};
+
+export default function Subscribe() {
+  return (
+    <>
+      <form method="post">
+        <input type="email" name="email" value="" />
+        <button type="submit">Subscribe</button>
+      </form>
+    </>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Supabase SSR Client Creation Function
+DESCRIPTION: A TypeScript function `createSupabaseClient` designed for creating a Supabase client instance specifically for Server-Side Rendering (SSR) in Deno. It handles cookie management for session persistence, retrieves Supabase credentials from environment variables, and enforces the PKCE authentication flow type. A new instance of this client must be created for each request.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/examples/authentication-with-supabase.md#_snippet_3
+
+LANGUAGE: ts
+CODE:
+```
+import { deleteCookie, getCookies, setCookie } from "$std/http/cookie.ts";
+import { assert } from "$std/assert/assert.ts";
+import { type CookieOptions, createServerClient } from "supabase/ssr";
+
+export function createSupabaseClient(
+  req: Request,
+  // Keep this optional parameter in mind, we'll get back to it.
+  resHeaders = new Headers(),
+) {
+  const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+  const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
+
+  assert(
+    SUPABASE_URL && SUPABASE_ANON_KEY,
+    "SUPABASE URL and SUPABASE_ANON_KEY environment variables must be set."
+  );
+
+  return createServerClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { flowType: "pkce" },
+    cookies: {
+      get(name: string) {
+        return decodeURIComponent(getCookies(req.headers)[name]);
+      },
+      set(name: string, value: string, options: CookieOptions) {
+        setCookie(resHeaders, {
+          name,
+          value: encodeURIComponent(value),
+          ...options
+        });
+      },
+      remove(name: string, options: CookieOptions) {
+        deleteCookie(resHeaders, name, options);
+      }
+    }
+  });
+}
+```
+
+----------------------------------------
+
+TITLE: Handle File Uploads with Multipart Forms in Fresh
+DESCRIPTION: This example illustrates how to manage file uploads using `multipart/form-data` in a Fresh application. It details how to set up `GET` and `POST` handlers, retrieve the uploaded `File` object from `req.formData()`, handle cases where no file is provided, and process file contents for display.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/forms.md#_snippet_1
+
+LANGUAGE: tsx
+CODE:
+```
+import { Handlers, type PageProps } from "$fresh/server.ts";
+
+interface Props {
+  message: string | null;
+}
+
+export const handler: Handlers<Props> = {
+  async GET(req, ctx) {
+    return await ctx.render({
+      message: null,
+    });
+  },
+  async POST(req, ctx) {
+    const form = await req.formData();
+    const file = form.get("my-file") as File;
+
+    if (!file) {
+      return ctx.render({
+        message: `Please try again`,
+      });
+    }
+
+    const name = file.name;
+    const contents = await file.text();
+
+    console.log(contents);
+
+    return ctx.render({
+      message: `${name} uploaded!`,
+    });
+  },
+};
+
+export default function Upload(props: PageProps<Props>) {
+  const { message } = props.data;
+  return (
+    <>
+      <form method="post" encType="multipart/form-data">
+        <input type="file" name="my-file" />
+        <button type="submit">Upload</button>
+      </form>
+      {message ? <p>{message}</p> : null}
+    </>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Manual Cache Busting with Fresh `asset` Function
+DESCRIPTION: This example demonstrates how to use the `asset` function from `$fresh/runtime.ts` to generate a cache-busted URL for a static file. When accessed via this 'locked' path, the asset will be served with a one-year cache lifetime, improving performance and reducing server load.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/static-files.md#_snippet_0
+
+LANGUAGE: JSX
+CODE:
+```
+import { asset } from "$fresh/runtime.ts";
+
+export default function Page() {
+  return (
+    <p>
+      <a href={asset("/brochure.pdf")}>View brochure</a>
+    </p>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Fresh: Custom GET Handler with Response Header
+DESCRIPTION: This example shows how to define an asynchronous GET handler in Fresh to intercept a request, render the associated page component, and then modify the response by adding a custom HTTP header before sending it back to the client.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/getting-started/custom-handlers.md#_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+import { Handlers } from "$fresh/server.ts";
+
+export const handler: Handlers = {
+  async GET(_req, ctx) {
+    const resp = await ctx.render();
+    resp.headers.set("X-Custom-Header", "Hello");
+    return resp;
+  },
+};
+
+export default function AboutPage() {
+  return (
+    <main>
+      <h1>About</h1>
+      <p>This is the about page.</p>
+    </main>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Run Fresh Auto Updater Command
+DESCRIPTION: This command executes the Fresh auto-updater script, which automatically updates project dependencies and applies recommended code modifications. It should be run from the root directory of your Fresh project.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/updating.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+deno run -A -r https://fresh.deno.dev/update
+```
+
+----------------------------------------
+
+TITLE: Manually Update Fresh and Preact Versions in deno.json
+DESCRIPTION: This diff illustrates how to manually update dependency versions in the `deno.json` file. It shows changes for Fresh from 1.0.2 to 1.1.5, Preact from 10.8.1 to 10.11.0, and preact-render-to-string from 5.2.0 to 6.1.0 by modifying their respective import URLs.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/updating.md#_snippet_1
+
+LANGUAGE: diff
+CODE:
+```
+  {
+    "imports": {
+-     "$fresh/": "https://deno.land/x/fresh@1.0.2/",
++     "$fresh/": "https://deno.land/x/fresh@1.1.5/",
+
+-     "preact": "https://esm.sh/preact@10.8.1",
+-     "preact/": "https://esm.sh/preact@10.8.1/",
++     "preact": "https://esm.sh/preact@10.11.0",
++     "preact/": "https://esm.sh/preact@10.11.0/",
+
+-     "preact-render-to-string": "https://esm.sh/*preact-render-to-string@5.2.0",
++     "preact-render-to-string": "https://esm.sh/*preact-render-to-string@6.1.0",
+
+      "twind": "https://esm.sh/twind@0.16.17",
+      "twind/": "https://esm.sh/twind@0.16.17/"
+    }
+  }
+```
+
+----------------------------------------
+
+TITLE: Default Fresh Deno Configuration with Twind Plugin
+DESCRIPTION: This code block illustrates the standard `fresh.config.ts` file, demonstrating how to define and include the Twind plugin with its configuration within the Fresh server setup.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/examples/using-twind-v1.md#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+import { defineConfig } from "$fresh/server.ts";
+import twindPlugin from "$fresh/plugins/twind.ts";
+import twindConfig from "./twind.config.ts";
+
+export default defineConfig({
+  plugins: [twindPlugin(twindConfig)],
+});
+```
+
+----------------------------------------
+
+TITLE: Build Fresh Project for Ahead-of-Time Optimization
+DESCRIPTION: Commands to trigger Fresh's ahead-of-time asset optimization process. This creates a `_fresh` folder containing optimized assets and metadata, ready for deployment.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/ahead-of-time-builds.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+deno task build
+```
+
+LANGUAGE: sh
+CODE:
+```
+deno run -A dev.ts build
+```
+
+----------------------------------------
+
+TITLE: Start Fresh Development Server with Shared Configuration
+DESCRIPTION: Example `dev.ts` file for starting the Fresh development server. It imports the shared `fresh.config.ts` to ensure plugins are active and consistent during the development workflow, mirroring the production setup.
+SOURCE: https://github.com/denoland/fresh/blob/main/docs/latest/concepts/ahead-of-time-builds.md#_snippet_4
+
+LANGUAGE: ts
+CODE:
+```
+import dev from "$fresh/dev.ts";
+import config from "./fresh.config.ts";
+
+await dev(import.meta.url, "./main.ts", config);
+```

@@ -1,0 +1,1497 @@
+TITLE: Customizing `require()` Return Value with `'module.exports'`
+DESCRIPTION: This ES Module demonstrates how to use the special string export name `'module.exports'` to directly specify what `require()` should return. In this example, the `Point` class is exported as `'module.exports'`, causing other named exports like `distance` to be lost to CommonJS consumers.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/modules.md#_snippet_6
+
+LANGUAGE: mjs
+CODE:
+```
+// point.mjs
+export default class Point {
+  constructor(x, y) { this.x = x; this.y = y; }
+}
+
+// `distance` is lost to CommonJS consumers of this module, unless it's
+// added to `Point` as a static property.
+export function distance(a, b) { return Math.sqrt((b.x - a.x) ** 2 + (b.y - a.y) ** 2); }
+export { Point as 'module.exports' }
+```
+
+----------------------------------------
+
+TITLE: Define Package Entry Point with "exports" in package.json
+DESCRIPTION: This JSON snippet illustrates the basic structure of the "exports" field in `package.json`. It defines ./index.js as the primary entry point for the package, enabling more robust module resolution features like subpath and conditional exports compared to the traditional "main" field.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/packages.md#_snippet_32
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "exports": "./index.js"
+}
+```
+
+----------------------------------------
+
+TITLE: DEP0138: Deprecating `process.mainModule` in favor of `require.main`
+DESCRIPTION: The `process.mainModule` property is a CommonJS-only feature, but the `process` global object is shared across all environments, including ECMAScript modules where its use is unsupported. It is deprecated in favor of `require.main`, which serves the same purpose and is exclusively available in CommonJS environments, ensuring consistency and avoiding potential issues in mixed module contexts.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/deprecations.md#_snippet_135
+
+LANGUAGE: APIDOC
+CODE:
+```
+DEP0138: `process.mainModule`
+Type: Documentation-only
+
+`process.mainModule` is a CommonJS-only feature while `process` global object is shared with non-CommonJS environment. Its use within ECMAScript modules is unsupported.
+
+It is deprecated in favor of `require.main`, because it serves the same purpose and is only available on CommonJS environment.
+```
+
+----------------------------------------
+
+TITLE: Handling Promise Rejections with EventEmitter captureRejections Option
+DESCRIPTION: This example demonstrates how to enable automatic promise rejection capturing using the `captureRejections` option in the `EventEmitter` constructor. It shows two ways to route rejections: either to the `'error'` event handler or to a custom handler defined via `Symbol.for('nodejs.rejection')`.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/events.md#_snippet_10
+
+LANGUAGE: mjs
+CODE:
+```
+import { EventEmitter } from 'node:events';
+const ee1 = new EventEmitter({ captureRejections: true });
+ee1.on('something', async (value) => {
+  throw new Error('kaboom');
+});
+
+ee1.on('error', console.log);
+
+const ee2 = new EventEmitter({ captureRejections: true });
+ee2.on('something', async (value) => {
+  throw new Error('kaboom');
+});
+
+ee2[Symbol.for('nodejs.rejection')] = console.log;
+```
+
+LANGUAGE: cjs
+CODE:
+```
+const EventEmitter = require('node:events');
+const ee1 = new EventEmitter({ captureRejections: true });
+ee1.on('something', async (value) => {
+  throw new Error('kaboom');
+});
+
+ee1.on('error', console.log);
+
+const ee2 = new EventEmitter({ captureRejections: true });
+ee2.on('something', async (value) => {
+  throw new Error('kaboom');
+});
+
+ee2[Symbol.for('nodejs.rejection')] = console.log;
+```
+
+----------------------------------------
+
+TITLE: Creating Custom Console Instances with Node.js Console Class
+DESCRIPTION: This example illustrates how to create a custom `Console` instance in Node.js, allowing redirection of log outputs to arbitrary streams. It demonstrates instantiating `new console.Console(stdout, stderr)` and then using its `log()`, `error()`, and `warn()` methods, similar to the global `console` but with configurable output destinations.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/console.md#_snippet_1
+
+LANGUAGE: js
+CODE:
+```
+const out = getStreamSomehow();
+const err = getStreamSomehow();
+const myConsole = new console.Console(out, err);
+
+myConsole.log('hello world');
+// Prints: hello world, to out
+myConsole.log('hello %s', 'world');
+// Prints: hello world, to out
+myConsole.error(new Error('Whoops, something bad happened'));
+// Prints: [Error: Whoops, something bad happened], to err
+
+const name = 'Will Robinson';
+myConsole.warn(`Danger ${name}! Danger!`);
+// Prints: Danger Will Robinson! Danger!, to err
+```
+
+----------------------------------------
+
+TITLE: Configuring Global Git User Name and Email - Shell
+DESCRIPTION: Before making commits, it's essential to configure your Git user name and email address globally. These credentials will be associated with all your future commits, ensuring proper attribution.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/uv/CONTRIBUTING.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+$ git config --global user.name "J. Random User"
+$ git config --global user.email "j.random.user@example.com"
+```
+
+----------------------------------------
+
+TITLE: Specifying Various Dependency Version Ranges in package.json
+DESCRIPTION: This comprehensive example showcases diverse methods for defining dependency version ranges in `package.json`, including exact versions, ranges (e.g., `>`, `<=`), tilde (`~`), caret (`^`), `x` wildcards, URL-based dependencies, local paths, and package aliases. It illustrates the flexibility of npm's dependency resolution.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/docs/output/configuring-npm/npm-json.html#_snippet_22
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "dependencies": {
+    "foo": "1.0.0 - 2.9999.9999",
+    "bar": ">=1.0.2 <2.1.2",
+    "baz": ">1.0.2 <=2.3.4",
+    "boo": "2.0.1",
+    "qux": "<1.0.0 || >=2.3.1 <2.4.5 || >=2.5.2 <3.0.0",
+    "asd": "http://npmjs.com/example.tar.gz",
+    "til": "~1.2",
+    "elf": "~1.2.3",
+    "two": "2.x",
+    "thr": "3.3.x",
+    "lat": "latest",
+    "dyl": "file:../dyl",
+    "kpg": "npm:pkg@1.0.0"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Publishing an npm Package to the Registry
+DESCRIPTION: This command publishes the current package to the npm registry, making it available for others to install. By default, it publishes everything in the current directory, so a `.npmignore` file should be used to exclude sensitive or unnecessary files.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/docs/output/using-npm/developers.html#_snippet_8
+
+LANGUAGE: Shell
+CODE:
+```
+npm publish
+```
+
+----------------------------------------
+
+TITLE: AbortController Class API Documentation
+DESCRIPTION: Detailed API documentation for the `AbortController` class, including its methods and properties, used for signaling cancellation in Promise-based APIs.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/globals.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+Class: AbortController
+  Stability: 2 - Stable
+  Methods:
+    abort([reason]):
+      Parameters:
+        reason: any (Optional) - An optional reason, retrievable on the AbortSignal's reason property.
+      Description: Triggers the abort signal, causing the abortController.signal to emit the 'abort' event.
+  Properties:
+    signal:
+      Type: AbortSignal
+```
+
+----------------------------------------
+
+TITLE: Demonstrating `events.once()` Pitfall with `process.nextTick()` (ESM)
+DESCRIPTION: This snippet illustrates a common pitfall where `events.once()` might miss an event ('foo') if it's emitted synchronously on `process.nextTick()` before the corresponding `Promise` for that event is created. Due to the `process.nextTick()` queue draining before the `Promise` microtask queue, the 'foo' event is fired and processed before `await once(myEE, 'foo')` can register its listener.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/events.md#_snippet_45
+
+LANGUAGE: mjs
+CODE:
+```
+import { EventEmitter, once } from 'node:events';
+import process from 'node:process';
+
+const myEE = new EventEmitter();
+
+async function foo() {
+  await once(myEE, 'bar');
+  console.log('bar');
+
+  // This Promise will never resolve because the 'foo' event will
+  // have already been emitted before the Promise is created.
+  await once(myEE, 'foo');
+  console.log('foo');
+}
+
+process.nextTick(() => {
+  myEE.emit('bar');
+  myEE.emit('foo');
+});
+
+foo().then(() => console.log('done'));
+```
+
+----------------------------------------
+
+TITLE: Logging Messages to Stdout with console.log in JavaScript
+DESCRIPTION: Prints messages to `stdout` with a newline. It supports `printf`-like substitution values using `util.format()`. Multiple arguments are passed to `util.format()` for concatenation and formatting.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/console.md#_snippet_12
+
+LANGUAGE: JavaScript
+CODE:
+```
+const count = 5;
+console.log('count: %d', count);
+// Prints: count: 5, to stdout
+console.log('count:', count);
+// Prints: count: 5, to stdout
+```
+
+----------------------------------------
+
+TITLE: Securing Proxy Handlers Against Prototype Pollution in JavaScript
+DESCRIPTION: This snippet demonstrates the risk of prototype pollution when defining a Proxy handler using a plain object literal, where user-land modifications to Object.prototype.get can affect property lookups. It contrasts this with a secure approach using a null-prototype object for the handler, ensuring that the proxy correctly accesses the genuine value.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/contributing/primordials.md#_snippet_28
+
+LANGUAGE: JavaScript
+CODE:
+```
+// User-land
+Object.prototype.get = () => 'Unrelated user-provided data';
+
+// Core
+const objectToProxy = { someProperty: 'genuine value' };
+
+const proxyWithPlainObjectLiteral = new Proxy(objectToProxy, {
+  has() { return false; },
+});
+console.log(proxyWithPlainObjectLiteral.someProperty); // Unrelated user-provided data
+
+const proxyWithNullPrototypeObject = new Proxy(objectToProxy, {
+  __proto__: null,
+  has() { return false; },
+});
+console.log(proxyWithNullPrototypeObject.someProperty); // genuine value
+```
+
+----------------------------------------
+
+TITLE: Node.js Basic File Piping with readable.pipe()
+DESCRIPTION: This example demonstrates the fundamental use of `readable.pipe()` to transfer data from a generic readable stream to a file. It uses `fs.createWriteStream` to create the writable destination. All data from the source stream is directed into 'file.txt'.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/stream.md#_snippet_65
+
+LANGUAGE: js
+CODE:
+```
+const fs = require('node:fs');
+const readable = getReadableStreamSomehow();
+const writable = fs.createWriteStream('file.txt');
+// All the data from readable goes into 'file.txt'.
+readable.pipe(writable);
+```
+
+----------------------------------------
+
+TITLE: Fetch JSON Data with http.get() in Node.js
+DESCRIPTION: Provides a comprehensive example of using `http.get()` to fetch JSON data from a local server. It includes robust error handling for HTTP status codes and content types, demonstrates how to consume and parse the response stream, and sets up a simple local server for testing the client request.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/http.md#_snippet_189
+
+LANGUAGE: js
+CODE:
+```
+http.get('http://localhost:8000/', (res) => {
+  const { statusCode } = res;
+  const contentType = res.headers['content-type'];
+
+  let error;
+  // Any 2xx status code signals a successful response but
+  // here we're only checking for 200.
+  if (statusCode !== 200) {
+    error = new Error('Request Failed.\n' +
+                      `Status Code: ${statusCode}`);
+  } else if (!/^application\/json/.test(contentType)) {
+    error = new Error('Invalid content-type.\n' +
+                      `Expected application/json but received ${contentType}`);
+  }
+  if (error) {
+    console.error(error.message);
+    // Consume response data to free up memory
+    res.resume();
+    return;
+  }
+
+  res.setEncoding('utf8');
+  let rawData = '';
+  res.on('data', (chunk) => { rawData += chunk; });
+  res.on('end', () => {
+    try {
+      const parsedData = JSON.parse(rawData);
+      console.log(parsedData);
+    } catch (e) {
+      console.error(e.message);
+    }
+  });
+}).on('error', (e) => {
+  console.error(`Got error: ${e.message}`);
+});
+
+// Create a local server to receive data from
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({
+    data: 'Hello World!',
+  }));
+});
+
+server.listen(8000);
+```
+
+----------------------------------------
+
+TITLE: Basic npm Command Usage
+DESCRIPTION: This snippet illustrates the fundamental syntax for executing npm commands. Users replace <command> with a specific npm operation (e.g., install, publish, test) to manage packages or perform other tasks. This is the general pattern for interacting with the npm CLI.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/README.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+npm <command>
+```
+
+----------------------------------------
+
+TITLE: Exporting a function in an ES module (addTwo.mjs)
+DESCRIPTION: This example demonstrates how to define and export a function named `addTwo` from an ECMAScript module file (`addTwo.mjs`) using the `export` statement, making it available for import in other modules.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/esm.md#_snippet_0
+
+LANGUAGE: js
+CODE:
+```
+// addTwo.mjs
+function addTwo(num) {
+  return num + 2;
+}
+
+export { addTwo };
+```
+
+----------------------------------------
+
+TITLE: Incorrectly Ignoring Undici Request Body
+DESCRIPTION: This snippet illustrates an incorrect approach where the `undici.request` response body is not consumed. Neglecting to consume or cancel the body can lead to resource exhaustion and performance degradation, as `undici` does not automatically release connection resources via garbage collection.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/undici/src/README.md#_snippet_12
+
+LANGUAGE: JavaScript
+CODE:
+```
+// Do not
+const { headers } = await request(url);
+```
+
+----------------------------------------
+
+TITLE: Adding an Event Listener with emitter.on in JavaScript
+DESCRIPTION: This snippet demonstrates how to add a regular event listener to an EventEmitter instance using the `on` method. The provided callback function will be executed every time the 'connection' event is emitted. This is a common pattern for handling continuous events.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/events.md#_snippet_19
+
+LANGUAGE: js
+CODE:
+```
+server.on('connection', (stream) => {
+  console.log('someone connected!');
+});
+```
+
+----------------------------------------
+
+TITLE: Node.js Environment Variable: UV_THREADPOOL_SIZE
+DESCRIPTION: Explains the `UV_THREADPOOL_SIZE` environment variable, which controls the number of threads in libuv's threadpool. This threadpool is crucial for asynchronous Node.js APIs that internally rely on synchronous system APIs, such as `fs` operations, crypto functions, `dns.lookup()`, and `zlib` APIs. Increasing this size (default is 4) can mitigate performance bottlenecks if these APIs experience long execution times. It's important to set this variable externally, as setting it via `process.env` within the running process is not guaranteed to take effect due to runtime initialization order.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/cli.md#_snippet_189
+
+LANGUAGE: APIDOC
+CODE:
+```
+UV_THREADPOOL_SIZE=size
+  Description: Sets the number of threads in libuv's threadpool.
+  Affected APIs: `fs`, crypto (e.g., `pbkdf2`, `randomBytes`), `dns.lookup()`, `zlib`.
+  Default Value: 4.
+  Note: Setting via `process.env` inside the process is not guaranteed to work.
+```
+
+----------------------------------------
+
+TITLE: Importing Node.js Built-in Modules using ESM
+DESCRIPTION: This snippet demonstrates how to import a built-in Node.js module, specifically 'node:url', using ECMAScript Modules (ESM) syntax. This is the modern standard for module handling in JavaScript and Node.js, requiring files to have a `.mjs` extension or for the `type` field in `package.json` to be set to `module`.
+SOURCE: https://github.com/nodejs/node/blob/main/test/fixtures/document_with_esm_and_cjs_code_snippet.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+import 'node:url';
+```
+
+----------------------------------------
+
+TITLE: Create a File Compression Pipeline with stream.pipeline
+DESCRIPTION: Demonstrates how to use `stream.pipeline` to compress a file from a readable stream to a writable stream using `zlib.createGzip`. This example shows a common use case for chaining file operations.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/stream.md#_snippet_3
+
+LANGUAGE: CJS
+CODE:
+```
+const { pipeline } = require('node:stream/promises');
+const fs = require('node:fs');
+const zlib = require('node:zlib');
+
+async function run() {
+  await pipeline(
+    fs.createReadStream('archive.tar'),
+    zlib.createGzip(),
+    fs.createWriteStream('archive.tar.gz'),
+  );
+  console.log('Pipeline succeeded.');
+}
+
+run().catch(console.error);
+```
+
+LANGUAGE: MJS
+CODE:
+```
+import { pipeline } from 'node:stream/promises';
+import { createReadStream, createWriteStream } from 'node:fs';
+import { createGzip } from 'node:zlib';
+
+await pipeline(
+  createReadStream('archive.tar'),
+  createGzip(),
+  createWriteStream('archive.tar.gz'),
+);
+console.log('Pipeline succeeded.');
+```
+
+----------------------------------------
+
+TITLE: Example SPDX SBOM for Node.js Project
+DESCRIPTION: This JSON snippet provides a complete example of an SPDX (Software Package Data Exchange) Software Bill of Materials (SBOM) for a simple Node.js application. It details the project's metadata, lists its primary package and a dependency (lodash), and defines the relationships between them, such as DESCRIBES and DEPENDS_ON. This format is crucial for supply chain security and compliance, offering a standardized way to communicate software component information.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/docs/output/commands/npm-sbom.html#_snippet_2
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "simple@1.0.0",
+  "documentNamespace": "http://spdx.org/spdxdocs/simple-1.0.0-bf81090e-8bbc-459d-bec9-abeb794e096a",
+  "creationInfo": {
+    "created": "2023-09-01T00:00:00.001Z",
+    "creators": [
+      "Tool: npm/cli-10.1.0"
+    ]
+  },
+  "documentDescribes": [
+    "SPDXRef-Package-simple-1.0.0"
+  ],
+  "packages": [
+    {
+      "name": "simple",
+      "SPDXID": "SPDXRef-Package-simple-1.0.0",
+      "versionInfo": "1.0.0",
+      "packageFileName": "",
+      "description": "simple react app",
+      "primaryPackagePurpose": "LIBRARY",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "homepage": "NOASSERTION",
+      "licenseDeclared": "MIT",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/simple@1.0.0"
+        }
+      ]
+    },
+    {
+      "name": "lodash",
+      "SPDXID": "SPDXRef-Package-lodash-4.17.21",
+      "versionInfo": "4.17.21",
+      "packageFileName": "node_modules/lodash",
+      "description": "Lodash modular utilities.",
+      "downloadLocation": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
+      "filesAnalyzed": false,
+      "homepage": "https://lodash.com/",
+      "licenseDeclared": "MIT",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:npm/lodash@4.17.21"
+        }
+      ],
+      "checksums": [
+        {
+          "algorithm": "SHA512",
+          "checksumValue": "bf690311ee7b95e713ba568322e3533f2dd1cb880b189e99d4edef13592b81764daec43e2c54c61d5c558dc5cfb35ecb85b65519e74026ff17675b6f8f916f4a"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relatedSpdxElement": "SPDXRef-Package-simple-1.0.0",
+      "relationshipType": "DESCRIBES"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-simple-1.0.0",
+      "relatedSpdxElement": "SPDXRef-Package-lodash-4.17.21",
+      "relationshipType": "DEPENDS_ON"
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Attempt to import an undefined package subpath
+DESCRIPTION: This JavaScript snippet illustrates the encapsulation enforced by the `exports` field. Attempting to import a subpath (`private-module.js`) that is not explicitly defined in the package's `exports` will result in an `ERR_PACKAGE_PATH_NOT_EXPORTED` error, preventing unauthorized access to internal package files.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/packages.md#_snippet_11
+
+LANGUAGE: JavaScript
+CODE:
+```
+import submodule from 'es-module-package/private-module.js';
+// Throws ERR_PACKAGE_PATH_NOT_EXPORTED
+```
+
+----------------------------------------
+
+TITLE: Uninstalling a Single Package
+DESCRIPTION: This example demonstrates how to uninstall a package named 'sax'. By default, this command also removes 'sax' from your project's `package.json`, `npm-shrinkwrap.json`, and `package-lock.json` files.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/docs/output/commands/npm-uninstall.html#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+npm uninstall sax
+```
+
+----------------------------------------
+
+TITLE: API Reference: `mock.method(object, methodName[, implementation][, options])`
+DESCRIPTION: This function creates a mock on an existing object method. It allows replacing the method's behavior with an `implementation` for a specified number of `times` and provides a `mock` property for detailed call inspection.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/test.md#_snippet_69
+
+LANGUAGE: APIDOC
+CODE:
+```
+mock.method(object, methodName[, implementation][, options])
+  object: Object
+    Description: The object whose method is being mocked.
+  methodName: string|symbol
+    Description: The identifier of the method on `object` to mock. Throws error if not a function.
+  implementation: Function|AsyncFunction (optional)
+    Description: An optional function used as the mock implementation for `object[methodName]`.
+    Default: The original method specified by `object[methodName]`.
+  options: Object (optional)
+    Description: Optional configuration options for the mock method.
+    Properties:
+      getter: boolean
+        Description: If true, `object[methodName]` is treated as a getter. Cannot be used with `setter`.
+        Default: false.
+      setter: boolean
+        Description: If true, `object[methodName]` is treated as a setter. Cannot be used with `getter`.
+        Default: false.
+      times: integer
+        Description: The number of times the mock will use `implementation`. After `times` calls, it restores original behavior. Must be > 0.
+        Default: Infinity.
+  Returns: Proxy
+    Description: The mocked method, containing a special `mock` property (MockFunctionContext instance) for inspection and behavior changes.
+```
+
+----------------------------------------
+
+TITLE: Invoking the npm Command Line Interface
+DESCRIPTION: This snippet demonstrates the most basic invocation of the npm command. It serves as the primary entry point for executing various npm operations from the command line. It's important to note that this particular command, when run without subcommands, is not workspace-aware.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/docs/content/commands/npm.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm
+```
+
+----------------------------------------
+
+TITLE: Combining Abort Signals on DOMContentLoaded in JavaScript
+DESCRIPTION: This snippet initializes an `AbortController` and uses `AbortSignal.any` to create a new signal that resolves when any of the input signals aborts. It attaches an event listener to the controller's signal and then immediately aborts the controller, demonstrating the `AbortSignal.any` behavior and event handling.
+SOURCE: https://github.com/nodejs/node/blob/main/test/fixtures/wpt/dom/abort/crashtests/any-on-abort.html#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+let b; window.addEventListener("DOMContentLoaded", () => { let a = new AbortController() b = AbortSignal.any([a.signal]) a.signal.addEventListener("abort", () => { AbortSignal.any([b]) }, { }) a.abort(undefined) })
+```
+
+----------------------------------------
+
+TITLE: Consuming Stream as Buffer in Node.js
+DESCRIPTION: This snippet illustrates the use of `streamConsumers.buffer()` to asynchronously read the full contents of a `ReadableStream`, `stream.Readable`, or `AsyncIterator` and fulfill with a `Buffer` containing the stream's data. It takes a stream as input and returns a Promise that resolves to a Buffer.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/webstreams.md#_snippet_21
+
+LANGUAGE: JavaScript (ESM)
+CODE:
+```
+import { buffer } from 'node:stream/consumers';
+import { Readable } from 'node:stream';
+import { Buffer } from 'node:buffer';
+
+const dataBuffer = Buffer.from('hello world from consumers!');
+
+const readable = Readable.from(dataBuffer);
+const data = await buffer(readable);
+console.log(`from readable: ${data.length}`);
+// Prints: from readable: 27
+```
+
+LANGUAGE: JavaScript (CommonJS)
+CODE:
+```
+const { buffer } = require('node:stream/consumers');
+const { Readable } = require('node:stream');
+const { Buffer } = require('node:buffer');
+
+const dataBuffer = Buffer.from('hello world from consumers!');
+
+const readable = Readable.from(dataBuffer);
+buffer(readable).then((data) => {
+  console.log(`from readable: ${data.length}`);
+  // Prints: from readable: 27
+});
+```
+
+----------------------------------------
+
+TITLE: Basic HTTP Server (Node.js)
+DESCRIPTION: This Node.js script creates a simple HTTP server using the built-in 'node:http' module. It listens on '127.0.0.1:3000' and responds to all incoming requests with a 'Hello, World!' plain text message, logging its startup status to the console.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/synopsis.md#_snippet_4
+
+LANGUAGE: javascript
+CODE:
+```
+const http = require('node:http');
+
+const hostname = '127.0.0.1';
+const port = 3000;
+
+const server = http.createServer((req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('Hello, World!\n');
+});
+
+server.listen(port, hostname, () => {
+  console.log(`Server running at http://${hostname}:${port}/`);
+});
+```
+
+----------------------------------------
+
+TITLE: Encrypting String Data with Cipheriv Streams (Node.js)
+DESCRIPTION: This snippet demonstrates encrypting a string using `Cipheriv` as a stream. It involves generating a key with `scrypt` and an IV with `randomFill`, creating a `Cipheriv` instance, setting its encoding to 'hex', writing plain text data, and collecting the encrypted output via 'data' and 'end' events.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/crypto.md#_snippet_13
+
+LANGUAGE: JavaScript (ESM)
+CODE:
+```
+const {
+  scrypt,
+  randomFill,
+  createCipheriv,
+} = await import('node:crypto');
+
+const algorithm = 'aes-192-cbc';
+const password = 'Password used to generate key';
+
+// First, we'll generate the key. The key length is dependent on the algorithm.
+// In this case for aes192, it is 24 bytes (192 bits).
+scrypt(password, 'salt', 24, (err, key) => {
+  if (err) throw err;
+  // Then, we'll generate a random initialization vector
+  randomFill(new Uint8Array(16), (err, iv) => {
+    if (err) throw err;
+
+    // Once we have the key and iv, we can create and use the cipher...
+    const cipher = createCipheriv(algorithm, key, iv);
+
+    let encrypted = '';
+    cipher.setEncoding('hex');
+
+    cipher.on('data', (chunk) => encrypted += chunk);
+    cipher.on('end', () => console.log(encrypted));
+
+    cipher.write('some clear text data');
+    cipher.end();
+  });
+});
+```
+
+LANGUAGE: JavaScript (CJS)
+CODE:
+```
+const {
+  scrypt,
+  randomFill,
+  createCipheriv,
+} = require('node:crypto');
+
+const algorithm = 'aes-192-cbc';
+const password = 'Password used to generate key';
+
+// First, we'll generate the key. The key length is dependent on the algorithm.
+// In this case for aes192, it is 24 bytes (192 bits).
+scrypt(password, 'salt', 24, (err, key) => {
+  if (err) throw err;
+  // Then, we'll generate a random initialization vector
+  randomFill(new Uint8Array(16), (err, iv) => {
+    if (err) throw err;
+
+    // Once we have the key and iv, we can create and use the cipher...
+    const cipher = createCipheriv(algorithm, key, iv);
+
+    let encrypted = '';
+    cipher.setEncoding('hex');
+
+    cipher.on('data', (chunk) => encrypted += chunk);
+    cipher.on('end', () => console.log(encrypted));
+
+    cipher.write('some clear text data');
+    cipher.end();
+  });
+});
+```
+
+----------------------------------------
+
+TITLE: API Reference: stream.addAbortSignal
+DESCRIPTION: Attaches an `AbortSignal` to a Node.js or Web Stream. This allows code to control stream destruction using an `AbortController`, providing a mechanism for cancellation.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/stream.md#_snippet_143
+
+LANGUAGE: APIDOC
+CODE:
+```
+stream.addAbortSignal(signal, stream)
+  signal: AbortSignal (A signal representing possible cancellation)
+  stream: Stream|ReadableStream|WritableStream (A stream to attach a signal to)
+  Returns: void
+```
+
+----------------------------------------
+
+TITLE: Create HTTP Server with Request Listener Callback in Node.js
+DESCRIPTION: Demonstrates how to create a basic HTTP server using `http.createServer()` by directly passing a `requestListener` function. This function automatically handles incoming requests and sends a JSON response. The server listens on port 8000.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/http.md#_snippet_186
+
+LANGUAGE: mjs
+CODE:
+```
+import http from 'node:http';
+
+// Create a local server to receive data from
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({
+    data: 'Hello World!',
+  }));
+});
+
+server.listen(8000);
+```
+
+LANGUAGE: cjs
+CODE:
+```
+const http = require('node:http');
+
+// Create a local server to receive data from
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' });
+  res.end(JSON.stringify({
+    data: 'Hello World!',
+  }));
+});
+
+server.listen(8000);
+```
+
+----------------------------------------
+
+TITLE: DEP0005: Deprecated Buffer() Constructor and Alternatives (Node.js APIDOC)
+DESCRIPTION: The `Buffer()` function and `new Buffer()` constructor are deprecated due to API usability issues that can lead to accidental security vulnerabilities. This section outlines the recommended alternative methods for constructing `Buffer` objects, emphasizing the use of initialized memory or explicit copying.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/deprecations.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Buffer.alloc(size[, fill[, encoding]])
+  Purpose: Create a Buffer with initialized memory.
+  Parameters:
+    size: number - The desired length of the new Buffer in bytes.
+    fill: any (optional) - A value to pre-fill the new Buffer with (defaults to 0).
+    encoding: string (optional) - The encoding of the fill value (defaults to 'utf8').
+  Returns: Buffer - A new Buffer instance.
+
+Buffer.allocUnsafe(size)
+  Purpose: Create a Buffer with uninitialized memory (faster, but potentially unsafe).
+  Parameters:
+    size: number - The desired length of the new Buffer in bytes.
+  Returns: Buffer - A new Buffer instance.
+
+Buffer.allocUnsafeSlow(size)
+  Purpose: Create a Buffer with uninitialized memory (slower, but avoids pooling).
+  Parameters:
+    size: number - The desired length of the new Buffer in bytes.
+  Returns: Buffer - A new Buffer instance.
+
+Buffer.from(array)
+  Purpose: Create a Buffer with a copy of an array of octets.
+  Parameters:
+    array: Array<number> - An array of octets.
+  Returns: Buffer - A new Buffer instance.
+
+Buffer.from(arrayBuffer[, byteOffset[, length]])
+  Purpose: Create a Buffer that wraps the given ArrayBuffer.
+  Parameters:
+    arrayBuffer: ArrayBuffer | SharedArrayBuffer - The ArrayBuffer to wrap.
+    byteOffset: number (optional) - The index of the first byte to expose (defaults to 0).
+    length: number (optional) - The number of bytes to expose (defaults to remaining bytes).
+  Returns: Buffer - A new Buffer instance.
+
+Buffer.from(buffer)
+  Purpose: Create a Buffer that copies an existing Buffer.
+  Parameters:
+    buffer: Buffer - An existing Buffer instance.
+  Returns: Buffer - A new Buffer instance.
+
+Buffer.from(string[, encoding])
+  Purpose: Create a Buffer that copies a string.
+  Parameters:
+    string: string - The string to encode.
+    encoding: string (optional) - The encoding of the string (defaults to 'utf8').
+  Returns: Buffer - A new Buffer instance.
+```
+
+----------------------------------------
+
+TITLE: Pipe Async Iterator to Node.js Writable Stream with Pipeline
+DESCRIPTION: This example illustrates how to pipe data from an asynchronous iterator to a writable stream, ensuring proper backpressure and error handling using `stream.pipeline()` (callback and promise patterns). It also demonstrates the use of `AbortController` for signal management.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/stream.md#_snippet_198
+
+LANGUAGE: js
+CODE:
+```
+const fs = require('node:fs');
+const { pipeline } = require('node:stream');
+const { pipeline: pipelinePromise } = require('node:stream/promises');
+
+const writable = fs.createWriteStream('./file');
+
+const ac = new AbortController();
+const signal = ac.signal;
+
+const iterator = createIterator({ signal });
+
+// Callback Pattern
+pipeline(iterator, writable, (err, value) => {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log(value, 'value returned');
+  }
+}).on('close', () => {
+  ac.abort();
+});
+```
+
+LANGUAGE: js
+CODE:
+```
+const fs = require('node:fs');
+const { pipeline } = require('node:stream');
+const { pipeline: pipelinePromise } = require('node:stream/promises');
+
+const writable = fs.createWriteStream('./file');
+
+const ac = new AbortController();
+const signal = ac.signal;
+
+const iterator = createIterator({ signal });
+
+// Promise Pattern
+pipelinePromise(iterator, writable)
+  .then((value) => {
+    console.log(value, 'value returned');
+  })
+  .catch((err) => {
+    console.error(err);
+    ac.abort();
+  });
+```
+
+----------------------------------------
+
+TITLE: Computing Shared Secret with ECDH (ESM)
+DESCRIPTION: This snippet demonstrates how to establish a shared secret between two parties (Alice and Bob) using the Elliptic Curve Diffie-Hellman (ECDH) key exchange protocol in Node.js with ES Modules. It shows how to create ECDH instances, set private keys (or generate new ones), and compute the shared secret using the `computeSecret` method.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/crypto.md#_snippet_34
+
+LANGUAGE: JavaScript (ESM)
+CODE:
+```
+const {
+  createECDH,
+  createHash,
+} = await import('node:crypto');
+
+const alice = createECDH('secp256k1');
+const bob = createECDH('secp256k1');
+
+// This is a shortcut way of specifying one of Alice's previous private
+// keys. It would be unwise to use such a predictable private key in a real
+// application.
+alice.setPrivateKey(
+  createHash('sha256').update('alice', 'utf8').digest(),
+);
+
+// Bob uses a newly generated cryptographically strong
+// pseudorandom key pair
+bob.generateKeys();
+
+const aliceSecret = alice.computeSecret(bob.getPublicKey(), null, 'hex');
+const bobSecret = bob.computeSecret(alice.getPublicKey(), null, 'hex');
+
+// aliceSecret and bobSecret should be the same shared secret value
+console.log(aliceSecret === bobSecret);
+```
+
+----------------------------------------
+
+TITLE: Using Global Console for Logging in Node.js
+DESCRIPTION: This snippet demonstrates the use of the global `console` object in Node.js for basic logging. It shows how to print messages to `stdout` using `console.log()`, format strings, and output errors and warnings to `stderr` using `console.error()` and `console.warn()`. This global instance is readily available without explicit requiring.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/console.md#_snippet_0
+
+LANGUAGE: js
+CODE:
+```
+console.log('hello world');
+// Prints: hello world, to stdout
+console.log('hello %s', 'world');
+// Prints: hello world, to stdout
+console.error(new Error('Whoops, something bad happened'));
+// Prints error message and stack trace to stderr:
+//   Error: Whoops, something bad happened
+//     at [eval]:5:15
+//     at Script.runInThisContext (node:vm:132:18)
+//     at Object.runInThisContext (node:vm:309:38)
+//     at node:internal/process/execution:77:19
+//     at [eval]-wrapper:6:22
+//     at evalScript (node:internal/process/execution:76:60)
+//     at node:internal/main/eval_string:23:3
+
+const name = 'Will Robinson';
+console.warn(`Danger ${name}! Danger!`);
+// Prints: Danger Will Robinson! Danger!, to stderr
+```
+
+----------------------------------------
+
+TITLE: Node.js Readable Stream 'data' Event Listener Example
+DESCRIPTION: Demonstrates how to attach a listener to the 'data' event of a Node.js readable stream to process incoming data chunks. The example logs the length of the received data.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/stream.md#_snippet_48
+
+LANGUAGE: javascript
+CODE:
+```
+const readable = getReadableStreamSomehow();
+readable.on('data', (chunk) => {
+  console.log(`Received ${chunk.length} bytes of data.`);
+});
+```
+
+----------------------------------------
+
+TITLE: Synchronous Scrypt Key Derivation (CommonJS) - Node.js Crypto
+DESCRIPTION: This snippet demonstrates the use of `crypto.scryptSync` for synchronous password-based key derivation using CommonJS syntax. It illustrates how to generate a key with default parameters and with a custom `N` (cost) parameter. The `scryptSync` function is designed to be computationally and memory-expensive to resist brute-force attacks, returning the derived key as a Buffer.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/crypto.md#_snippet_102
+
+LANGUAGE: JavaScript
+CODE:
+```
+const {
+  scryptSync,
+} = require('node:crypto');
+// Using the factory defaults.
+
+const key1 = scryptSync('password', 'salt', 64);
+console.log(key1.toString('hex'));  // '3745e48...08d59ae'
+// Using a custom N parameter. Must be a power of two.
+const key2 = scryptSync('password', 'salt', 64, { N: 1024 });
+console.log(key2.toString('hex'));  // '3745e48...aa39b34'
+```
+
+----------------------------------------
+
+TITLE: APIDOC: Node.js util.parseArgs()
+DESCRIPTION: Documentation for `util.parseArgs()`, a utility for parsing command-line arguments. Introduced in v18.3.0, it became stable as of v20.0.0.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/contributing/advocacy-ambassador-program.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+Feature: parsing arguments
+Introduced: 18.3.0
+Release Status: Stable as of 20.0.0
+API Link: https://nodejs.org/api/util.html#utilparseargsconfig
+```
+
+----------------------------------------
+
+TITLE: Basic Syntax for npm test Command
+DESCRIPTION: This snippet shows the basic syntax for running the `npm test` command in a bash shell. It indicates that additional arguments can be passed to the underlying test script by placing them after `--`.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/docs/content/commands/npm-test.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm test [-- <args>]
+```
+
+----------------------------------------
+
+TITLE: Creating a TLS Echo Server (CommonJS) in Node.js
+DESCRIPTION: This snippet illustrates how to set up a basic TLS echo server using CommonJS syntax in Node.js. It configures the server with a key, certificate, and enables client certificate authentication, requiring a CA certificate for validation. The server listens on port 8000 and logs connection status.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/tls.md#_snippet_39
+
+LANGUAGE: JavaScript
+CODE:
+```
+const { createServer } = require('node:tls');
+const { readFileSync } = require('node:fs');
+
+const options = {
+  key: readFileSync('server-key.pem'),
+  cert: readFileSync('server-cert.pem'),
+
+  // This is necessary only if using client certificate authentication.
+  requestCert: true,
+
+  // This is necessary only if the client uses a self-signed certificate.
+  ca: [ readFileSync('client-cert.pem') ],
+};
+
+const server = createServer(options, (socket) => {
+  console.log('server connected',
+              socket.authorized ? 'authorized' : 'unauthorized');
+  socket.write('welcome!\n');
+  socket.setEncoding('utf8');
+  socket.pipe(socket);
+});
+server.listen(8000, () => {
+  console.log('server bound');
+});
+```
+
+----------------------------------------
+
+TITLE: npm: Local vs. Global Installation and Usage
+DESCRIPTION: Explains when to use local (./node_modules) versus global (/usr/local or %AppData%\npm) installations, and the purpose of each. Includes the npm link command for managing dependencies.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/docs/output/configuring-npm/folders.html#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Local install (default): puts stuff in ./node_modules of the current package root.
+Global install (with -g): puts stuff in /usr/local or wherever node is installed.
+Install it locally if you're going to require() it.
+Install it globally if you're going to run it on the command line.
+```
+
+LANGUAGE: Shell
+CODE:
+```
+npm link
+```
+
+----------------------------------------
+
+TITLE: Canceling `events.once` with AbortSignal in Node.js
+DESCRIPTION: This snippet shows how to use an `AbortSignal` with `events.once` to cancel the waiting process for an event. If the `AbortSignal` is aborted before the event is emitted, the promise returned by `once` will reject with an `AbortError`.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/events.md#_snippet_44
+
+LANGUAGE: mjs
+CODE:
+```
+import { EventEmitter, once } from 'node:events';
+
+const ee = new EventEmitter();
+const ac = new AbortController();
+
+async function foo(emitter, event, signal) {
+  try {
+    await once(emitter, event, { signal });
+    console.log('event emitted!');
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      console.error('Waiting for the event was canceled!');
+    } else {
+      console.error('There was an error', error.message);
+    }
+  }
+}
+
+foo(ee, 'foo', ac.signal);
+ac.abort(); // Prints: Waiting for the event was canceled!
+```
+
+LANGUAGE: cjs
+CODE:
+```
+const { EventEmitter, once } = require('node:events');
+
+const ee = new EventEmitter();
+const ac = new AbortController();
+
+async function foo(emitter, event, signal) {
+  try {
+    await once(emitter, event, { signal });
+    console.log('event emitted!');
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      console.error('Waiting for the event was canceled!');
+    } else {
+      console.error('There was an error', error.message);
+    }
+  }
+}
+
+foo(ee, 'foo', ac.signal);
+ac.abort(); // Prints: Waiting for the event was canceled!
+```
+
+----------------------------------------
+
+TITLE: Checking Node.js and npm Versions (Shell)
+DESCRIPTION: These commands are used to verify if Node.js and npm are installed on the system and to display their respective installed versions. This is a common first step before proceeding with any installation or update processes.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/docs/output/configuring-npm/install.html#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+node -v
+npm -v
+```
+
+----------------------------------------
+
+TITLE: Enabling V8 Inspector for Node.js Applications
+DESCRIPTION: This snippet demonstrates how to start a Node.js application with the V8 Inspector enabled using the `--inspect` flag. This allows Chrome DevTools to connect for debugging and profiling. The output shows the WebSocket URL for the debugger connection, which varies per session.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/debugger.md#_snippet_4
+
+LANGUAGE: Shell
+CODE:
+```
+$ node --inspect index.js
+Debugger listening on ws://127.0.0.1:9229/dc9010dd-f8b8-4ac5-a510-c1a114ec7d29
+For help, see: https://nodejs.org/en/docs/inspector
+```
+
+----------------------------------------
+
+TITLE: Streaming HTTP Response with Undici and Fastify in Node.js
+DESCRIPTION: This example demonstrates how to stream a response from a Node.js HTTP server through a Fastify route handler using `undici.Client.stream()`. It shows how to pass the Fastify response object as an `opaque` option to Undici, allowing direct access to the underlying writable stream (`response.raw`) for efficient data transfer between backend services. This pattern is ideal for high-performance proxying or data forwarding.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/undici/src/docs/docs/api/Dispatcher.md#_snippet_15
+
+LANGUAGE: js
+CODE:
+```
+import { createServer } from 'http'
+import { Client } from 'undici'
+import { once } from 'events'
+import fastify from 'fastify'
+
+const nodeServer = createServer((request, response) => {
+  response.end('Hello, World! From Node.js HTTP Server')
+}).listen()
+
+await once(nodeServer, 'listening')
+
+console.log('Node Server listening')
+
+const nodeServerUndiciClient = new Client(`http://localhost:${nodeServer.address().port}`)
+
+const fastifyServer = fastify()
+
+fastifyServer.route({
+  url: '/',
+  method: 'GET',
+  handler: (request, response) => {
+    nodeServerUndiciClient.stream({
+      path: '/',
+      method: 'GET',
+      opaque: response
+    }, ({ opaque }) => opaque.raw)
+  }
+})
+
+await fastifyServer.listen()
+
+console.log('Fastify Server listening')
+
+const fastifyServerUndiciClient = new Client(`http://localhost:${fastifyServer.server.address().port}`)
+
+try {
+  const { statusCode, body } = await fastifyServerUndiciClient.request({
+    path: '/',
+    method: 'GET'
+  })
+
+  console.log(`response received ${statusCode}`)
+  body.setEncoding('utf8')
+  body.on('data', console.log)
+
+  nodeServerUndiciClient.close()
+  fastifyServerUndiciClient.close()
+  fastifyServer.close()
+  nodeServer.close()
+} catch (error) { }
+```
+
+----------------------------------------
+
+TITLE: Checking Node.js and npm Versions (Shell)
+DESCRIPTION: This snippet provides the shell commands to verify if Node.js and npm are installed on your system and to display their respective versions. This is a common first step to assess the current environment before proceeding with installation or updates.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/docs/content/configuring-npm/install.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+node -v
+npm -v
+```
+
+----------------------------------------
+
+TITLE: Deriving Keys with crypto.scrypt in Node.js (ESM)
+DESCRIPTION: This snippet demonstrates how to use the `crypto.scrypt` function in an ES module environment to derive a cryptographic key. It shows two examples: one using the default scrypt parameters and another specifying a custom `N` (cost) parameter. The `derivedKey` is logged in hexadecimal format upon successful derivation, or an error is thrown.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/crypto.md#_snippet_99
+
+LANGUAGE: JavaScript
+CODE:
+```
+const {
+  scrypt,
+} = await import('node:crypto');
+
+// Using the factory defaults.
+scrypt('password', 'salt', 64, (err, derivedKey) => {
+  if (err) throw err;
+  console.log(derivedKey.toString('hex'));  // '3745e48...08d59ae'
+});
+// Using a custom N parameter. Must be a power of two.
+scrypt('password', 'salt', 64, { N: 1024 }, (err, derivedKey) => {
+  if (err) throw err;
+  console.log(derivedKey.toString('hex'));  // '3745e48...aa39b34'
+});
+```
+
+----------------------------------------
+
+TITLE: Installing Project Dependencies with npm
+DESCRIPTION: This command is essential for installing all declared dependencies of a Node.js project. When run in a project directory containing a `package.json` file, it reads the dependencies and installs them into the `node_modules` folder, making them available for the application.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/docs/output/commands/npm.html#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+npm install
+```
+
+----------------------------------------
+
+TITLE: Encrypting File Data with Cipheriv Piped Streams (Node.js)
+DESCRIPTION: This example illustrates how to encrypt the contents of a file by piping a readable stream from the input file through a `Cipheriv` instance and into a writable stream for the output encrypted file. It utilizes `node:fs` for file streams and `node:stream.pipeline` for robust error handling during the piping process, after generating the necessary key and IV.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/crypto.md#_snippet_14
+
+LANGUAGE: JavaScript (ESM)
+CODE:
+```
+import {
+  createReadStream,
+  createWriteStream,
+} from 'node:fs';
+
+import {
+  pipeline,
+} from 'node:stream';
+
+const {
+  scrypt,
+  randomFill,
+  createCipheriv,
+} = await import('node:crypto');
+
+const algorithm = 'aes-192-cbc';
+const password = 'Password used to generate key';
+
+// First, we'll generate the key. The key length is dependent on the algorithm.
+// In this case for aes192, it is 24 bytes (192 bits).
+scrypt(password, 'salt', 24, (err, key) => {
+  if (err) throw err;
+  // Then, we'll generate a random initialization vector
+  randomFill(new Uint8Array(16), (err, iv) => {
+    if (err) throw err;
+
+    const cipher = createCipheriv(algorithm, key, iv);
+
+    const input = createReadStream('test.js');
+    const output = createWriteStream('test.enc');
+
+    pipeline(input, cipher, output, (err) => {
+      if (err) throw err;
+    });
+  });
+});
+```
+
+LANGUAGE: JavaScript (CJS)
+CODE:
+```
+const {
+  createReadStream,
+  createWriteStream,
+} = require('node:fs');
+
+const {
+  pipeline,
+} = require('node:stream');
+
+const {
+  scrypt,
+  randomFill,
+  createCipheriv,
+} = require('node:crypto');
+
+const algorithm = 'aes-192-cbc';
+const password = 'Password used to generate key';
+
+// First, we'll generate the key. The key length is dependent on the algorithm.
+// In this case for aes192, it is 24 bytes (192 bits).
+scrypt(password, 'salt', 24, (err, key) => {
+  if (err) throw err;
+  // Then, we'll generate a random initialization vector
+  randomFill(new Uint8Array(16), (err, iv) => {
+    if (err) throw err;
+
+    const cipher = createCipheriv(algorithm, key, iv);
+
+    const input = createReadStream('test.js');
+    const output = createWriteStream('test.enc');
+
+    pipeline(input, cipher, output, (err) => {
+      if (err) throw err;
+    });
+  });
+});
+```
+
+----------------------------------------
+
+TITLE: Generate PFX Certificate from Key and Certificate
+DESCRIPTION: Provides a Bash command using `openssl` to convert an existing private key and certificate into a PFX file (`test_cert.pfx`) with a specified passphrase, suitable for use in Node.js HTTPS servers.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/https.md#_snippet_13
+
+LANGUAGE: bash
+CODE:
+```
+openssl pkcs12 -certpbe AES-256-CBC -export -out test_cert.pfx \
+  -inkey private-key.pem -in certificate.pem -passout pass:sample
+```
+
+----------------------------------------
+
+TITLE: Replace util.isString() with typeof operator in Node.js
+DESCRIPTION: The `util.isString()` API has reached End-of-Life and is removed from Node.js. This snippet provides the recommended native JavaScript alternative for checking if a value is a string using the `typeof` operator.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/deprecations.md#_snippet_55
+
+LANGUAGE: APIDOC
+CODE:
+```
+Deprecated API: util.isString()
+Type: End-of-Life
+Replacement: typeof arg === 'string'
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+typeof arg === 'string'
+```
+
+----------------------------------------
+
+TITLE: Configuring Nested npm Overrides for Package and its Children
+DESCRIPTION: This example shows the full object form of `overrides`, allowing you to specify a version for a package itself (`@npm/foo`) and also for its direct or transitive children (`@npm/bar`). This provides fine-grained control over dependency versions within a specific sub-tree.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/docs/output/configuring-npm/package-json.html#_snippet_37
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "overrides": {
+    "@npm/foo": {
+      ".": "1.0.0",
+      "@npm/bar": "1.0.0"
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Installing Packages with npm
+DESCRIPTION: This command installs packages from the npm registry or a local path. It's commonly used to add dependencies to a project or to install global tools. By default, it installs packages locally into node_modules.
+SOURCE: https://github.com/nodejs/node/blob/main/deps/npm/docs/output/commands/npm.html#_snippet_7
+
+LANGUAGE: Shell
+CODE:
+```
+npm install
+```
+
+----------------------------------------
+
+TITLE: API Reference: http.createServer Method
+DESCRIPTION: Creates a new instance of `http.Server`. This method can optionally take an `options` object to configure server behavior and a `requestListener` function that is automatically added to the 'request' event.
+SOURCE: https://github.com/nodejs/node/blob/main/doc/api/http.md#_snippet_185
+
+LANGUAGE: APIDOC
+CODE:
+```
+http.createServer([options][, requestListener])
+
+Parameters:
+  options: {Object} (Optional)
+    connectionsCheckingInterval: {number} Sets the interval in milliseconds to check for request and headers timeout in incomplete requests. Default: 30000.
+    headersTimeout: {number} Sets the timeout in milliseconds for receiving the complete HTTP headers from the client. Default: 60000.
+    highWaterMark: {number} Optionally overrides all `socket`s' `readableHighWaterMark` and `writableHighWaterMark`. Default: See `stream.getDefaultHighWaterMark()`.
+    insecureHTTPParser: {boolean} If true, uses a HTTP parser with leniency flags enabled. Avoid using. Default: false.
+    IncomingMessage: {http.IncomingMessage} Specifies the `IncomingMessage` class to be used. Default: `IncomingMessage`.
+    joinDuplicateHeaders: {boolean} If true, allows joining field line values of multiple headers in a request with a comma (`, `) instead of discarding duplicates. Default: false.
+    keepAlive: {boolean} If true, enables keep-alive functionality on the socket immediately after a new incoming connection. Default: false.
+    keepAliveInitialDelay: {number} If positive, sets the initial delay before the first keepalive probe is sent on an idle socket. Default: 0.
+    keepAliveTimeout: {number} The milliseconds of inactivity a server waits for additional incoming data after finishing the last response before destroying a socket. Default: 5000.
+    maxHeaderSize: {number} Optionally overrides the maximum length of request headers in bytes for this server. Default: 16384 (16 KiB).
+    noDelay: {boolean} If true, disables Nagle's algorithm immediately after a new incoming connection. Default: true.
+    requestTimeout: {number} Sets the timeout in milliseconds for receiving the entire request from the client. Default: 300000.
+    requireHostHeader: {boolean} If true, forces the server to respond with a 400 (Bad Request) to HTTP/1.1 requests lacking a Host header. Default: true.
+    ServerResponse: {http.ServerResponse} Specifies the `ServerResponse` class to be used. Default: `ServerResponse`.
+    uniqueHeaders: {Array} A list of response headers that should be sent only once. Array items are joined using `; `.
+    rejectNonStandardBodyWrites: {boolean} If true, an error is thrown when writing to an HTTP response which does not have a body. Default: false.
+  requestListener: {Function} (Optional) A function that is automatically added to the 'request' event.
+
+Returns:
+  {http.Server} A new instance of `http.Server`.
+```

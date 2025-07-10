@@ -1,0 +1,1831 @@
+TITLE: Invoke a Tauri command from the JavaScript frontend
+DESCRIPTION: This JavaScript code illustrates how to call a Rust command from the frontend. It provides examples for both the `@tauri-apps/api/core` npm package and the global `window.__TAURI__.core.invoke` object. The `invoke` function takes the command name as its first argument.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_2
+
+LANGUAGE: javascript
+CODE:
+```
+// When using the Tauri API npm package:
+import { invoke } from '@tauri-apps/api/core';
+
+// When using the Tauri global script (if not using the npm package)
+// Be sure to set `app.withGlobalTauri` in `tauri.conf.json` to true
+const invoke = window.__TAURI__.core.invoke;
+
+// Invoke the command
+invoke('my_custom_command');
+```
+
+----------------------------------------
+
+TITLE: Initialize Tauri Application in Rust
+DESCRIPTION: This Rust code snippet demonstrates the final steps of initializing and running a Tauri application, including context generation and error handling for the application startup.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/learn/window-menu.mdx#_snippet_6
+
+LANGUAGE: Rust
+CODE:
+```
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+----------------------------------------
+
+TITLE: Define a basic Tauri command in Rust
+DESCRIPTION: This Rust code defines a simple Tauri command named `my_custom_command` within `src-tauri/src/lib.rs`. Functions annotated with `#[tauri::command]` can be invoked from the frontend. This example prints a message to the console when called.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_0
+
+LANGUAGE: rust
+CODE:
+```
+#[tauri::command]
+fn my_custom_command() {
+	println!("I was invoked from JavaScript!");
+}
+```
+
+----------------------------------------
+
+TITLE: Define Async Tauri Command with Result for Borrowed Types
+DESCRIPTION: This Rust example shows an alternative method to handle borrowed types in asynchronous Tauri commands by wrapping the return type in a `Result`. This approach allows the use of borrowed parameters like `&str` by explicitly handling success and error cases. The return value must be wrapped in `Ok()`.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_15
+
+LANGUAGE: rust
+CODE:
+```
+// Return a Result<String, ()> to bypass the borrowing issue
+#[tauri::command]
+async fn my_custom_command(value: &str) -> Result<String, ()> {
+	// Call another async function and wait for it to finish
+	some_async_function().await;
+	// Note that the return value must be wrapped in `Ok()` now.
+	Ok(format!(value))
+}
+```
+
+----------------------------------------
+
+TITLE: Execute JavaScript in Webview from Rust
+DESCRIPTION: Shows how to use `WebviewWindow#eval` within a Tauri application's setup hook to directly execute JavaScript code in the webview context, useful for simple interactions or initial scripts.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-frontend.mdx#_snippet_5
+
+LANGUAGE: rust
+CODE:
+```
+use tauri::Manager;
+
+tauri::Builder::default()
+  .setup(|app| {
+    let webview = app.get_webview_window("main").unwrap();
+    webview.eval("console.log('hello from Rust')")?;
+    Ok(())
+  })
+```
+
+----------------------------------------
+
+TITLE: Build Tauri Application
+DESCRIPTION: Commands to build a Tauri application using various package managers and build tools. This process compiles your application for the target platform.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/distribute/index.mdx#_snippet_0
+
+LANGUAGE: npm
+CODE:
+```
+npm run tauri build
+```
+
+LANGUAGE: yarn
+CODE:
+```
+yarn tauri build
+```
+
+LANGUAGE: pnpm
+CODE:
+```
+pnpm tauri build
+```
+
+LANGUAGE: deno
+CODE:
+```
+deno task tauri build
+```
+
+LANGUAGE: bun
+CODE:
+```
+bun tauri build
+```
+
+LANGUAGE: cargo
+CODE:
+```
+cargo tauri build
+```
+
+----------------------------------------
+
+TITLE: Using Structured Event Payloads in Rust
+DESCRIPTION: Expands on the event system by demonstrating how to use custom serializable structs as event payloads. This allows for more complex data to be sent with events. The example defines `DownloadStarted`, `DownloadProgress`, and `DownloadFinished` structs and uses them in an updated `download` command.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-frontend.mdx#_snippet_3
+
+LANGUAGE: Rust
+CODE:
+```
+use tauri::{AppHandle, Emitter};
+use serde::Serialize;
+
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct DownloadStarted<'a> {
+  url: &'a str,
+  download_id: usize,
+  content_length: usize,
+}
+
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct DownloadProgress {
+  download_id: usize,
+  chunk_length: usize,
+}
+
+#[derive(Clone, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct DownloadFinished {
+  download_id: usize,
+}
+
+#[tauri::command]
+fn download(app: AppHandle, url: String) {
+  let content_length = 1000;
+  let download_id = 1;
+
+  app.emit("download-started", DownloadStarted {
+    url: &url,
+    download_id,
+    content_length
+  }).unwrap();
+
+  for chunk_length in [15, 150, 35, 500, 300] {
+    app.emit("download-progress", DownloadProgress {
+      download_id,
+      chunk_length,
+    }).unwrap();
+  }
+
+  app.emit("download-finished", DownloadFinished { download_id }).unwrap();
+}
+```
+
+----------------------------------------
+
+TITLE: Returning Data from Tauri Commands
+DESCRIPTION: Shows how a Rust command handler can return data, which is then resolved by the JavaScript `invoke` promise. Returned data must implement `serde::Serialize`.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_8
+
+LANGUAGE: Rust
+CODE:
+```
+#[tauri::command]
+fn my_custom_command() -> String {
+	"Hello from Rust!".into()
+}
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+invoke('my_custom_command').then((message) => console.log(message));
+```
+
+----------------------------------------
+
+TITLE: Recreate main.rs to Call Shared Tauri Library
+DESCRIPTION: After renaming `main.rs` to `lib.rs`, this new `main.rs` file is created to call the shared `run` function from the `app_lib` crate, ensuring the desktop application still functions correctly.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/start/migrate/from-tauri-1.mdx#_snippet_2
+
+LANGUAGE: rust
+CODE:
+```
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
+fn main() {
+  app_lib::run();
+}
+```
+
+----------------------------------------
+
+TITLE: Run Tauri Application in Development Mode for Desktop
+DESCRIPTION: These commands initiate the Tauri development server for desktop applications. The first run may take time for Rust package compilation, but subsequent runs are faster. Once built, the webview opens, and changes to the web app should automatically update.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/index.mdx#_snippet_2
+
+LANGUAGE: npm
+CODE:
+```
+npm run tauri dev
+```
+
+LANGUAGE: yarn
+CODE:
+```
+yarn tauri dev
+```
+
+LANGUAGE: pnpm
+CODE:
+```
+pnpm tauri dev
+```
+
+LANGUAGE: deno
+CODE:
+```
+deno task tauri dev
+```
+
+LANGUAGE: bun
+CODE:
+```
+bun tauri dev
+```
+
+LANGUAGE: cargo
+CODE:
+```
+cargo tauri dev
+```
+
+----------------------------------------
+
+TITLE: Interactive Prompts for Tauri Project Scaffolding
+DESCRIPTION: This snippet illustrates the interactive command-line prompts presented by `create-tauri-app` when scaffolding a new project. It guides the user through selecting a project name, identifier, frontend language (Rust, TypeScript/JavaScript, .NET), package manager (pnpm, yarn, npm, bun), UI template (Vanilla, Vue, Svelte, React, Solid, Angular, Preact, Yew, Leptos, Sycamore, Blazor), and UI flavor (TypeScript, JavaScript).
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/start/create-project.mdx#_snippet_0
+
+LANGUAGE: CLI
+CODE:
+```
+? Project name (tauri-app) ›
+? Identifier (com.tauri-app.app) ›
+? Choose which language to use for your frontend ›
+Rust  (cargo)
+TypeScript / JavaScript  (pnpm, yarn, npm, bun)
+.NET  (dotnet)
+? Choose your package manager ›
+pnpm
+yarn
+npm
+bun
+? Choose your UI template ›
+Vanilla
+Yew
+Leptos
+Sycamore
+? Choose your UI template ›
+Vanilla
+Vue
+Svelte
+React
+Solid
+Angular
+Preact
+? Choose your UI flavor ›
+TypeScript
+JavaScript
+? Choose your UI template ›
+Blazor  (https://dotnet.microsoft.com/en-us/apps/aspnet/web-apps/blazor/)
+```
+
+----------------------------------------
+
+TITLE: Start Tauri Development Server
+DESCRIPTION: These commands demonstrate how to navigate into the newly created Tauri project directory, install dependencies, and launch the development server using the Tauri CLI. This snippet provides commands tailored for various popular package managers and build tools.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/start/create-project.mdx#_snippet_1
+
+LANGUAGE: npm
+CODE:
+```
+cd tauri-app
+npm install
+npm run tauri dev
+```
+
+LANGUAGE: yarn
+CODE:
+```
+cd tauri-app
+yarn install
+yarn tauri dev
+```
+
+LANGUAGE: pnpm
+CODE:
+```
+cd tauri-app
+pnpm install
+pnpm tauri dev
+```
+
+LANGUAGE: Deno
+CODE:
+```
+cd tauri-app
+deno install
+deno task tauri dev
+```
+
+LANGUAGE: Bun
+CODE:
+```
+cd tauri-app
+bun install
+bun tauri dev
+```
+
+LANGUAGE: Cargo
+CODE:
+```
+cd tauri-app
+cargo tauri dev
+```
+
+----------------------------------------
+
+TITLE: Initialize New Tauri Application Project
+DESCRIPTION: Commands to create a new Tauri application using various shell environments and package managers. These commands download and execute the Tauri app creation script or use the respective package manager's `create` command.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/_fragments/cta.mdx#_snippet_0
+
+LANGUAGE: Bash
+CODE:
+```
+sh <(curl https://create.tauri.app/sh)
+```
+
+LANGUAGE: PowerShell
+CODE:
+```
+irm https://create.tauri.app/ps | iex
+```
+
+LANGUAGE: Fish
+CODE:
+```
+sh (curl -sSL https://create.tauri.app/sh | psub)
+```
+
+LANGUAGE: npm
+CODE:
+```
+npm create tauri-app@latest
+```
+
+LANGUAGE: Yarn
+CODE:
+```
+yarn create tauri-app
+```
+
+LANGUAGE: pnpm
+CODE:
+```
+pnpm create tauri-app
+```
+
+LANGUAGE: Deno
+CODE:
+```
+deno run -A npm:create-tauri-app
+```
+
+LANGUAGE: Bun
+CODE:
+```
+bun create tauri-app
+```
+
+LANGUAGE: Cargo
+CODE:
+```
+cargo install create-tauri-app --locked
+cargo create-tauri-app
+```
+
+----------------------------------------
+
+TITLE: Create a new Tauri application
+DESCRIPTION: Commands to initialize a new Tauri project using `create-tauri-app` and the expected interactive prompts for configuration. This sets up the basic project structure for further development.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/learn/Security/using-plugin-permissions.mdx#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+pnpm create tauri-app
+```
+
+LANGUAGE: sh
+CODE:
+```
+✔ Project name · plugin-permission-demo
+✔ Choose which language to use for your frontend · TypeScript / JavaScript - (pnpm, yarn, npm, bun)
+✔ Choose your package manager · pnpm
+✔ Choose your UI template · Vanilla
+✔ Choose your UI flavor · TypeScript
+
+Template created! To get started run:
+cd plugin-permission-demo
+pnpm install
+pnpm tauri dev
+```
+
+----------------------------------------
+
+TITLE: Example Tauri CSP Configuration in tauri.conf.json
+DESCRIPTION: This JSON snippet demonstrates a Content Security Policy (CSP) configuration within the `tauri.conf.json` file for a Tauri application. It defines various source directives like `default-src`, `connect-src`, `font-src`, `img-src`, and `style-src` to control what resources the webview can load, enhancing security against common web vulnerabilities. This example is taken from Tauri's API example and should be tailored to specific application needs.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/security/csp.mdx#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+  "csp": {
+        "default-src": "'self' customprotocol: asset:",
+        "connect-src": "ipc: http://ipc.localhost",
+        "font-src": ["https://fonts.gstatic.com"],
+        "img-src": "'self' asset: http://asset.localhost blob: data:",
+        "style-src": "'unsafe-inline' 'self' https://fonts.googleapis.com"
+      },
+```
+
+----------------------------------------
+
+TITLE: Define and Invoke a Custom Asynchronous Tauri Command with State
+DESCRIPTION: Provides a comprehensive example of defining an asynchronous Tauri command in Rust. It demonstrates custom response types, state management (`tauri::State`), interaction with the window object, and handling asynchronous operations. The snippet also shows how to invoke this command from the JavaScript frontend and process its promise-based response.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_23
+
+LANGUAGE: Rust
+CODE:
+```
+struct Database;
+
+#[derive(serde::Serialize)]
+struct CustomResponse {
+	message: String,
+	other_val: usize,
+}
+
+async fn some_other_function() -> Option<String> {
+	Some("response".into())
+}
+
+#[tauri::command]
+async fn my_custom_command(
+	window: tauri::Window,
+	number: usize,
+	database: tauri::State<'_, Database>,
+) -> Result<CustomResponse, String> {
+	println!("Called from {}", window.label());
+	let result: Option<String> = some_other_function().await;
+	if let Some(message) = result {
+		Ok(CustomResponse {
+			message,
+			other_val: 42 + number,
+		})
+	} else {
+		Err("No result".into())
+	}
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+	tauri::Builder::default()
+		.manage(Database {})
+		.invoke_handler(tauri::generate_handler![my_custom_command])
+		.run(tauri::generate_context!())
+		.expect("error while running tauri application");
+}
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { invoke } from '@tauri-apps/api/core';
+
+// Invocation from JavaScript
+invoke('my_custom_command', {
+  number: 42,
+})
+  .then((res) =>
+    console.log(`Message: ${res.message}, Other Val: ${res.other_val}`)
+  )
+  .catch((e) => console.error(e));
+```
+
+----------------------------------------
+
+TITLE: Install Dependencies and Run Tauri Project
+DESCRIPTION: This snippet provides the necessary shell commands to set up and run a Tauri project. It guides the user to navigate into the project directory, install dependencies using pnpm, and then build and run the application in development mode to validate the initial setup.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/learn/splashscreen.mdx#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+cd splashscreen-lab
+pnpm install
+pnpm tauri dev
+```
+
+----------------------------------------
+
+TITLE: Handle Command Errors with Rust Result and JavaScript Promise Rejection
+DESCRIPTION: Demonstrates how a Tauri command in Rust can return a `Result` type to indicate success or failure, and how the corresponding JavaScript `invoke` call handles the promise resolution or rejection based on the Rust `Result`.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_10
+
+LANGUAGE: Rust
+CODE:
+```
+#[tauri::command]
+fn login(user: String, password: String) -> Result<String, String> {
+	if user == "tauri" && password == "tauri" {
+		// resolve
+		Ok("logged_in".to_string())
+	} else {
+		// reject
+		Err("invalid credentials".to_string())
+	}
+}
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+invoke('login', { user: 'tauri', password: '0j4rijw8=' })
+  .then((message) => console.log(message))
+  .catch((error) => console.error(error));
+```
+
+----------------------------------------
+
+TITLE: Install Rust on Linux and macOS
+DESCRIPTION: This command installs Rust and its toolchain manager, rustup, on Linux and macOS systems. It uses a curl-bash pipeline to download and execute the rustup installation script.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/start/prerequisites.mdx#_snippet_8
+
+LANGUAGE: sh
+CODE:
+```
+curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+```
+
+----------------------------------------
+
+TITLE: Install Tauri CLI Tool
+DESCRIPTION: Commands to install the Tauri Command Line Interface globally or as a development dependency using various package managers. `cargo` installation is global.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/start/create-project.mdx#_snippet_3
+
+LANGUAGE: npm
+CODE:
+```
+npm install -D @tauri-apps/cli@latest
+```
+
+LANGUAGE: yarn
+CODE:
+```
+yarn add -D @tauri-apps/cli@latest
+```
+
+LANGUAGE: pnpm
+CODE:
+```
+pnpm add -D @tauri-apps/cli@latest
+```
+
+LANGUAGE: deno
+CODE:
+```
+deno add -D npm:@tauri-apps/cli@latest
+```
+
+LANGUAGE: bun
+CODE:
+```
+bun add -D @tauri-apps/cli@latest
+```
+
+LANGUAGE: cargo
+CODE:
+```
+cargo install tauri-cli --version "^2.0.0" --locked
+```
+
+----------------------------------------
+
+TITLE: Define Async Tauri Command with String Parameter
+DESCRIPTION: This Rust example demonstrates how to declare an asynchronous Tauri command. To avoid issues with borrowed types like `&str` in async functions, the parameter `value` is converted to an owned `String` type. The command calls another async function and returns the processed string.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_14
+
+LANGUAGE: rust
+CODE:
+```
+// Declare the async function using String instead of &str, as &str is borrowed and thus unsupported
+#[tauri::command]
+async fn my_custom_command(value: String) -> String {
+	// Call another async function and wait for it to finish
+	some_async_function().await;
+	value
+}
+```
+
+----------------------------------------
+
+TITLE: Invoke Async Tauri Command from JavaScript
+DESCRIPTION: This JavaScript snippet illustrates how to invoke an asynchronous Tauri command from the frontend. Since Tauri commands inherently return a Promise when invoked from JavaScript, handling async commands is straightforward and follows standard Promise-based patterns.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_16
+
+LANGUAGE: javascript
+CODE:
+```
+invoke('my_custom_command', { value: 'Hello, Async!' }).then(() =>
+  console.log('Completed!')
+);
+```
+
+----------------------------------------
+
+TITLE: Run Tauri Development Server
+DESCRIPTION: Commands to start the Tauri development server, which compiles the Rust backend and opens a window displaying the web content. This verifies the setup.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/start/create-project.mdx#_snippet_6
+
+LANGUAGE: npm
+CODE:
+```
+npx tauri dev
+```
+
+LANGUAGE: yarn
+CODE:
+```
+yarn tauri dev
+```
+
+LANGUAGE: pnpm
+CODE:
+```
+pnpm tauri dev
+```
+
+LANGUAGE: deno
+CODE:
+```
+deno task tauri dev
+```
+
+LANGUAGE: bun
+CODE:
+```
+bun tauri dev
+```
+
+LANGUAGE: cargo
+CODE:
+```
+cargo tauri dev
+```
+
+----------------------------------------
+
+TITLE: Example Tauri Configuration in JSON5 Format
+DESCRIPTION: This JSON5 snippet illustrates a typical Tauri application configuration, including settings for development URL, pre-dev commands, bundle activation, application icon, window properties, and updater plugin details. It highlights the use of comments supported by JSON5.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/configuration-files.mdx#_snippet_1
+
+LANGUAGE: json5
+CODE:
+```
+{
+  build: {
+    devUrl: 'http://localhost:3000',
+    // start the dev server
+    beforeDevCommand: 'npm run dev',
+  },
+  bundle: {
+    active: true,
+    icon: ['icons/app.png'],
+  },
+  app: {
+    windows: [
+      {
+        title: 'MyApp',
+      },
+    ],
+  },
+  plugins: {
+    updater: {
+      pubkey: 'updater pub key',
+      endpoints: ['https://my.app.updater/{{target}}/{{current_version}}'],
+    },
+  },
+}
+```
+
+----------------------------------------
+
+TITLE: Register Tauri commands in the application builder
+DESCRIPTION: This Rust code snippet demonstrates how to register defined Tauri commands, such as `my_custom_command`, with the application builder in `src-tauri/src/lib.rs`. The `invoke_handler` method uses `tauri::generate_handler!` to make the specified commands accessible from the frontend.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_1
+
+LANGUAGE: rust
+CODE:
+```
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+	tauri::Builder::default()
+		.invoke_handler(tauri::generate_handler![my_custom_command])
+		.run(tauri::generate_context!())
+		.expect("error while running tauri application");
+}
+```
+
+----------------------------------------
+
+TITLE: Configure Tauri Development Server with Dev URL and Command
+DESCRIPTION: This JSON configuration snippet for `tauri.conf.json` sets up the development server. `devUrl` specifies the URL of the frontend development server (e.g., `http://localhost:3000`), and `beforeDevCommand` defines the command to run before starting the development server (e.g., `npm run dev`). This is useful when using UI frameworks or JavaScript bundlers.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/index.mdx#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "build": {
+    "devUrl": "http://localhost:3000",
+    "beforeDevCommand": "npm run dev"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Emit Global Events in Tauri from Frontend
+DESCRIPTION: Shows how to emit global events from the frontend using `@tauri-apps/api/event.emit` or `WebviewWindow#emit`. These events are broadcast to all listeners registered across all webviews.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_24
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { emit } from '@tauri-apps/api/event';
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow';
+
+// emit(eventName, payload)
+emit('file-selected', '/path/to/file');
+
+const appWebview = getCurrentWebviewWindow();
+appWebview.emit('route-changed', { url: window.location.href });
+```
+
+----------------------------------------
+
+TITLE: Printing Messages to Rust Console in Tauri
+DESCRIPTION: This snippet illustrates how to output messages directly to the Rust console, which is the terminal where the Tauri application is launched (e.g., via `tauri dev`). Using the `println!` macro, developers can log information from the Rust backend, providing a straightforward way to monitor application flow and debug server-side logic. This is a fundamental tool for understanding the Rust process's behavior.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/Debug/index.mdx#_snippet_1
+
+LANGUAGE: Rust
+CODE:
+```
+println!("Message from Rust: {}", msg);
+```
+
+----------------------------------------
+
+TITLE: Passing Arguments to Tauri Commands
+DESCRIPTION: Demonstrates how to define a Rust command handler that accepts arguments and how to invoke it from JavaScript, passing arguments as a camelCase JSON object. Arguments in Rust must implement `serde::Deserialize`.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_6
+
+LANGUAGE: Rust
+CODE:
+```
+#[tauri::command]
+fn my_custom_command(invoke_message: String) {
+	println!("I was invoked from JavaScript, with this message: {}", invoke_message);
+}
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+invoke('my_custom_command', { invokeMessage: 'Hello!' });
+```
+
+----------------------------------------
+
+TITLE: Install Tauri CLI
+DESCRIPTION: Commands to install the Tauri Command Line Interface (CLI) as a development dependency in your project using various package managers.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/reference/_cli.mdx#_snippet_0
+
+LANGUAGE: npm
+CODE:
+```
+npm install --save-dev @tauri-apps/cli@latest
+```
+
+LANGUAGE: yarn
+CODE:
+```
+yarn add -D @tauri-apps/cli@latest
+```
+
+LANGUAGE: pnpm
+CODE:
+```
+pnpm add -D @tauri-apps/cli@latest
+```
+
+LANGUAGE: deno
+CODE:
+```
+deno add -D npm:@tauri-apps/cli@latest
+```
+
+LANGUAGE: cargo
+CODE:
+```
+cargo install tauri-cli --version "^2.0.0" --locked
+```
+
+----------------------------------------
+
+TITLE: Define Default Tauri Capability JSON
+DESCRIPTION: This JSON snippet defines a default capability file for a Tauri application, allowing the main window to use core plugin functionalities and specific window APIs like `setTitle`. It's typically placed in `src-tauri/capabilities/`.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/security/capabilities.mdx#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-capability",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "core:path:default",
+    "core:event:default",
+    "core:window:default",
+    "core:app:default",
+    "core:resources:default",
+    "core:menu:default",
+    "core:tray:default",
+    "core:window:allow-set-title"
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Initialize Tauri Backend
+DESCRIPTION: Commands to initialize the Tauri backend within an existing project directory. This step prompts the user for application details like name, window title, web assets location, and development server URLs.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/start/create-project.mdx#_snippet_4
+
+LANGUAGE: npm
+CODE:
+```
+npx tauri init
+```
+
+LANGUAGE: yarn
+CODE:
+```
+yarn tauri init
+```
+
+LANGUAGE: pnpm
+CODE:
+```
+pnpm tauri init
+```
+
+LANGUAGE: deno
+CODE:
+```
+deno task tauri init
+```
+
+LANGUAGE: bun
+CODE:
+```
+bun tauri init
+```
+
+LANGUAGE: cargo
+CODE:
+```
+cargo tauri init
+```
+
+----------------------------------------
+
+TITLE: Example Tauri Configuration in TOML Format
+DESCRIPTION: This TOML snippet provides an equivalent Tauri configuration to the JSON5 example, showcasing how build settings, bundle options, window definitions, and updater plugin configurations are structured using TOML syntax, including comments and kebab-case for field names.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/configuration-files.mdx#_snippet_2
+
+LANGUAGE: toml
+CODE:
+```
+[build]
+dev-url = "http://localhost:3000"
+# start the dev server
+before-dev-command = "npm run dev"
+
+[bundle]
+active = true
+icon = ["icons/app.png"]
+
+[[app.windows]]
+title = "MyApp"
+
+[plugins.updater]
+pubkey = "updater pub key"
+endpoints = ["https://my.app.updater/{{target}}/{{current_version}}"]
+```
+
+----------------------------------------
+
+TITLE: Configure Cross-Origin Headers in Vite-based Frameworks
+DESCRIPTION: This snippet demonstrates how to add specific cross-origin and custom headers to the `vite.config.ts` file for projects using Vite as their build tool, including Qwik, React, Solid, Svelte, and Vue. These headers are crucial for enabling certain browser features and custom Tauri communication.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/security/http-headers.mdx#_snippet_2
+
+LANGUAGE: typescript
+CODE:
+```
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  // ...
+  server: {
+      // ...
+      headers: {
+        'Cross-Origin-Opener-Policy': 'same-origin',
+        'Cross-Origin-Embedder-Policy': 'require-corp',
+        'Timing-Allow-Origin': 'https://developer.mozilla.org, https://example.com',
+        'Access-Control-Expose-Headers': 'Tauri-Custom-Header',
+        'Tauri-Custom-Header': "key1 'value1' 'value2'; key2 'value3'"
+      },
+    },
+})
+```
+
+----------------------------------------
+
+TITLE: GitHub Actions Workflow for Tauri App Release
+DESCRIPTION: This YAML configuration defines a GitHub Actions workflow named 'publish' that automates the build and release of a Tauri application. It runs on push to the 'release' branch or via manual workflow dispatch. The workflow builds for macOS (Intel and Arm), Ubuntu, and Windows, handling platform-specific dependencies, Node.js setup, Rust toolchain installation, frontend dependency management, and uses `tauri-action` to generate release artifacts and create a GitHub release.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/distribute/Pipelines/github.mdx#_snippet_1
+
+LANGUAGE: YAML
+CODE:
+```
+name: 'publish'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - release
+
+jobs:
+  publish-tauri:
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-latest' # for Arm based macs (M1 and above).
+            args: '--target aarch64-apple-darwin'
+          - platform: 'macos-latest' # for Intel based macs.
+            args: '--target x86_64-apple-darwin'
+          - platform: 'ubuntu-22.04'
+            args: ''
+          - platform: 'windows-latest'
+            args: ''
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-22.04' # This must match the platform value defined above.
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'yarn' # Set this to npm, yarn or pnpm.
+
+      - name: install Rust stable
+        uses: dtolnay/rust-toolchain@stable # Set this to dtolnay/rust-toolchain@nightly
+        with:
+          # Those targets are only used on macos runners so it's in an `if` to slightly speed up windows and linux builds.
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: install frontend dependencies
+        # If you don't have `beforeBuildCommand` configured you may want to build your frontend here too.
+        run: yarn install # change this to npm or pnpm depending on which one you use.
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: app-v__VERSION__ # the action automatically replaces \_\_VERSION\_\_ with the app version.
+          releaseName: 'App v__VERSION__'
+          releaseBody: 'See the assets to download this version and install.'
+          releaseDraft: true
+          prerelease: false
+          args: ${{ matrix.args }}
+```
+
+----------------------------------------
+
+TITLE: Configure Global File System Scope in Tauri default.json
+DESCRIPTION: This JSON configuration snippet demonstrates how to apply a global file system scope using the `fs:scope` permission in `src-tauri/capabilities/default.json`. It grants access to the application's data directory (`$APPDATA`) and all its subdirectories for all `fs` commands.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/plugin/file-system.mdx#_snippet_36
+
+LANGUAGE: json
+CODE:
+```
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-capability",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    {
+      "identifier": "fs:scope",
+      "allow": [{ "path": "$APPDATA" }, { "path": "$APPDATA/**/*" }]
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Read Text File (Tauri FS Plugin)
+DESCRIPTION: Demonstrates reading the entire content of a text file using `readTextFile` from `@tauri-apps/plugin-fs`. It reads 'config.toml' from the AppConfig directory.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/plugin/file-system.mdx#_snippet_19
+
+LANGUAGE: js
+CODE:
+```
+import { readTextFile, BaseDirectory } from '@tauri-apps/plugin-fs';
+const configToml = await readTextFile('config.toml', {
+  baseDir: BaseDirectory.AppConfig,
+});
+```
+
+----------------------------------------
+
+TITLE: Tauri Store Basic Usage Example
+DESCRIPTION: Demonstrates how to create, set, get, and save data using the Tauri Store plugin in both JavaScript/TypeScript and Rust, highlighting asynchronous operations and data serialization requirements.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/plugin/store.mdx#_snippet_3
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { load } from '@tauri-apps/plugin-store';
+// when using `"withGlobalTauri": true`, you may use
+// const { load } = window.__TAURI__.store;
+
+// Create a new store or load the existing one,
+// note that the options will be ignored if a `Store` with that path has already been created
+const store = await load('store.json', { autoSave: false });
+
+// Set a value.
+await store.set('some-key', { value: 5 });
+
+// Get a value.
+const val = await store.get<{ value: number }>('some-key');
+console.log(val); // { value: 5 }
+
+// You can manually save the store after making changes.
+// Otherwise, it will save upon graceful exit
+// And if you set `autoSave` to a number or left empty,
+// it will save the changes to disk after a debounce delay, 100ms by default.
+await store.save();
+```
+
+LANGUAGE: Rust
+CODE:
+```
+use tauri::Wry;
+use tauri_plugin_store::StoreExt;
+use serde_json::json;
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_store::Builder::default().build())
+        .setup(|app| {
+            // Create a new store or load the existing one
+            // this also put the store in the app's resource table
+            // so your following calls `store` calls (from both rust and js)
+            // will reuse the same store
+            let store = app.store("store.json")?;
+
+            // Note that values must be serde_json::Value instances,
+            // otherwise, they will not be compatible with the JavaScript bindings.
+            store.set("some-key", json!({ "value": 5 }));
+
+            // Get a value from the store.
+            let value = store.get("some-key").expect("Failed to get value from store");
+            println!("{}", value); // {\"value\":5}
+
+            // Remove the store from the resource table
+            store.close_resource();
+
+            Ok(())
+        })
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+----------------------------------------
+
+TITLE: Listen to All Tauri Events Including Webview-Specific
+DESCRIPTION: Explains how to configure an event listener in JavaScript to catch all emitted events, including webview-specific ones. This is achieved by setting the `{ target: { kind: 'Any' } }` option in the `listen` function from `@tauri-apps/api/event`.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_26
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { listen } from '@tauri-apps/api/event';
+listen(
+  'state-changed',
+  (event) => {
+    console.log('got state changed event', event);
+  },
+  {
+    target: { kind: 'Any' },
+  }
+);
+```
+
+----------------------------------------
+
+TITLE: Accessing Managed State in Async Tauri Commands
+DESCRIPTION: Illustrates how to access and modify `Mutex`-wrapped state within an asynchronous Tauri command. It uses `await` for the mutex lock, suitable for `tokio::sync::Mutex` or when holding the lock across `await` points.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/state-management.mdx#_snippet_5
+
+LANGUAGE: rust
+CODE:
+```
+#[tauri::command]
+async fn increase_counter(state: State<'_, Mutex<AppState>>) -> Result<u32, ()> {
+  let mut state = state.lock().await;
+  state.counter += 1;
+  Ok(state.counter)
+}
+```
+
+----------------------------------------
+
+TITLE: Access Managed State in Tauri Commands
+DESCRIPTION: This Rust example illustrates how to define and access application-wide managed state within Tauri commands using `tauri::State`. State is registered with `tauri::Builder::manage` during application setup, allowing commands to retrieve and use shared data throughout the application's lifecycle.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_20
+
+LANGUAGE: rust
+CODE:
+```
+struct MyState(String);
+
+#[tauri::command]
+fn my_custom_command(state: tauri::State<MyState>) {
+	assert_eq!(state.0 == "some state value", true);
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+	tauri::Builder::default()
+		.manage(MyState("some state value".into()))
+		.invoke_handler(tauri::generate_handler![my_custom_command])
+		.run(tauri::generate_context!())
+		.expect("error while running tauri application");
+}
+```
+
+----------------------------------------
+
+TITLE: Configure Shell Command Permissions in Tauri Capabilities
+DESCRIPTION: JSON configuration snippet for `default.json` demonstrating how to define and allow specific shell commands and their arguments within Tauri's capabilities for security.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/plugin/shell.mdx#_snippet_6
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-capability",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "exec-sh",
+          "cmd": "sh",
+          "args": [
+            "-c",
+            {
+              "validator": "\\S+"
+            }
+          ],
+          "sidecar": false
+        }
+      ]
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Define Inline Tauri Capabilities in Configuration
+DESCRIPTION: This `tauri.conf.json` snippet shows how to define capabilities directly within the configuration file, including an inline capability definition alongside a reference to an external one. This allows for flexible capability management.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/security/capabilities.mdx#_snippet_2
+
+LANGUAGE: json
+CODE:
+```
+{
+  "app": {
+    "security": {
+      "capabilities": [
+        {
+          "identifier": "my-capability",
+          "description": "My application capability used for all windows",
+          "windows": ["*"],
+          "permissions": ["fs:default", "allow-home-read-extended"]
+        },
+        "my-second-capability"
+      ]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Create and Manage System Tray at Runtime in Tauri
+DESCRIPTION: Example demonstrating how to create a system tray at runtime using Tauri's `SystemTray` API, including menu setup, event handling for menu item clicks, and managing the tray's lifetime.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/blog/tauri-1-1.mdx#_snippet_2
+
+LANGUAGE: rust
+CODE:
+```
+use tauri::{Builder, CustomMenuItem, SystemTray, SystemTrayEvent, SystemTrayMenu};
+Builder::default()
+    .setup(|app| {
+        let handle = app.handle();
+        SystemTray::new()
+            .with_id("main")
+            .with_menu(
+                SystemTrayMenu::new().add_item(CustomMenuItem::new("quit", "Quit"))
+            )
+            .on_event(move |event| {
+                let tray_handle = handle.tray_handle_by_id("main").unwrap();
+                if let SystemTrayEvent::MenuItemClick { id, .. } = event {
+                    if id == "quit" {
+                        tray_handle.destroy().unwrap();
+                    }
+                }
+            })
+            .build(&handle)
+            .expect("unable to create tray");
+    });
+```
+
+----------------------------------------
+
+TITLE: Check Directory Existence with Tauri FS Plugin
+DESCRIPTION: The `exists` function checks whether a specified file or directory exists at the given path. This example checks for the existence of an 'images' directory.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/plugin/file-system.mdx#_snippet_31
+
+LANGUAGE: js
+CODE:
+```
+import { exists, BaseDirectory } from '@tauri-apps/plugin-fs';
+const tokenExists = await exists('images', {
+  baseDir: BaseDirectory.AppLocalData,
+});
+```
+
+----------------------------------------
+
+TITLE: Copy File (Tauri FS Plugin)
+DESCRIPTION: Shows how to copy a file from a source to a destination path using `copyFile` from `@tauri-apps/plugin-fs`. Note that you must configure each base directory separately. It copies 'user.db' from AppLocalData to 'user.db.bk' in the Temp directory.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/plugin/file-system.mdx#_snippet_23
+
+LANGUAGE: js
+CODE:
+```
+import { copyFile, BaseDirectory } from '@tauri-apps/plugin-fs';
+await copyFile('user.db', 'user.db.bk', {
+  fromPathBaseDir: BaseDirectory.AppLocalData,
+  toPathBaseDir: BaseDirectory.Temp,
+});
+```
+
+----------------------------------------
+
+TITLE: Mocking Simple IPC Invoke Calls in Vitest
+DESCRIPTION: This snippet demonstrates how to mock a simple IPC `invoke` call using `mockIPC` in a Vitest test environment. It sets up a mock for a Rust command named "add" that performs addition, and includes a `beforeAll` hook to polyfill `window.crypto` for jsdom compatibility.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/Tests/mocking.md#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+import { beforeAll, expect, test } from "vitest";
+import { randomFillSync } from "crypto";
+
+import { mockIPC } from "@tauri-apps/api/mocks";
+import { invoke } from "@tauri-apps/api/core";
+
+// jsdom doesn't come with a WebCrypto implementation
+beforeAll(() => {
+  Object.defineProperty(window, 'crypto', {
+    value: {
+      // @ts-ignore
+      getRandomValues: (buffer) => {
+        return randomFillSync(buffer);
+      },
+    },
+  });
+});
+
+
+test("invoke simple", async () => {
+  mockIPC((cmd, args) => {
+    // simulated rust command called "add" that just adds two numbers
+    if(cmd === "add") {
+      return (args.a as number) + (args.b as number);
+    }
+  });
+});
+```
+
+----------------------------------------
+
+TITLE: Listen to Global Events in Tauri Frontend (TypeScript)
+DESCRIPTION: Demonstrates how to register a listener for global events using `@tauri-apps/api/event` in a Tauri frontend application. It defines a type for the event payload and logs the received data.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/_sections/frontend-listen.mdx#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { listen } from '@tauri-apps/api/event';
+
+type DownloadStarted = {
+  url: string;
+  downloadId: number;
+  contentLength: number;
+};
+
+listen<DownloadStarted>('download-started', (event) => {
+  console.log(
+    `downloading ${event.payload.contentLength} bytes from ${event.payload.url}`
+  );
+});
+```
+
+----------------------------------------
+
+TITLE: Configure Default Tauri Application Capabilities
+DESCRIPTION: This JSON snippet illustrates how to define default capabilities for a Tauri application, specifically focusing on file system permissions. It shows how to enable a broad `fs:default` permission and a more granular `fs:allow-exists` permission, restricted to paths within the application's data directory (`$APPDATA/*`). This configuration is essential for controlling what resources the application can access.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/plugin/file-system.mdx#_snippet_35
+
+LANGUAGE: json
+CODE:
+```
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-capability",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "fs:default",
+    {
+      "identifier": "fs:allow-exists",
+      "allow": [{ "path": "$APPDATA/*" }]
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Serialize Custom Errors with Structured `serde` Tags for Frontend Mapping
+DESCRIPTION: Demonstrates an advanced custom error type that uses `serde` attributes (`tag`, `content`, `rename_all`) to serialize errors into a structured object (`{ kind: 'io' | 'utf8', message: string }`), facilitating easier mapping to TypeScript enums on the frontend.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_13
+
+LANGUAGE: Rust
+CODE:
+```
+#[derive(Debug, thiserror::Error)]
+enum Error {
+  #[error(transparent)]
+  Io(#[from] std::io::Error),
+  #[error("failed to parse as string: {0}")]
+  Utf8(#[from] std::str::Utf8Error),
+}
+
+#[derive(serde::Serialize)]
+#[serde(tag = "kind", content = "message")]
+#[serde(rename_all = "camelCase")]
+enum ErrorKind {
+  Io(String),
+  Utf8(String),
+}
+
+impl serde::Serialize for Error {
+  fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+  where
+    S: serde::ser::Serializer,
+  {
+    let error_message = self.to_string();
+    let error_kind = match self {
+      Self::Io(_) => ErrorKind::Io(error_message),
+      Self::Utf8(_) => ErrorKind::Utf8(error_message),
+    };
+    error_kind.serialize(serializer)
+  }
+}
+
+#[tauri::command]
+fn read() -> Result<Vec<u8>, Error> {
+  let data = std::fs::read("/path/to/file")?;
+	Ok(data)
+}
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+type ErrorKind = {
+  kind: 'io' | 'utf8';
+  message: string;
+};
+
+invoke('read').catch((e: ErrorKind) => {});
+```
+
+----------------------------------------
+
+TITLE: Simplified Tauri Core Default Permissions
+DESCRIPTION: Example of the new 'core:default' permission set. This simplifies configuration by including all default permissions for core plugins, reducing boilerplate in the capabilities configuration.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/blog/tauri-2-0-0-release-candidate.mdx#_snippet_3
+
+LANGUAGE: json
+CODE:
+```
+...
+"permissions": [
+    "core:default"
+]
+...
+```
+
+----------------------------------------
+
+TITLE: Initialize Tauri Updater Plugin in Rust Application
+DESCRIPTION: Modifies the `lib.rs` file to initialize and register the `tauri-plugin-updater` within the Tauri application setup, ensuring it's built for desktop environments.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/plugin/updater.mdx#_snippet_2
+
+LANGUAGE: rust
+CODE:
+```
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .setup(|app| {
+            #[cfg(desktop)]
+            app.handle().plugin(tauri_plugin_updater::Builder::new().build());
+            Ok(())
+        })
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+----------------------------------------
+
+TITLE: Initialize Tauri SQL Plugin in Rust Application
+DESCRIPTION: Rust code snippet demonstrating how to initialize the `tauri-plugin-sql` plugin within the `tauri::Builder` in `src-tauri/src/lib.rs`.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/plugin/sql.mdx#_snippet_2
+
+LANGUAGE: rust
+CODE:
+```
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_sql::Builder::default().build())
+        .run(tauri::generate_context!())
+        .expect("error while running tauri application");
+}
+```
+
+----------------------------------------
+
+TITLE: Tauri Core Webview Default Permissions
+DESCRIPTION: This section specifies the permissions that are automatically included when the `core:webview:default` permission is granted. These permissions provide access to fundamental webview operations such as retrieving all active webviews, and controlling their position, size, and developer tools.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/reference/acl/core-permissions.mdx#_snippet_14
+
+LANGUAGE: APIDOC
+CODE:
+```
+core:webview:default includes:
+- allow-get-all-webviews
+- allow-webview-position
+- allow-webview-size
+- allow-internal-toggle-devtools
+```
+
+----------------------------------------
+
+TITLE: Initialize Tauri Plugin in Rust Application
+DESCRIPTION: Rust code demonstrating how to initialize a custom Tauri plugin within the application's backend. It conditionally registers Android and iOS plugins based on the target operating system, allowing the Rust core to interact with native mobile functionalities provided by the respective platform-specific plugin implementations.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/blog/tauri-2-0-0-alpha-4.mdx#_snippet_4
+
+LANGUAGE: rust
+CODE:
+```
+use tauri::{
+  plugin::{Builder, TauriPlugin},
+  Manager, Runtime,
+};
+
+#[cfg(target_os = "ios")]
+tauri::ios_plugin_binding!(init_plugin_example);
+
+pub fn init<R: Runtime>() -> TauriPlugin<R> {
+  Builder::new("example")
+    .setup(|app, api| {
+      #[cfg(target_os = "android")]
+      api.register_android_plugin("com.plugin.example", "ExamplePlugin")?;
+      #[cfg(target_os = "ios")]
+      api.register_ios_plugin(init_plugin_example)?;
+      Ok(())
+    })
+    .build()
+}
+```
+
+----------------------------------------
+
+TITLE: Tauri Application Setup with Updater Plugin and Update Management
+DESCRIPTION: This Rust code snippet illustrates the core setup of a Tauri application, including the initialization of the `tauri_plugin_process` and `tauri_plugin_updater` plugins. It defines a `PendingUpdate` struct for managing update states and registers `fetch_update` and `install_update` as invoke handlers for desktop builds, demonstrating how to integrate update functionality into the application lifecycle.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/plugin/updater.mdx#_snippet_20
+
+LANGUAGE: Rust
+CODE:
+```
+                    started = true;
+                }
+
+                let _ = on_event.send(DownloadEvent::Progress { chunk_length });
+            },
+            || {
+                let _ = on_event.send(DownloadEvent::Finished);
+            },
+        )
+        .await?;
+
+    Ok(())
+}
+
+struct PendingUpdate(Mutex<Option<Update>>);
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    tauri::Builder::default()
+        .plugin(tauri_plugin_process::init())
+        .setup(|app| {
+            #[cfg(desktop)]
+            {
+                app.handle().plugin(tauri_plugin_updater::Builder::new().build());
+                app.manage(app_updates::PendingUpdate(Mutex::new(None)));
+            }
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![
+            #[cfg(desktop)]
+            app_updates::fetch_update,
+            #[cfg(desktop)]
+            app_updates::install_update
+        ])
+}
+```
+
+----------------------------------------
+
+TITLE: Register Multiple Tauri Commands in a Single Handler
+DESCRIPTION: Illustrates the correct way to register multiple Tauri commands in Rust. Commands must be passed as an array to a single `tauri::generate_handler!` macro call within the `invoke_handler` to ensure all commands are properly registered and available.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_22
+
+LANGUAGE: Rust
+CODE:
+```
+#[tauri::command]
+fn cmd_a() -> String {
+	"Command a"
+}
+#[tauri::command]
+fn cmd_b() -> String {
+	"Command b"
+}
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+	tauri::Builder::default()
+		.invoke_handler(tauri::generate_handler![cmd_a, cmd_b])
+		.run(tauri::generate_context!())
+		.expect("error while running tauri application");
+}
+```
+
+----------------------------------------
+
+TITLE: Execute Shell Command in Rust
+DESCRIPTION: Example demonstrating how to use `tauri_plugin_shell::ShellExt` to execute a shell command and process its output in Rust.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/plugin/shell.mdx#_snippet_5
+
+LANGUAGE: Rust
+CODE:
+```
+use tauri_plugin_shell::ShellExt;
+
+let shell = app_handle.shell();
+let output = tauri::async_runtime::block_on(async move {
+		shell
+				.command("echo")
+				.args(["Hello from Rust!"])
+				.output()
+				.await
+				.unwrap()
+});
+if output.status.success() {
+		println!("Result: {:?}", String::from_utf8(output.stdout));
+} else {
+		println!("Exit with code: {}", output.status.code().unwrap());
+}
+```
+
+----------------------------------------
+
+TITLE: Managing Mutable Application State with Rust Mutex in Tauri
+DESCRIPTION: Illustrates how to use `std::sync::Mutex` to wrap application state, enabling safe mutable access across threads in a Tauri application. The `Mutex` ensures data integrity by allowing only one thread to modify the state at a time.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/state-management.mdx#_snippet_2
+
+LANGUAGE: rust
+CODE:
+```
+use std::sync::Mutex;
+
+use tauri::{Builder, Manager};
+
+#[derive(Default)]
+struct AppState {
+  counter: u32,
+}
+
+fn main() {
+  Builder::default()
+    .setup(|app| {
+      app.manage(Mutex::new(AppState::default()));
+      Ok(())
+    })
+    .run(tauri::generate_context!())
+    .unwrap();
+}
+```
+
+----------------------------------------
+
+TITLE: Triggering Global Events in Rust
+DESCRIPTION: Demonstrates how to emit a global event from a Rust Tauri command using `AppHandle::emit`. This event is delivered to all registered listeners across all webviews. The example shows emitting 'download-started', 'download-progress', and 'download-finished' events with a URL and progress updates.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-frontend.mdx#_snippet_0
+
+LANGUAGE: Rust
+CODE:
+```
+use tauri::{AppHandle, Emitter};
+
+#[tauri::command]
+fn download(app: AppHandle, url: String) {
+  app.emit("download-started", &url).unwrap();
+  for progress in [1, 15, 50, 80, 100] {
+    app.emit("download-progress", progress).unwrap();
+  }
+  app.emit("download-finished", &url).unwrap();
+}
+```
+
+----------------------------------------
+
+TITLE: Access AppHandle Instance in Tauri Command
+DESCRIPTION: This Rust example demonstrates how to obtain and utilize the `AppHandle` instance within a Tauri command. The `AppHandle` provides access to global application functionalities, such as path resolution or managing global shortcuts, independent of a specific window.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/calling-rust.mdx#_snippet_19
+
+LANGUAGE: rust
+CODE:
+```
+#[tauri::command]
+async fn my_custom_command(app_handle: tauri::AppHandle) {
+	let app_dir = app_handle.path_resolver().app_dir();
+	use tauri::GlobalShortcutManager;
+	app_handle.global_shortcut_manager().register("CTRL + U", move || {});
+}
+```
+
+----------------------------------------
+
+TITLE: Read Resource File with plugin-fs in JavaScript
+DESCRIPTION: This JavaScript snippet demonstrates how to read a resource file bundled with the Tauri application. It uses `resolveResource` from `@tauri-apps/api/path` to get the absolute path to a resource and `readTextFile` from `@tauri-apps/plugin-fs` to read its content. The content is then parsed as JSON.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/resources.mdx#_snippet_7
+
+LANGUAGE: javascript
+CODE:
+```
+import { resolveResource } from '@tauri-apps/api/path';
+import { readTextFile } from '@tauri-apps/plugin-fs';
+
+const resourcePath = await resolveResource('lang/de.json');
+const langDe = JSON.parse(await readTextFile(resourcePath));
+console.log(langDe.hello); // This will print 'Guten Tag!' to the devtools console
+```
+
+----------------------------------------
+
+TITLE: Execute Tauri Sidecar with Arguments
+DESCRIPTION: These code snippets demonstrate how to execute a Tauri sidecar while passing arguments, as configured in the capabilities file. The Rust example uses `ShellExt` and `sidecar().args()` within an async command, while the JavaScript example passes an array of arguments directly to `Command.sidecar()`. Both examples show how to match the arguments defined in the `default.json` capabilities.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/develop/sidecar.mdx#_snippet_9
+
+LANGUAGE: rust
+CODE:
+```
+use tauri_plugin_shell::ShellExt;
+#[tauri::command]
+async fn call_my_sidecar(app: tauri::AppHandle) {
+  let sidecar_command = app
+    .shell()
+    .sidecar("my-sidecar")
+    .unwrap()
+    .args(["arg1", "-a", "--arg2", "any-string-that-matches-the-validator"]);
+  let (mut _rx, mut _child) = sidecar_command.spawn().unwrap();
+}
+```
+
+LANGUAGE: javascript
+CODE:
+```
+import { Command } from '@tauri-apps/plugin-shell';
+// notice that the args array matches EXACTLY what is specified in `capabilities/default.json`.
+const command = Command.sidecar('binaries/my-sidecar', [
+  'arg1',
+  '-a',
+  '--arg2',
+  'any-string-that-matches-the-validator',
+]);
+const output = await command.execute();
+```
+
+----------------------------------------
+
+TITLE: Configure Tauri Log Plugin for Webview Console
+DESCRIPTION: This snippet demonstrates how to configure the Tauri log plugin to output Rust logs directly to the webview's developer console. It includes both the Rust backend setup for enabling the Webview target and the JavaScript frontend code to attach and detach the console listener.
+SOURCE: https://github.com/tauri-apps/tauri-docs/blob/v2/src/content/docs/plugin/logging.mdx#_snippet_12
+
+LANGUAGE: Rust
+CODE:
+```
+tauri_plugin_log::Builder::new()
+  .target(tauri_plugin_log::Target::new(
+    tauri_plugin_log::TargetKind::Webview,
+  ))
+  .build()
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { attachConsole } from '@tauri-apps/plugin-log';
+const detach = await attachConsole();
+// call detach() if you do not want to print logs to the console anymore
+```

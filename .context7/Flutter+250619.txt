@@ -1,0 +1,1723 @@
+TITLE: Complete Flutter App: Asynchronous Data Loading and ListView Display
+DESCRIPTION: This comprehensive Flutter application showcases how to build a StatefulWidget that fetches data asynchronously from a REST API upon initialization (initState) and displays it in a ListView.builder. It integrates http for network requests and dart:convert for JSON parsing, ensuring a responsive UI.
+SOURCE: https://docs.flutter.dev/get-started/flutter-for/xamarin-forms-devs
+
+LANGUAGE: Dart
+CODE:
+```
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+void main() {
+  runApp(const SampleApp());
+}
+
+class SampleApp extends StatelessWidget {
+  const SampleApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(title: 'Sample App', home: SampleAppPage());
+  }
+}
+
+class SampleAppPage extends StatefulWidget {
+  const SampleAppPage({super.key});
+
+  @override
+  State<SampleAppPage> createState() => _SampleAppPageState();
+}
+
+class _SampleAppPageState extends State<SampleAppPage> {
+  List<Map<String, Object?>> data = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    final Uri dataURL = Uri.parse('https://jsonplaceholder.typicode.com/posts');
+    final http.Response response = await http.get(dataURL);
+    setState(() {
+      data = (jsonDecode(response.body) as List).cast<Map<String, Object?>>();
+    });
+  }
+
+  Widget getRow(int index) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Text('Row ${data[index]['title']}'),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Sample App')),
+      body: ListView.builder(
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          return getRow(index);
+        },
+      ),
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Offload JSON Parsing to Background Isolate with Flutter compute()
+DESCRIPTION: This Dart code demonstrates how to prevent UI jank by moving the expensive JSON parsing operation to a separate background isolate using Flutter's `compute()` function. The `fetchPhotos()` function is updated to call `compute(parsePhotos, response.body)`, ensuring that the parsing runs off the main thread and returns the result asynchronously.
+SOURCE: https://docs.flutter.dev/cookbook/networking/background-parsing
+
+LANGUAGE: dart
+CODE:
+```
+Future<List<Photo>> fetchPhotos(http.Client client) async {
+  final response = await client.get(
+    Uri.parse('https://jsonplaceholder.typicode.com/photos'),
+  );
+
+  // Use the compute function to run parsePhotos in a separate isolate.
+  return compute(parsePhotos, response.body);
+}
+```
+
+----------------------------------------
+
+TITLE: Accessing State: Passing Callback to Child Widget
+DESCRIPTION: Shows a simple method of accessing state from a child widget by passing a callback function from the parent. This allows the child to notify the parent of events, such as a user tap.
+SOURCE: https://docs.flutter.dev/data-and-backend/state-mgmt/simple
+
+LANGUAGE: dart
+CODE:
+```
+@override
+Widget build(BuildContext context) {
+  return SomeWidget(
+    // Construct the widget, passing it a reference to the method above.
+    MyListItem(myTapCallback),
+  );
+}
+
+void myTapCallback(Item item) {
+  print('user tapped on $item');
+}
+```
+
+----------------------------------------
+
+TITLE: Define a CartModel using ChangeNotifier in Flutter
+DESCRIPTION: This Dart code defines a `CartModel` class that extends `ChangeNotifier` to manage a shopping cart's state. It includes methods for adding and removing items, and a getter for the total price. The `notifyListeners()` method is called to alert UI widgets of state changes.
+SOURCE: https://docs.flutter.dev/data-and-backend/state-mgmt/simple
+
+LANGUAGE: dart
+CODE:
+```
+class CartModel extends ChangeNotifier {
+  /// Internal, private state of the cart.
+  final List<Item> _items = [];
+
+  /// An unmodifiable view of the items in the cart.
+  UnmodifiableListView<Item> get items => UnmodifiableListView(_items);
+
+  /// The current total price of all items (assuming all items cost $42).
+  int get totalPrice => _items.length * 42;
+
+  /// Adds [item] to cart. This and [removeAll] are the only ways to modify the
+  /// cart from the outside.
+  void add(Item item) {
+    _items.add(item);
+    // This call tells the widgets that are listening to this model to rebuild.
+    notifyListeners();
+  }
+
+  /// Removes all items from the cart.
+  void removeAll() {
+    _items.clear();
+    // This call tells the widgets that are listening to this model to rebuild.
+    notifyListeners();
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Fetch Album Data from API and Parse Response in Dart
+DESCRIPTION: Updates the `fetchAlbum()` function to make an HTTP GET request to a specified URL. It parses the JSON response into an `Album` object if the server returns a 200 OK status code; otherwise, it throws an `Exception` indicating a failure to load the album.
+SOURCE: https://docs.flutter.dev/cookbook/networking/fetch-data
+
+LANGUAGE: Dart
+CODE:
+```
+Future<Album> fetchAlbum() async {
+  final response = await http.get(
+    Uri.parse('https://jsonplaceholder.typicode.com/albums/1'),
+  );
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then parse the JSON.
+    return Album.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to load album');
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Complete Flutter Navigation Example
+DESCRIPTION: A comprehensive example showcasing full navigation flow in Flutter, including app setup, defining FirstRoute and SecondRoute widgets, and implementing navigation forward with Navigator.push() and backward with Navigator.pop(). It provides distinct implementations for Material Design and Cupertino styles.
+SOURCE: https://docs.flutter.dev/cookbook/navigation/navigation-basics
+
+LANGUAGE: dart
+CODE:
+```
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MaterialApp(title: 'Navigation Basics', home: FirstRoute()));
+}
+
+class FirstRoute extends StatelessWidget {
+  const FirstRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('First Route')),
+      body: Center(
+        child: ElevatedButton(
+          child: const Text('Open route'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SecondRoute()),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class SecondRoute extends StatelessWidget {
+  const SecondRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Second Route')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Go back!'),
+        ),
+      ),
+    );
+  }
+}
+```
+
+LANGUAGE: dart
+CODE:
+```
+import 'package:flutter/cupertino.dart';
+
+void main() {
+  runApp(const CupertinoApp(title: 'Navigation Basics', home: FirstRoute()));
+}
+
+class FirstRoute extends StatelessWidget {
+  const FirstRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(middle: Text('First Route')),
+      child: Center(
+        child: CupertinoButton(
+          child: const Text('Open route'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(builder: (context) => const SecondRoute()),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class SecondRoute extends StatelessWidget {
+  const SecondRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(middle: Text('Second Route')),
+      child: Center(
+        child: CupertinoButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Go back!'),
+        ),
+      ),
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Flutter Widget Hierarchy Example
+DESCRIPTION: This Dart code fragment demonstrates a typical Flutter widget hierarchy, showing how Container, Row, Image.network, and Text widgets are nested to compose a UI. It serves as an example of the initial widget structure before Flutter's build process expands it.
+SOURCE: https://docs.flutter.dev/resources/architectural-overview
+
+LANGUAGE: dart
+CODE:
+```
+Container(
+  color: Colors.blue,
+  child: Row(
+    children: [
+      Image.network('https://www.example.com/1.png'),
+      const Text('A'),
+    ],
+  ),
+);
+```
+
+----------------------------------------
+
+TITLE: Flutter Sample App: Network Data Fetching with Progress Indicator
+DESCRIPTION: A comprehensive Flutter example demonstrating a full application flow: fetching data from a remote API, displaying a `CircularProgressIndicator` while data loads, and then rendering the fetched data in a `ListView`.
+SOURCE: https://docs.flutter.dev/get-started/flutter-for/xamarin-forms-devs
+
+LANGUAGE: dart
+CODE:
+```
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+void main() {
+  runApp(const SampleApp());
+}
+
+class SampleApp extends StatelessWidget {
+  const SampleApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(title: 'Sample App', home: SampleAppPage());
+  }
+}
+
+class SampleAppPage extends StatefulWidget {
+  const SampleAppPage({super.key});
+
+  @override
+  State<SampleAppPage> createState() => _SampleAppPageState();
+}
+
+class _SampleAppPageState extends State<SampleAppPage> {
+  List<Map<String, Object?>> data = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  bool get showLoadingDialog => data.isEmpty;
+
+  Future<void> loadData() async {
+    final Uri dataURL = Uri.parse('https://jsonplaceholder.typicode.com/posts');
+    final http.Response response = await http.get(dataURL);
+    setState(() {
+      data = (jsonDecode(response.body) as List).cast<Map<String, Object?>>();
+    });
+  }
+
+  Widget getBody() {
+    if (showLoadingDialog) {
+      return getProgressDialog();
+    }
+    return getListView();
+  }
+
+  Widget getProgressDialog() {
+    return const Center(child: CircularProgressIndicator());
+  }
+
+  ListView getListView() {
+    return ListView.builder(
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        return getRow(index);
+      },
+    );
+  }
+
+  Widget getRow(int index) {
+    return Padding(
+      padding: const EdgeInsets.all(10),
+      child: Text('Row ${data[index]['title']}'),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Sample App')),
+      body: getBody(),
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Flutter Example: Retrieve Text Input from TextField
+DESCRIPTION: This Flutter code snippet demonstrates a complete application that retrieves text input from a TextField using a TextEditingController. When the floating action button is pressed, the current text from the TextField is displayed in an AlertDialog. It also shows proper disposal of the controller.
+SOURCE: https://docs.flutter.dev/cookbook/forms/retrieve-input
+
+LANGUAGE: Dart
+CODE:
+```
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'Retrieve Text Input',
+      home: MyCustomForm(),
+    );
+  }
+}
+
+// Define a custom Form widget.
+class MyCustomForm extends StatefulWidget {
+  const MyCustomForm({super.key});
+
+  @override
+  State<MyCustomForm> createState() => _MyCustomFormState();
+}
+
+// Define a corresponding State class.
+// This class holds the data related to the Form.
+class _MyCustomFormState extends State<MyCustomForm> {
+  // Create a text controller and use it to retrieve the current value
+  // of the TextField.
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Retrieve Text Input')),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: TextField(controller: myController),
+      ),
+      floatingActionButton: FloatingActionButton(
+        // When the user presses the button, show an alert dialog containing
+        // the text that the user has entered into the text field.
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                // Retrieve the text the that user has entered by using the
+                // TextEditingController.
+                content: Text(myController.text),
+              );
+            },
+          );
+        },
+        tooltip: 'Show me the value!',
+        child: const Icon(Icons.text_fields),
+      ),
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Offload computation with Isolate.run() in Dart
+DESCRIPTION: This Dart example shows how to use Isolate.run() (available since Dart 2.19) to offload a potentially long-running computation, such as JSON decoding, to a separate isolate. This prevents the main thread from being blocked, allowing the UI to remain responsive while data is processed asynchronously.
+SOURCE: https://docs.flutter.dev/get-started/flutter-for/dart-swift-concurrency
+
+LANGUAGE: dart
+CODE:
+```
+void main() async {
+  // Read some data.
+  final jsonData = await Isolate.run(() => jsonDecode(jsonString) as Map<String, dynamic>);
+
+  // Use that data.
+  print('Number of JSON keys: ${jsonData.length}');
+}
+```
+
+----------------------------------------
+
+TITLE: Implement User Text Input in Flutter with TextField
+DESCRIPTION: The `TextField` widget provides a text box for users to enter text using a keyboard. It offers extensive configuration options, including `InputDecoration` for appearance, `TextEditingController` for programmatic control, `onChanged` for real-time updates, and `onSubmitted` for handling completion. This snippet demonstrates a basic `TextField` with a controller and a label.
+SOURCE: https://docs.flutter.dev/get-started/fundamentals/user-input
+
+LANGUAGE: dart
+CODE:
+```
+final TextEditingController _controller = TextEditingController();
+
+@override
+Widget build(BuildContext context) {
+  return TextField(
+    controller: _controller,
+    decoration: const InputDecoration(
+      border: OutlineInputBorder(),
+      labelText: 'Mascot Name',
+    ),
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Basic Flutter Material App Structure
+DESCRIPTION: This Flutter code demonstrates the fundamental structure of a Material Design application. It initializes the app with `MaterialApp`, defines a `TutorialHome` StatelessWidget that uses `Scaffold` for its main layout, including an `AppBar`, a centered body, and a `FloatingActionButton`. This example illustrates how to integrate common Material Components.
+SOURCE: https://docs.flutter.dev/ui
+
+LANGUAGE: Dart
+CODE:
+```
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MaterialApp(title: 'Flutter Tutorial', home: TutorialHome()));
+}
+
+class TutorialHome extends StatelessWidget {
+  const TutorialHome({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Scaffold is a layout for
+    // the major Material Components.
+    return Scaffold(
+      appBar: AppBar(
+        leading: const IconButton(
+          icon: Icon(Icons.menu),
+          tooltip: 'Navigation menu',
+          onPressed: null,
+        ),
+        title: const Text('Example title'),
+        actions: const [
+          IconButton(
+            icon: Icon(Icons.search),
+            tooltip: 'Search',
+            onPressed: null,
+          ),
+        ],
+      ),
+      // body is the majority of the screen.
+      body: const Center(child: Text('Hello, world!')),
+      floatingActionButton: const FloatingActionButton(
+        tooltip: 'Add', // used by assistive technologies
+        onPressed: null,
+        child: Icon(Icons.add),
+      ),
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Implement Custom Recipe Response Widget in Flutter
+DESCRIPTION: This Dart code defines `RecipeResponseView`, a StatelessWidget that processes an LLM's JSON response. It parses the response to extract introductory text and recipe details, then dynamically builds a UI including recipe title, description, content, and an 'Add Recipe' button. It includes error handling for JSON parsing.
+SOURCE: https://docs.flutter.dev/ai-toolkit/feature-integration
+
+LANGUAGE: dart
+CODE:
+```
+class RecipeResponseView extends StatelessWidget {
+  const RecipeResponseView(this.response, {super.key});
+  final String response;
+
+  @override
+  Widget build(BuildContext context) {
+    final children = <Widget>[];
+    String? finalText;
+
+    // created with the response from the LLM as the response streams in, so
+    // many not be a complete response yet
+    try {
+      final map = jsonDecode(response);
+      final recipesWithText = map['recipes'] as List<dynamic>;
+      finalText = map['text'] as String?;
+
+      for (final recipeWithText in recipesWithText) {
+        // extract the text before the recipe
+        final text = recipeWithText['text'] as String?;
+        if (text != null && text.isNotEmpty) {
+          children.add(MarkdownBody(data: text));
+        }
+
+        // extract the recipe
+        final json = recipeWithText['recipe'] as Map<String, dynamic>;
+        final recipe = Recipe.fromJson(json);
+        children.add(const Gap(16));
+        children.add(Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(recipe.title, style: Theme.of(context).textTheme.titleLarge),
+            Text(recipe.description),
+            RecipeContentView(recipe: recipe),
+          ],
+        ));
+
+        // add a button to add the recipe to the list
+        children.add(const Gap(16));
+        children.add(OutlinedButton(
+          onPressed: () => RecipeRepository.addNewRecipe(recipe),
+          child: const Text('Add Recipe'),
+        ));
+        children.add(const Gap(16));
+      }
+    } catch (e) {
+      debugPrint('Error parsing response: $e');
+    }
+
+    ...
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Dart Program to Fetch and Decode JSON
+DESCRIPTION: This Dart example demonstrates fetching data from a URL using the `http` package, decoding the JSON response, and modeling it with a custom `Package` class. It showcases basic network operations, JSON parsing, and class usage in Dart.
+SOURCE: https://docs.flutter.dev/get-started/fundamentals/dart
+
+LANGUAGE: Dart
+CODE:
+```
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
+class Package {
+  final String name;
+  final String latestVersion;
+  final String? description;
+
+  Package(this.name, this.latestVersion, {this.description});
+
+  @override
+  String toString() {
+    return 'Package{name: $name, latestVersion: $latestVersion, description: $description}';
+  }
+}
+
+void main() async {
+  final httpPackageUrl = Uri.https('dart.dev', '/f/packages/http.json');
+  final httpPackageResponse = await http.get(httpPackageUrl);
+  if (httpPackageResponse.statusCode != 200) {
+    print('Failed to retrieve the http package!');
+    return;
+  }
+  final json = jsonDecode(httpPackageResponse.body);
+  final package = Package(
+    json['name'],
+    json['latestVersion'],
+    description: json['description'],
+  );
+  print(package);
+}
+```
+
+----------------------------------------
+
+TITLE: Defining a Basic Flutter StatelessWidget
+DESCRIPTION: This Dart code snippet provides the foundational structure for defining a `StatelessWidget` in Flutter. It includes the necessary `material.dart` import, a `main` function to run the application with an instance of `MyStatelessWidget`, and the beginning of the `MyStatelessWidget` class definition, which extends `StatelessWidget` for immutable UI components.
+SOURCE: https://docs.flutter.dev/get-started/flutter-for/react-native-devs
+
+LANGUAGE: dart
+CODE:
+```
+import 'package:flutter/material.dart';
+
+void main() => runApp(
+  const MyStatelessWidget(
+    text: 'StatelessWidget Example to show immutable data',
+  ),
+);
+
+class MyStatelessWidget extends StatelessWidget {
+```
+
+----------------------------------------
+
+TITLE: Full Flutter App: Dismissing Items with Interactive Example
+DESCRIPTION: This complete Flutter application demonstrates the full implementation of swipe-to-dismiss functionality. It uses a `StatefulWidget` to manage a list of items, `ListView.builder` to display them, and `Dismissible` widgets for each item. The example includes removing items from the data source, showing a `SnackBar` on dismissal, and providing a red background as a visual 'leave behind' indicator.
+SOURCE: https://docs.flutter.dev/cookbook/gestures/dismissible
+
+LANGUAGE: Dart
+CODE:
+```
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+// MyApp is a StatefulWidget. This allows updating the state of the
+// widget when an item is removed.
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  MyAppState createState() {
+    return MyAppState();
+  }
+}
+
+class MyAppState extends State<MyApp> {
+  final items = List<String>.generate(20, (i) => 'Item ${i + 1}');
+
+  @override
+  Widget build(BuildContext context) {
+    const title = 'Dismissing Items';
+
+    return MaterialApp(
+      title: title,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+      home: Scaffold(
+        appBar: AppBar(title: const Text(title)),
+        body: ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            final item = items[index];
+            return Dismissible(
+              // Each Dismissible must contain a Key. Keys allow Flutter to
+              // uniquely identify widgets.
+              key: Key(item),
+              // Provide a function that tells the app
+              // what to do after an item has been swiped away.
+              onDismissed: (direction) {
+                // Remove the item from the data source.
+                setState(() {
+                  items.removeAt(index);
+                });
+
+                // Then show a snackbar.
+                ScaffoldMessenger.of(
+                  context,
+                ).showSnackBar(SnackBar(content: Text('$item dismissed')));
+              },
+              // Show a red background as the item is swiped away.
+              background: Container(color: Colors.red),
+              child: ListTile(title: Text(item)),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Dynamically updating UI with StatefulWidget in Flutter
+DESCRIPTION: This example illustrates how to use a StatefulWidget to dynamically change UI elements based on user interaction. It shows how to wrap a Text widget in a StatefulWidget, manage its state using the State object, and trigger UI updates with setState() when a FloatingActionButton is pressed.
+SOURCE: https://docs.flutter.dev/get-started/flutter-for/android-devs
+
+LANGUAGE: dart
+CODE:
+```
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const SampleApp());
+}
+
+class SampleApp extends StatelessWidget {
+  const SampleApp({super.key});
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sample App',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+      home: const SampleAppPage(),
+    );
+  }
+}
+
+class SampleAppPage extends StatefulWidget {
+  const SampleAppPage({super.key});
+
+  @override
+  State<SampleAppPage> createState() => _SampleAppPageState();
+}
+
+class _SampleAppPageState extends State<SampleAppPage> {
+  // Default placeholder text.
+  String textToShow = 'I Like Flutter';
+
+  void _updateText() {
+    setState(() {
+      // Update the text.
+      textToShow = 'Flutter is Awesome!';
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Sample App')),
+      body: Center(child: Text(textToShow)),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _updateText,
+        tooltip: 'Update Text',
+        child: const Icon(Icons.update),
+      ),
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Create a new Flutter project with web support
+DESCRIPTION: Use the `flutter create` command to initialize a new Flutter application. By default, this command creates a project with support for all available platforms, including web.
+SOURCE: https://docs.flutter.dev/platform-integration/web/building
+
+LANGUAGE: Shell
+CODE:
+```
+flutter create my_app
+```
+
+----------------------------------------
+
+TITLE: Write Flutter Integration Test for Counter App
+DESCRIPTION: This Dart code snippet demonstrates how to write an integration test for a Flutter counter application. It initializes the `IntegrationTestWidgetsFlutterBinding`, loads the app widget, verifies initial state, simulates a tap on a floating action button, and asserts the counter increment. The test file should be placed in `integration_test/app_test.dart` and import your app's `main.dart`.
+SOURCE: https://docs.flutter.dev/testing/integration-tests
+
+LANGUAGE: Dart
+CODE:
+```
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:how_to/main.dart';
+import 'package:integration_test/integration_test';
+
+void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  group('end-to-end test', () {
+    testWidgets('tap on the floating action button, verify counter', (
+      tester,
+    ) async {
+      // Load app widget.
+      await tester.pumpWidget(const MyApp());
+
+      // Verify the counter starts at 0.
+      expect(find.text('0'), findsOneWidget);
+
+      // Finds the floating action button to tap on.
+      final fab = find.byKey(const ValueKey('increment'));
+
+      // Emulate a tap on the floating action button.
+      await tester.tap(fab);
+
+      // Trigger a frame.
+      await tester.pumpAndSettle();
+
+      // Verify the counter increments by 1.
+      expect(find.text('1'), findsOneWidget);
+    });
+  });
+}
+```
+
+----------------------------------------
+
+TITLE: Default Flutter App `main` Entrypoint
+DESCRIPTION: Illustrates the standard `main` function in a Flutter application's `lib/main.dart` file. This function is the primary entry point, responsible for initializing and running the Flutter widget tree via `runApp()`.
+SOURCE: https://docs.flutter.dev/get-started/fundamentals/dart
+
+LANGUAGE: Dart
+CODE:
+```
+void main() {
+  runApp(const MyApp());
+}
+```
+
+----------------------------------------
+
+TITLE: Flutter: Create Data with HTTP POST and Display Response
+DESCRIPTION: This snippet demonstrates a complete Flutter application that sends data (an album title) to a REST API using an HTTP POST request. It defines an 'Album' model, a 'createAlbum' function for the network call, and a 'StatefulWidget' ('MyApp') that manages user input, triggers the API call, and displays the response or an error.
+SOURCE: https://docs.flutter.dev/cookbook/networking/send-data
+
+LANGUAGE: dart
+CODE:
+```
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+Future<Album> createAlbum(String title) async {
+  final response = await http.post(
+    Uri.parse('https://jsonplaceholder.typicode.com/albums'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, String>{'title': title}),
+  );
+
+  if (response.statusCode == 201) {
+    // If the server did return a 201 CREATED response,
+    // then parse the JSON.
+    return Album.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+  } else {
+    // If the server did not return a 201 CREATED response,
+    // then throw an exception.
+    throw Exception('Failed to create album.');
+  }
+}
+
+class Album {
+  final int id;
+  final String title;
+
+  const Album({required this.id, required this.title});
+
+  factory Album.fromJson(Map<String, dynamic> json) {
+    return switch (json) {
+      {'id': int id, 'title': String title} => Album(id: id, title: title),
+      _ => throw const FormatException('Failed to load album.'),
+    };
+  }
+}
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() {
+    return _MyAppState();
+  }
+}
+
+class _MyAppState extends State<MyApp> {
+  final TextEditingController _controller = TextEditingController();
+  Future<Album>? _futureAlbum;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Create Data Example',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Create Data Example')),
+        body: Container(
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(8),
+          child: (_futureAlbum == null) ? buildColumn() : buildFutureBuilder(),
+        ),
+      ),
+    );
+  }
+
+  Column buildColumn() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        TextField(
+          controller: _controller,
+          decoration: const InputDecoration(hintText: 'Enter Title'),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              _futureAlbum = createAlbum(_controller.text);
+            });
+          },
+          child: const Text('Create Data'),
+        ),
+      ],
+    );
+  }
+
+  FutureBuilder<Album> buildFutureBuilder() {
+    return FutureBuilder<Album>(
+      future: _futureAlbum,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Text(snapshot.data!.title);
+        } else if (snapshot.hasError) {
+          return Text('${snapshot.error}');
+        }
+
+        return const CircularProgressIndicator();
+      },
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Create two basic Flutter routes
+DESCRIPTION: This section demonstrates how to create two simple routes (screens) in Flutter. Each route is a StatelessWidget containing an AppBar (or CupertinoNavigationBar) and a centered ElevatedButton (or CupertinoButton). The first route's button is intended to navigate to the second, and the second route's button is for returning to the first. Separate implementations are provided for Material Design (Android) and Cupertino (iOS) styles.
+SOURCE: https://docs.flutter.dev/cookbook/navigation/navigation-basics
+
+LANGUAGE: dart
+CODE:
+```
+class FirstRoute extends StatelessWidget {
+  const FirstRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('First Route')),
+      body: Center(
+        child: ElevatedButton(
+          child: const Text('Open route'),
+          onPressed: () {
+            // Navigate to second route when tapped.
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class SecondRoute extends StatelessWidget {
+  const SecondRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Second Route')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            // Navigate back to first route when tapped.
+          },
+          child: const Text('Go back!'),
+        ),
+      ),
+    );
+  }
+}
+```
+
+LANGUAGE: dart
+CODE:
+```
+class FirstRoute extends StatelessWidget {
+  const FirstRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(middle: Text('First Route')),
+      child: Center(
+        child: CupertinoButton(
+          child: const Text('Open route'),
+          onPressed: () {
+            // Navigate to second route when tapped.
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class SecondRoute extends StatelessWidget {
+  const SecondRoute({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(middle: Text('Second Route')),
+      child: Center(
+        child: CupertinoButton(
+          onPressed: () {
+            // Navigate back to first route when tapped.
+          },
+          child: const Text('Go back!'),
+        ),
+      ),
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Create Basic Flutter App Structure
+DESCRIPTION: This snippet provides the foundational code for a Flutter application, including the `main` function, `MyApp` StatelessWidget, `MaterialApp`, `Scaffold`, and `AppBar`. It sets up a basic 'Hello World' display and demonstrates how to use a parameter for the app title, simplifying the code.
+SOURCE: https://docs.flutter.dev/ui/layout/tutorial
+
+LANGUAGE: Dart
+CODE:
+```
+import 'package:flutter/material.dart';
+
+void main() => runApp(const MyApp());
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const String appTitle = 'Flutter layout demo';
+    return MaterialApp(
+      title: appTitle,
+      home: Scaffold(
+        appBar: AppBar(title: const Text(appTitle)),
+        body: const Center(
+          child: Text('Hello World'),
+        ),
+      ),
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Add Click/Press Listener to Widgets in Flutter
+DESCRIPTION: This Flutter snippet illustrates the basic structure for adding interaction to widgets. It highlights that click or press listeners can be added using widgets with an `onPress` field (like buttons) or by wrapping any widget with a `GestureDetector` for more advanced gesture recognition.
+SOURCE: https://docs.flutter.dev/get-started/flutter-for/react-native-devs
+
+LANGUAGE: Dart
+CODE:
+```
+@override
+Widget build(BuildContext context) {
+```
+
+----------------------------------------
+
+TITLE: Update UI with ListenableBuilder and ChangeNotifier in Flutter
+DESCRIPTION: This example demonstrates how to use ListenableBuilder to reactively update a part of the UI based on changes in a ChangeNotifier. The builder function automatically rebuilds whenever counterNotifier.notifyListeners() is called, ensuring the displayed count is always current.
+SOURCE: https://docs.flutter.dev/get-started/fundamentals/state-management
+
+LANGUAGE: dart
+CODE:
+```
+Column(
+  children: [
+    ListenableBuilder(
+      listenable: counterNotifier,
+      builder: (context, child) {
+        return Text('counter: ${counterNotifier.count}');
+      },
+    ),
+    TextButton(
+      child: Text('Increment'),
+      onPressed: () {
+        counterNotifier.increment();
+      },
+    ),
+  ],
+)
+```
+
+----------------------------------------
+
+TITLE: Flutter CLI: Create, Analyze, Test, and Run an App
+DESCRIPTION: Demonstrates the typical workflow for using the `flutter` tool to initialize a new application, navigate into its directory, analyze its code for potential issues, run tests, and finally execute the application.
+SOURCE: https://docs.flutter.dev/reference/flutter-cli
+
+LANGUAGE: Bash
+CODE:
+```
+flutter create my_app
+cd my_app
+flutter analyze
+flutter test
+flutter run lib/main.dart
+```
+
+----------------------------------------
+
+TITLE: Flutter Widget.build Method API Reference
+DESCRIPTION: The `build()` method describes the part of the user interface represented by this widget. It is called by the framework when the widget is inserted into the tree, when its dependencies change, or when `setState` is called. It should return a widget tree that represents the current state.
+SOURCE: https://docs.flutter.dev/ui
+
+LANGUAGE: APIDOC
+CODE:
+```
+Widget.build(context: BuildContext): Widget
+  context: The `BuildContext` for the widget, providing access to the widget tree location.
+```
+
+----------------------------------------
+
+TITLE: Understanding Flutter Hot Reload vs. Hot Restart Mechanics
+DESCRIPTION: Differentiate between Flutter's hot reload and hot restart functionalities. Hot reload injects code changes into the running Dart VM, while hot restart is required for changes to global variable initializers, static field initializers, or the main() method. Learn how to trigger a hot restart without ending your debugging session.
+SOURCE: https://docs.flutter.dev/tools/android-studio
+
+LANGUAGE: Flutter
+CODE:
+```
+Hot reload:
+- Injects updated source code files into the running Dart VM.
+- Supports adding new classes, methods, fields, and changing existing functions.
+- Limitations: Cannot hot reload global variable initializers, static field initializers, or the main() method.
+
+Hot restart:
+- Fully restarts the application without ending the debugging session.
+- Required for changes that cannot be hot reloaded.
+- How to perform: Re-click Run/Debug button, or shift-click the 'hot reload' button.
+```
+
+----------------------------------------
+
+TITLE: Recommended Flutter Project Directory Structure
+DESCRIPTION: This snippet illustrates the recommended package structure for a Flutter application, organizing code into `lib`, `test`, and `testing` folders. It details the subdirectories within `lib` for `ui` (feature-based), `domain` (models), and `data` (repositories, services, API models), along with `config`, `utils`, `routing`, and main entry points. It also shows the structure for `test` (unit/widget tests) and `testing` (mocks/utilities).
+SOURCE: https://docs.flutter.dev/app-architecture/case-study
+
+LANGUAGE: Project Structure
+CODE:
+```
+lib
+├─┬─ ui
+│ ├─┬─ core
+│ │ ├─┬─ ui
+│ │ │ └─── <shared widgets>
+│ │ └─── themes
+│ └─┬─ <FEATURE NAME>
+│   ├─┬─ view_model
+│   │ └─── <view_model class>.dart
+│   └─┬─ widgets
+│     ├── <feature name>_screen.dart
+│     └── <other widgets>
+├─┬─ domain
+│ └─┬─ models
+│   └─── <model name>.dart
+├─┬─ data
+│ ├─┬─ repositories
+│ │ └─── <repository class>.dart
+│ ├─┬─ services
+│ │ └─── <service class>.dart
+│ └─┬─ model
+│   └─── <api model class>.dart
+├─── config
+├─── utils
+├─── routing
+├─── main_staging.dart
+├─── main_development.dart
+└─── main.dart
+
+// The test folder contains unit and widget tests
+test
+├─── data
+├─── domain
+├─── ui
+└─── utils
+
+// The testing folder contains mocks other classes need to execute tests
+testing
+├─── fakes
+└─── models
+```
+
+----------------------------------------
+
+TITLE: Flutter: Calling showDialog in build method (Problematic)
+DESCRIPTION: This snippet demonstrates a common anti-pattern in Flutter where `showDialog` is called directly within the `build` method. This indirectly triggers `setState` during the build phase, leading to the 'setState() or markNeedsBuild() called during build' error. This approach is problematic because the `build` method can be invoked frequently by the framework.
+SOURCE: https://docs.flutter.dev/testing/common-errors
+
+LANGUAGE: dart
+CODE:
+```
+Widget build(BuildContext context) {
+  // Don't do this.
+  showDialog(
+    context: context,
+    builder: (context) {
+      return const AlertDialog(title: Text('Alert Dialog'));
+    },
+  );
+
+  return const Center(
+    child: Column(children: <Widget>[Text('Show Material Dialog')]),
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Pushing a new screen onto the Navigator stack
+DESCRIPTION: This Dart code snippet demonstrates how to navigate to a new screen using Navigator.of(context).push(). It utilizes MaterialPageRoute to define the new screen (SecondScreen) and handles the platform-specific transition animations, effectively adding the new screen to the navigation history stack.
+SOURCE: https://docs.flutter.dev/ui/navigation
+
+LANGUAGE: dart
+CODE:
+```
+child: const Text('Open second screen'),
+onPressed: () {
+  Navigator.of(context).push(
+    MaterialPageRoute(builder: (context) => const SecondScreen()),
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Create a Scaffold for a Flutter Material App
+DESCRIPTION: This snippet demonstrates how to set up a basic Flutter application with a `MaterialApp` and a `Scaffold`. The `Scaffold` widget provides the fundamental visual structure for Material Design apps, ensuring elements like `SnackBar` are positioned correctly without overlapping other widgets.
+SOURCE: https://docs.flutter.dev/cookbook/design/snackbars
+
+LANGUAGE: dart
+CODE:
+```
+return MaterialApp(
+  title: 'SnackBar Demo',
+  home: Scaffold(
+    appBar: AppBar(title: const Text('SnackBar Demo')),
+    body: const SnackBarPage(),
+  ),
+);
+```
+
+----------------------------------------
+
+TITLE: Flutter StatelessWidget: Building UI
+DESCRIPTION: Explains how StatelessWidget defines its UI by overriding the build() method, which returns a new element tree representing the widget's part of the user interface. Emphasizes that build functions should be free of side effects and return quickly.
+SOURCE: https://docs.flutter.dev/resources/architectural-overview
+
+LANGUAGE: APIDOC
+CODE:
+```
+Class: StatelessWidget
+  Description: A widget that has no mutable state; its properties do not change over time.
+  Methods:
+    build(BuildContext context):
+      Description: Determines the visual representation of the widget by returning a new element tree.
+      Parameters:
+        context: The BuildContext for the widget.
+      Return Type: Widget
+      Constraints: Should be free of side effects and return quickly.
+```
+
+----------------------------------------
+
+TITLE: Complete Flutter HTTP GET and DELETE Example with FutureBuilder
+DESCRIPTION: This comprehensive Flutter example demonstrates how to perform asynchronous HTTP GET and DELETE requests using the `http` package. It includes data model definition, JSON parsing, error handling, and integrates network operations with the UI using `FutureBuilder` to display fetched data and trigger deletion.
+SOURCE: https://docs.flutter.dev/cookbook/networking/delete-data
+
+LANGUAGE: dart
+CODE:
+```
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+Future<Album> fetchAlbum() async {
+  final response = await http.get(
+    Uri.parse('https://jsonplaceholder.typicode.com/albums/1'),
+  );
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response, then parse the JSON.
+    return Album.fromJson(jsonDecode(response.body) as Map<String, dynamic>);
+  } else {
+    // If the server did not return a 200 OK response, then throw an exception.
+    throw Exception('Failed to load album');
+  }
+}
+
+Future<Album> deleteAlbum(String id) async {
+  final http.Response response = await http.delete(
+    Uri.parse('https://jsonplaceholder.typicode.com/albums/$id'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    // If the server did return a 200 OK response,
+    // then return an empty Album. After deleting,
+    // you'll get an empty JSON `{}` response.
+    // Don't return `null`, otherwise `snapshot.hasData`
+    // will always return false on `FutureBuilder`.
+    return Album.empty();
+  } else {
+    // If the server did not return a "200 OK response",
+    // then throw an exception.
+    throw Exception('Failed to delete album.');
+  }
+}
+
+class Album {
+  int? id;
+  String? title;
+
+  Album({this.id, this.title});
+
+  Album.empty();
+
+  factory Album.fromJson(Map<String, dynamic> json) {
+    return switch (json) {
+      {'id': int id, 'title': String title} => Album(id: id, title: title),
+      _ => throw const FormatException('Failed to load album.'),
+    };
+  }
+}
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() {
+    return _MyAppState();
+  }
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future<Album> _futureAlbum;
+
+  @override
+  void initState() {
+    super.initState();
+    _futureAlbum = fetchAlbum();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Delete Data Example',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Delete Data Example')),
+        body: Center(
+          child: FutureBuilder<Album>(
+            future: _futureAlbum,
+            builder: (context, snapshot) {
+              // If the connection is done,
+              // check for response data or an error.
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasData) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(snapshot.data?.title ?? 'Deleted'),
+                      ElevatedButton(
+                        child: const Text('Delete Data'),
+                        onPressed: () {
+                          setState(() {
+                            _futureAlbum = deleteAlbum(
+                              snapshot.data!.id.toString(),
+                            );
+                          });
+                        },
+                      ),
+                    ],
+                  );
+                } else if (snapshot.hasError) {
+                  return Text('${snapshot.error}');
+                }
+              }
+
+              // By default, show a loading spinner.
+              return const CircularProgressIndicator();
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Implement exit confirmation for Flutter app bar back button
+DESCRIPTION: This snippet shows how to prompt the user for confirmation before exiting a setup flow, especially when the back arrow in the app bar or the device's hardware back button is pressed. It uses `PopScope` and an `AlertDialog` to prevent accidental loss of progress.
+SOURCE: https://docs.flutter.dev/cookbook/effects/nested-nav
+
+LANGUAGE: dart
+CODE:
+```
+Future<void> _onExitPressed() async {
+  final isConfirmed = await _isExitDesired();
+
+  if (isConfirmed && mounted) {
+    _exitSetup();
+  }
+}
+
+Future<bool> _isExitDesired() async {
+  return await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Are you sure?'),
+            content: const Text(
+              'If you exit device setup, your progress will be lost.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+                child: const Text('Leave'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+                child: const Text('Stay'),
+              ),
+            ],
+          );
+        },
+      ) ??
+      false;
+}
+
+void _exitSetup() {
+  Navigator.of(context).pop();
+}
+
+@override
+Widget build(BuildContext context) {
+  return PopScope(
+    canPop: false,
+    onPopInvokedWithResult: (didPop, _) async {
+      if (didPop) return;
+
+      if (await _isExitDesired() && context.mounted) {
+        _exitSetup();
+      }
+    },
+    child: Scaffold(appBar: _buildFlowAppBar(), body: const SizedBox()),
+  );
+}
+
+PreferredSizeWidget _buildFlowAppBar() {
+  return AppBar(
+    leading: IconButton(
+      onPressed: _onExitPressed,
+      icon: const Icon(Icons.chevron_left),
+    ),
+    title: const Text('Bulb Setup'),
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Display Validation Errors for Flutter Text Fields
+DESCRIPTION: This comprehensive example shows how to implement dynamic validation error messages for a TextField in Flutter. It demonstrates updating the errorText property of InputDecoration based on user input and includes a full application structure with state management and a basic email validation function.
+SOURCE: https://docs.flutter.dev/get-started/flutter-for/android-devs
+
+LANGUAGE: dart
+CODE:
+```
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(const SampleApp());
+}
+
+class SampleApp extends StatelessWidget {
+  const SampleApp({super.key});
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Sample App',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
+      home: const SampleAppPage(),
+    );
+  }
+}
+
+class SampleAppPage extends StatefulWidget {
+  const SampleAppPage({super.key});
+
+  @override
+  State<SampleAppPage> createState() => _SampleAppPageState();
+}
+
+class _SampleAppPageState extends State<SampleAppPage> {
+  String? _errorText;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Sample App')),
+      body: Center(
+        child: TextField(
+          onSubmitted: (text) {
+            setState(() {
+              if (!isEmail(text)) {
+                _errorText = 'Error: This is not an email';
+              } else {
+                _errorText = null;
+              }
+            });
+          },
+          decoration: InputDecoration(
+            hintText: 'This is a hint',
+            errorText: _getErrorText(),
+          ),
+        ),
+      ),
+    );
+  }
+
+  String? _getErrorText() {
+    return _errorText;
+  }
+
+  bool isEmail(String em) {
+    String emailRegexp =
+        r'^(([^<>()[]\\.,;:\s@\"]+(\.[^<>()[]\\.,;:\s@\"]+)*)|'
+        r'(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|'
+        r'(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+
+    RegExp regExp = RegExp(emailRegexp);
+
+    return regExp.hasMatch(em);
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Implement State and State Management in Flutter
+DESCRIPTION: This code defines the State class '_MyStatefulWidgetState' for 'MyStatefulWidget'. It includes mutable state variables and a 'toggleBlinkState' method that uses setState() to update the UI when the state changes, demonstrating how Flutter rebuilds widgets.
+SOURCE: https://docs.flutter.dev/get-started/flutter-for/react-native-devs
+
+LANGUAGE: Dart
+CODE:
+```
+class _MyStatefulWidgetState extends State<MyStatefulWidget> {
+  bool showText = true;
+  bool toggleState = true;
+  Timer? t2;
+
+  void toggleBlinkState() {
+    setState(() {
+      toggleState = !toggleState;
+    });
+    if (!toggleState) {
+```
+
+----------------------------------------
+
+TITLE: Create Scrollable Views in Flutter using ListView
+DESCRIPTION: Flutter's ListView widget serves as both a ScrollView and a traditional Android ListView, providing an easy way to display a scrollable list of widgets when content exceeds screen size.
+SOURCE: https://docs.flutter.dev/get-started/flutter-for/android-devs
+
+LANGUAGE: dart
+CODE:
+```
+@override
+Widget build(BuildContext context) {
+  return ListView(
+    children: const <Widget>[
+      Text('Row One'),
+      Text('Row Two'),
+      Text('Row Three'),
+      Text('Row Four'),
+    ],
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Material Design Flutter App Layout with Scaffold Widget
+DESCRIPTION: Illustrates how to build a Flutter application following Material Design principles using the `Scaffold` widget. `Scaffold` provides a default app bar, background color, and APIs for additional UI components like drawers and snack bars, simplifying the creation of a Material-themed home page.
+SOURCE: https://docs.flutter.dev/ui/layout
+
+LANGUAGE: dart
+CODE:
+```
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const String appTitle = 'Flutter layout demo';
+    return MaterialApp(
+      title: appTitle,
+      home: Scaffold(
+        appBar: AppBar(title: const Text(appTitle)),
+        body: const Center(
+          child: Text('Hello World'),
+        ),
+      ),
+    );
+  }
+}
+```

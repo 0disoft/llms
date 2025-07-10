@@ -1,0 +1,1483 @@
+TITLE: Documenting a Go API Endpoint with Swag Annotations
+DESCRIPTION: Demonstrates how to use Swag annotations (e.g., `@Summary`, `@Description`, `@Param`, `@Success`, `@Router`) to document a Go API endpoint for automatic Swagger generation. This example shows a GET request for an account.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/swagger/README.md#_snippet_4
+
+LANGUAGE: go
+CODE:
+```
+// @Summary Show an account
+// @Description get string by ID
+// @ID get-string-by-int
+// @Accept  json
+// @Produce  json
+// @Param   id     path    int     true        "Account ID"
+// @Success 200 {object} model.Account
+// @Failure 400 {object} http.Response
+// @Failure 404 {object} http.Response
+// @Router /accounts/{id} [get]
+func GetAccount(c *gin.Context) {
+    // Your code here
+}
+```
+
+----------------------------------------
+
+TITLE: Basic GoFiber Backend with Static File Serving and API Route
+DESCRIPTION: A complete GoFiber application example demonstrating middleware usage, serving static frontend files from 'frontend/dist', and defining a simple '/api/hello' GET endpoint.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/spa/README.md#_snippet_6
+
+LANGUAGE: go
+CODE:
+```
+package main
+
+import (
+    "github.com/gofiber/fiber/v2"
+    "github.com/gofiber/fiber/v2/middleware/logger"
+)
+
+func main() {
+    app := fiber.New()
+
+    // Middleware
+    app.Use(logger.New())
+
+    // Serve static files
+    app.Static("/", "./frontend/dist")
+
+    // API routes
+    app.Get("/api/hello", func(c *fiber.Ctx) error {
+        return c.JSON(fiber.Map{"message": "Hello, World!"})
+    })
+
+    // Start server
+    app.Listen(":3000")
+}
+```
+
+----------------------------------------
+
+TITLE: GORM Example REST API Endpoints
+DESCRIPTION: This section outlines the available RESTful API endpoints for managing book resources within the GORM example application. It details the HTTP method, URL path, and a brief description for each endpoint, supporting operations like retrieving, creating, and deleting books.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/gorm/README.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+GET /api/v1/book: Retrieves all books
+GET /api/v1/book/:id: Retrieves a book by ID
+POST /api/v1/book: Creates a new book
+DELETE /api/v1/book/:id: Deletes a book
+```
+
+----------------------------------------
+
+TITLE: Setup and Run GoFiber Optional Parameter Example
+DESCRIPTION: These shell commands guide through cloning the project repository, navigating into the example directory, installing necessary Go dependencies, and finally starting the Fiber application. Follow these steps to get the example running locally.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/optional-parameter/README.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+git clone https://github.com/gofiber/recipes.git
+cd recipes/optional-parameter
+```
+
+LANGUAGE: sh
+CODE:
+```
+go get
+```
+
+LANGUAGE: sh
+CODE:
+```
+go run main.go
+```
+
+----------------------------------------
+
+TITLE: Adapt Go Handler for Huma API
+DESCRIPTION: Example showing how to modify a standard GoFiber handler function to conform to the Huma API signature, which allows Huma to automatically generate documentation for the endpoint.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/openapi/README.md#_snippet_6
+
+LANGUAGE: go
+CODE:
+```
+// func GetAllBooks(c *fiber.Ctx) error {} // 👈 your existing code
+
+// 👇 huma version
+func GetAllBooks(ctx context.Context, _ *struct{}) (*GetAllBooksResponse, error) {
+   return &GetAllBooksResponse{Body: books}, nil
+}
+```
+
+----------------------------------------
+
+TITLE: Basic Go Fiber App Initialization Example
+DESCRIPTION: A fundamental example demonstrating how to initialize a new Fiber application instance using `fiber.New()` and subsequently start listening for incoming requests on a specified port.
+SOURCE: https://github.com/gofiber/docs/blob/master/versioned_docs/version-v1.x/api/app.md#_snippet_1
+
+LANGUAGE: Go
+CODE:
+```
+package main
+
+import "github.com/gofiber/fiber"
+
+func main() {
+    app := fiber.New()
+
+    // ...
+
+    app.Listen(3000)
+}
+```
+
+----------------------------------------
+
+TITLE: Example: Get All Products
+DESCRIPTION: Demonstrates how to use `curl` to send a GET request to retrieve all products from the API.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/hexagonal/README.md#_snippet_5
+
+LANGUAGE: sh
+CODE:
+```
+curl -X GET http://localhost:3000/api/v1/products
+```
+
+----------------------------------------
+
+TITLE: Make GET Request to Go Fiber API
+DESCRIPTION: This cURL command sends a GET request to the `/v1/books` endpoint of the running Go Fiber API. It includes an Authorization header with a bearer token, simulating a client interaction with the API.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/monitoring-with-apitally/README.md#_snippet_3
+
+LANGUAGE: Shell
+CODE:
+```
+curl -X GET -H "Authorization: Bearer d7e123f5a2b9c4e8d6a7b2c1f5e9d3a4" http://localhost:3000/v1/books
+```
+
+----------------------------------------
+
+TITLE: Example: Get Product by ID
+DESCRIPTION: Demonstrates how to use `curl` to send a GET request to retrieve a specific product by its ID from the API.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/hexagonal/README.md#_snippet_6
+
+LANGUAGE: sh
+CODE:
+```
+curl -X GET http://localhost:3000/api/v1/product/1
+```
+
+----------------------------------------
+
+TITLE: Basic Go Fiber Application with Fgprof Middleware
+DESCRIPTION: A complete Go example demonstrating how to initialize a Fiber application, apply the `fgprof.New()` middleware, define a simple GET route, and start the server. This sets up the application for profiling.
+SOURCE: https://github.com/gofiber/docs/blob/master/contrib_versioned_docs/version-otelfiber_v2.x.x/fgprof/README.md#_snippet_2
+
+LANGUAGE: Go
+CODE:
+```
+package main
+
+import (
+	"log"
+
+	"github.com/gofiber/contrib/fgprof"
+	"github.com/gofiber/fiber/v2"
+)
+
+func main() {
+	app := fiber.New()
+	app.Use(fgprof.New())
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("OK")
+	})
+	log.Fatal(app.Listen(":3000"))
+}
+```
+
+----------------------------------------
+
+TITLE: Run GORM Example Application
+DESCRIPTION: This command compiles and executes the main Go application file. It starts the Fiber web server, which uses GORM to interact with a SQLite database, making the API available on `http://localhost:3000`.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/gorm/README.md#_snippet_2
+
+LANGUAGE: sh
+CODE:
+```
+go run main.go
+```
+
+----------------------------------------
+
+TITLE: Start Fiber Server and Client Services
+DESCRIPTION: Bring up the 'fiber-server' and 'fiber-client' services to run the example. This command uses docker-compose to start the services in detached mode.
+SOURCE: https://github.com/gofiber/docs/blob/master/contrib_versioned_docs/version-loadshed_v0.x.x/otelfiber/example/README.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+docker-compose up --detach fiber-server fiber-client
+```
+
+----------------------------------------
+
+TITLE: Example: Set and use Base URL with GoFiber Client
+DESCRIPTION: Demonstrates how to initialize a new client, set a base URL, and make a GET request using the relative path. Includes error handling and printing the response body.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/core/client/rest.md#_snippet_40
+
+LANGUAGE: go
+CODE:
+```
+cc := client.New()
+cc.SetBaseURL("https://httpbin.org/")
+
+resp, err := cc.Get("/get")
+if err != nil {
+    panic(err)
+}
+
+fmt.Println(string(resp.Body()))
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "args": {},
+  ...
+}
+```
+
+----------------------------------------
+
+TITLE: GoFiber App Listen Function Examples
+DESCRIPTION: Provides examples of how to use the `Listen` method in a GoFiber application to start the server. Demonstrates listening on a specific port, enabling preforking, and specifying a custom host.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/core/api/fiber.md#_snippet_23
+
+LANGUAGE: Go
+CODE:
+```
+// Listen on port :8080 
+app.Listen(":8080")
+
+// Listen on port :8080 with Prefork 
+app.Listen(":8080", fiber.ListenConfig{EnablePrefork: true})
+
+// Custom host
+app.Listen("127.0.0.1:8080")
+```
+
+----------------------------------------
+
+TITLE: GoFiber Service Interface Methods API Reference
+DESCRIPTION: Provides detailed API documentation for the methods of the `Service` interface in GoFiber. It covers the purpose, parameters, and return types for `Start`, `String`, `State`, and `Terminate` methods, which are essential for implementing and interacting with GoFiber services.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/core/api/services.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+Service Interface Methods:
+  Start:
+    Signature: func (s *SomeService) Start(ctx context.Context) error
+    Purpose: Starts the service, returning an error if it fails. This method is automatically called when the application starts.
+    Parameters:
+      ctx: context.Context - The context for the operation.
+    Returns:
+      error: An error if the service fails to start.
+  String:
+    Signature: func (s *SomeService) String() string
+    Purpose: Returns a string representation of the service, used to print the service in the startup message.
+    Returns:
+      string: A string representation of the service.
+  State:
+    Signature: func (s *SomeService) State(ctx context.Context) (string, error)
+    Purpose: Returns the current state of the service, used to print the service in the startup message.
+    Parameters:
+      ctx: context.Context - The context for the operation.
+    Returns:
+      string: The current state of the service.
+      error: An error if state retrieval fails.
+  Terminate:
+    Signature: func (s *SomeService) Terminate(ctx context.Context) error
+    Purpose: Terminate terminates the service after the application shuts down using a post shutdown hook, returning an error if it fails.
+    Returns:
+      error: An error if the service fails to terminate.
+```
+
+----------------------------------------
+
+TITLE: GoFiber HTTP Method Route Handler Examples
+DESCRIPTION: Provides practical examples of how to use 'app.Get' and 'app.Post' to register simple route handlers that respond with a string. These examples demonstrate basic usage of the defined route handler signatures.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/core/partials/routing/handler.md#_snippet_1
+
+LANGUAGE: go
+CODE:
+```
+// Simple GET handler
+app.Get("/api/list", func(c fiber.Ctx) error {
+    return c.SendString("I'm a GET request!")
+})
+
+// Simple POST handler
+app.Post("/api/register", func(c fiber.Ctx) error {
+    return c.SendString("I'm a POST request!")
+})
+```
+
+----------------------------------------
+
+TITLE: Socket.io Go API Signatures
+DESCRIPTION: API documentation for the `gofiber/contrib/socketio` package, detailing the available functions for initializing new socket.io instances, adding event listeners, emitting messages to specific clients or lists, and broadcasting to all active connections.
+SOURCE: https://github.com/gofiber/docs/blob/master/contrib_versioned_docs/version-hcaptcha_v0.x.x/socketio/README.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+New(callback func(kws *Websocket), config ...websocket.Config) func(*fiber.Ctx) error
+  callback: Callback function executed with a *Websocket object
+  config: Optional websocket.Config for initialization
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+On(event string, callback func(payload *EventPayload))
+  event: The name of the event to listen for
+  callback: Callback function executed when the event occurs, receiving an *EventPayload
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+EmitToList(uuids []string, message []byte)
+  uuids: A slice of socket UUIDs to emit the message to
+  message: The message payload as a byte slice
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+EmitTo(uuid string, message []byte) error
+  uuid: The UUID of the specific socket connection
+  message: The message payload as a byte slice
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Broadcast(message []byte)
+  message: The message payload as a byte slice
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Fire(event string, data []byte)
+  event: The name of the custom event to fire on all connections
+  data: The event data as a byte slice
+```
+
+----------------------------------------
+
+TITLE: Accepts Method Example 1
+DESCRIPTION: Demonstrates the usage of `c.Accepts()` to determine the best matching content type from a list of offers against the `Accept` header. It shows how quality factors (q-values) influence the selection, returning the accepted type or an empty string if no match is found.
+SOURCE: https://github.com/gofiber/docs/blob/master/versioned_docs/version-v2.x/api/ctx.md#_snippet_1
+
+LANGUAGE: Go
+CODE:
+```
+// Accept: text/html, application/json; q=0.8, text/plain; q=0.5; charset="utf-8"
+
+app.Get("/", func(c *fiber.Ctx) error {
+  c.Accepts("html")             // "html"
+  c.Accepts("text/html")        // "text/html"
+  c.Accepts("json", "text")     // "json"
+  c.Accepts("application/json") // "application/json"
+  c.Accepts("text/plain", "application/json") // "application/json", due to quality
+  c.Accepts("image/png")        // ""
+  c.Accepts("png")              // ""
+  // ...
+})
+```
+
+----------------------------------------
+
+TITLE: GoFiber HTTP Method Routing Example
+DESCRIPTION: Demonstrates how to define routes for different HTTP methods (`GET`, `POST`) and apply middleware using `app.Use` in GoFiber. The middleware sets a custom header for requests under `/api`.
+SOURCE: https://github.com/gofiber/docs/blob/master/versioned_docs/version-v1.x/api/app.md#_snippet_12
+
+LANGUAGE: go
+CODE:
+```
+app.Use("/api", func(c *fiber.Ctx) {
+  c.Set("X-Custom-Header", random.String(32))
+  c.Next()
+})
+app.Get("/api/list", func(c *fiber.Ctx) {
+  c.Send("I'm a GET request!")
+})
+app.Post("/api/register", func(c *fiber.Ctx) {
+  c.Send("I'm a POST request!")
+})
+```
+
+----------------------------------------
+
+TITLE: Fiberzap Basic Usage Example
+DESCRIPTION: A Go example demonstrating how to initialize a Fiber application, create a Zap production logger, and apply the Fiberzap middleware with a custom logger. It sets up a basic GET route that returns 'Hello, World!' and starts the server on port 3000, logging requests via Fiberzap.
+SOURCE: https://github.com/gofiber/docs/blob/master/contrib_versioned_docs/version-opafiber_v1.x.x/fiberzap/README.md#_snippet_3
+
+LANGUAGE: Go
+CODE:
+```
+package main
+
+import (
+    "log"
+
+    "github.com/gofiber/fiber/v2"
+    "github.com/gofiber/contrib/fiberzap"
+    "go.uber.org/zap"
+)
+
+func main() {
+    app := fiber.New()
+    logger, _ := zap.NewProduction()
+
+    app.Use(fiberzap.New(fiberzap.Config{
+        Logger: logger,
+    }))
+
+    app.Get("/", func (c *fiber.Ctx) error {
+        return c.SendString("Hello, World!")
+    })
+
+    log.Fatal(app.Listen(":3000"))
+}
+```
+
+----------------------------------------
+
+TITLE: Start Fiber API Server
+DESCRIPTION: This command starts the Fiber API server, which will be responsible for sending messages to the RabbitMQ queue.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/rabbitmq/README.md#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+make run
+```
+
+----------------------------------------
+
+TITLE: Fiber Application Route Definition Signature
+DESCRIPTION: This API documentation describes the general signature for defining routes in a Fiber application. It specifies that a route is defined by an HTTP method, a path string, and one or more handler functions that receive a `*fiber.Ctx` context object.
+SOURCE: https://github.com/gofiber/docs/blob/master/versioned_docs/version-v1.x/intro.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+// Function signature
+app.Method(path string, ...func(*fiber.Ctx))
+```
+
+----------------------------------------
+
+TITLE: GoFiber Serve Static Files Example
+DESCRIPTION: Demonstrates how to initialize a GoFiber application and configure it to serve static files from the './public' directory. This allows web clients to access files like HTML, CSS, and JavaScript from the specified path.
+SOURCE: https://github.com/gofiber/docs/blob/master/versioned_docs/version-v1.x/intro.md#_snippet_12
+
+LANGUAGE: Go
+CODE:
+```
+app := fiber.New()
+
+app.Static("/", "./public") 
+
+app.Listen(8080)
+```
+
+----------------------------------------
+
+TITLE: Retrieve All Books (GET /api/v1/books)
+DESCRIPTION: This cURL command demonstrates how to send a GET request to the `/api/v1/books` endpoint to retrieve a list of all available books from the API.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/clean-code/README.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+curl -X GET http://localhost:3000/api/v1/books
+```
+
+----------------------------------------
+
+TITLE: Accepts Method Example 2
+DESCRIPTION: Illustrates `c.Accepts()` behavior with more complex `Accept` header values, including wildcards and q-factors. It highlights how specificity and the order of offers can affect the returned content type, and cases where no acceptable type is found.
+SOURCE: https://github.com/gofiber/docs/blob/master/versioned_docs/version-v2.x/api/ctx.md#_snippet_2
+
+LANGUAGE: Go
+CODE:
+```
+// Accept: text/html, text/*, application/json, */*; q=0
+
+app.Get("/", func(c *fiber.Ctx) error {
+  c.Accepts("text/plain", "application/json") // "application/json", due to specificity
+  c.Accepts("application/json", "text/html") // "text/html", due to first match
+  c.Accepts("image/png")        // "", due to */* without q factor 0 is Not Acceptable
+  // ...
+})
+```
+
+----------------------------------------
+
+TITLE: Opafiber Middleware Usage Example
+DESCRIPTION: A complete Go example demonstrating how to initialize a Fiber application, define a Rego policy, configure and apply the Opafiber middleware for access control, and start the server.
+SOURCE: https://github.com/gofiber/docs/blob/master/contrib_versioned_docs/version-casbin_v1.x.x/opafiber/README.md#_snippet_5
+
+LANGUAGE: Go
+CODE:
+```
+package main
+
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/contrib/opafiber/v2"
+	"bytes"
+)
+
+func main() {
+	app := fiber.New()
+	module := `
+package example.authz
+
+default allow := false
+
+allow {
+	input.method == "GET"
+}
+`
+	cfg := opafiber.Config{
+		RegoQuery:             "data.example.authz.allow",
+		RegoPolicy:            bytes.NewBufferString(module),
+		IncludeQueryString:    true,
+		DeniedStatusCode:      fiber.StatusForbidden,
+		DeniedResponseMessage: "status forbidden",
+		IncludeHeaders:        []string{"Authorization"},
+		InputCreationMethod:   func (ctx *fiber.Ctx) (map[string]interface{}, error) {
+            return map[string]interface{}{
+                "method": ctx.Method(),
+                "path": ctx.Path(),
+            }, nil
+        },
+	}
+	app.Use(opafiber.New(cfg))
+
+	app.Get("/", func(ctx *fiber.Ctx) error {
+		return ctx.SendStatus(200)
+	})
+
+	app.Listen(":8080")
+}
+```
+
+----------------------------------------
+
+TITLE: Start Fiber Server and Client with Docker Compose
+DESCRIPTION: This command brings up the `fiber-server` and `fiber-client` services in detached mode using docker-compose to run the example application. It's the initial step to start the demonstration.
+SOURCE: https://github.com/gofiber/docs/blob/master/contrib_versioned_docs/version-websocket_v1.x.x/otelfiber/example/README.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+docker-compose up --detach fiber-server fiber-client
+```
+
+----------------------------------------
+
+TITLE: GoFiber WebSocket Server Example
+DESCRIPTION: A complete example demonstrating how to set up a WebSocket server with GoFiber, including upgrade handling, context access, and message reading/writing.
+SOURCE: https://github.com/gofiber/docs/blob/master/contrib_versioned_docs/version-opafiber_v2.x.x/websocket/README.md#_snippet_3
+
+LANGUAGE: Go
+CODE:
+```
+package main
+
+import (
+	"log"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/contrib/websocket"
+)
+
+func main() {
+	app := fiber.New()
+
+	app.Use("/ws", func(c *fiber.Ctx) error {
+		// IsWebSocketUpgrade returns true if the client
+		// requested upgrade to the WebSocket protocol.
+		if websocket.IsWebSocketUpgrade(c) {
+			c.Locals("allowed", true)
+			return c.Next()
+		}
+		return fiber.ErrUpgradeRequired
+	})
+
+	app.Get("/ws/:id", websocket.New(func(c *websocket.Conn) {
+		// c.Locals is added to the *websocket.Conn
+		log.Println(c.Locals("allowed"))  // true
+		log.Println(c.Params("id"))       // 123
+		log.Println(c.Query("v"))         // 1.0
+		log.Println(c.Cookies("session")) // ""
+
+		// websocket.Conn bindings https://pkg.go.dev/github.com/fasthttp/websocket?tab=doc#pkg-index
+		var (
+			mt  int
+			msg []byte
+			err error
+		)
+		for {
+			if mt, msg, err = c.ReadMessage(); err != nil {
+				log.Println("read:", err)
+				break
+			}
+			log.Printf("recv: %s", msg)
+
+			if err = c.WriteMessage(mt, msg); err != nil {
+				log.Println("write:", err)
+				break
+			}
+		}
+
+	}))
+
+	log.Fatal(app.Listen(":3000"))
+	// Access the websocket server: ws://localhost:3000/ws/123?v=1.0
+	// https://www.websocket.org/echo.html
+}
+```
+
+----------------------------------------
+
+TITLE: Implement Wildcard Routes in Fiber
+DESCRIPTION: This Go example demonstrates using a wildcard (`*`) in a Fiber route to match any path segment after `/api/`. The `c.Params("*")` method retrieves the entire matched wildcard string, useful for flexible routing.
+SOURCE: https://github.com/gofiber/docs/blob/master/versioned_docs/version-v1.x/intro.md#_snippet_10
+
+LANGUAGE: go
+CODE:
+```
+// GET http://localhost:3000/api/user/john
+
+app.Get("/api/*", func(c *fiber.Ctx) {
+  c.Send("API path: " + c.Params("*"))
+  // => API path: user/john
+})
+```
+
+----------------------------------------
+
+TITLE: Redis Storage Driver API Signatures
+DESCRIPTION: Defines the public API methods available for interacting with the Redis storage driver, including creation, data manipulation (Get, Set, Delete), and connection management.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-arangodb_v1.x.x/redis/README.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+func New(config ...Config) Storage
+func (s *Storage) Get(key string) ([]byte, error)
+func (s *Storage) Set(key string, val []byte, exp time.Duration) error
+func (s *Storage) Delete(key string) error
+func (s *Storage) Reset() error
+func (s *Storage) Close() error
+func (s *Storage) Conn() redis.UniversalClient
+```
+
+----------------------------------------
+
+TITLE: Example of chaining HTTP methods with Fiber's app.Route
+DESCRIPTION: This example showcases the `app.Route` method for defining handlers for multiple HTTP verbs on the same path. It demonstrates how to apply a handler for all verbs (`All`) and then specific handlers for `GET` and `POST` requests, as well as chaining `Route` calls for nested paths.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/core/api/app.md#_snippet_7
+
+LANGUAGE: Go
+CODE:
+```
+package main
+
+import (
+    "log"
+
+    "github.com/gofiber/fiber/v3"
+)
+
+func main() {
+    app := fiber.New()
+
+    // Use `Route` as a chainable route declaration method
+    app.Route("/test").Get(func(c fiber.Ctx) error {
+        return c.SendString("GET /test")
+    })
+
+    app.Route("/events").All(func(c fiber.Ctx) error {
+        // Runs for all HTTP verbs first
+        // Think of it as route-specific middleware!
+    }).
+    Get(func(c fiber.Ctx) error {
+        return c.SendString("GET /events")
+    }).
+    Post(func(c fiber.Ctx) error {
+        // Maybe add a new event...
+        return c.SendString("POST /events")
+    })
+
+    // Combine multiple routes
+    app.Route("/v2").Route("/user").Get(func(c fiber.Ctx) error {
+        return c.SendString("GET /v2/user")
+    })
+
+    // Use multiple methods
+    app.Route("/api").Get(func(c fiber.Ctx) error {
+        return c.SendString("GET /api")
+    }).Post(func(c fiber.Ctx) error {
+        return c.SendString("POST /api")
+    })
+
+    log.Fatal(app.Listen(":3000"))
+}
+```
+
+----------------------------------------
+
+TITLE: MockStorage Basic Usage and Testing Examples
+DESCRIPTION: Demonstrates how to import the MockStorage package, initialize a new storage instance, and perform basic operations like setting, getting, and deleting values. Includes an example of mocking storage operations for testing purposes.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-nats_v1.x.x/mockstorage/README.md#_snippet_2
+
+LANGUAGE: Go
+CODE:
+```
+import "github.com/gofiber/storage/mockstorage"
+
+// Initialize default config
+store := mockstorage.New()
+
+// Set a value in the storage.
+err := store.Set("key1", []byte("value1"), 0)
+if err != nil {
+    // handle error
+}
+
+// Get a value from the storage.
+val, err := store.Get("key1")
+if err != nil {
+    // handle error
+}
+fmt.Println(string(val)) // prints "value1"
+
+// Delete a value from the storage.
+err = store.Delete("key1")
+if err != nil {
+	// handle error
+}
+
+// Mocking storage operations in tests:
+func TestMyFunction(t *testing.T) {
+    // Create a new instance of MockStorage
+    store := mockstorage.New()
+
+    // Mock the Set function
+    store.SetCustomFuncs(&mockstorage.CustomFuncs{
+        Set: func(key string, val []byte, exp time.Duration) error {
+            if key == "expectedKey" && string(val) == "expectedValue" {
+                return nil
+            }
+            return errors.New("unexpected key or value")
+        },
+    })
+
+    // Call the function you want to test, which should call store.Set
+    err := MyFunction(store)
+
+    // Check that the function behaved as expected
+    if err != nil {
+        t.Errorf("MyFunction returned an error: %v", err)
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: API Endpoints for Book Management
+DESCRIPTION: This section outlines the RESTful API endpoints for managing 'Book' resources. It includes methods, URLs, and descriptions for retrieving, creating, updating, and deleting book information.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/ent-mysql/README.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoints:
+  - Method: GET, URL: /book, Description: All Books Info
+  - Method: GET, URL: /book:id, Description: One Book Info
+  - Method: POST, URL: /create, Description: One Book Add
+  - Method: PUT, URL: /update/:id, Description: One Book Update
+  - Method: DELETE, URL: /delete/:id, Description: One Book Delete
+```
+
+----------------------------------------
+
+TITLE: Initialize GoFiber SQLite3 Storage with Default Configuration
+DESCRIPTION: Example demonstrating how to create a new SQLite3 storage instance using the driver's predefined default configuration settings. This is the simplest way to get started.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-arangodb_v1.x.x/sqlite3/README.md#_snippet_4
+
+LANGUAGE: Go
+CODE:
+```
+store := sqlite3.New()
+```
+
+----------------------------------------
+
+TITLE: MockStorage Basic Usage and Mocking Examples
+DESCRIPTION: Demonstrates how to import the MockStorage package, initialize a new store, and perform basic operations like setting, getting, and deleting values. Includes an example of mocking storage operations for testing purposes using `SetCustomFuncs`.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-mongodb_v2.x.x/mockstorage/README.md#_snippet_2
+
+LANGUAGE: Go
+CODE:
+```
+import "github.com/gofiber/storage/mockstorage"
+
+// Initialize default config
+store := mockstorage.New()
+
+// Set a value in the storage.
+err := store.Set("key1", []byte("value1"), 0)
+if err != nil {
+    // handle error
+}
+
+// Get a value from the storage.
+val, err := store.Get("key1")
+if err != nil {
+    // handle error
+}
+fmt.Println(string(val)) // prints "value1"
+
+// Delete a value from the storage.
+err = store.Delete("key1")
+if err != nil {
+	// handle error
+}
+
+// Mocking storage operations in tests:
+func TestMyFunction(t *testing.T) {
+    // Create a new instance of MockStorage
+    store := mockstorage.New()
+
+    // Mock the Set function
+    store.SetCustomFuncs(&mockstorage.CustomFuncs{
+        Set: func(key string, val []byte, exp time.Duration) error {
+            if key == "expectedKey" && string(val) == "expectedValue" {
+                return nil
+            }
+            return errors.New("unexpected key or value")
+        },
+    })
+
+    // Call the function you want to test, which should call store.Set
+    err := MyFunction(store)
+
+    // Check that the function behaved as expected
+    if err != nil {
+        t.Errorf("MyFunction returned an error: %v", err)
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Clone GoFiber OpenAPI Recipe Repository
+DESCRIPTION: Instructions to clone the GoFiber recipes repository and navigate into the specific OpenAPI example directory, preparing the environment for development.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/openapi/README.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+git clone https://github.com/gofiber/recipes.git
+cd recipes/openapi
+```
+
+----------------------------------------
+
+TITLE: Test Fiber Memgraph API Endpoints
+DESCRIPTION: Example HTTP GET requests to test the running Fiber application's endpoints. These URLs allow verification of the graph data retrieval and specific developer node information from the Memgraph database.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/memgraph/README.md#_snippet_3
+
+LANGUAGE: HTTP
+CODE:
+```
+http://localhost:3000/graph
+http://localhost:3000/developer/Andy
+```
+
+----------------------------------------
+
+TITLE: MockStorage API Definitions: Functions
+DESCRIPTION: Outlines the public API functions of the MockStorage, including methods for creating new instances, getting, setting, deleting, resetting, closing, and inspecting storage contents, as well as setting custom function overrides.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-cloudflarekv_v0.x.x/mockstorage/README.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+// New creates a new Storage instance. You can optionally pass a Config.
+func New(config ...Config) *Storage
+
+// Get retrieves the value associated with the given key.
+func (s *Storage) Get(key string) ([]byte, error)
+
+// Set sets the value for the given key, with an optional expiration duration.
+func (s *Storage) Set(key string, val []byte, exp time.Duration) error
+
+// Delete removes the value associated with the given key.
+func (s *Storage) Delete(key string) error
+
+// Reset clears all values from the storage.
+func (s *Storage) Reset() error
+
+// Close performs any necessary cleanup when the storage is no longer needed.
+func (s *Storage) Close() error
+
+// Conn returns a copy of the current state of the storage.
+func (s *Storage) Conn() map[string]Entry
+
+// Keys returns a list of all keys in the storage.
+func (s *Storage) Keys() ([][]byte, error)
+
+// SetCustomFuncs allows you to set custom functions for the storage operations.
+func (s *Storage) SetCustomFuncs(custom *CustomFuncs)
+```
+
+----------------------------------------
+
+TITLE: Ristretto Storage API Signatures
+DESCRIPTION: Defines the public methods and functions available for the Ristretto storage driver, including initialization, data manipulation (Get, Set, Delete), and connection management.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-neo4j_v0.x.x/ristretto/README.md#_snippet_0
+
+LANGUAGE: go
+CODE:
+```
+func New(config ...Config) Storage
+func (s *Storage) Get(key string) ([]byte, error)
+func (s *Storage) Set(key string, val []byte, exp time.Duration) error
+func (s *Storage) Delete(key string) error
+func (s *Storage) Reset() error
+func (s *Storage) Close() error
+func (s *Storage) Conn() *ristretto.Cache
+```
+
+----------------------------------------
+
+TITLE: Basic GoFiber application with fgprof middleware
+DESCRIPTION: A complete Go program demonstrating how to initialize a Fiber application, apply the fgprof middleware to enable profiling, define a simple GET route, and start the server. This example shows the minimal setup required to integrate fgprof.
+SOURCE: https://github.com/gofiber/docs/blob/master/contrib_versioned_docs/version-fgprof_v1.x.x/fgprof/README.md#_snippet_2
+
+LANGUAGE: Go
+CODE:
+```
+package main
+
+import (
+	"log"
+
+	"github.com/gofiber/contrib/fgprof"
+	"github.com/gofiber/fiber/v2"
+)
+
+func main() {
+	app := fiber.New()
+	app.Use(fgprof.New())
+	app.Get("/", func(c *fiber.Ctx) error {
+		return c.SendString("OK")
+	})
+	log.Fatal(app.Listen(":3000"))
+}
+```
+
+----------------------------------------
+
+TITLE: Enhance OpenAPI Documentation with Huma.Register
+DESCRIPTION: Demonstrates how to use `huma.Register` to add detailed OpenAPI specification information, such as operation ID, HTTP method, path, summary, description, and tags, to an API endpoint for richer documentation.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/openapi/README.md#_snippet_7
+
+LANGUAGE: go
+CODE:
+```
+// huma.Get(group, "/books/{id}", handlers.GetBookByID)
+
+huma.Register(api, huma.Operation{
+   OperationID: "get-book-by-id",
+   Method:      http.MethodGet,
+   Path:        "/book/{id}",
+   Summary:     "Get a book",
+   Description: "Get a book by book ID.",
+   Tags:        []string{"Books"}
+}, handlers.GetBookByID)
+```
+
+----------------------------------------
+
+TITLE: Handle URL Parameters in Fiber Routes
+DESCRIPTION: This Go example demonstrates how to capture and use URL parameters in Fiber. The route `/:value` captures any string in that segment, which can then be accessed within the handler using `c.Params("value")`.
+SOURCE: https://github.com/gofiber/docs/blob/master/versioned_docs/version-v1.x/intro.md#_snippet_8
+
+LANGUAGE: go
+CODE:
+```
+// GET http://localhost:8080/hello%20world
+
+app.Get("/:value", func(c *fiber.Ctx) {
+  c.Send("Get request with value: " + c.Params("value"))
+  // => Get request with value: hello world
+})
+```
+
+----------------------------------------
+
+TITLE: Paseto Middleware Configuration Options (APIDOC)
+DESCRIPTION: Detailed API documentation for the `pasetoware.Config` struct, outlining available properties, their types, descriptions, and default values for customizing the Paseto middleware behavior.
+SOURCE: https://github.com/gofiber/docs/blob/master/contrib_versioned_docs/version-jwt_v1.x.x/paseto/README.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+pasetoware.Config:
+  Next: func(*Ctx) bool
+    Description: Defines a function to skip middleware
+    Default: nil
+  SuccessHandler: func(*fiber.Ctx) error
+    Description: SuccessHandler defines a function which is executed for a valid token.
+    Default: c.Next()
+  ErrorHandler: func(*fiber.Ctx, error) error
+    Description: ErrorHandler defines a function which is executed for an invalid token.
+    Default: "401 Invalid or expired PASETO"
+  Validate: PayloadValidator
+    Description: Defines a function to validate if payload is valid. Optional. In case payload used is created using CreateToken function. If token is created using another function, this function must be provided.
+    Default: nil
+  SymmetricKey: []byte
+    Description: Secret key to encrypt token. If present the middleware will generate local tokens.
+    Default: nil
+  PrivateKey: ed25519.PrivateKey
+    Description: Secret key to sign the tokens. If present (along with its PublicKey) the middleware will generate public tokens.
+    Default: nil
+  PublicKey: crypto.PublicKey
+    Description: Public key to verify the tokens. If present (along with PrivateKey) the middleware will generate public tokens.
+    Default: nil
+  ContextKey: string
+    Description: Context key to store user information from the token into context.
+    Default: "auth-token"
+  TokenLookup: [2]string
+    Description: TokenLookup is a string slice with size 2, that is used to extract token from the request
+    Default: ["header","Authorization"]
+```
+
+----------------------------------------
+
+TITLE: Example: Iterating Request Headers
+DESCRIPTION: Demonstrates how to iterate over all headers in a request using the `Headers()` method and print their keys and values.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/core/client/request.md#_snippet_21
+
+LANGUAGE: go
+CODE:
+```
+req := client.AcquireRequest()
+
+req.AddHeader("Golang", "Fiber")
+req.AddHeader("Test", "123456")
+req.AddHeader("Test", "654321")
+
+for k, v := range req.Headers() {
+  fmt.Printf("Header Key: %s, Header Value: %v\n", k, v)
+}
+```
+
+LANGUAGE: sh
+CODE:
+```
+Header Key: Golang, Header Value: [Fiber]
+Header Key: Test, Header Value: [123456 654321]
+```
+
+----------------------------------------
+
+TITLE: Start GoFiber OpenAPI Application
+DESCRIPTION: Command to compile and run the GoFiber application, making the API and its generated OpenAPI documentation accessible locally.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/openapi/README.md#_snippet_2
+
+LANGUAGE: sh
+CODE:
+```
+go run main.go
+```
+
+----------------------------------------
+
+TITLE: Example Fiberzap Middleware Integration
+DESCRIPTION: A comprehensive Go example demonstrating how to set up a Fiber application, initialize a production Zap logger, apply the Fiberzap middleware with a custom logger configuration, and define a basic HTTP GET route.
+SOURCE: https://github.com/gofiber/docs/blob/master/contrib_versioned_docs/version-fiberi18n_v0.x.x/fiberzap/README.md#_snippet_3
+
+LANGUAGE: Go
+CODE:
+```
+package main
+
+import (
+    "log"
+
+    "github.com/gofiber/fiber/v2"
+    "github.com/gofiber/contrib/fiberzap"
+    "go.uber.org/zap"
+)
+
+func main() {
+    app := fiber.New()
+    logger, _ := zap.NewProduction()
+
+    app.Use(fiberzap.New(fiberzap.Config{
+        Logger: logger,
+    }))
+
+    app.Get("/", func (c *fiber.Ctx) error {
+        return c.SendString("Hello, World!")
+    })
+
+    log.Fatal(app.Listen(":3000"))
+}
+```
+
+----------------------------------------
+
+TITLE: Initialize GoFiber Neo4j Storage with Default Configuration
+DESCRIPTION: Example demonstrating how to create a new GoFiber Neo4j storage instance using its default configuration. This provides a quick way to get started without custom settings.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-surrealdb_v0.x.x/neo4j/README.md#_snippet_4
+
+LANGUAGE: Go
+CODE:
+```
+// Initialize default config
+store := neo4j.New()
+```
+
+----------------------------------------
+
+TITLE: GoFiber Socket.io Package API Reference
+DESCRIPTION: Detailed API documentation for the `gofiber/contrib/socketio` package, outlining the signatures and purposes of its primary functions for managing WebSocket connections and events within a Fiber application.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/contrib/socketio/README.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package: github.com/gofiber/contrib/socketio
+
+Functions:
+  New(callback func(kws *Websocket), config ...websocket.Config) func(*fiber.Ctx) error
+    Description: Initialize a new socketio instance. The callback executes with a *Websocket object and optional websocket.Config.
+    Parameters:
+      callback: func(kws *Websocket) - A callback function that receives the *Websocket object.
+      config: ...websocket.Config - Optional configuration for the websocket.
+    Returns: func(*fiber.Ctx) error - A Fiber handler function that can be used in routes.
+
+  On(event string, callback func(payload *EventPayload))
+    Description: Adds a listener callback for a specific event to the listeners list.
+    Parameters:
+      event: string - The name of the event to listen for.
+      callback: func(payload *EventPayload) - The callback function to execute when the event occurs, receiving an EventPayload.
+
+  EmitToList(uuids []string, message []byte)
+    Description: Emits a message to a specific list of socket UUIDs. This function ignores all errors during emission.
+    Parameters:
+      uuids: []string - A slice of UUIDs representing the target sockets.
+      message: []byte - The message content to be emitted.
+
+  EmitTo(uuid string, message []byte) error
+    Description: Emits a message to a single specific socket connection identified by its UUID.
+    Parameters:
+      uuid: string - The UUID of the target socket connection.
+      message: []byte - The message content to be emitted.
+    Returns: error - An error if the emission fails.
+
+  Broadcast(message []byte)
+    Description: Broadcasts a message to all active connections, excluding the sender itself.
+    Parameters:
+      message: []byte - The message content to be broadcasted.
+
+  Fire(event string, data []byte)
+    Description: Fires a custom event on all active connections with associated data.
+    Parameters:
+      event: string - The name of the custom event to fire.
+      data: []byte - The data associated with the custom event.
+```
+
+----------------------------------------
+
+TITLE: Coherence Storage Driver API Signatures
+DESCRIPTION: Defines the public API for the Coherence storage driver, including methods for initialization, data manipulation (Get, Set, Delete), and connection management.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-coherence_v1.x.x/coherence/README.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+func New(config ...Config) (*Storage, error)
+func (s *Storage) Get(key string) ([]byte, error)
+func (s *Storage) Set(key string, val []byte, exp time.Duration) error
+func (s *Storage) Delete(key string) error
+func (s *Storage) Reset() error
+func (s *Storage) Close() error
+func (s *Storage) Conn() *Session
+```
+
+----------------------------------------
+
+TITLE: Integrate Fiberzap Middleware with Custom Logger
+DESCRIPTION: A complete Go example demonstrating how to initialize a Fiber application, create a production-ready Zap logger, and apply the Fiberzap middleware with the custom logger. It includes a basic GET route and shows how to start the Fiber server.
+SOURCE: https://github.com/gofiber/docs/blob/master/contrib_versioned_docs/version-fiberi18n_v1.x.x/fiberzap/README.md#_snippet_3
+
+LANGUAGE: Go
+CODE:
+```
+package main
+
+import (
+    "log"
+
+    "github.com/gofiber/fiber/v2"
+    "github.com/gofiber/contrib/fiberzap/v2"
+    "go.uber.org/zap"
+)
+
+func main() {
+    app := fiber.New()
+    logger, _ := zap.NewProduction()
+
+    app.Use(fiberzap.New(fiberzap.Config{
+        Logger: logger,
+    }))
+
+    app.Get("/", func (c *fiber.Ctx) error {
+        return c.SendString("Hello, World!")
+    })
+
+    log.Fatal(app.Listen(":3000"))
+}
+```
+
+----------------------------------------
+
+TITLE: Access ExpVar Endpoints with cURL Examples
+DESCRIPTION: Provides command-line examples using cURL to interact with the ExpVar middleware's `/debug/vars` endpoint. It shows how to retrieve all exposed variables and how to filter them using a query parameter.
+SOURCE: https://github.com/gofiber/docs/blob/master/versioned_docs/version-v2.x/api/middleware/expvar.md#_snippet_3
+
+LANGUAGE: Bash
+CODE:
+```
+curl 127.0.0.1:3000
+hello expvar count 1
+
+curl 127.0.0.1:3000/debug/vars
+{
+    "cmdline": ["xxx"],
+    "count": 1,
+    "expvarHandlerCalls": 33,
+    "expvarRegexpErrors": 0,
+    "memstats": {...}
+}
+
+curl 127.00.1:3000/debug/vars?r=c
+{
+    "cmdline": ["xxx"],
+    "count": 1
+}
+```
+
+----------------------------------------
+
+TITLE: Ristretto Storage Driver API Signatures
+DESCRIPTION: Defines the public API for interacting with the Ristretto storage driver, including methods for initialization, data manipulation (Get, Set, Delete), and connection management.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-mongodb_v1.x.x/ristretto/README.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+func New(config ...Config) Storage
+func (s *Storage) Get(key string) ([]byte, error)
+func (s *Storage) Set(key string, val []byte, exp time.Duration) error
+func (s *Storage) Delete(key string) error
+func (s *Storage) Reset() error
+func (s *Storage) Close() error
+func (s *Storage) Conn() *ristretto.Cache
+```
+
+----------------------------------------
+
+TITLE: GoFiber app.Test Method API Documentation
+DESCRIPTION: Documents the `app.Test` method of the GoFiber application, detailing its parameters, return values, and purpose for simulating HTTP requests in tests.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/unit-test/README.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+app.Test(req: *http.Request, timeout: int) -> (*http.Response, error)
+  req: An *http.Request object representing the HTTP request to be tested.
+  timeout: An int value specifying the maximum time in milliseconds that the request can take. A value of -1 disables the timeout.
+```
+
+----------------------------------------
+
+TITLE: Coherence Storage Driver API Signatures
+DESCRIPTION: Defines the public API for the Coherence storage driver, including methods for initialization, data manipulation (Get, Set, Delete), and connection management.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-ristretto_v2.x.x/coherence/README.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+func New(config ...Config) (*Storage, error)
+func (s *Storage) Get(key string) ([]byte, error)
+func (s *Storage) Set(key string, val []byte, exp time.Duration) error
+func (s *Storage) Delete(key string) error
+func (s *Storage) Reset() error
+func (s *Storage) Close() error
+func (s *Storage) Conn() *Session
+```
+
+----------------------------------------
+
+TITLE: Ristretto Storage Driver API Signatures
+DESCRIPTION: Defines the public API methods for the Ristretto storage driver, including initialization, data manipulation (Get, Set, Delete), and connection management.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-azureblob_v1.x.x/ristretto/README.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Storage Interface:
+  New(config ...Config) Storage
+    config: Optional configuration for the storage.
+    Returns: Storage interface instance.
+  Get(key string) ([]byte, error)
+    key: The key to retrieve.
+    Returns: []byte (value), error (if any).
+  Set(key string, val []byte, exp time.Duration) error
+    key: The key to set.
+    val: The value to store.
+    exp: Expiration duration for the key.
+    Returns: error (if any).
+  Delete(key string) error
+    key: The key to delete.
+    Returns: error (if any).
+  Reset() error
+    Resets the storage.
+    Returns: error (if any).
+  Close() error
+    Closes the storage connection.
+    Returns: error (if any).
+  Conn() *ristretto.Cache
+    Returns: *ristretto.Cache (underlying Ristretto cache instance).
+```
+
+----------------------------------------
+
+TITLE: LevelDB Storage API Signatures
+DESCRIPTION: Defines the core methods available for interacting with the LevelDB storage instance, including creation, data manipulation (Get, Set, Delete), and connection management. These signatures outline the public interface of the storage.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-clickhouse_v0.x.x/leveldb/README.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Storage Interface:
+  New(config ...Config) Storage
+    Description: Creates a new LevelDB storage instance.
+    Parameters:
+      config: Optional configuration struct.
+    Returns: Storage interface.
+  Get(key string) ([]byte, error)
+    Description: Retrieves a value by key.
+    Parameters:
+      key: The key to retrieve.
+    Returns: Value as byte slice and an error if any.
+  Set(key string, val []byte, exp time.Duration) error
+    Description: Sets a key-value pair with an optional expiration.
+    Parameters:
+      key: The key to set.
+      val: The value to store.
+      exp: Expiration duration.
+    Returns: An error if any.
+  Delete(key string) error
+    Description: Deletes a key-value pair.
+    Parameters:
+      key: The key to delete.
+    Returns: An error if any.
+  Reset() error
+    Description: Resets the storage, clearing all data.
+    Returns: An error if any.
+  Close() error
+    Description: Closes the LevelDB connection.
+    Returns: An error if any.
+  Conn() *leveldb.DB
+    Description: Returns the underlying LevelDB connection.
+    Returns: Pointer to leveldb.DB.
+```
+
+----------------------------------------
+
+TITLE: Access GoFiber Served Static Files
+DESCRIPTION: Illustrates how to access static files served by a GoFiber application through HTTP requests. It shows example URLs for an HTML file, a JavaScript file, and a CSS file, assuming they are located in the configured static directory.
+SOURCE: https://github.com/gofiber/docs/blob/master/versioned_docs/version-v1.x/intro.md#_snippet_13
+
+LANGUAGE: Bash
+CODE:
+```
+http://localhost:8080/hello.html
+http://localhost:8080/js/jquery.js
+http://localhost:8080/css/style.css
+```
+
+----------------------------------------
+
+TITLE: URL Shortener API Documentation
+DESCRIPTION: Details the API endpoint, request payload, and response structure for the URL shortening service, including rate limiting information and configurable values.
+SOURCE: https://github.com/gofiber/docs/blob/master/docs/recipes/url-shortener-api/README.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+API Endpoint: http://localhost:3000/api/v1/
+
+API Payload:
+  url: Original URL (string)
+  short: Custom short URL (string, Optional)
+  expiry: Time to expire (int, hours)
+
+API Response:
+  url: Original URL (string)
+  short: Custom short URL (string)
+  expiry: Time to expire (int, hours)
+  rate_limit: Number of API calls remaining (int)
+  rate_limit_reset: Time to rate limit reset (int, minutes)
+
+Rate Limiting: 10 calls every 30 minutes. Configurable via .env file.
+```
+
+----------------------------------------
+
+TITLE: GoFiber LevelDB Storage API Signatures
+DESCRIPTION: Defines the core API methods for interacting with the LevelDB storage in GoFiber, including creation, data manipulation (Get, Set, Delete), and connection management.
+SOURCE: https://github.com/gofiber/docs/blob/master/storage_versioned_docs/version-neo4j_v0.x.x/leveldb/README.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+func New(config ...Config) Storage
+func (s *Storage) Get(key string) ([]byte, error)
+func (s *Storage) Set(key string, val []byte, exp time.Duration) error
+func (s *Storage) Delete(key string) error
+func (s *Storage) Reset() error
+func (s *Storage) Close() error
+func (s *Storage) Conn() *leveldb.DB
+```
