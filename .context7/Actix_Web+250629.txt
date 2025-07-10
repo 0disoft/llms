@@ -1,0 +1,1382 @@
+TITLE: Basic Actix Web Server with Dynamic Route
+DESCRIPTION: This Rust code provides a complete example of a simple Actix Web server. It defines an asynchronous `greet` function that handles GET requests to `/hello/{name}`, extracting the name from the URL path. The `main` function initializes an `HttpServer` and binds it to `127.0.0.1:8080`, serving the `greet` service.
+SOURCE: https://github.com/actix/actix-web/blob/master/README.md#_snippet_1
+
+LANGUAGE: rust
+CODE:
+```
+use actix_web::{get, web, App, HttpServer, Responder};
+
+#[get("/hello/{name}")]
+async fn greet(name: web::Path<String>) -> impl Responder {
+    format!("Hello {name}!")
+}
+
+#[actix_web::main] // or #[tokio::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new().service(greet)
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
+}
+```
+
+----------------------------------------
+
+TITLE: Actix Web: `App::data` Deprecation and Migration to `App::app_data`
+DESCRIPTION: This section explains the deprecation of `App::data` in Actix Web, advising users to switch to `App::app_data` to avoid confusion when extracting shared application data in handlers. It highlights that the type used for `app_data` should match the type extracted with the `Data` wrapper in handler arguments.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-4.0.md#_snippet_12
+
+LANGUAGE: diff
+CODE:
+```
+  use actix_web::web::Data;
+
+  #[get("/")]
+  async fn handler(my_state: Data<MyState>) -> { todo!() }
+
+  HttpServer::new(|| {
+-     App::new()
+-         .data(MyState::default())
+-         .service(handler)
+
++     let my_state: Data<MyState> = Data::new(MyState::default());
++
++     App::new()
++         .app_data(my_state)
++         .service(handler)
+  })
+```
+
+----------------------------------------
+
+TITLE: Add #[scope] Macro (Actix-web APIDOC)
+DESCRIPTION: Introduces the `#[scope]` macro, providing a declarative way to define route scopes, improving routing organization and readability.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_14
+
+LANGUAGE: APIDOC
+CODE:
+```
+#[scope("/path")]
+fn my_scope() -> Scope {
+  // ... routes
+}
+```
+
+----------------------------------------
+
+TITLE: Actix-web 1.0 State Management with Data
+DESCRIPTION: The `State` mechanism for application-wide data has been replaced by `Data`. You now register shared data using `App.data()` during application initialization and access it in handlers either via the `Data` extractor or through the `HttpRequest` object.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-1.0.md#_snippet_9
+
+LANGUAGE: Rust
+CODE:
+```
+App.with_state(T)
+```
+
+LANGUAGE: Rust
+CODE:
+```
+App.new()
+     .data(T)
+```
+
+LANGUAGE: Rust
+CODE:
+```
+use actix_web::web::Data;
+
+fn endpoint_handler(Data<T>)){
+    ...
+}
+```
+
+LANGUAGE: Rust
+CODE:
+```
+fn endpoint_handler(req: HttpRequest) {
+```
+
+----------------------------------------
+
+TITLE: Add Resource get/post/etc. Methods (Actix-web APIDOC)
+DESCRIPTION: Introduces convenience methods like `get()`, `post()`, etc., directly on `Resource`, allowing more concise route definitions that don't require additional guards.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_29
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource:
+  get(handler: impl Handler) -> &mut Self
+  post(handler: impl Handler) -> &mut Self
+  // ... other HTTP methods
+```
+
+----------------------------------------
+
+TITLE: Host Guard Ignores Host Header in HTTP/2 (Actix-web APIDOC)
+DESCRIPTION: The `Host` guard now ignores the `Host` header when the connection protocol is HTTP/2, aligning with HTTP/2 practices.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Host guard:
+  Ignores `Host` header when connection protocol is HTTP/2.
+```
+
+----------------------------------------
+
+TITLE: Update ServiceResponse API in Actix Web
+DESCRIPTION: This snippet outlines several modifications to the `ServiceResponse` type, including changes to its `error_response`, `checked_expr`, and `map_body` methods, enhancing its flexibility and type safety.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_74
+
+LANGUAGE: APIDOC
+CODE:
+```
+ServiceResponse:
+  error_response():
+    - Now uses `Body` type.
+  checked_expr():
+    - Now returns a `Result`.
+  take_body():
+    - Method mentioned.
+  map_body(closure: Fn(B) -> B):
+    - Closure now receives and returns `B` instead of `ResponseBody<B>`.
+```
+
+----------------------------------------
+
+TITLE: Add test::TestRequest::set_form()
+DESCRIPTION: A convenience method `set_form()` is added to `test::TestRequest` for automatically serializing data into form-urlencoded format and setting the appropriate header for test requests.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_94
+
+LANGUAGE: APIDOC
+CODE:
+```
+impl test::TestRequest {
+  fn set_form<T: Serialize>(data: T) -> Self
+}
+```
+
+----------------------------------------
+
+TITLE: Migrating from `HttpRequest` Body Methods to Extractors
+DESCRIPTION: Explains the deprecation of `HttpRequest::body()`, `urlencoded()`, `json()`, `multipart()` and the new approach of using dedicated extractors like `Bytes`, `String`, `Form`, `Json`, `Multipart` as handler parameters.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-1.0.md#_snippet_13
+
+LANGUAGE: Rust
+CODE:
+```
+fn index(req: &HttpRequest) -> Responder {
+   req.body()
+       .and_then(|body| {
+          ...
+       })
+}
+```
+
+LANGUAGE: Rust
+CODE:
+```
+fn index(body: Bytes) -> Responder {
+   ...
+}
+```
+
+----------------------------------------
+
+TITLE: Add Rustls 0.23 Service Constructors
+DESCRIPTION: Introduces new service constructors for `h1::H1Service`, `h2::H2Service`, and `HttpService` that integrate with `rustls` version 0.23. These constructors, including `rustls_0_23()` and `rustls_0_23_with_config()`, facilitate setting up HTTPS services using the specified `rustls` version.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+h1::H1Service::rustls_0_23()
+h2::H2Service::rustls_0_23()
+HttpService::rustls_0_23()
+HttpService::rustls_0_23_with_config()
+```
+
+----------------------------------------
+
+TITLE: Add New Header Name Constants
+DESCRIPTION: Introduces several new header name constants within the `header` module. These constants provide convenient and type-safe ways to refer to common HTTP headers, improving code readability and reducing potential for typos.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_14
+
+LANGUAGE: APIDOC
+CODE:
+```
+header::CACHE_STATUS
+header::CDN_CACHE_CONTROL
+header::CROSS_ORIGIN_EMBEDDER_POLICY
+header::CROSS_ORIGIN_OPENER_POLICY
+header::PERMISSIONS_POLICY
+header::X_FORWARDED_FOR
+header::X_FORWARDED_HOST
+header::X_FORWARDED_PROTO
+```
+
+----------------------------------------
+
+TITLE: Enhance Either Type and Add Service Registration Macros in Actix Web
+DESCRIPTION: This snippet highlights the addition of `into_inner()` for `Either` types containing `web::Json` or `web::Form`, and the introduction of the `services!` macro for easier registration of multiple services to `App`.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_81
+
+LANGUAGE: APIDOC
+CODE:
+```
+Either<web::Json<T>, web::Form<T>>:
+  into_inner():
+    - New method added to return the inner type.
+Either<web::Form<T>, web::Json<T>>:
+  into_inner():
+    - New method added to return the inner type.
+
+App:
+  services! macro:
+    - Added for helping register multiple services.
+  - Enable registering a `Vec` of services of the same type.
+```
+
+----------------------------------------
+
+TITLE: Add PathConfig Support
+DESCRIPTION: Introduces `PathConfig` for configuring path extraction behavior.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_99
+
+LANGUAGE: APIDOC
+CODE:
+```
+struct PathConfig
+```
+
+----------------------------------------
+
+TITLE: actix-web 3.0.0-beta.15 API Changes
+DESCRIPTION: Comprehensive list of API additions and modifications in actix-web 3.0.0-beta.15, covering HTTP/2 handshake timeouts, response body handling, and request data access. This version introduced new body types and improved trait implementations.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_34
+
+LANGUAGE: APIDOC
+CODE:
+```
+Added:
+- Add timeout for canceling HTTP/2 server side connection handshake. Default to 5 seconds.
+- HTTP/2 handshake timeout can be configured with ServiceConfig::client_timeout.
+- Response::map_into_boxed_body.
+- body::EitherBody enum.
+- body::None struct.
+- Impl MessageBody for bytestring::ByteString.
+- impl Clone for ws::HandshakeError.
+- #[must_use] for ws::Codec to prevent subtle bugs.
+- impl Default for ws::Codec.
+- header::QualityItem::{max, min}.
+- header::Quality::{MAX, MIN}.
+- impl Display for header::Quality.
+- Connection data set through the on_connect_ext callbacks is now accessible only from the new Request::conn_data() method.
+- Request::take_conn_data().
+- Request::take_req_data().
+- impl Clone for RequestHead.
+- New methods on MessageBody trait, is_complete_body and take_complete_body, both with default implementations, for optimizations on body types that are done in exactly one poll/chunk.
+- New boxed method on MessageBody trait for wrapping body type.
+
+Changed:
+- Rename body::BoxBody::{from_body => new}.
+- Body type for Responses returned from Response::{new, ok, etc...} is now BoxBody.
+- The Error associated type on MessageBody type now requires impl Error (or similar).
+- Error types using in service builders now require Into<Response<BoxBody>>.
+- From implementations on error types now return a Response<BoxBody>.
+- ResponseBuilder::body(B) now returns Response<EitherBody<B>>.
+- ResponseBuilder::finish() now returns Response<EitherBody<()>>.
+```
+
+----------------------------------------
+
+TITLE: Update Test Server Module and Start Methods
+DESCRIPTION: The `actix_http_test::TestServer` has been moved to the `actix_web::test` module. To start a test server, use the new `test::start()` or `test_start_with_config()` methods.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-2.0.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Test Server:
+  - `actix_http_test::TestServer` moved to `actix_web::test`
+  - Start with `test::start()` or `test_start_with_config()`
+```
+
+----------------------------------------
+
+TITLE: New and Deprecated API Methods in actix-web 3.0.0
+DESCRIPTION: Introduces new methods and highlights deprecations, guiding users towards preferred API usage for client builders and client objects.
+SOURCE: https://github.com/actix/actix-web/blob/master/awc/CHANGES.md#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+ClientBuilder:
+  - add_default_header(name: HeaderName, value: HeaderValue): New method to add default headers.
+  - header(name: HeaderName, value: HeaderValue): Deprecated; use add_default_header().
+
+Client:
+  - headers(): New method to get a mutable reference to the client's default HeaderMap.
+```
+
+----------------------------------------
+
+TITLE: Actix Web: Updating `Guard` Trait API Usage
+DESCRIPTION: This section details the changes to the `Guard` trait interface in Actix Web, requiring implementors of routing guards to adapt to a more flexible API. It specifically highlights the change from `RequestHead` to `GuardContext<'_>` in the `check` method signature.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-4.0.md#_snippet_15
+
+LANGUAGE: diff
+CODE:
+```
+  struct MethodGuard(HttpMethod);
+
+  impl Guard for MethodGuard {
+-     fn check(&self, request: &RequestHead) -> bool {
++     fn check(&self, ctx: &GuardContext<'_>) -> bool {
+-         request.method == self.0
++         ctx.head().method == self.0
+      }
+  }
+```
+
+----------------------------------------
+
+TITLE: Implement From<Box<dyn ResponseError>> for Error (Actix-web APIDOC)
+DESCRIPTION: Allows conversion from `Box<dyn ResponseError>` to `Error`, simplifying error handling and interoperability with custom error types.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_20
+
+LANGUAGE: APIDOC
+CODE:
+```
+impl From<Box<dyn ResponseError>> for Error
+```
+
+----------------------------------------
+
+TITLE: Add ContentDisposition::attachment() Constructor (Actix-web APIDOC)
+DESCRIPTION: Introduces `attachment()` constructor to `ContentDisposition`, simplifying the creation of content disposition headers for file downloads.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_40
+
+LANGUAGE: APIDOC
+CODE:
+```
+ContentDisposition:
+  attachment(filename: &str) -> ContentDisposition
+```
+
+----------------------------------------
+
+TITLE: Update HttpServer Start Method
+DESCRIPTION: The `HttpServer::start()` method has been renamed to `HttpServer::run()`. The updated `run()` method also allows awaiting its result, which will await the server's exit.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-2.0.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+HttpServer::start() (deprecated)
+HttpServer::run() (new, awaitable for server exit)
+```
+
+----------------------------------------
+
+TITLE: Apply HttpServer::max_connection_rate() with rustls (Actix-web APIDOC)
+DESCRIPTION: Ensures that the `HttpServer::max_connection_rate()` setting is correctly applied when using `rustls` versions 0.22 or 0.23.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_13
+
+LANGUAGE: APIDOC
+CODE:
+```
+HttpServer:
+  max_connection_rate():
+    Setting now applies correctly with `rustls` v0.22 and v0.23.
+```
+
+----------------------------------------
+
+TITLE: Basic Usage of Actix Web Client (awc) in Rust
+DESCRIPTION: This example demonstrates how to initialize an `awc` client, send a basic HTTP GET request to a URL, and print the server's response. It uses `actix_rt::System` to block on the asynchronous operation.
+SOURCE: https://github.com/actix/actix-web/blob/master/awc/README.md#_snippet_0
+
+LANGUAGE: Rust
+CODE:
+```
+use actix_rt::System;
+use awc::Client;
+
+fn main() {
+    System::new().block_on(async {
+        let client = Client::default();
+
+        let res = client
+            .get("http://www.rust-lang.org")    // <- Create request builder
+            .insert_header(("User-Agent", "Actix-web"))
+            .send()                             // <- Send http request
+            .await;
+
+        println!("Response: {:?}");        // <- server http response
+    });
+}
+```
+
+----------------------------------------
+
+TITLE: Configure Actix Web to Serve Static Files
+DESCRIPTION: This example demonstrates how to set up an Actix Web application to serve static files. It uses `actix-files::Files` to create a service that serves content from the current directory (`.`) under the `/static` URL path, with a preference for UTF-8 encoding.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-files/README.md#_snippet_0
+
+LANGUAGE: rust
+CODE:
+```
+use actix_web::App;
+use actix_files::Files;
+
+let app = App::new()
+    .service(Files::new("/static", ".").prefer_utf8(true));
+```
+
+----------------------------------------
+
+TITLE: actix-web 3.0.0-beta.16 API Changes
+DESCRIPTION: Summary of API updates in actix-web 3.0.0-beta.16, including changes to the `MessageBody` trait and header-related traits. A new method `try_into_bytes` was added to `MessageBody` for optimization.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_33
+
+LANGUAGE: APIDOC
+CODE:
+```
+Added:
+- New method on MessageBody trait, try_into_bytes, with default implementation, for optimizations on body types that complete in exactly one poll. Replaces is_complete_body and take_complete_body.
+
+Changed:
+- Rename trait IntoHeaderPair => TryIntoHeaderPair
+- Rename TryIntoHeaderPair::{try_into_header_pair => try_into_pair}
+- Rename trait IntoHeaderValue => TryIntoHeaderValue
+
+Removed:
+- MessageBody::{is_complete_body,take_complete_body}
+```
+
+----------------------------------------
+
+TITLE: Restrict http::header::Encoding to Content-Encoding types in Actix Web
+DESCRIPTION: The `http::header::Encoding` type now exclusively represents `Content-Encoding` types. This clarifies its purpose and prevents its misuse for other encoding contexts.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_72
+
+LANGUAGE: APIDOC
+CODE:
+```
+http::header::Encoding: Now only represents Content-Encoding types.
+```
+
+----------------------------------------
+
+TITLE: Enable macros feature flag by default in Actix Web
+DESCRIPTION: The `macros` feature flag, which enables routing and runtime macros, is now on by default in Actix Web. This simplifies initial setup for common web application patterns.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_53
+
+LANGUAGE: APIDOC
+CODE:
+```
+Feature Flag: macros (on by default)
+  - Enables routing macros
+  - Enables runtime macros
+```
+
+----------------------------------------
+
+TITLE: Actix-web 0.5.0-beta.2 ResourceDef and Routing Enhancements
+DESCRIPTION: Introduction of new methods for `ResourceDef` and significant improvements to routing logic, including handling of prefix routes, path separators, and multi-pattern resources.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-router/CHANGES.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+ResourceDef:
+  - join(): Introduce new method.
+  - pattern(): Now returns the first pattern in multi-pattern resources.
+  - build_resource_path(): Support for multi-pattern resources.
+
+Routing:
+  - Disallow prefix routes with tail segments.
+  - Enforce path separators on dynamic prefixes.
+  - Improve malformed path error messages.
+  - Prefix segments always end with a segment delimiter or end-of-input.
+  - Prefix segments with trailing slashes define a trailing empty segment.
+  - Support multi-pattern prefixes and joins.
+```
+
+----------------------------------------
+
+TITLE: New Actix-web Trait Implementations
+DESCRIPTION: Lists new trait implementations for various Actix-web types, improving their usability with common Rust traits like `Clone`, `Copy`, `Default`, `Display`, `Eq`, `From`, `FromStr`, `Header`, `IntoHeaderValue`, `IntoIterator`, and `MessageBody`.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_22
+
+LANGUAGE: APIDOC
+CODE:
+```
+Trait Implementations Added:
+- Clone for ws::HandshakeError
+- Clone for body::AnyBody<S> where S: Clone
+- Clone for RequestHead
+- Clone for ResponseHead
+- Copy for QualityItem<T> where T: Copy
+- Default for ContentEncoding
+- Default for HttpServiceBuilder
+- Default for KeepAlive
+- Default for Response
+- Default for ws::Codec
+- Display for header::Quality
+- Eq for header::ContentEncoding
+- ExactSizeIterator and FusedIterator for all HeaderMap iterators
+- From<Duration> for KeepAlive
+- From<Option<Duration>> for KeepAlive
+- From<Vec<u8>> for Response<Vec<u8>>
+- FromStr for ContentEncoding
+- Header for ContentEncoding
+- IntoHeaderValue for ContentEncoding
+- IntoIterator for HeaderMap
+- MessageBody for bytestring::ByteString
+- MessageBody for Pin<Box<T>> where T: MessageBody
+```
+
+----------------------------------------
+
+TITLE: New Actix-web Traits
+DESCRIPTION: Describes new traits introduced, such as `TryIntoHeaderPair`, which facilitates using both typed and untyped headers in methods.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_18
+
+LANGUAGE: APIDOC
+CODE:
+```
+Traits Added:
+- TryIntoHeaderPair: allows using typed and untyped headers in the same methods.
+```
+
+----------------------------------------
+
+TITLE: API Removals in Actix-web 3.0.0-beta.12
+DESCRIPTION: This section lists API elements and features removed in Actix-web version 3.0.0-beta.12, streamlining the framework.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_41
+
+LANGUAGE: APIDOC
+CODE:
+```
+client module
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+trust-dns feature
+```
+
+----------------------------------------
+
+TITLE: Add `header::CLEAR_SITE_DATA` Constant
+DESCRIPTION: Introduces a new constant, `CLEAR_SITE_DATA`, within the `header` module. This constant represents the 'Clear-Site-Data' HTTP header, providing a convenient way to reference it in Actix-web applications.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+const CLEAR_SITE_DATA: HeaderName;
+```
+
+----------------------------------------
+
+TITLE: Support Asynchronous Data Factories
+DESCRIPTION: Actix Web now supports asynchronous data factories, enabling non-blocking data initialization.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_98
+
+LANGUAGE: APIDOC
+CODE:
+```
+fn App::app_data<T, F>(factory: F) where F: Fn() -> impl Future<Output = T>
+```
+
+----------------------------------------
+
+TITLE: Add HttpRequest::full_url() Method (Actix-web APIDOC)
+DESCRIPTION: Adds the `full_url()` method to `HttpRequest`, allowing retrieval of the complete URL of the incoming request, including scheme, host, path, and query parameters.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+HttpRequest:
+  full_url() -> Result<Url, UrlParseError>
+```
+
+----------------------------------------
+
+TITLE: Implement Responder for Vec<u8> in Actix Web
+DESCRIPTION: Actix Web now implements the `Responder` trait for `Vec<u8>`, allowing byte vectors to be directly returned as HTTP responses. This simplifies handling binary response bodies.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_51
+
+LANGUAGE: APIDOC
+CODE:
+```
+impl Responder for Vec<u8>
+```
+
+----------------------------------------
+
+TITLE: Actix-multipart 0.6.2 API: New Testing Utilities
+DESCRIPTION: Version 0.6.2 introduces a new `test` module, providing utilities to assist with testing `actix-multipart` components. This enhances the testability of applications using the crate.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-multipart/CHANGES.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+Module Additions:
+  - `test` module: Contains testing utilities for `actix-multipart`.
+```
+
+----------------------------------------
+
+TITLE: Rework Responder Trait and ServiceRequest Methods in Actix Web
+DESCRIPTION: This snippet details the significant rework of the `Responder` trait to be synchronous and directly return `Response`/`HttpResponse`, simplifying its usage and improving performance. It also notes that `ServiceRequest::into_parts`, `from_parts`, and `from_request` can no longer fail.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_82
+
+LANGUAGE: APIDOC
+CODE:
+```
+Responder Trait:
+  - Reworked to be sync.
+  - Now returns `Response`/`HttpResponse` directly.
+
+ServiceRequest:
+  into_parts():
+    - Can no longer fail.
+  from_parts():
+    - Can no longer fail.
+  from_request():
+    - Can no longer fail.
+```
+
+----------------------------------------
+
+TITLE: Actix-web 0.2.7 Router Recognition Method
+DESCRIPTION: Addition of a new recognition method to the `Router` component.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-router/CHANGES.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+Router:
+  - recognize_checked(): Add new method.
+```
+
+----------------------------------------
+
+TITLE: Make Cookies Feature Optional and Adjust JsonBody Default Limit
+DESCRIPTION: This snippet describes the change making the `cookies` feature optional (enabled by default) and the adjustment of `JsonBody::new`'s default limit to 32kB for consistency with `JsonConfig`.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_80
+
+LANGUAGE: APIDOC
+CODE:
+```
+Features:
+  cookies:
+    - Now optional, enabled by default.
+
+JsonBody:
+  new():
+    - Returns a default limit of 32kB, consistent with `JsonConfig`.
+```
+
+----------------------------------------
+
+TITLE: Add web::Html Responder (Actix-web APIDOC)
+DESCRIPTION: Introduces `web::Html` as a new responder type, making it easier to return HTML content directly from handlers.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+web:
+  Html<T>: Responder
+    T: Into<Bytes>
+```
+
+----------------------------------------
+
+TITLE: Actix-web 0.5.0-rc.2 API Changes
+DESCRIPTION: Updates to the `Path` struct, introducing a new method and deprecating an existing one for improved string representation.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-router/CHANGES.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Path:
+  - as_str(): Add new method to get path as string.
+  - path(): Deprecate existing method.
+```
+
+----------------------------------------
+
+TITLE: Dependency Updates in Actix Web
+DESCRIPTION: This snippet notes updates to external dependencies, specifically `language-tags` and `actix-web-codegen`.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_85
+
+LANGUAGE: APIDOC
+CODE:
+```
+Dependencies:
+  language-tags:
+    - Updated to `0.3`.
+  actix-web-codegen:
+    - Updated to `0.5.0-beta.1`.
+```
+
+----------------------------------------
+
+TITLE: Implement Responder for Result<(), E: Into<Error>> (Actix-web APIDOC)
+DESCRIPTION: Allows `Result<(), E: Into<Error>>` to be used as a `Responder`. Returning `Ok(())` will now respond with an HTTP 204 No Content status, simplifying handler return types.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+impl Responder for Result<(), E: Into<Error>>
+  Ok(()) -> HTTP 204 No Content
+```
+
+----------------------------------------
+
+TITLE: Add rustls-0_22 Crate Feature (Actix-web APIDOC)
+DESCRIPTION: Adds the `rustls-0_22` crate feature to support version 0.22 of the `rustls` TLS library.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_25
+
+LANGUAGE: APIDOC
+CODE:
+```
+Crate Feature:
+  rustls-0_22: Enables support for `rustls` v0.22.
+```
+
+----------------------------------------
+
+TITLE: Implement `MessageBody` for `Cow`, `&mut B`, and `Pin<B>`
+DESCRIPTION: Extends the `MessageBody` trait implementations to include `Cow<'static, str>`, `Cow<'static, [u8]>`, mutable references `&mut B` (where `B` is `MessageBody + Unpin`), and pinned types `Pin<B>` (where `B::Target` is `MessageBody`). These additions enhance flexibility in defining and handling message bodies.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_11
+
+LANGUAGE: APIDOC
+CODE:
+```
+impl MessageBody for Cow<'static, str>
+impl MessageBody for Cow<'static, [u8]>
+impl<B> MessageBody for &mut B where B: MessageBody + Unpin
+impl<B> MessageBody for Pin<B> where B::Target: MessageBody
+```
+
+----------------------------------------
+
+TITLE: Actix-web 3.0.0-beta.6 API Additions
+DESCRIPTION: Documents new API elements introduced in Actix-web version 3.0.0-beta.6.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_51
+
+LANGUAGE: APIDOC
+CODE:
+```
+`impl<T: MessageBody> MessageBody for Pin<Box<T>>`.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+`Response::{ok, bad_request, not_found, internal_server_error}`.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Helper `body::to_bytes` for async collecting message body into Bytes.
+```
+
+----------------------------------------
+
+TITLE: Add Scope::configure() Method
+DESCRIPTION: A new `configure()` method is added to `Scope`, allowing for modular configuration of scoped routes.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_101
+
+LANGUAGE: APIDOC
+CODE:
+```
+impl Scope {
+  fn configure<F>(f: F) -> Self where F: FnOnce(&mut ServiceConfig)
+}
+```
+
+----------------------------------------
+
+TITLE: Add compat Crate Feature Group (Actix-web APIDOC)
+DESCRIPTION: Adds the `compat` crate feature group (on-by-default), which helps transition to planned v5.0 breaking changes by initially including `compat-routing-macros-force-pub`.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_19
+
+LANGUAGE: APIDOC
+CODE:
+```
+Crate Feature Group:
+  compat (default: enabled)
+    Includes `compat-routing-macros-force-pub` for v5.0 compatibility.
+```
+
+----------------------------------------
+
+TITLE: Utilize Query Extractor for Request Query Parameters in Actix-web
+DESCRIPTION: Actix-web 0.6 encourages the use of the `Query` extractor for parsing URL query parameters, replacing direct usage of `HttpRequest::query()`. This snippet shows how to define a handler that accepts a `Query` extractor, typically mapping to a `HashMap` or a custom struct.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-0.x.md#_snippet_4
+
+LANGUAGE: Rust
+CODE:
+```
+fn index(q: Query<HashMap<String, String>>) -> Result<..> {
+    ...
+}
+```
+
+LANGUAGE: Rust
+CODE:
+```
+let q = Query::<HashMap<String, String>>::extract(req);
+```
+
+----------------------------------------
+
+TITLE: Changed API Method Signatures in actix-web 3.0.0
+DESCRIPTION: Details significant changes to method signatures and associated traits, affecting how data is sent and handled, along with renamed elements.
+SOURCE: https://github.com/actix/actix-web/blob/master/awc/CHANGES.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+Methods:
+  - *::send_json(data: impl Serialize): Now accepts any type implementing Serialize.
+  - *::send_form(data: impl Serialize): Now accepts any type implementing Serialize.
+  - FrozenClientRequest::extra_header(header: impl TryIntoHeaderPair): Now accepts any type implementing TryIntoHeaderPair.
+  - ClientRequest::send_body(body: impl MessageBody): Now accepts any type implementing MessageBody.
+
+Trait Bounds Removed:
+  - Unpin bound removed from *::send_stream methods.
+  - Unpin bound removed from impl Future for ResponseBody.
+  - Unpin bound removed from impl Future for JsonBody.
+  - Unpin bound removed from impl Stream for ClientResponse.
+
+Renamed Elements:
+  - Connector::{ssl => openssl}: Connector's SSL-related method renamed to openssl.
+  - MessageBody => ResponseBody: Trait MessageBody renamed to ResponseBody to avoid conflicts.
+```
+
+----------------------------------------
+
+TITLE: API Renames and Modifications in Actix-web 3.0.0-beta.13
+DESCRIPTION: This section details significant renames and structural changes to existing API elements in Actix-web version 3.0.0-beta.13, primarily affecting AnyBody and Encoder.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_38
+
+LANGUAGE: APIDOC
+CODE:
+```
+body::AnyBody::{Message => Body} renamed
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+body::AnyBody::{from_message => new_boxed} renamed
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+body::AnyBody::{from_slice => copy_from_slice} renamed
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+body::{BoxAnyBody => BoxBody} renamed
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+AnyBody representation changed to include a type parameter in Body variant (defaults to BoxBody)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Encoder::response now returns AnyBody<Encoder<B>>
+```
+
+----------------------------------------
+
+TITLE: Route Data Unified with App Data
+DESCRIPTION: Route-specific data is now unified with application data, and `Route::data()` has been moved to `Resource::data()`.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_109
+
+LANGUAGE: APIDOC
+CODE:
+```
+Route::data() -> Removed
+Resource::data() -> New
+```
+
+----------------------------------------
+
+TITLE: API Removals in Actix-web 3.0.0-beta.8
+DESCRIPTION: This section lists macro removals in Actix-web version 3.0.0-beta.8.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_47
+
+LANGUAGE: APIDOC
+CODE:
+```
+downcast and downcast_get_type_id macros
+```
+
+----------------------------------------
+
+TITLE: Add Remainder Match Support
+DESCRIPTION: Adds support for remainder path matching, allowing routes like `/path/{tail}*` to capture the rest of the URL path.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_113
+
+LANGUAGE: APIDOC
+CODE:
+```
+Path: "/path/{tail}*"
+```
+
+----------------------------------------
+
+TITLE: Actix-web 0.5.0-beta.1 API Refactoring and Renames
+DESCRIPTION: Extensive refactoring of routing-related APIs, including bug fixes, introduction of new iterators, re-working of the `IntoPatterns` trait, and numerous method renames across `Path`, `ResourceDef`, and `Router`.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-router/CHANGES.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Bug Fixes:
+  - Multi-patterns: Static patterns no longer interpreted as regex.
+  - Segment interpolation: Fix unintended `Path` state after matching.
+  - ResourceDef: Fix `PartialEq` implementation.
+
+ResourceDef:
+  - pattern_iter(): Introduce new method for iterating over all patterns.
+  - name_mut(): Remove method.
+  - set_name(): Introduce new method.
+  - resource_path_from_iter(): Renamed from `resource_path`, now takes `IntoIterator`.
+  - resource_path_from_map(): Renamed from `resource_path_named`.
+  - find_match(): Renamed from `is_prefix_match`.
+  - capture_match_info(): Renamed from `match_path`.
+  - capture_match_info_fn(): Renamed from `match_path_checked`.
+  - name(): Return type is now `Option<&str>`.
+  - pattern(): Return type is now `Option<&str>`.
+
+Path:
+  - segment_count(): Renamed from `len`.
+
+IntoPatterns Trait:
+  - Re-worked, adding a `Patterns` enum.
+  - Implemented for `bytestring::ByteString`.
+
+Router:
+  - `*_fn` methods: Renamed from `*_checked`.
+```
+
+----------------------------------------
+
+TITLE: Actix-web 0.2.3 IntoPattern Implementation for String
+DESCRIPTION: Implementation of the `IntoPattern` trait for string references.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-router/CHANGES.md#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+IntoPattern Trait:
+  - Implemented for `&String`.
+```
+
+----------------------------------------
+
+TITLE: Actix-web 3.0.0-beta.6 API Changes
+DESCRIPTION: Details API modifications and behavioral changes in Actix-web version 3.0.0-beta.6.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_52
+
+LANGUAGE: APIDOC
+CODE:
+```
+The type parameter of `Response` no longer has a default.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+The `Message` variant of `body::Body` is now `Pin<Box<dyn MessageBody>>`.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+`BodyStream` and `SizedStream` are no longer restricted to Unpin types.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Error enum types are marked `#[non_exhaustive]`.
+```
+
+----------------------------------------
+
+TITLE: Actix-web 0.2.2 RouterBuilder Path Usage
+DESCRIPTION: The `RouterBuilder::path()` method now utilizes the `IntoPattern` trait.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-router/CHANGES.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+RouterBuilder:
+  - path(): Now uses `IntoPattern` trait.
+```
+
+----------------------------------------
+
+TITLE: Actix-web 3.0.0 API Changes - Core Updates
+DESCRIPTION: Documents significant API modifications and behavioral changes introduced in Actix-web, affecting traits, error handling, response bodies, and module visibility.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-http/CHANGES.md#_snippet_49
+
+LANGUAGE: APIDOC
+CODE:
+```
+The `MessageBody` trait now has an associated `Error` type.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+All error trait bounds in server service builders have changed from `Into<Error>` to `Into<Response<AnyBody>>`.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+All error trait bounds in message body and stream impls changed from `Into<Error>` to `Into<Box<dyn std::error::Error>>`.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Places in `Response` where `ResponseBody<B>` was received or returned now simply use `B`.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+`header` mod is now public.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+`uri` mod is now public.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Update `language-tags` to `0.3`.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Reduce the level from `error` to `debug` for the log line that is emitted when a `500 Internal Server Error` is built using `HttpResponse::from_error`.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+`ResponseBuilder::message_body` now returns a `Result`.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Remove `Unpin` bound on `ResponseBuilder::streaming`.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+`HttpServer::{listen_rustls(), bind_rustls()}` now honor the ALPN protocols in the configuration parameter.
+```
+
+----------------------------------------
+
+TITLE: Standardize Actix Web Header API Usage
+DESCRIPTION: Header-related APIs have been standardized across `actix-*` crates, aligning with `HeaderMap` naming conventions. Use `insert_header` to override existing headers and `append_header` to add without removal, replacing older `set_header` and `header` methods.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-4.0.md#_snippet_6
+
+LANGUAGE: Rust
+CODE:
+```
+- .set_header("Api-Key", "1234")
++ .insert_header(("Api-Key", "1234"))
+
+- .header("Api-Key", "1234")
++ .append_header(("Api-Key", "1234"))
+
+- .set(ContentType::json())
++ .insert_header(ContentType::json())
+```
+
+----------------------------------------
+
+TITLE: Actix-web Method API Changes and Deprecations
+DESCRIPTION: Covers updates to Actix-web methods, including deprecations, new default behaviors, signature changes, and renames across various components like `App`, `dev::ServiceRequest`, `HttpServer`, and `HttpRequest`.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_47
+
+LANGUAGE: APIDOC
+CODE:
+```
+Methods:
+  App::data():
+    - Is deprecated; `App::app_data()` should be preferred.
+  dev::JsonBody::new():
+    - Returns a default limit of 32kB to be consistent with `JsonConfig` and the default behaviour of the `web::Json<T>` extractor.
+  dev::ServiceRequest::{into_parts, from_parts}():
+    - Can no longer fail.
+  dev::ServiceRequest::from_request:
+    - Can no longer fail.
+  dev::ServiceResponse::error_response():
+    - Now uses body type of `BoxBody`.
+  dev::ServiceResponse::map_body():
+    - Closure receives and returns `B` instead of `ResponseBody<B>`.
+  http::header::ContentType::html():
+    - Now produces `text/html; charset=utf-8` instead of `text/html`.
+  HttpRequest::url_for:
+    - Constructed URLs no longer contain query or fragment.
+  HttpResponseBuilder::json():
+    - Can now receive data by value and reference.
+  HttpServer::{listen_rustls, bind_rustls}():
+    - Now honor the ALPN protocols in the configuration parameter.
+  middleware::NormalizePath():
+    - Now will not try to normalize URIs with no valid path.
+  test::TestRequest::param():
+    - Now accepts more than just static strings.
+  web::Data::into_inner() and Data::get_ref():
+    - No longer require `T: Sized`.
+  HttpServer::client_timeout:
+    - Renamed to `client_request_timeout`.
+  HttpServer::client_shutdown:
+    - Renamed to `client_disconnect_timeout`.
+  http::header::Accept::mime_precedence:
+    - Renamed to `ranked`.
+  http::header::Accept::mime_preference:
+    - Renamed to `preference`.
+  middleware::DefaultHeaders::content_type:
+    - Renamed to `add_content_type`.
+  dev::ConnectionInfo::remote_addr:
+    - Renamed to `peer_addr`, deprecating the old name.
+```
+
+----------------------------------------
+
+TITLE: Refactor ResponseError Trait
+DESCRIPTION: The `ResponseError` trait has undergone refactoring. The `ResponseError::error_response()` method is now solely responsible for rendering the HTTP response.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-2.0.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+ResponseError Trait:
+  - `ResponseError::error_response()` renders HTTP response
+```
+
+----------------------------------------
+
+TITLE: Update Actix Web FromRequest Trait Implementation
+DESCRIPTION: This Rust code diff shows the removal of the `Config` associated type from the `FromRequest` trait in Actix Web v4. Custom extractors should remove the `type Config = ();` line, as configuration is now handled directly via `App::app_data`.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-4.0.md#_snippet_2
+
+LANGUAGE: Rust
+CODE:
+```
+  impl FromRequest for MyExtractor {
+-   type Config = ();
+  }
+```
+
+----------------------------------------
+
+TITLE: Add Payload::into_inner Method and Public def::Payload
+DESCRIPTION: Introduces a new method `into_inner` for the `Payload` struct, allowing access to its internal `def::Payload`, which is now made public.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_87
+
+LANGUAGE: APIDOC
+CODE:
+```
+struct Payload {
+  fn into_inner() -> def::Payload
+}
+def::Payload: public
+```
+
+----------------------------------------
+
+TITLE: Migrate Actix Error Handler to Modify Response (Left Body)
+DESCRIPTION: This snippet demonstrates how to update an `actix-web` error handler function that modifies an existing `ServiceResponse` by inserting a header. It specifically shows the migration to use `map_into_left_body()` for `ErrorHandlerResponse::Response` when the original response is being modified, aligning with the new `EitherBody` design.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-4.0.md#_snippet_8
+
+LANGUAGE: diff
+CODE:
+```
+  fn add_error_header<B>(mut res: ServiceResponse<B>) -> Result<ErrorHandlerResponse<B>, Error> {
+      res.response_mut().headers_mut().insert(
+          header::CONTENT_TYPE,
+          header::HeaderValue::from_static("Error"),
+      );
+-     Ok(ErrorHandlerResponse::Response(res))
++     Ok(ErrorHandlerResponse::Response(res.map_into_left_body()))
+  }
+```
+
+----------------------------------------
+
+TITLE: Allow Scope-Level App Data Override
+DESCRIPTION: Enables setting or overriding application data specifically at the scope level, providing more granular control.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_107
+
+LANGUAGE: APIDOC
+CODE:
+```
+impl Scope {
+  fn app_data<T: 'static>(data: T) -> Self
+}
+```
+
+----------------------------------------
+
+TITLE: Add ServiceConfig::configure for nesting configurations in Actix Web
+DESCRIPTION: The `ServiceConfig::configure` method has been added to allow easy nesting of configuration functions. This promotes modularity and reusability in application setup.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_62
+
+LANGUAGE: APIDOC
+CODE:
+```
+ServiceConfig::configure(f: impl FnOnce(&mut ServiceConfig))
+```
+
+----------------------------------------
+
+TITLE: Rename rust-tls Feature to rustls
+DESCRIPTION: The `rust-tls` feature in your `Cargo.toml` dependencies has been renamed to `rustls`. Please update your project's `Cargo.toml` file accordingly.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-2.0.md#_snippet_6
+
+LANGUAGE: rust
+CODE:
+```
+actix-web = { version = "2.0.0", features = ["rust-tls"] }
+```
+
+LANGUAGE: rust
+CODE:
+```
+actix-web = { version = "2.0.0", features = ["rustls"] }
+```
+
+----------------------------------------
+
+TITLE: Add GuardContext::header method in Actix Web
+DESCRIPTION: A new method, `header`, has been added to `GuardContext`. This allows guards to more easily inspect HTTP headers during the routing process.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/CHANGES.md#_snippet_61
+
+LANGUAGE: APIDOC
+CODE:
+```
+GuardContext::header(name: &str) -> Option<&HeaderValue>
+```
+
+----------------------------------------
+
+TITLE: Actix-web 1.0 Extractor Configuration Update
+DESCRIPTION: Version 1.0 introduces a new `Data` mechanism for handling extractor configuration. Instead of using `with_config` on resources and accessing configuration directly from `Self::Config` in `FromRequest`, configuration is now set using `resource().data()` and retrieved via `req.app_data::<C>()`.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-1.0.md#_snippet_2
+
+LANGUAGE: Rust
+CODE:
+```
+#[derive(Default)]
+struct ExtractorConfig {
+   config: String,
+}
+
+impl FromRequest for YourExtractor {
+   type Config = ExtractorConfig;
+   type Result = Result<YourExtractor, Error>;
+
+   fn from_request(req: &HttpRequest, cfg: &Self::Config) -> Self::Result {
+       println!("use the config: {:?}", cfg.config);
+       ...
+   }
+}
+
+App::new().resource("/route_with_config", |r| {
+   r.post().with_config(handler_fn, |cfg| {
+       cfg.0.config = "test".to_string();
+   })
+})
+```
+
+LANGUAGE: Rust
+CODE:
+```
+#[derive(Default)]
+struct ExtractorConfig {
+   config: String,
+}
+
+impl FromRequest for YourExtractor {
+   type Error = Error;
+   type Future = Result<Self, Self::Error>;
+   type Config = ExtractorConfig;
+
+   fn from_request(req: &HttpRequest, payload: &mut Payload) -> Self::Future {
+       let cfg = req.app_data::<ExtractorConfig>();
+       println!("config data?: {:?}", cfg.unwrap().role);
+       ...
+   }
+}
+
+App::new().service(
+   resource("/route_with_config")
+       .data(ExtractorConfig {
+           config: "test".to_string(),
+       })
+       .route(post().to(handler_fn)),
+)
+```
+
+----------------------------------------
+
+TITLE: Rename ssl Feature to openssl
+DESCRIPTION: The `ssl` feature in your `Cargo.toml` dependencies has been renamed to `openssl`. Ensure your project's `Cargo.toml` file reflects this change.
+SOURCE: https://github.com/actix/actix-web/blob/master/actix-web/MIGRATION-2.0.md#_snippet_7
+
+LANGUAGE: rust
+CODE:
+```
+actix-web = { version = "2.0.0", features = ["ssl"] }
+```
+
+LANGUAGE: rust
+CODE:
+```
+actix-web = { version = "2.0.0", features = ["openssl"] }
+```

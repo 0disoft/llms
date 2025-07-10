@@ -1,0 +1,914 @@
+TITLE: Netlify CLI `env` Command API
+DESCRIPTION: API documentation for the Netlify CLI `env` command and its subcommands, used for managing environment variables on Netlify. Includes details on setting, listing, importing, and cloning variables, along with supported flags and their effects.
+SOURCE: https://docs.netlify.com/cli/get-started/
+
+LANGUAGE: APIDOC
+CODE:
+```
+netlify env:
+  set <key> <value>:
+    description: Create or update a site environment variable.
+    parameters:
+      key:
+        type: string
+        description: The name of the environment variable.
+      value:
+        type: string
+        description: The value to assign to the environment variable.
+    flags:
+      --context <context1> [context2...]:
+        type: string[]
+        description: Space-separated list of deploy contexts (e.g., production, dev, branch:staging).
+      --scope <scope1> [scope2...]:
+        type: string[]
+        description: Space-separated list of scopes (e.g., functions, builds, all).
+      --secret:
+        type: boolean
+        description: Flag to mark the environment variable value as a secret.
+  list:
+    description: List environment variables.
+    flags:
+      --context <context1> [context2...]:
+        type: string[]
+        description: Filter results by deploy context.
+      --scope <scope1> [scope2...]:
+        type: string[]
+        description: Filter results by scope.
+  import <filename>:
+    description: Import environment variables from a .env file.
+    parameters:
+      filename:
+        type: string
+        description: Path to the .env file.
+  clone:
+    description: Copy environment variables from one project to another.
+    flags:
+      --to <destinationSiteId>:
+        type: string
+        description: The ID of the destination Netlify site. Same as Project ID in Netlify UI.
+      --from <sourceSiteID>:
+        type: string
+        description: The ID of the source Netlify site. Same as Project ID in Netlify UI.
+```
+
+----------------------------------------
+
+TITLE: Pages Function onRequest Methods API
+DESCRIPTION: This section defines the various `onRequest` methods available for handling HTTP requests within Pages Functions. These methods allow developers to specify handlers for all requests or for specific HTTP verbs (GET, POST, PATCH, PUT, DELETE, HEAD, OPTIONS). Each method receives an `EventContext` object and is expected to return a `Response` object or a `Promise` resolving to a `Response`.
+SOURCE: https://developers.cloudflare.com/pages/functions/api-reference/
+
+LANGUAGE: APIDOC
+CODE:
+```
+onRequest(context: EventContext): Response | Promise<Response>
+  - Description: This function will be invoked on all requests no matter what the request method is, as long as no specific request verb (like one of the methods below) is exported.
+onRequestGet(context: EventContext): Response | Promise<Response>
+  - Description: This function will be invoked on all GET requests.
+onRequestPost(context: EventContext): Response | Promise<Response>
+  - Description: This function will be invoked on all POST requests.
+onRequestPatch(context: EventContext): Response | Promise<Response>
+  - Description: This function will be invoked on all PATCH requests.
+onRequestPut(context: EventContext): Response | Promise<Response>
+  - Description: This function will be invoked on all PUT requests.
+onRequestDelete(context: EventContext): Response | Promise<Response>
+  - Description: This function will be invoked on all DELETE requests.
+onRequestHead(context: EventContext): Response | Promise<Response>
+  - Description: This function will be invoked on all HEAD requests.
+onRequestOptions(context: EventContext): Response | Promise<Response>
+  - Description: This function will be invoked on all OPTIONS requests.
+```
+
+----------------------------------------
+
+TITLE: Access Netlify CLI Help and Command Information
+DESCRIPTION: Discover how to get help and usage tips directly from the Netlify CLI. This section shows how to use `netlify help` for general information, and how to get detailed help for specific commands and sub-commands, such as `netlify help deploy` or `netlify help sites:create`.
+SOURCE: https://docs.netlify.com/cli/get-started/
+
+LANGUAGE: shell
+CODE:
+```
+netlify help
+netlify help deploy
+netlify help sites:create
+```
+
+----------------------------------------
+
+TITLE: Implement Hono prettyJSON Middleware
+DESCRIPTION: This example integrates the `prettyJSON` middleware into a Hono application. It applies the middleware globally to all GET requests, ensuring that JSON responses are formatted for better readability.
+SOURCE: https://github.com/honojs/node-server#_snippet_36
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { serve } from '@hono/node-server'
+import { Hono } from 'hono'
+import { prettyJSON } from 'hono/pretty-json'
+
+const app = new Hono()
+
+app.get('*', prettyJSON())
+app.get('/', (c) => c.json({ 'Hono meets': 'Node.js' }))
+
+serve(app)
+```
+
+----------------------------------------
+
+TITLE: Cloudflare Worker Fetch Handler with Asset Binding
+DESCRIPTION: An example Cloudflare Worker `fetch` handler that demonstrates how to serve static assets using an `ASSETS` binding. It also includes a simple API route for `/api/` paths, returning JSON, while other requests are handled by the `ASSETS` binding, allowing for combined static and dynamic content serving.
+SOURCE: https://developers.cloudflare.com/workers/static-assets/
+
+LANGUAGE: JavaScript
+CODE:
+```
+// index.js
+export default {  async fetch(request, env) {    const url = new URL(request.url);
+
+        if (url.pathname.startsWith("/api/")) {      return new Response(JSON.stringify({ name: "Cloudflare" }), {
+        headers: { "Content-Type": "application/json" },
+      });    }
+
+        return env.ASSETS.fetch(request);  },
+};
+```
+
+----------------------------------------
+
+TITLE: Cloudflare Pages Functions API Reference
+DESCRIPTION: This section outlines the core components of the Cloudflare Pages Functions API, including available methods and data types. It serves as a quick reference for developers building serverless functions on the Cloudflare Pages platform.
+SOURCE: https://developers.cloudflare.com/pages/functions/api-reference/
+
+LANGUAGE: APIDOC
+CODE:
+```
+Methods:
+  onRequests
+  env.ASSETS.fetch()
+
+Types:
+  EventContext
+  EnvWithFetch
+```
+
+----------------------------------------
+
+TITLE: Cloudflare Workers Configuration and Development Topics
+DESCRIPTION: This section outlines the key configuration options and development topics for Cloudflare Workers. It covers getting started guides, development and testing methodologies, various configuration settings like bindings, compatibility flags, cron triggers, environment variables, and routing, as well as integration options.
+SOURCE: https://developers.cloudflare.com/workers/reference/migrate-to-module-workers/
+
+LANGUAGE: APIDOC
+CODE:
+```
+Cloudflare Workers:
+  Overview
+  Getting started:
+    CLI
+    Dashboard
+    Prompting
+    Templates
+  Examples
+  Tutorials
+  Demos and architectures
+  Development & testing:
+    Overview
+    Environment variables and secrets
+    Vite Plugin
+    Choosing between Wrangler & Vite
+    Developing with multiple Workers
+    Adding local data
+    Supported bindings per development mode
+    Testing
+  Playground
+  Configuration:
+    Bindings
+    Compatibility dates
+    Compatibility flags
+    Cron Triggers
+    Environment variables
+    Integrations:
+      Overview
+      APIs
+      External Services
+      Momento
+    Multipart upload metadata
+    Page Rules
+    Preview URLs Beta
+    Routes and domains:
+      Overview
+      Custom Domains
+      Routes
+      workers.dev
+    Secrets
+    Smart Placement Beta
+    Versions & Deployments
+```
+
+----------------------------------------
+
+TITLE: Create Hono API Server with Basic GET Endpoint
+DESCRIPTION: This snippet demonstrates how to initialize a Hono application and define a simple GET endpoint that returns a JSON response. It shows the basic structure for setting up an API route.
+SOURCE: https://hono.dev/docs/concepts/stacks
+
+LANGUAGE: ts
+CODE:
+```
+import { Hono } from 'hono'
+
+const app = new Hono()
+
+app.get('/hello', (c) => {
+  return c.json({
+    message: `Hello!`,
+  })
+})
+```
+
+----------------------------------------
+
+TITLE: Basic Hono Node.js Server Setup
+DESCRIPTION: This snippet demonstrates the basic setup of a Hono application running on Node.js using the `@hono/node-server` package. It initializes a Hono app, defines a simple GET route for the root path, and starts the server, logging the listening address.
+SOURCE: https://github.com/honojs/node-server#_snippet_31
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { serve } from '@hono/node-server'
+import { Hono } from 'hono'
+
+const app = new Hono()
+app.get('/', (c) => c.text('Hono meets Node.js'))
+
+serve(app, (info) => {
+  console.log(`Listening on http://localhost:${info.port}`)
+})
+```
+
+----------------------------------------
+
+TITLE: Run a Specific Hono Example with npm
+DESCRIPTION: Executes a specific Hono example project using npm's workspace feature. Replace '[workspace]' with the desired example's directory name (e.g., 'basic', 'blog'). This command starts the development server for the chosen example.
+SOURCE: https://github.com/honojs/examples#_snippet_4
+
+LANGUAGE: Shell
+CODE:
+```
+npm -w [workspace] run dev
+```
+
+----------------------------------------
+
+TITLE: Bun HTTP Server and SQLite Database Interaction
+DESCRIPTION: Demonstrates how to set up a basic HTTP server using Bun's `serve` function, define routes, and perform a database query with `bun:sqlite`. This example shows handling API requests and returning JSON responses.
+SOURCE: https://bun.sh/
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { sql, serve } from "bun";
+
+const server = serve({
+  port: 3000,
+  routes: {
+    "/": () => new Response("Welcome to Bun!"),
+    "/api/users": async (req) => {
+      const users = await sql`SELECT * FROM users LIMIT 10`;
+      return Response.json({ users });
+    }
+  }
+});
+
+console.log(`Listening on localhost:${server.port}`);
+```
+
+----------------------------------------
+
+TITLE: Run a Local Netlify Build
+DESCRIPTION: Executes a build locally, mimicking Netlify's production behavior, including Build Plugins. It utilizes environment variables defined in netlify.toml and those set via the Netlify UI, CLI, or API. Locally, these environment variables apply to all scopes.
+SOURCE: https://docs.netlify.com/cli/get-started/
+
+LANGUAGE: CLI
+CODE:
+```
+netlify build
+```
+
+----------------------------------------
+
+TITLE: ViteDevServer.listen Method API Documentation
+DESCRIPTION: This API documentation describes the `listen` method of the `ViteDevServer` object. It details the optional `port` parameter (number) and `isRestart` parameter (boolean), and specifies that the method returns a `Promise` resolving to a `ViteDevServer` instance upon successful server startup.
+SOURCE: https://vitejs.dev/
+
+LANGUAGE: APIDOC
+CODE:
+```
+(method) ViteDevServer.listen(port?: number | undefined, isRestart?: boolean | undefined): Promise<ViteDevServer>
+Start the server.
+```
+
+----------------------------------------
+
+TITLE: Hono: Basic Application with `prettyJSON` Middleware
+DESCRIPTION: Shows how to initialize a Hono application instance, apply the `prettyJSON` middleware (with an example of custom options), and define a simple GET route that returns a basic JSON object. This sets up a minimal Hono server with pretty-printed responses.
+SOURCE: https://hono.dev/docs/middleware/builtin/pretty-json
+
+LANGUAGE: ts
+CODE:
+```
+const app = new Hono()
+
+app.use(prettyJSON()) // With options: prettyJSON({ space: 4 })
+app.get('/', (c) => {
+  return c.json({ message: 'Hono!' })
+})
+```
+
+----------------------------------------
+
+TITLE: Pages Function env.ASSETS.fetch() API
+DESCRIPTION: The `env.ASSETS.fetch()` function provides a mechanism to retrieve static assets directly from your Pages project. It can accept a `Request` object, a URL string, or a URL object as input. This function is designed to process header and redirect rules, ensuring that the returned response reflects the configured project behavior.
+SOURCE: https://developers.cloudflare.com/pages/functions/api-reference/
+
+LANGUAGE: APIDOC
+CODE:
+```
+env.ASSETS.fetch(request: Request | string | URL): Response | Promise<Response>
+  - Description: Allows fetching a static asset from your Pages project.
+  - Parameters:
+    - request: A Request object, URL string, or URL object. The URL must be to the pretty path, not directly to the asset (e.g., '/users/' instead of '/users/index.html').
+  - Behavior: Runs header and redirect rules, modifying the response that is returned.
+```
+
+----------------------------------------
+
+TITLE: Example Hono Project Directory Layout
+DESCRIPTION: Illustrates a typical file and directory structure for a Hono project, showing the placement of source files and a dedicated static assets folder.
+SOURCE: https://github.com/honojs/node-server#_snippet_13
+
+LANGUAGE: Text
+CODE:
+```
+my-hono-project/
+ src/
+ index.ts
+ static/
+ index.html
+```
+
+----------------------------------------
+
+TITLE: Run a Hono Example with Bun
+DESCRIPTION: This command executes a specific Hono example file, 'hello.ts', using the Bun runtime. It demonstrates how to launch and test a Hono application.
+SOURCE: https://github.com/honojs/examples#_snippet_8
+
+LANGUAGE: Shell
+CODE:
+```
+bun run hello.ts
+```
+
+----------------------------------------
+
+TITLE: Example GitHub Feature Flags Configuration
+DESCRIPTION: A JSON object detailing various feature flags used within the GitHub platform, such as those related to Copilot, issues, and site-specific functionalities. This configuration can control experimental features or A/B tests.
+SOURCE: https://github.com/m-shaka/hono-rpc-perf-tips-example#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{"locale":"en","featureFlags":["alternate_user_config_repo","api_insights_show_missing_data_banner","appearance_settings","attestations_filtering","attestations_sorting","codespaces_prebuild_region_target_update","contact_requests_implicit_opt_in","contentful_lp_copilot_extensions","contentful_lp_flex_features","contentful_lp_footnotes","copilot_chat_attach_multiple_images","copilot_chat_custom_instructions","copilot_chat_repo_custom_instructions_preview","copilot_chat_vision_in_claude","copilot_chat_vision_skip_thread_create","copilot_chat_wholearea_dd","copilot_custom_copilots_feature_preview","copilot_duplicate_thread","copilot_free_to_paid_telem","copilot_ftp_settings_upgrade","copilot_ftp_upgrade_to_pro_from_models","copilot_ftp_your_copilot_settings","copilot_immersive_agent_sessions_direct_creation","copilot_immersive_structured_model_picker","copilot_new_immersive_references_ui","copilot_no_floating_button","copilot_paste_text_files","copilot_read_shared_conversation","copilot_spaces_support_forks","copilot_spark_single_user_iteration","copilot_spark_use_streaming","copilot_task_oriented_assistive_prompts","copilot_workbench_connection_reload_banner","copilot_workbench_iterate_panel","copilot_workbench_preview_analytics","copilot_workbench_refresh_on_wsod","custom_copilots_128k_window","custom_copilots_capi_mode","custom_copilots_issues_prs","direct_to_salesforce","dotcom_chat_client_side_skills","failbot_report_error_react_apps_on_page","ghost_pilot_confidence_truncation_25","ghost_pilot_confidence_truncation_40","insert_before_patch","issues_catch_non_json_graphql_response","issues_preserve_tokens_in_urls","issues_react_blur_item_picker_on_close","issues_react_bots_timeline_pagination","issues_react_create_milestone","issues_react_prohibit_title_fallback","issues_react_remove_placeholders","issues_react_set_height_in_markdown","issues_tab_counter_updates","lifecycle_label_name_updates","link_contact_sales_swp_marketo","marketing_pages_search_explore_provider","memex_mwl_filter_field_delimiter","nonreporting_relay_graphql_status_codes","primer_primitives_experimental","primer_react_select_panel_with_modern_action_list","remove_child_patch","sample_network_conn_type","scheduled_reminders_updated_limits","site_homepage_contentful","site_msbuild_hide_integrations","site_msbuild_launch","site_msbuild_webgl_hero","spark_commit_on_default_branch","spark_sync_repository_after_iteration","swp_enterprise_contact_form","use_copilot_avatar","use_paginated_repo_picker_cost_center_form","viewscreen_sandbox","workbench_store_readonly"]}
+```
+
+----------------------------------------
+
+TITLE: Example HTML Output from Hono Renderer
+DESCRIPTION: This snippet shows a basic HTML output that can be generated by a Hono application, demonstrating a simple 'Hello!' message within a paragraph tag.
+SOURCE: https://hono.dev/docs/api/context
+
+LANGUAGE: html
+CODE:
+```
+<html>
+      <body>
+        <p>Hello!</p>
+      </body>
+    </html>
+```
+
+----------------------------------------
+
+TITLE: Fetch API Request Interface
+DESCRIPTION: Detailed API documentation for the Request interface, including its constructor, read-only instance properties, and instance methods.
+SOURCE: https://developer.mozilla.org/en-US/docs/Web/API/Request
+
+LANGUAGE: APIDOC
+CODE:
+```
+Interface: Request
+  Description: The Request interface of the Fetch API represents a resource request.
+  Note: This feature is available in Web Workers.
+
+  Constructor:
+    Request()
+      Description: Creates a new Request object.
+
+  Instance Properties:
+    body: ReadableStream (Read only)
+      Description: A ReadableStream of the body contents.
+    bodyUsed: (Read only)
+      Description: (Description truncated in source)
+    cache: (Read only)
+    credentials: (Read only)
+    destination: (Read only)
+    headers: (Read only)
+    integrity: (Read only)
+    isHistoryNavigation: (Read only)
+    keepalive: (Read only)
+    method: (Read only)
+    mode: (Read only)
+    redirect: (Read only)
+    referrer: (Read only)
+    referrerPolicy: (Read only)
+    signal: (Read only)
+    url: (Read only)
+
+  Instance Methods:
+    arrayBuffer()
+    blob()
+    bytes()
+    clone()
+    formData()
+    json()
+    text()
+```
+
+----------------------------------------
+
+TITLE: Redirecting Requests with Service Worker API
+DESCRIPTION: An example Cloudflare Worker demonstrating how to redirect all incoming requests to a specified URL with a 301 status code using the deprecated Service Worker API syntax. It uses `addEventListener('fetch', ...)` to handle requests.
+SOURCE: https://developers.cloudflare.com/workers/reference/migrate-to-module-workers/
+
+LANGUAGE: JavaScript
+CODE:
+```
+async function handler(request) {
+  const base = 'https://example.com';
+  const statusCode = 301;
+  const destination = new URL(request.url, base);
+  return Response.redirect(destination.toString(), statusCode);
+}
+// Initialize Worker
+addEventListener('fetch', event => {
+  event.respondWith(handler(event.request));
+});
+```
+
+----------------------------------------
+
+TITLE: EventContext Object Properties and Methods
+DESCRIPTION: Describes the properties and methods available on the `context` object passed to `onRequest` methods in Cloudflare Functions, including request details, function path, utility functions like `waitUntil` and `next`, environment access, and dynamic route parameters.
+SOURCE: https://developers.cloudflare.com/pages/functions/api-reference/
+
+LANGUAGE: APIDOC
+CODE:
+```
+EventContext:
+  request: Request
+    description: The incoming Request object.
+  functionPath: string
+    description: The path of the request.
+  waitUntil(promise: Promise<any>): void
+    description: Schedules a promise to be awaited before the Function's execution context is terminated.
+  passThroughOnException(): void
+    description: Prevents the Function from returning an error response if an uncaught exception occurs. Note: Does not work on advanced mode projects.
+  next(input?: Request | string, init?: RequestInit): Promise<Response>
+    description: Passes the request to the next Function or to the asset server if no other Function is available.
+  env: EnvWithFetch
+    description: Holds the environment variables, secrets, and bindings for a Function.
+  params: Params<P>
+    description: Holds the values from dynamic routing.
+  data: Data
+    description: (No specific description provided in source text)
+```
+
+----------------------------------------
+
+TITLE: Basic Hono Application Setup
+DESCRIPTION: This snippet demonstrates the minimal setup for a Hono web application. It imports the Hono class, initializes an app instance, defines a GET route for the root path, and exports the application. This serves as a basic 'Hello World' example for Hono.
+SOURCE: https://hono.dev/docs/
+
+LANGUAGE: ts
+CODE:
+```
+import { Hono } from 'hono'
+const app = new Hono()
+
+app.get('/', (c) => c.text('Hono!'))
+
+export default app
+```
+
+----------------------------------------
+
+TITLE: GitHub Documentation URL Property
+DESCRIPTION: A small JSON object containing a 'props' key with a 'docsUrl' property. This is likely used to dynamically provide a link to relevant documentation, possibly for accessibility features or contextual help within a web application.
+SOURCE: https://github.com/honojs/examples#_snippet_1
+
+LANGUAGE: JSON
+CODE:
+```
+{"props":{"docsUrl":"https://docs.github.com/get-started/accessibility/keyboard-shortcuts"}}
+```
+
+----------------------------------------
+
+TITLE: Manage Netlify Docs Theme with JavaScript
+DESCRIPTION: This client-side JavaScript snippet handles theme switching (dark/light/system) for Netlify documentation pages. It detects user preferences, saves the chosen theme to local storage, and updates the `dark-mode` class on the document root. It also listens for system theme changes.
+SOURCE: https://docs.netlify.com/cli/get-started/
+
+LANGUAGE: JavaScript
+CODE:
+```
+(function (w) { if (!w) return; const darkQuery = w.matchMedia('(prefers-color-scheme: dark)'); const root = document.documentElement; function setTheme(newTheme) { if (newTheme === 'dark' || (newTheme === 'system' && darkQuery.matches)) { root.classList.add('dark-mode'); } else { root.classList.remove('dark-mode'); } w.__theme = newTheme; } w.__setPreferredTheme = function (newTheme) { setTheme(newTheme); try { localStorage.setItem('nf-docs-theme', w.__theme); } catch (err) {} }; // If using system theme, change colors in real time // in response to user settings darkQuery.addEventListener('change', function (event) { if (w.__theme === 'system') { if (event.matches) { root.classList.add('dark-mode'); } else { root.classList.remove('dark-mode'); } } }); let preferredTheme; // Try to get saved theme try { preferredTheme = localStorage.getItem('nf-docs-theme') || 'system'; } catch (err) {} // Initialize preferredTheme setTheme(preferredTheme); })(window);
+```
+
+----------------------------------------
+
+TITLE: API Endpoint: Create Custom Search Scope
+DESCRIPTION: This describes the API endpoint used to create or update custom search scopes. It's a POST request to /search/custom_scopes and expects parameters for the scope's name, query, and an authenticity token.
+SOURCE: https://github.com/honojs/hono/blob/main/docs/CONTRIBUTING.md#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: /search/custom_scopes
+Method: POST
+Parameters:
+  custom_scope_id: string (hidden, optional, for updates)
+  custom_scope_name: string (required, max 50 chars)
+  custom_scope_query: string (required, max 500 chars)
+  authenticity_token: string (required, CSRF token)
+```
+
+----------------------------------------
+
+TITLE: Web API Response Interface Documentation
+DESCRIPTION: Comprehensive documentation for the `Response` interface of the Fetch API, detailing its constructor, instance properties, static methods, and instance methods.
+SOURCE: https://developer.mozilla.org/en-US/docs/Web/API/Response
+
+LANGUAGE: APIDOC
+CODE:
+```
+Response Interface:
+  Description: Represents the response to a request in the Fetch API.
+  Availability: Web Workers
+
+  Constructor:
+    Response():
+      Description: Creates a new Response object.
+
+  Instance Properties:
+    body:
+      Type: ReadableStream
+      Description: A ReadableStream of the body contents.
+      Read Only: true
+    bodyUsed:
+      Description: Indicates if the body has been used.
+      Read Only: true
+    headers:
+      Description: (Not detailed in provided text)
+    ok:
+      Description: (Not detailed in provided text)
+    redirected:
+      Description: (Not detailed in provided text)
+    status:
+      Description: (Not detailed in provided text)
+    statusText:
+      Description: (Not detailed in provided text)
+    type:
+      Description: (Not detailed in provided text)
+    url:
+      Description: (Not detailed in provided text)
+
+  Static Methods:
+    error():
+      Description: (Not detailed in provided text)
+    json():
+      Description: (Not detailed in provided text)
+    redirect():
+      Description: (Not detailed in provided text)
+
+  Instance Methods:
+    arrayBuffer():
+      Description: (Not detailed in provided text)
+    blob():
+      Description: (Not detailed in provided text)
+    bytes():
+      Description: (Not detailed in provided text)
+    clone():
+      Description: (Not detailed in provided text)
+    formData():
+      Description: (Not detailed in provided text)
+    json():
+      Description: (Not detailed in provided text)
+    text():
+      Description: (Not detailed in provided text)
+```
+
+----------------------------------------
+
+TITLE: Verify API Key with Unkey in TypeScript
+DESCRIPTION: This TypeScript code demonstrates how to verify an API key using the @unkey/api library. It checks the validity of the key and handles potential network errors or invalid key responses, ensuring only authorized requests are processed.
+SOURCE: https://unkey.dev/
+
+LANGUAGE: Typescript
+CODE:
+```
+import { verifyKey } from '@unkey/api';
+
+const { result, error } = await verifyKey({
+  apiId: "api_123",
+  key: "xyz_123"
+})
+
+if ( error ) {
+  // handle network error
+}
+
+if ( !result.valid ) {
+  // reject unauthorized request
+}
+
+// handle request
+```
+
+----------------------------------------
+
+TITLE: API Reference: Document.startViewTransition() Method
+DESCRIPTION: Starts a new same-document (SPA) view transition and returns a ViewTransition object to represent it.
+SOURCE: https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API
+
+LANGUAGE: APIDOC
+CODE:
+```
+Document.startViewTransition(): ViewTransition
+```
+
+----------------------------------------
+
+TITLE: Create WebSocket and HTTP Servers with Bun.serve()
+DESCRIPTION: Details the `Bun.serve()` API, which provides native, high-performance implementations for both WebSocket and HTTP servers directly within Bun. This simplifies server setup and improves performance.
+SOURCE: https://bun.sh/
+
+LANGUAGE: APIDOC
+CODE:
+```
+Bun.serve(): Built-in WebSocket and HTTP server implementation
+```
+
+----------------------------------------
+
+TITLE: Link Local Project to Existing Netlify Site
+DESCRIPTION: Use this command to connect your local project directory to an existing site on Netlify. It creates a .netlify/state.json file containing the siteId, establishing the link for future CLI operations.
+SOURCE: https://docs.netlify.com/cli/get-started/
+
+LANGUAGE: Shell
+CODE:
+```
+netlify link
+```
+
+----------------------------------------
+
+TITLE: Web API Request Interface Methods
+DESCRIPTION: Lists the instance methods available on the `Request` object of the Fetch API, used for processing the request body into different formats (e.g., JSON, text, blob) or creating a clone of the request.
+SOURCE: https://developer.mozilla.org/en-US/docs/Web/API/Request
+
+LANGUAGE: APIDOC
+CODE:
+```
+Request.arrayBuffer()
+Request.blob()
+Request.bytes()
+Request.clone()
+Request.formData()
+Request.json()
+Request.text()
+```
+
+----------------------------------------
+
+TITLE: Web API Request Object Documentation
+DESCRIPTION: Detailed API documentation for the `Request` object, outlining its constructor parameters, allowed body types, and key instance properties. This provides a structured overview of how to define and inspect network requests.
+SOURCE: https://developer.mozilla.org/en-US/docs/Web/API/Request
+
+LANGUAGE: APIDOC
+CODE:
+```
+Request Object:
+  Description: Represents a resource request in the Fetch API.
+  Constructor:
+    Request(input: RequestInfo, init?: RequestInit)
+      input: URL string or another Request object.
+      init: Options object for the request.
+        Properties:
+          method: HTTP method (e.g., "POST").
+          body: The body content of the request.
+            Allowed Types: Blob, ArrayBuffer, TypedArray, DataView, FormData, URLSearchParams, ReadableStream, String, string literal.
+            Note: JSON objects must be stringified before being assigned to body.
+  Instance Properties:
+    url: The URL of the request.
+    method: The HTTP method of the request.
+    credentials: The credentials mode of the request.
+    bodyUsed: A boolean indicating if the body has been read.
+```
+
+----------------------------------------
+
+TITLE: Web API Response Object Instance Methods
+DESCRIPTION: Documentation for instance methods of the Response object, primarily used for parsing and consuming the response body in various formats like ArrayBuffer, Blob, FormData, JSON, or plain text. These methods return Promises that resolve with the parsed data.
+SOURCE: https://developer.mozilla.org/en-US/docs/Web/API/Response
+
+LANGUAGE: APIDOC
+CODE:
+```
+Response Instance Methods:
+  arrayBuffer(): Promise<ArrayBuffer>
+    Description: Returns a promise that resolves with an ArrayBuffer representation of the response body.
+  blob(): Promise<Blob>
+    Description: Returns a promise that resolves with a Blob representation of the response body.
+  bytes(): Promise<Uint8Array>
+    Description: Returns a promise that resolves with a Uint8Array representation of the response body.
+  clone(): Response
+    Description: Creates a clone of a Response object.
+  formData(): Promise<FormData>
+    Description: Returns a promise that resolves with a FormData representation of the response body.
+  json(): Promise<any>
+    Description: Returns a promise that resolves with the result of parsing the response body text as JSON.
+  text(): Promise<string>
+    Description: Returns a promise that resolves with a text representation of the response body.
+```
+
+----------------------------------------
+
+TITLE: Install Node.js Dependencies for Hono Examples
+DESCRIPTION: Installs all necessary Node.js dependencies for the Hono example projects using npm. This command should be run in the root directory of the examples repository.
+SOURCE: https://github.com/honojs/examples#_snippet_3
+
+LANGUAGE: Shell
+CODE:
+```
+npm install
+```
+
+----------------------------------------
+
+TITLE: Web API Response Interface Documentation
+DESCRIPTION: Comprehensive documentation for the Fetch API's Response interface, including its constructor, read-only instance properties, and static methods.
+SOURCE: https://developer.mozilla.org/en-US/docs/Web/API/Response
+
+LANGUAGE: APIDOC
+CODE:
+```
+Interface: Response
+
+Description:
+  Represents the response to a request in the Fetch API. Can be created via constructor or returned by fetch operations.
+
+Constructor:
+  Response()
+    Creates a new Response object.
+
+Instance Properties:
+  body: ReadableStream (Read only)
+    A ReadableStream of the body contents.
+  bodyUsed: boolean (Read only)
+    Stores a boolean value that declares whether the body has been used in a response yet.
+  headers: Headers (Read only)
+    The Headers object associated with the response.
+  ok: boolean (Read only)
+    A boolean indicating whether the response was successful (status in the range 200 – 299) or not.
+  redirected: boolean (Read only)
+    Indicates whether or not the response is the result of a redirect (that is, its URL list has more than one entry).
+  status: number (Read only)
+    The status code of the response. (This will be 200 for a success).
+  statusText: string (Read only)
+    The status message corresponding to the status code. (e.g., OK for 200).
+  type: string (Read only)
+    The type of the response (e.g., basic, cors).
+  url: string (Read only)
+    The URL of the response.
+
+Static Methods:
+  Response.error()
+    Returns a new Response object associated with a network error.
+  Response.redirect()
+    Returns a new response with a diff
+```
+
+----------------------------------------
+
+TITLE: Web API Request Object Instance Methods
+DESCRIPTION: Documents the instance methods available on the Web API Request object for processing the request body into various data formats, such as ArrayBuffer, Blob, FormData, JSON, and text. Includes a note about body stream usage.
+SOURCE: https://developer.mozilla.org/en-US/docs/Web/API/Request
+
+LANGUAGE: APIDOC
+CODE:
+```
+Request.arrayBuffer(): Returns a promise that resolves with an ArrayBuffer representation of the request body.
+Request.blob(): Returns a promise that resolves with a Blob representation of the request body.
+Request.bytes(): Returns a promise that resolves with a Uint8Array representation of the request body.
+Request.clone(): Creates a copy of the current Request object.
+Request.formData(): Returns a promise that resolves with a FormData representation of the request body.
+Request.json(): Returns a promise that resolves with the result of parsing the request body as JSON.
+Request.text(): Returns a promise that resolves with a text representation of the request body.
+
+Note: The request body functions can be run only once; subsequent calls will reject with TypeError showing that the body stream has already used.
+```
+
+----------------------------------------
+
+TITLE: Create and Serve a Basic Hono Application with Pretty JSON
+DESCRIPTION: This snippet demonstrates how to set up a basic Hono application, apply the `prettyJSON` middleware for formatted JSON responses, and serve the application using `@hono/node-server`. It defines a root route that returns a simple JSON object.
+SOURCE: https://github.com/honojs/node-server#_snippet_47
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { serve } from '@hono/node-server'
+import { Hono } from 'hono'
+import { prettyJSON } from 'hono/pretty-json'
+
+const app = new Hono()
+
+app.get('*', prettyJSON())
+app.get('/', (c) => c.json({ 'Hono meets': 'Node.js' }))
+
+serve(app)
+```
+
+----------------------------------------
+
+TITLE: Deploy Specific Directories with Netlify CLI
+DESCRIPTION: This command demonstrates how to specify the publish directory (--dir) and the functions directory (--functions) when deploying a project using the Netlify CLI. Paths are relative to the current directory.
+SOURCE: https://docs.netlify.com/cli/get-started/
+
+LANGUAGE: Shell
+CODE:
+```
+netlify deploy --dir=_site --functions=functions
+```
+
+----------------------------------------
+
+TITLE: Automate Netlify Continuous Deployment Setup
+DESCRIPTION: Use this command to automatically set up continuous deployment for a GitHub repository with Netlify CLI. It prompts for GitHub login to create a deploy key and webhook, enabling automated deployments.
+SOURCE: https://docs.netlify.com/cli/get-started/
+
+LANGUAGE: bash
+CODE:
+```
+netlify init
+```
+
+----------------------------------------
+
+TITLE: Check Netlify CLI Version and Basic Information
+DESCRIPTION: After installing the Netlify CLI, run this command to verify the installation and display basic information about the tool, including its version.
+SOURCE: https://docs.netlify.com/cli/get-started/
+
+LANGUAGE: Shell
+CODE:
+```
+netlify
+```
+
+----------------------------------------
+
+TITLE: Install Node.js Function Dependencies for Netlify CLI
+DESCRIPTION: Before manually deploying TypeScript or JavaScript functions with Netlify CLI, run these commands to populate node_modules folders with required dependencies. The CLI will then zip these dependencies with your function files for deployment.
+SOURCE: https://docs.netlify.com/cli/get-started/
+
+LANGUAGE: npm
+CODE:
+```
+npm install
+```
+
+LANGUAGE: yarn
+CODE:
+```
+yarn
+```
+
+----------------------------------------
+
+TITLE: Run Specific Node.js Example with npm Workspaces
+DESCRIPTION: Runs a specific example in development mode using npm workspaces. Replace "[workspace]" with the name of the desired example directory to execute its development script.
+SOURCE: https://github.com/honojs/examples#_snippet_10
+
+LANGUAGE: shell
+CODE:
+```
+npm -w [workspace] run dev
+```

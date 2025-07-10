@@ -1,0 +1,1458 @@
+TITLE: Flutter Pubspec: Add Supabase Flutter Dependency
+DESCRIPTION: This line adds the `supabase_flutter` package as a dependency to your Flutter project's `pubspec.yaml` file. It specifies the required version for the Supabase client library.
+SOURCE: https://supabase.com/docs/guides/getting-started/tutorials/with-flutter
+
+LANGUAGE: YAML
+CODE:
+```
+supabase_flutter: ^2.0.0
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI: Start a container
+DESCRIPTION: Starts the Supabase local development containers. This command brings up all necessary services, such as Postgres, PostgREST, and Auth, for local development and testing.
+SOURCE: https://supabase.com/docs/reference/cli/supabase-db-pull
+
+LANGUAGE: APIDOC
+CODE:
+```
+supabase start
+```
+
+----------------------------------------
+
+TITLE: Supabase Migration CLI Subcommands Overview
+DESCRIPTION: An overview of the subcommands available under `supabase migration`, providing a suite of tools for managing database schema changes, including fetching, listing, creating, repairing, squashing, and applying migrations.
+SOURCE: https://supabase.com/docs/reference/cli/supabase-services
+
+LANGUAGE: APIDOC
+CODE:
+```
+supabase migration
+  Subcommands:
+    - supabase migration fetch
+    - supabase migration list
+    - supabase migration new
+    - supabase migration repair
+    - supabase migration squash
+    - supabase migration up
+```
+
+----------------------------------------
+
+TITLE: Sign in a user
+DESCRIPTION: Describes the API method to sign in a user using email and password credentials. This method authenticates the user and returns a session.
+SOURCE: https://supabase.com/docs/reference/javascript/auth-admin-listusers
+
+LANGUAGE: APIDOC
+CODE:
+```
+Auth.signInWithPassword(email: string, password: string): Promise<AuthResponse>
+```
+
+----------------------------------------
+
+TITLE: Fetch Data with Supabase JavaScript Client (select)
+DESCRIPTION: Details the `select()` method for retrieving data from a Supabase database table, including various query options.
+SOURCE: https://supabase.com/docs/reference/javascript/functions-invoke
+
+LANGUAGE: APIDOC
+CODE:
+```
+API Method: supabase.from('table').select('columns')
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI Generate Types: Generate Types (Postgres Schema)
+DESCRIPTION: Generates TypeScript types or other language-specific types from your Postgres database schema. This improves type safety and developer experience when interacting with your database.
+SOURCE: https://supabase.com/docs/reference/cli/supabase-db
+
+LANGUAGE: CLI
+CODE:
+```
+supabase gen types
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+gen types:
+  description: Generate types (Postgres schema).
+```
+
+----------------------------------------
+
+TITLE: Querying Embeddings in Supabase Edge Function (JavaScript)
+DESCRIPTION: This JavaScript code snippet, designed for a Supabase Edge Function, demonstrates how to perform semantic search. It initializes a Supabase AI session to generate an embedding for a user-provided search term. Subsequently, it calls a Postgres RPC function named `query_embeddings` with the generated embedding and a `match_threshold` to retrieve relevant content, limiting results to 3 entries. Errors are handled by returning JSON responses.
+SOURCE: https://supabase.com/docs/guides/functions/examples/semantic-search
+
+LANGUAGE: JavaScript
+CODE:
+```
+const model = new Supabase.ai.Session('gte-small')
+Deno.serve(async (req) => {
+  const { search } = await req.json()
+  if (!search) return new Response('Please provide a search param!')
+  // Generate embedding for search term.
+  const embedding = await model.run(search, {
+    mean_pool: true,
+    normalize: true,
+  })
+  // Query embeddings.
+  const { data: result, error } = await supabase
+    .rpc('query_embeddings', {
+      embedding,
+      match_threshold: 0.8,
+    })
+    .select('content')
+    .limit(3)
+  if (error) {
+    return Response.json(error)
+  }
+  return Response.json({ search, result })
+})
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI: Start Local Development Stack
+DESCRIPTION: The `supabase start` command initializes and runs the Supabase local development environment. It requires a `supabase/config.toml` file and starts all service containers by default, though specific services can be excluded. It's recommended to have at least 7GB of RAM for all services.
+SOURCE: https://supabase.com/docs/reference/cli/supabase-inspect-db-bloat
+
+LANGUAGE: shell
+CODE:
+```
+supabase start [flags]
+```
+
+LANGUAGE: shell
+CODE:
+```
+supabase start
+```
+
+LANGUAGE: shell
+CODE:
+```
+Creating custom roles supabase/roles.sql...
+Applying migration 20220810154536_employee.sql...
+Seeding data supabase/seed.sql...
+Started supabase local development setup.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Flags:
+  -x, --exclude <strings> (Optional): Names of containers to not start. [gotrue,realtime,storage-api,imgproxy,kong,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor]
+  --ignore-health-check (Optional): Ignore unhealthy services and exit 0
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI Command Reference
+DESCRIPTION: Detailed documentation for all Supabase CLI commands, categorized by functionality, including general operations, testing, type generation, database management, migrations, seeding, inspection, organization and project management, configuration, branch management, edge functions, and secrets.
+SOURCE: https://supabase.com/docs/reference/cli/supabase-secrets-unset
+
+LANGUAGE: APIDOC
+CODE:
+```
+Supabase CLI Commands:
+  Global flags:
+    [command] [flags]: Global flags applicable to all Supabase CLI commands.
+
+  General Commands:
+    supabase bootstrap: Launch a quick start template.
+    supabase init: Initialize a local project.
+    supabase login: Log in to a Supabase account.
+    supabase link: Link to a Supabase project.
+    supabase start: Start a container.
+    supabase stop: Stop all containers.
+    supabase status: Retrieve container status.
+
+  Testing Commands:
+    supabase test: Run tests.
+    supabase test db: Run tests (pgTAP).
+    supabase test new: Create a new test.
+
+  Generate Types Commands:
+    supabase gen: Run code generation tools.
+    supabase gen keys: Generate keys (Preview branch).
+    supabase gen types: Generate types (Postgres schema).
+
+  Database Commands:
+    supabase db: Manage local databases.
+    supabase db pull: Pull schema changes from remote database.
+    supabase db push: Push migration to remote database.
+    supabase db reset: Reset local database.
+    supabase db dump: Dump schema from remote database.
+    supabase db diff: Diff local database.
+    supabase db lint: Lint local database.
+    supabase db start: Start only the local database.
+
+  Migrations Commands:
+    supabase migration: Manage database migrations.
+    supabase migration new: Create a migration.
+    supabase migration list: List all migrations.
+    supabase migration fetch: Fetch migration files from history table.
+    supabase migration repair: Repair migration history table.
+    supabase migration squash: Squash migrations to a single file.
+    supabase migration up: Apply pending migration files.
+
+  Seed Commands:
+    supabase seed: Seed a Supabase project.
+    supabase seed buckets: Seed storage buckets from config file.
+
+  Inspect Commands:
+    supabase inspect: Inspect database statistics.
+    supabase inspect report: Inspect all database statistics and save output.
+
+  Organizations Commands:
+    supabase orgs: Manage organizations.
+    supabase orgs create: Create an organization.
+    supabase orgs list: List all organizations.
+
+  Projects Commands:
+    supabase projects: Manage projects.
+    supabase projects create: Create a project.
+    supabase projects list: List all projects.
+    supabase projects api-keys: Show API keys for a project.
+    supabase projects delete: Delete a project.
+
+  Config Commands:
+    supabase config: Manage project configurations.
+    supabase config push: Push config from a local file.
+
+  Branches Commands:
+    supabase branches: Manage preview branches.
+    supabase branches create: Create a preview branch.
+    supabase branches list: List all preview branches.
+    supabase branches get: Show connection details for a preview branch.
+    supabase branches update: Update a preview branch.
+    supabase branches delete: Delete a preview branch.
+    supabase branches disable: Disable preview branching.
+
+  Edge Functions Commands:
+    supabase functions: Manage edge functions.
+    supabase functions new: Create a function.
+    supabase functions list: List all functions.
+    supabase functions download: Download a function.
+    supabase functions serve: Serve functions locally.
+    supabase functions deploy: Deploy a function.
+    supabase functions delete: Delete a function.
+
+  Secrets Commands:
+    supabase secrets: Manage secrets.
+```
+
+----------------------------------------
+
+TITLE: Create PostgreSQL Trigger for New User Profile with Security Definer
+DESCRIPTION: This comprehensive SQL example demonstrates how to create a `profiles` table, a `security definer` function (`handle_new_user`), and a trigger (`on_auth_user_created`) that automatically inserts a new row into the `public.profiles` table whenever a new user is created in `auth.users`. The `security definer` ensures the trigger operates with the privileges of the creating role (e.g., `postgres`), preventing permission errors when interacting with tables outside the `auth` schema.
+SOURCE: https://supabase.com/docs/guides/troubleshooting/dashboard-errors-when-managing-users-N1ls4A
+
+LANGUAGE: SQL
+CODE:
+```
+create table profiles (
+  id uuid references auth.users on delete cascade not null primary key,
+  updated_at timestamp with time zone,
+  username text unique,
+  full_name text,
+  avatar_url text,
+  website text,
+  constraint username_length check (char_length(username) >= 3)
+);
+
+create function public.handle_new_user()
+returns trigger as $$
+begin
+  insert into public.profiles (id, full_name, avatar_url)
+  values (new.id, new.raw_user_meta_data->>'full_name', new.raw_user_meta_data->>'avatar_url');
+  return new;
+end;
+$$ language plpgsql security definer;
+
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_user();
+```
+
+----------------------------------------
+
+TITLE: Supabase Auth: `signUp()` Method Reference
+DESCRIPTION: Registers a new user with an email and password. The `options` parameter allows for additional configurations, such as specifying a redirect URL after email confirmation.
+SOURCE: https://supabase.com/docs/guides/auth/auth-email
+
+LANGUAGE: APIDOC
+CODE:
+```
+supabase.auth.signUp(options: {
+  email: string,
+  password: string,
+  options?: {
+    emailRedirectTo?: string
+  }
+}): Promise<{ data: { user: User | null, session: Session | null }, error: Error | null }>
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI: Start local development stack
+DESCRIPTION: The `supabase start` command initializes and runs the local Supabase development stack. It requires a `supabase/config.toml` file and starts all service containers by default. Users can exclude specific containers or ignore health check errors.
+SOURCE: https://supabase.com/docs/reference/cli/usage
+
+LANGUAGE: CLI
+CODE:
+```
+supabase start [flags]
+```
+
+LANGUAGE: CLI
+CODE:
+```
+supabase start
+```
+
+LANGUAGE: CLI
+CODE:
+```
+Creating custom roles supabase/roles.sql...
+Applying migration 20220810154536_employee.sql...
+Seeding data supabase/seed.sql...
+Started supabase local development setup.
+```
+
+----------------------------------------
+
+TITLE: Example 200 OK API Response Body for Configuration Settings
+DESCRIPTION: This snippet illustrates the structure and content of a successful HTTP 200 API response, presenting a detailed JSON object that defines various configurable parameters. These parameters include settings for API request duration, database connection pool size, JWT expiration, mailer and MFA configurations, password policies, different types of rate limits, security refresh token intervals, session timeouts, SMS and SMTP frequencies, and a wide array of external identity provider integrations (e.g., Apple, Google, GitHub, etc.), alongside webhook configurations for custom actions.
+SOURCE: https://supabase.com/docs/reference/api/v1-get-a-function-body
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "api_max_request_duration": 42,
+  "db_max_pool_size": 42,
+  "jwt_exp": 42,
+  "mailer_otp_exp": 42,
+  "mailer_otp_length": 42,
+  "mfa_max_enrolled_factors": 42,
+  "mfa_phone_otp_length": 42,
+  "mfa_phone_max_frequency": 42,
+  "password_min_length": 42,
+  "rate_limit_anonymous_users": 42,
+  "rate_limit_email_sent": 42,
+  "rate_limit_sms_sent": 42,
+  "rate_limit_token_refresh": 42,
+  "rate_limit_verify": 42,
+  "rate_limit_otp": 42,
+  "security_refresh_token_reuse_interval": 42,
+  "sessions_inactivity_timeout": 42,
+  "sessions_timebox": 42,
+  "sms_max_frequency": 42,
+  "sms_otp_exp": 42,
+  "sms_otp_length": 42,
+  "smtp_max_frequency": 42,
+  "disable_signup": true,
+  "external_anonymous_users_enabled": true,
+  "external_apple_additional_client_ids": "lorem",
+  "external_apple_client_id": "lorem",
+  "external_apple_enabled": true,
+  "external_apple_secret": "lorem",
+  "external_azure_client_id": "lorem",
+  "external_azure_enabled": true,
+  "external_azure_secret": "lorem",
+  "external_azure_url": "lorem",
+  "external_bitbucket_client_id": "lorem",
+  "external_bitbucket_enabled": true,
+  "external_bitbucket_secret": "lorem",
+  "external_discord_client_id": "lorem",
+  "external_discord_enabled": true,
+  "external_discord_secret": "lorem",
+  "external_email_enabled": true,
+  "external_facebook_client_id": "lorem",
+  "external_facebook_enabled": true,
+  "external_facebook_secret": "lorem",
+  "external_figma_client_id": "lorem",
+  "external_figma_enabled": true,
+  "external_figma_secret": "lorem",
+  "external_github_client_id": "lorem",
+  "external_github_enabled": true,
+  "external_github_secret": "lorem",
+  "external_gitlab_client_id": "lorem",
+  "external_gitlab_enabled": true,
+  "external_gitlab_secret": "lorem",
+  "external_gitlab_url": "lorem",
+  "external_google_additional_client_ids": "lorem",
+  "external_google_client_id": "lorem",
+  "external_google_enabled": true,
+  "external_google_secret": "lorem",
+  "external_google_skip_nonce_check": true,
+  "external_kakao_client_id": "lorem",
+  "external_kakao_enabled": true,
+  "external_kakao_secret": "lorem",
+  "external_keycloak_client_id": "lorem",
+  "external_keycloak_enabled": true,
+  "external_keycloak_secret": "lorem",
+  "external_keycloak_url": "lorem",
+  "external_linkedin_oidc_client_id": "lorem",
+  "external_linkedin_oidc_enabled": true,
+  "external_linkedin_oidc_secret": "lorem",
+  "external_slack_oidc_client_id": "lorem",
+  "external_slack_oidc_enabled": true,
+  "external_slack_oidc_secret": "lorem",
+  "external_notion_client_id": "lorem",
+  "external_notion_enabled": true,
+  "external_notion_secret": "lorem",
+  "external_phone_enabled": true,
+  "external_slack_client_id": "lorem",
+  "external_slack_enabled": true,
+  "external_slack_secret": "lorem",
+  "external_spotify_client_id": "lorem",
+  "external_spotify_enabled": true,
+  "external_spotify_secret": "lorem",
+  "external_twitch_client_id": "lorem",
+  "external_twitch_enabled": true,
+  "external_twitch_secret": "lorem",
+  "external_twitter_client_id": "lorem",
+  "external_twitter_enabled": true,
+  "external_twitter_secret": "lorem",
+  "external_workos_client_id": "lorem",
+  "external_workos_enabled": true,
+  "external_workos_secret": "lorem",
+  "external_workos_url": "lorem",
+  "external_zoom_client_id": "lorem",
+  "external_zoom_enabled": true,
+  "external_zoom_secret": "lorem",
+  "hook_custom_access_token_enabled": true,
+  "hook_custom_access_token_uri": "lorem",
+  "hook_custom_access_token_secrets": "lorem",
+  "hook_mfa_verification_attempt_enabled": true,
+  "hook_mfa_verification_attempt_uri": "lorem",
+  "hook_mfa_verification_attempt_secrets": "lorem",
+  "hook_password_verification_attempt_enabled": true,
+  "hook_password_verification_attempt_uri": "lorem",
+  "hook_password_verification_attempt_secrets": "lorem",
+  "hook_send_sms_enabled": true,
+  "hook_send_sms_uri": "lorem",
+  "hook_send_sms_secrets": "lorem",
+  "hook_send_email_enabled": true,
+  "hook_send_email_uri": "lorem",
+  "hook_send_email_secrets": "lorem",
+  "mailer_allow_unverified_email_sign_ins": true,
+  "mailer_autoconfirm": true,
+  "mailer_secure_email_change_enabled": true,
+  "mailer_subjects_confirmation": "lorem",
+  "mailer_subjects_email_change": "lorem",
+  "mailer_subjects_invite": "lorem",
+  "mailer_subjects_magic_link": "lorem",
+  "mailer_subjects_reauthent": "lorem"
+}
+```
+
+----------------------------------------
+
+TITLE: Create an Avatar Upload Widget in Flutter/Dart with Supabase
+DESCRIPTION: This Dart code defines a Flutter `Avatar` widget that allows users to select and upload a profile photo to a Supabase storage bucket. It utilizes the `image_picker` package for image selection and handles the upload of binary data to Supabase Storage, including generating a signed URL for the uploaded image. The snippet also includes basic error handling for storage operations.
+SOURCE: https://supabase.com/docs/guides/getting-started/tutorials/with-flutter
+
+LANGUAGE: Dart
+CODE:
+```
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:supabase_quickstart/main.dart';
+
+class Avatar extends StatefulWidget {
+  const Avatar({
+    super.key,
+    required this.imageUrl,
+    required this.onUpload,
+  });
+
+  final String? imageUrl;
+  final void Function(String) onUpload;
+
+  @override
+  State<Avatar> createState() => _AvatarState();
+}
+
+class _AvatarState extends State<Avatar> {
+  bool _isLoading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        if (widget.imageUrl == null || widget.imageUrl!.isEmpty)
+          Container(
+            width: 150,
+            height: 150,
+            color: Colors.grey,
+            child: const Center(
+              child: Text('No Image'),
+            ),
+          )
+        else
+          Image.network(
+            widget.imageUrl!,
+            width: 150,
+            height: 150,
+            fit: BoxFit.cover,
+          ),
+        ElevatedButton(
+          onPressed: _isLoading ? null : _upload,
+          child: const Text('Upload'),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _upload() async {
+    final picker = ImagePicker();
+    final imageFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 300,
+      maxHeight: 300,
+    );
+
+    if (imageFile == null) {
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      final bytes = await imageFile.readAsBytes();
+      final fileExt = imageFile.path.split('.').last;
+      final fileName = '${DateTime.now().toIso8601String()}.$fileExt';
+      final filePath = fileName;
+
+      await supabase.storage.from('avatars').uploadBinary(
+            filePath,
+            bytes,
+            fileOptions: FileOptions(contentType: imageFile.mimeType),
+          );
+
+      final imageUrlResponse = await supabase.storage
+          .from('avatars')
+          .createSignedUrl(filePath, 60 * 60 * 24 * 365 * 10);
+
+      widget.onUpload(imageUrlResponse);
+    } on StorageException catch (error) {
+      if (mounted) {
+        context.showSnackBar(error.message, isError: true);
+      }
+    } catch (error) {
+      if (mounted) {
+        context.showSnackBar('Unexpected error occurred', isError: true);
+      }
+    }
+
+    setState(() => _isLoading = false);
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Postgres Policy: Allow Users to View Only Their Own Profiles
+DESCRIPTION: This policy restricts SELECT access on the 'profiles' table, ensuring that users can only view their own profile data. It uses 'auth.uid()' to match the current user's ID with the 'user_id' column in the table.
+SOURCE: https://supabase.com/docs/guides/database/postgres/row-level-security
+
+LANGUAGE: SQL
+CODE:
+```
+create policy "User can see their own profile only."on profilesfor select using ( (select auth.uid()) = user_id );
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI: Connect to Supabase Account with `supabase login`
+DESCRIPTION: Documentation for the `supabase login` command, which connects the Supabase CLI to your Supabase account using a personal access token. It describes how the token is stored securely and how it's used to access Management APIs. The snippet includes the command's usage, available flags for different login flows, and an example of the interactive login process and its response.
+SOURCE: https://supabase.com/docs/reference/cli/supabase-vanity-subdomains-activate
+
+LANGUAGE: Shell
+CODE:
+```
+supabase login [flags]
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Flags:
+--name <string>: Optional, Name that will be used to store token in your settings
+--no-browser: Optional, Do not open browser automatically
+--token <string>: Optional, Use provided token instead of automatic login flow
+```
+
+LANGUAGE: Shell
+CODE:
+```
+supabase login
+```
+
+LANGUAGE: Shell
+CODE:
+```
+You can generate an access token from https://supabase.com/dashboard/account/tokens
+Enter your access token: sbp_****************************************
+Finished supabase login.
+```
+
+----------------------------------------
+
+TITLE: List Supabase Migration History
+DESCRIPTION: This command lists the migration history from both local and remote databases. It requires your local project to be linked to a remote database by running `supabase link`. For self-hosted databases, connection parameters can be passed using the `--db-url` flag. Local migrations are stored in `supabase/migrations` while remote migrations are tracked in `supabase_migrations.schema_migrations` table. Only timestamps are compared to identify differences. In case of discrepancies, the `migration repair` command can be used. The output typically shows local and remote migration timestamps and their UTC times, for example:
+`LOCAL      │     REMOTE     │     TIME (UTC)
+─────────────────┼────────────────┼──────────────────────
+                 │ 20230103054303 │ 2023-01-03 05:43:03
+                 │ 20230103093141 │ 2023-01-03 09:31:41
+  20230222032233 │                │ 2023-02-22 03:22:33`
+SOURCE: https://supabase.com/docs/reference/cli/supabase-postgres-config-get
+
+LANGUAGE: shell
+CODE:
+```
+supabase migration list [flags]
+```
+
+LANGUAGE: shell
+CODE:
+```
+supabase migration list
+```
+
+----------------------------------------
+
+TITLE: Sign in a user
+DESCRIPTION: API method to sign in a user using their email and password. This function is part of the Supabase Auth module.
+SOURCE: https://supabase.com/docs/reference/javascript/initializing
+
+LANGUAGE: APIDOC
+CODE:
+```
+supabase.auth.signInWithPassword()
+```
+
+----------------------------------------
+
+TITLE: PostgreSQL RLS Policy to Allow Updates for Row Owners
+DESCRIPTION: This SQL snippet demonstrates a Row Level Security (RLS) policy in PostgreSQL. It restricts update operations on the 'posts' table, allowing only the user who created the post (identified by 'user_id') to modify it. This policy ensures that users can only update their own content.
+SOURCE: https://supabase.com/docs/guides/database/postgres/column-level-security
+
+LANGUAGE: SQL
+CODE:
+```
+create policy "Allow update for owners" on posts forupdate  using ((select auth.uid()) = user_id);
+```
+
+----------------------------------------
+
+TITLE: Define Database Schema with Drizzle ORM
+DESCRIPTION: This TypeScript code defines a 'users' table schema using Drizzle ORM's `pg-core` module. It includes an auto-incrementing primary key 'id', a 'full_name' text column, and a 'phone' varchar column with a specified length. This schema is then used by Drizzle for type-safe queries and migrations.
+SOURCE: https://supabase.com/docs/guides/database/drizzle
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
+
+export const users = pgTable('users', {
+  id: serial('id').primaryKey(),
+  fullName: text('full_name'),
+  phone: varchar('phone', { length: 256 })
+});
+```
+
+----------------------------------------
+
+TITLE: Column is a Specific Value (is)
+DESCRIPTION: Filters rows where a specified column's value is a specific value (e.g., NULL, TRUE, FALSE).
+SOURCE: https://supabase.com/docs/reference/javascript/storage-createbucket
+
+LANGUAGE: APIDOC
+CODE:
+```
+query.is(column: string, value: any): PostgrestFilterBuilder
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI: Start local development stack
+DESCRIPTION: Starts the Supabase local development stack. This command requires `supabase/config.toml` to be present and recommends at least 7GB of RAM. It allows excluding specific service containers and ignoring health checks.
+SOURCE: https://supabase.com/docs/reference/cli/supabase-functions
+
+LANGUAGE: shell
+CODE:
+```
+supabase start [flags]
+```
+
+----------------------------------------
+
+TITLE: React Native App Entry Point with Supabase Auth
+DESCRIPTION: This `App.tsx` file serves as the main entry point for the React Native application. It manages the Supabase authentication session, fetching the initial session and listening for real-time authentication state changes. Based on the session status, it conditionally renders either the `Account` component (for authenticated users) or an `Auth` component (for unauthenticated users).
+SOURCE: https://supabase.com/docs/guides/getting-started/tutorials/with-expo-react-native
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { useState, useEffect } from 'react'
+import { supabase } from './lib/supabase'
+import Auth from './components/Auth'
+import Account from './components/Account'
+import { View } from 'react-native'
+import { Session } from '@supabase/supabase-js'
+
+export default function App() {
+  const [session, setSession] = useState<Session | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session)
+    })
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session)
+    })
+  }, [])
+
+  return (
+    <View>
+      {session && session.user ? <Account key={session.user.id} session={session} /> : <Auth />}
+    </View>
+  )
+}
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI Command Reference
+DESCRIPTION: Comprehensive list of Supabase CLI commands for managing projects, databases, migrations, functions, and more. Each command includes a brief description of its purpose.
+SOURCE: https://supabase.com/docs/reference/cli/supabase-inspect-db-table-sizes
+
+LANGUAGE: APIDOC
+CODE:
+```
+Supabase CLI:
+  Introduction
+  Global flags
+
+  General:
+    supabase bootstrap: Launch a quick start template
+    supabase init: Initialize a local project
+    supabase login: Log in to a Supabase account
+    supabase link: Link to a Supabase project
+    supabase start: Start a container
+    supabase stop: Stop all containers
+    supabase status: Retrieve container status
+
+  Testing:
+    supabase test: Run tests
+    supabase test db: Run tests (pgTAP)
+    supabase test new: Create a new test
+
+  Generate Types:
+    supabase gen: Run code generation tools
+    supabase gen keys: Generate keys (Preview branch)
+    supabase gen types: Generate types (Postgres schema)
+
+  Database:
+    supabase db: Manage local databases
+    supabase db pull: Pull schema changes from remote database
+    supabase db push: Push migration to remote database
+    supabase db reset: Reset local database
+    supabase db dump: Dump schema from remote database
+    supabase db diff: Diff local database
+    supabase db lint: Lint local database
+    supabase db start: Start only the local database
+
+  Migrations:
+    supabase migration: Manage database migrations
+    supabase migration new: Create a migration
+    supabase migration list: List all migrations
+    supabase migration fetch: Fetch migration files from history table
+    supabase migration repair: Repair migration history table
+    supabase migration squash: Squash migrations to a single file
+    supabase migration up: Apply pending migration files
+
+  Seed:
+    supabase seed: Seed a Supabase project
+    supabase seed buckets: Seed storage buckets from config file
+
+  Inspect:
+    supabase inspect: Inspect database statistics
+    supabase inspect report: Inspect all database statistics and save output
+
+  Organizations:
+    supabase orgs: Manage organizations
+    supabase orgs create: Create an organization
+    supabase orgs list: List all organizations
+
+  Projects:
+    supabase projects: Manage projects
+    supabase projects create: Create a project
+    supabase projects list: List all projects
+    supabase projects api-keys: Show API keys for a project
+    supabase projects delete: Delete a project
+
+  Config:
+    supabase config: Manage project configurations
+    supabase config push: Push config from a local file
+
+  Branches:
+    supabase branches: Manage preview branches
+    supabase branches create: Create a preview branch
+    supabase branches list: List all preview branches
+    supabase branches get: Show connection details for a preview branch
+    supabase branches update: Update a preview branch
+    supabase branches delete: Delete a preview branch
+    supabase branches disable: Disable preview branching
+
+  Edge Functions:
+    supabase functions: Manage edge functions
+    supabase functions new: Create a function
+    supabase functions list: List all functions
+    supabase functions download: Download a function
+    supabase functions serve: Serve functions locally
+    supabase functions deploy: Deploy a function
+    supabase functions delete: Delete a function
+
+  Secrets:
+    supabase secrets: Manage secrets
+```
+
+----------------------------------------
+
+TITLE: SQL RLS Policy for Organization Settings based on SSO Provider
+DESCRIPTION: A restrictive Row Level Security policy for the 'organization_settings' table. It ensures that users can only view organization settings where the 'sso_provider_id' matches the SSO provider UUID extracted from their JWT, enabling tenant-specific data access.
+SOURCE: https://supabase.com/docs/guides/auth/sso/auth-sso-saml
+
+LANGUAGE: SQL
+CODE:
+```
+CREATE POLICY "View organization settings."
+  ON organization_settings
+  AS RESTRICTIVE
+  USING (
+    sso_provider_id = (select auth.jwt()#>>'{amr,0,provider}')
+  );
+```
+
+----------------------------------------
+
+TITLE: Kotlin Supabase Authentication Repository Implementation
+DESCRIPTION: This Kotlin code defines an `AuthenticationRepositoryImpl` class responsible for handling user authentication operations using Supabase. It provides methods for signing in with email and password, signing up with email and password, and signing in with Google, encapsulating the Supabase `auth` calls and error handling.
+SOURCE: https://supabase.com/docs/guides/getting-started/tutorials/with-kotlin
+
+LANGUAGE: Kotlin
+CODE:
+```
+class AuthenticationRepositoryImpl @Inject constructor(    private val auth: Auth) : AuthenticationRepository {
+    override suspend fun signIn(email: String, password: String): Boolean {
+        return try {
+            auth.signInWith(Email) {
+                this.email = email
+                this.password = password
+            }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+    override suspend fun signUp(email: String, password: String): Boolean {
+        return try {
+            auth.signUpWith(Email) {
+                this.email = email
+                this.password = password
+            }
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+    override suspend fun signInWithGoogle(): Boolean {
+        return try {
+            auth.signInWith(Google)
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Supabase JavaScript: Bulk Insert Multiple Records
+DESCRIPTION: Shows how to insert multiple records into a Supabase table in a single operation by passing an array of objects to the `insert` method.
+SOURCE: https://supabase.com/docs/reference/javascript/insert
+
+LANGUAGE: JavaScript
+CODE:
+```
+const { error } = await supabase
+  .from('countries')
+  .insert([
+    { id: 1, name: 'Mordor' },
+    { id: 1, name: 'The Shire' }
+  ])
+```
+
+----------------------------------------
+
+TITLE: Retrieve current user session (Supabase JavaScript Auth API)
+DESCRIPTION: Documents the `getSession` method for retrieving the current active user session, providing details about the authenticated user, using the Supabase JavaScript client library.
+SOURCE: https://supabase.com/docs/reference/javascript/select
+
+LANGUAGE: APIDOC
+CODE:
+```
+supabase.auth.getSession()
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI Init Command Usage
+DESCRIPTION: This snippet illustrates the command line usage for `supabase init`. This command is essential for initializing configurations required for local Supabase project development.
+SOURCE: https://supabase.com/docs/reference/cli/supabase-config
+
+LANGUAGE: Shell
+CODE:
+```
+supabase init [flags]
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI General: Initialize Local Project
+DESCRIPTION: Initializes a new local Supabase project in the current directory. This command sets up the necessary configuration files and directories for local development.
+SOURCE: https://supabase.com/docs/reference/cli/supabase-db
+
+LANGUAGE: CLI
+CODE:
+```
+supabase init
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+init:
+  description: Initialize a local project.
+```
+
+----------------------------------------
+
+TITLE: Supabase Auth: Sign Up New User with Email and Password (JavaScript)
+DESCRIPTION: Demonstrates how to register a new user using their email and password with Supabase's `signUp()` method. This example includes an optional `emailRedirectTo` URL, which specifies where the user is redirected after clicking the confirmation link in their email. This URL must be pre-configured in your Supabase project's redirect URLs.
+SOURCE: https://supabase.com/docs/guides/auth/auth-email
+
+LANGUAGE: JavaScript
+CODE:
+```
+async function signUpNewUser() {
+  const { data, error } = await supabase.auth.signUp({
+    email: 'valid.email@supabase.io',
+    password: 'example-password',
+    options: {
+      emailRedirectTo: 'https://example.com/welcome'
+    }
+  })
+}
+```
+
+----------------------------------------
+
+TITLE: Create PL/pgSQL Auth Hook for User Role Assignment
+DESCRIPTION: Implements a PostgreSQL function `custom_access_token_hook` written in PL/pgSQL. This function is designed to run as a Supabase Custom Access Token Auth Hook, fetching the user's role from the `user_roles` table and injecting it into the JWT claims before the token is issued. It also includes necessary grants and policy for `supabase_auth_admin` to manage user roles.
+SOURCE: https://supabase.com/docs/guides/auth/custom-claims-and-role-based-access-control-rbac
+
+LANGUAGE: PL/pgSQL
+CODE:
+```
+-- Create the auth hook function
+create or replace function public.custom_access_token_hook(event jsonb)
+returns jsonb
+language plpgsql
+stable
+as $$
+  declare
+    claims jsonb;
+    user_role public.app_role;
+  begin
+    -- Fetch the user role in the user_roles table
+    select role into user_role from public.user_roles where user_id = (event->>'user_id')::uuid;
+
+    claims := event->'claims';
+
+    if user_role is not null then
+      -- Set the claim
+      claims := jsonb_set(claims, '{user_role}', to_jsonb(user_role));
+    else
+      claims := jsonb_set(claims, '{user_role}', 'null');
+    end if;
+
+    -- Update the 'claims' object in the original event
+    event := jsonb_set(event, '{claims}', claims);
+
+    -- Return the modified or original event
+    return event;
+  end;
+$$;
+
+grant usage on schema public to supabase_auth_admin;
+grant execute
+  on function public.custom_access_token_hook
+  to supabase_auth_admin;
+revoke execute
+  on function public.custom_access_token_hook
+  from authenticated, anon, public;
+
+grant all
+  on table public.user_roles
+to supabase_auth_admin;
+revoke all
+  on table public.user_roles
+  from authenticated, anon, public;
+
+create policy "Allow auth admin to read user roles" ON public.user_roles
+as permissive for select
+to supabase_auth_admin
+using (true)
+```
+
+----------------------------------------
+
+TITLE: Enable pgvector extension in Postgres
+DESCRIPTION: This SQL command enables the `pgvector` extension within the `extensions` schema in a PostgreSQL database. This extension is crucial for storing and efficiently querying high-dimensional vectors, which are used in semantic search to represent text embeddings.
+SOURCE: https://supabase.com/docs/guides/ai/semantic-search
+
+LANGUAGE: SQL
+CODE:
+```
+create extension vector with schema extensions;
+```
+
+----------------------------------------
+
+TITLE: Implement PhotosPicker and Profile Management in SwiftUI
+DESCRIPTION: This Swift code defines `ProfileView`, a SwiftUI view responsible for displaying and updating user profiles. It integrates `PhotosPicker` for avatar image selection, handles image loading and uploading to Supabase Storage, and manages user data (username, full name, website) using Supabase database operations. It includes functions for fetching initial profile data, updating profiles, and signing out.
+SOURCE: https://supabase.com/docs/guides/getting-started/tutorials/with-swift
+
+LANGUAGE: Swift
+CODE:
+```
+import PhotosUI
+import Storage
+import Supabase
+import SwiftUI
+
+struct ProfileView: View {
+  @State var username = ""
+  @State var fullName = ""
+  @State var website = ""
+  @State var isLoading = false
+  @State var imageSelection: PhotosPickerItem?
+  @State var avatarImage: AvatarImage?
+
+  var body: some View {
+    NavigationStack {
+      Form {
+        Section {
+          HStack {
+            Group {
+              if let avatarImage {
+                avatarImage.image.resizable()
+              } else {
+                Color.clear
+              }
+            }
+            .scaledToFit()
+            .frame(width: 80, height: 80)
+            Spacer()
+            PhotosPicker(selection: $imageSelection, matching: .images) {
+              Image(systemName: "pencil.circle.fill")
+                .symbolRenderingMode(.multicolor)
+                .font(.system(size: 30))
+                .foregroundColor(.accentColor)
+            }
+          }
+        }
+        Section {
+          TextField("Username", text: $username)
+            .textContentType(.username)
+            .textInputAutocapitalization(.never)
+          TextField("Full name", text: $fullName)
+            .textContentType(.name)
+          TextField("Website", text: $website)
+            .textContentType(.URL)
+            .textInputAutocapitalization(.never)
+        }
+        Section {
+          Button("Update profile") {
+            updateProfileButtonTapped()
+          }
+          .bold()
+          if isLoading {
+            ProgressView()
+          }
+        }
+      }
+      .navigationTitle("Profile")
+      .toolbar(content: {
+        ToolbarItem {
+          Button("Sign out", role: .destructive) {
+            Task {
+              try? await supabase.auth.signOut()
+            }
+          }
+        }
+      })
+      .onChange(of: imageSelection) { _, newValue in
+        guard let newValue else { return }
+        loadTransferable(from: newValue)
+      }
+    }
+    .task {
+      await getInitialProfile()
+    }
+  }
+
+  func getInitialProfile() async {
+    do {
+      let currentUser = try await supabase.auth.session.user
+      let profile: Profile =
+      try await supabase
+        .from("profiles")
+        .select()
+        .eq("id", value: currentUser.id)
+        .single()
+        .execute()
+        .value
+      username = profile.username ?? ""
+      fullName = profile.fullName ?? ""
+      website = profile.website ?? ""
+      if let avatarURL = profile.avatarURL, !avatarURL.isEmpty {
+        try await downloadImage(path: avatarURL)
+      }
+    } catch {
+      debugPrint(error)
+    }
+  }
+
+  func updateProfileButtonTapped() {
+    Task {
+      isLoading = true
+      defer { isLoading = false }
+      do {
+        let imageURL = try await uploadImage()
+        let currentUser = try await supabase.auth.session.user
+        let updatedProfile = Profile(
+          username: username,
+          fullName: fullName,
+          website: website,
+          avatarURL: imageURL
+        )
+        try await supabase
+          .from("profiles")
+          .update(updatedProfile)
+          .eq("id", value: currentUser.id)
+          .execute()
+      } catch {
+        debugPrint(error)
+      }
+    }
+  }
+
+  private func loadTransferable(from imageSelection: PhotosPickerItem) {
+    Task {
+      do {
+        avatarImage = try await imageSelection.loadTransferable(type: AvatarImage.self)
+      } catch {
+        debugPrint(error)
+      }
+    }
+  }
+
+  private func downloadImage(path: String) async throws {
+    let data = try await supabase.storage.from("avatars").download(path: path)
+    avatarImage = AvatarImage(data: data)
+  }
+
+  private func uploadImage() async throws -> String? {
+    guard let data = avatarImage?.data else { return nil }
+    let filePath = "\(UUID().uuidString).jpeg"
+    try await supabase.storage
+      .from("avatars")
+      .upload(
+        filePath,
+        data: data,
+        options: FileOptions(contentType: "image/jpeg")
+      )
+    return filePath
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI Init Command for Local Development
+DESCRIPTION: Provides documentation for `supabase init`, which initializes local Supabase project configurations, including `config.toml` and other project objects. Covers usage, flags, and example output.
+SOURCE: https://supabase.com/docs/reference/cli/supabase-vanity-subdomains
+
+LANGUAGE: Shell
+CODE:
+```
+supabase init [flags]
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Flags:
+  --force:
+    Optional: true
+    Type: no type
+    Description: Overwrite existing supabase/config.toml.
+  --use-orioledb:
+    Optional: true
+    Type: no type
+    Description: Use OrioleDB storage engine for Postgres.
+  --with-intellij-settings:
+    Optional: true
+    Type: no type
+    Description: Generate IntelliJ IDEA settings for Deno.
+  --with-vscode-settings:
+    Optional: true
+    Type: no type
+    Description: Generate VS Code settings for Deno.
+```
+
+LANGUAGE: Shell
+CODE:
+```
+supabase init
+```
+
+LANGUAGE: Shell
+CODE:
+```
+Finished supabase init.
+```
+
+----------------------------------------
+
+TITLE: Correct Supabase Auth Cookie Handling Pattern in Next.js
+DESCRIPTION: This snippet demonstrates the *required* pattern for handling cookies when implementing Supabase Auth in Next.js. It emphasizes using `getAll` and `setAll` methods within the `cookies` object configuration for `createServerClient`.
+SOURCE: https://supabase.com/docs/guides/getting-started/ai-prompts/nextjs-supabase-auth
+
+LANGUAGE: typescript
+CODE:
+```
+// ✅ ALWAYS GENERATE THIS EXACT PATTERN
+{
+  cookies: {
+    getAll() {
+      return cookieStore.getAll()
+    },
+    setAll(cookiesToSet) {
+      const response = NextResponse.next({
+        request,
+      })
+      cookiesToSet.forEach(({ name, value, options }) => {
+        response.cookies.set(name, value, options)
+      })
+      return response
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Implement Supabase Auth Confirmation Endpoint for Next.js SSR
+DESCRIPTION: This Next.js API route handles the server-side confirmation of user sign-ups or other authentication events. It extracts `token_hash` and `type` from URL query parameters, uses the Supabase client to verify the OTP, and redirects the user to the `/account` page on successful verification, or to an `/error` page if verification fails.
+SOURCE: https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { NextResponse } from 'next/server'
+import { createClient } from '@/utils/supabase/server'
+
+// Creating a handler to a GET request to route /auth/confirm
+export async function GET(request) {
+  const { searchParams } = new URL(request.url)
+  const token_hash = searchParams.get('token_hash')
+  const type = searchParams.get('type')
+  const next = '/account'
+
+  // Create redirect link without the secret token
+  const redirectTo = request.nextUrl.clone()
+  redirectTo.pathname = next
+  redirectTo.searchParams.delete('token_hash')
+  redirectTo.searchParams.delete('type')
+
+  if (token_hash && type) {
+    const supabase = await createClient()
+
+    const { error } = await supabase.auth.verifyOtp({
+      type,
+      token_hash,
+    })
+
+    if (!error) {
+      redirectTo.searchParams.delete('next')
+      return NextResponse.redirect(redirectTo)
+    }
+  }
+
+  // return the user to an error page with some instructions
+  redirectTo.pathname = '/error'
+  return NextResponse.redirect(redirectTo)
+}
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI: Link Project and Pull Database Schema
+DESCRIPTION: Commands to link your local project to a Supabase project using its reference ID and then pull down the database schema. This is essential for local development and schema synchronization.
+SOURCE: https://supabase.com/docs/guides/getting-started/tutorials/with-solidjs
+
+LANGUAGE: Shell
+CODE:
+```
+supabase link --project-ref <project-id>
+supabase db pull
+```
+
+----------------------------------------
+
+TITLE: Supabase CLI: Start Local Development Stack
+DESCRIPTION: Starts the Supabase local development stack, requiring a `supabase/config.toml` file in the current working directory. By default, all service containers are started, but you can exclude specific ones using the `-x` flag, either as a comma-separated list or by repeating the flag. It is recommended to have at least 7GB of RAM for all services, and health checks are automatically performed unless `--ignore-health-check` is used.
+SOURCE: https://supabase.com/docs/reference/cli/supabase-snippets
+
+LANGUAGE: shell
+CODE:
+```
+supabase start [flags]
+```
+
+LANGUAGE: shell
+CODE:
+```
+supabase start
+```
+
+LANGUAGE: shell
+CODE:
+```
+Creating custom roles supabase/roles.sql...
+Applying migration 20220810154536_employee.sql...
+Seeding data supabase/seed.sql...
+Started supabase local development setup.
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+-x, --exclude <strings> Optional
+  Names of containers to not start. [gotrue,realtime,storage-api,imgproxy,kong,mailpit,postgrest,postgres-meta,studio,edge-runtime,logflare,vector,supavisor]
+--ignore-health-check Optional
+  Ignore unhealthy services and exit 0
+```
+
+----------------------------------------
+
+TITLE: Declare Supabase Row Level Security (RLS) Policies and Helper Functions
+DESCRIPTION: This comprehensive SQL script sets up Row Level Security (RLS) policies for multiple tables (`profiles`, `organizations`, `org_members`, `posts`, `comments`) in a Supabase database. It includes the creation of a `private` schema for security definer helper functions like `get_user_org_role` (for checking user roles within an organization) and `can_add_post` (for enforcing post limits based on organization plans). Policies are defined for various operations (select, insert, update, all) to control data access based on user authentication, roles (owner, admin, editor), and post status (published, premium).
+SOURCE: https://supabase.com/docs/guides/local-development/testing/pgtap-extended
+
+LANGUAGE: SQL
+CODE:
+```
+-- Create a private schema to store all security definer functions utils-- As such functions should never be in a API exposed schemacreate schema if not exists private;
+-- Helper function for role checkscreate or replace function private.get_user_org_role(org_id bigint, user_id uuid)returns textset search_path = ''as $$
+  select role from public.org_members
+  where org_id = $1 and user_id = $2;
+-- Note the use of security definer to avoid RLS checking recursion issue-- see: https://supabase.com/docs/guides/database/postgres/row-level-security#use-security-definer-functions$$ language sql security definer;
+-- Helper utils to check if an org is below the max post limitcreate or replace function private.can_add_post(org_id bigint)returns booleanset search_path = ''as $$
+  select (select count(*)
+          from public.posts p
+          where p.org_id = $1) < o.max_posts
+  from public.organizations o
+  where o.id = $1$$ language sql security definer;
+-- Enable RLS for all tablesalter table public.profiles enable row level security;alter table public.organizations enable row level security;alter table public.org_members enable row level security;alter table public.posts enable row level security;alter table public.comments enable row level security;
+-- Profiles policiescreate policy "Public profiles are viewable by everyone"
+  on public.profiles for select using (true);create policy "Users can insert their own profile"
+  on public.profiles for insert with check ((select auth.uid()) = id);create policy "Users can update their own profile"
+  on public.profiles for update using ((select auth.uid()) = id)
+  with check ((select auth.uid()) = id);
+-- Organizations policiescreate policy "Public org info visible to all"
+  on public.organizations for select using (true);create policy "Org management restricted to owners"
+  on public.organizations for all using (
+    private.get_user_org_role(id, (select auth.uid())) = 'owner'
+  );
+-- Org Members policiescreate policy "Members visible to org members"
+  on public.org_members for select using (
+    private.get_user_org_role(org_id, (select auth.uid())) is not null
+  );create policy "Member management restricted to admins and owners"
+  on public.org_members for all using (
+    private.get_user_org_role(org_id, (select auth.uid())) in ('owner', 'admin')
+  );
+-- Posts policiescreate policy "Complex post visibility"
+  on public.posts for select using (
+    -- Published non-premium posts are visible to all
+    (status = 'published' and not is_premium)
+    or
+    -- Premium posts visible to org members only
+    (status = 'published' and is_premium and
+    private.get_user_org_role(org_id, (select auth.uid())) is not null)
+    or
+    -- All posts visible to editors and above
+    private.get_user_org_role(org_id, (select auth.uid())) in ('owner', 'admin', 'editor')
+  );create policy "Post creation rules"
+  on public.posts for insert with check (
+    -- Must be org member with appropriate role
+    private.get_user_org_role(org_id, (select auth.uid())) in ('owner', 'admin', 'editor')
+    and
+    -- Check org post limits for free plans
+    (
+      (select o.plan_type != 'free'
+      from organizations o
+      where o.id = org_id)
+      or
+      (select private.can_add_post(org_id))
+    )
+  );create policy "Post update rules"
+  on public.posts for update using (
+    exists (
+      select 1
+      where
+        -- Editors can update non-published posts
+        (private.get_user_org_role(org_id, (select auth.uid())) = 'editor' and status != 'published')
+        or
+        -- Admins and owners can update any post
+        private.get_user_org_role(org_id, (select auth.uid())) in ('owner', 'admin')
+    )
+  );
+-- Comments policiescreate policy "Comments on published posts are viewable by everyone"
+  on public.comments for select using (
+    exists (
+      select 1 from public.posts
+      where id = post_id
+      and status = 'published'
+    )
+    and not is_deleted
+  );create policy "Authenticated users can create comments"
+  on public.comments for insert with check ((select auth.uid()) = author_id);create policy "Users can update their own comments"
+  on public.comments for update using (author_id = (select auth.uid()));
+```

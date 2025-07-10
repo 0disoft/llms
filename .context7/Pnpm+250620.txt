@@ -1,0 +1,1728 @@
+TITLE: Running Tests for a Specific Project Using pnpm Filter
+DESCRIPTION: This command allows running tests for a particular project from any directory in the repository. The `--filter` option specifies the project name (e.g., 'core') for which the tests should be executed.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/CONTRIBUTING.md#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+pnpm --filter core test
+```
+
+----------------------------------------
+
+TITLE: Install Project Dependencies with pnpm
+DESCRIPTION: This command initiates the installation of all project dependencies using pnpm. It serves as a direct replacement for 'npm install' or 'yarn install', leveraging pnpm's efficient content-addressable storage and linking mechanism for faster and more disk-space-friendly package management.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pnpm/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm install
+```
+
+----------------------------------------
+
+TITLE: pnpm Injected Directory Dependency Configuration
+DESCRIPTION: This configuration demonstrates how to declare an injected directory dependency using the `file:` protocol and `dependenciesMeta` in `package.json`. It ensures that local dependencies are correctly located, even in a chain of local dependencies, facilitating monorepo setups.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/resolve-dependencies/CHANGELOG.md#_snippet_19
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "name": "foo",
+  "dependencies": {
+    "bar": "file:../bar"
+  },
+  "dependenciesMeta": {
+    "bar": {
+      "injected": true
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Package.json entry for JSR dependencies
+DESCRIPTION: Illustrates the `package.json` entry for a JSR dependency before and after transformation. When publishing, the `jsr:` protocol is converted to an `npm:` alias for compatibility with npm, older versions of Yarn, and previous pnpm versions.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/resolving/npm-resolver/CHANGELOG.md#_snippet_1
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "dependencies": {
+    "@foo/bar": "jsr:^0.1.2"
+  }
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "dependencies": {
+    "@foo/bar": "npm:@jsr/foo__bar@^0.1.2"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Adding JSR Packages - Basic Syntax (pnpm)
+DESCRIPTION: This command demonstrates the basic syntax for adding a JSR package using pnpm. It allows users to install packages from the JSR registry by prefixing the package name with `jsr:`. This is a new feature introduced to support JSR packages.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/normalize-registries/CHANGELOG.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+pnpm add jsr:<pkg_name>
+```
+
+----------------------------------------
+
+TITLE: Configure Patched Dependencies in pnpm's package.json
+DESCRIPTION: This configuration snippet demonstrates how to use the 'pnpm.patchedDependencies' field within a 'package.json' file. It allows users to apply custom patches to specific package versions. Each entry maps a package name and exact version to the relative path of its corresponding patch file, enabling fine-grained control over dependencies.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/headless/CHANGELOG.md#_snippet_27
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "patchedDependencies": {
+      "eslint@1.0.0": "./patches/eslint@1.0.0.patch"
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Configure Supported Architectures for Optional Dependencies in pnpm
+DESCRIPTION: This configuration allows pnpm to install optional dependencies for specific operating systems, CPUs, and libc, even if they don't match the system running the install. It enables cross-platform dependency resolution for optional packages by defining the 'supportedArchitectures' field within the 'pnpm' object in package.json.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/workspace/find-packages/CHANGELOG.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32"],
+      "cpu": ["x64"]
+    }
+  }
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32", "darwin", "current"],
+      "cpu": ["x64", "arm64"]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Define Supported Architectures for pnpm Optional Dependencies
+DESCRIPTION: This configuration snippet shows how to use the `supportedArchitectures` field within `package.json` to specify target operating systems, CPUs, and libc for optional dependency installation. This allows pnpm to install dependencies for architectures different from the current system.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_33
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32"],
+      "cpu": ["x64"]
+    }
+  }
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32", "darwin", "current"],
+      "cpu": ["x64", "arm64"]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: pnpm Configuration: Auto-Install Missing Peer Dependencies
+DESCRIPTION: A new setting, `auto-install-peers`, is now supported. When set to `true`, `pnpm add <pkg>` will automatically install any missing peer dependencies as `devDependencies`, simplifying dependency management.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_95
+
+LANGUAGE: APIDOC
+CODE:
+```
+Setting: auto-install-peers
+Type: boolean
+Default: false
+Behavior: When true, pnpm add <pkg> automatically installs missing peer dependencies as devDependencies.
+```
+
+----------------------------------------
+
+TITLE: Add pnpm-lock.yaml v6 support
+DESCRIPTION: Introduced support for `pnpm-lock.yaml` format version 6, which will be the default lockfile format in pnpm v8. Users can opt-in using `use-lockfile-v6=true` in `.npmrc` or via `pnpm install --use-lockfile-v6`.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/get-context/CHANGELOG.md#_snippet_16
+
+LANGUAGE: APIDOC
+CODE:
+```
+Feature: pnpm-lock.yaml format v6 (SUPPORTED)
+Usage: .npmrc: use-lockfile-v6=true
+CLI: pnpm install --use-lockfile-v6
+Note: Default lockfile format in pnpm v8.
+```
+
+----------------------------------------
+
+TITLE: pnpm Major Change: Dropped Lockfile v5 Support
+DESCRIPTION: pnpm v3.0.0 and later no longer support lockfile v5. Users of lockfile v5 must use pnpm v8 to convert their lockfiles to v6 before upgrading to pnpm v9+.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/reviewing/dependencies-hierarchy/CHANGELOG.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+Breaking Change: Lockfile Version Support
+  Dropped Support: Lockfile v5
+  Migration Path:
+    - Use pnpm v8 to convert lockfile v5 to lockfile v6.
+    - Required before upgrading to pnpm versions that do not support v5.
+```
+
+----------------------------------------
+
+TITLE: package.json: Injected Dependencies with dependenciesMeta
+DESCRIPTION: Demonstrates the `injected` property within `dependenciesMeta` in `package.json`. When `injected: true` is set for a workspace dependency, the package is hard linked instead of symlinked. This allows the injected package to resolve its peer dependencies (like React) against the consuming project's `node_modules`, enabling different versions of the same peer dependency across a monorepo.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/headless/CHANGELOG.md#_snippet_29
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "name": "foo",
+  "dependencies": {
+    "bar": "workspace:1.0.0",
+    "react": "16"
+  },
+  "dependenciesMeta": {
+    "bar": {
+      "injected": true
+    }
+  }
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "name": "qar",
+  "dependencies": {
+    "bar": "workspace:1.0.0",
+    "react": "17"
+  },
+  "dependenciesMeta": {
+    "bar": {
+      "injected": true
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Install JSR Packages with pnpm
+DESCRIPTION: Demonstrates the syntax for installing JSR packages using the `pnpm add` command, including examples with and without a version range. It also illustrates how the `package.json` entry is initially added and subsequently transformed for compatibility with npm, older Yarn versions, and previous pnpm versions during publishing.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/resolving/default-resolver/CHANGELOG.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+pnpm add jsr:<pkg_name>
+```
+
+LANGUAGE: sh
+CODE:
+```
+pnpm add jsr:<pkg_name>@<range>
+```
+
+LANGUAGE: sh
+CODE:
+```
+pnpm add jsr:@foo/bar
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "dependencies": {
+    "@foo/bar": "jsr:^0.1.2"
+  }
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "dependencies": {
+    "@foo/bar": "npm:@jsr/foo__bar@^0.1.2"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Manage Node.js Version with pnpm
+DESCRIPTION: Introduces the `use-node-version` setting. When configured, pnpm will install the specified Node.js version and use it for executing any lifecycle scripts, ensuring consistent Node.js environments.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_123
+
+LANGUAGE: APIDOC
+CODE:
+```
+Setting: use-node-version
+  Type: string (Node.js version)
+  Description: Install and use the specified Node.js version for running lifecycle scripts.
+```
+
+----------------------------------------
+
+TITLE: Installing pnpm CLI with curl on Unix-like Systems
+DESCRIPTION: This command downloads and executes the pnpm installation script using `curl`. It's suitable for macOS, Linux, and Windows Subsystem for Linux, providing a convenient way to install the pnpm CLI without a pre-existing Node.js installation.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pnpm/artifacts/exe/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+curl -fsSL https://get.pnpm.io/install.sh | sh -
+```
+
+----------------------------------------
+
+TITLE: Save Dependencies to Catalogs with pnpm add
+DESCRIPTION: Explains the new `--save-catalog` and `--save-catalog-name` CLI options for `pnpm add`, enabling users to save new dependencies as catalog entries in `package.json` and `pnpm-workspace.yaml`. This helps manage dependencies centrally within a workspace.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm add --save-catalog
+```
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm add --save-catalog-name=<name>
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "dependencies": {
+    "my-package": "catalog:my-catalog"
+  }
+}
+```
+
+LANGUAGE: YAML
+CODE:
+```
+catalogs:
+  my-catalog:
+    my-package: "1.0.0"
+```
+
+----------------------------------------
+
+TITLE: Enforce required scripts in pnpm workspace projects
+DESCRIPTION: A new `pnpm.requiredScripts` setting in the root `package.json` allows defining scripts that must be present in every project within a pnpm workspace. If a required script is missing, `pnpm -r run <script name>` will fail.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/exec/plugin-commands-script-runners/CHANGELOG.md#_snippet_13
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "requiredScripts": [
+      "build",
+      "test"
+    ]
+  }
+}
+```
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm -r run <script-name>
+```
+
+----------------------------------------
+
+TITLE: Configure supported architectures for pnpm optional dependencies
+DESCRIPTION: This configuration allows pnpm to install optional dependencies for specific operating systems and CPU architectures, even if they don't match the system running the install. It uses the `supportedArchitectures` field within the `pnpm` object in `package.json` to define preferences for OS, CPU, and libc.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/headless/CHANGELOG.md#_snippet_11
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32"],
+      "cpu": ["x64"]
+    }
+  }
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32", "darwin", "current"],
+      "cpu": ["x64", "arm64"]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Install JSR packages with pnpm
+DESCRIPTION: Demonstrates how to install JSR packages using `pnpm add`. This feature allows adding packages from the JSR registry, which are then transformed for npm compatibility upon publishing. The `@jsr` scope defaults to `https://npm.jsr.io/`.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/resolving/resolver-base/CHANGELOG.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+pnpm add jsr:<pkg_name>
+```
+
+LANGUAGE: shell
+CODE:
+```
+pnpm add jsr:<pkg_name>@<range>
+```
+
+LANGUAGE: shell
+CODE:
+```
+pnpm add jsr:@foo/bar
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "dependencies": {
+    "@foo/bar": "jsr:^0.1.2"
+  }
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "dependencies": {
+    "@foo/bar": "npm:@jsr/foo__bar@^0.1.2"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: pnpm Configuration: Default Node Linker Set to Isolated
+DESCRIPTION: The default value for the `nodeLinker` setting has been changed to `isolated`. This means pnpm will now default to creating a symlinked `node_modules` structure, which is its recommended approach.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_85
+
+LANGUAGE: APIDOC
+CODE:
+```
+Setting: nodeLinker
+Default: isolated
+Previous Default: (implied) hoisted or other
+Description: Controls how node_modules are linked. 'isolated' creates symlinked node_modules.
+```
+
+----------------------------------------
+
+TITLE: pnpm: Peer Dependency Resolution with Nested Peer Dependencies
+DESCRIPTION: This example illustrates how pnpm resolves peer dependencies when they themselves have peer dependencies. It demonstrates that if a package (e.g., 'card') has a peer dependency ('react'), and that peer dependency ('react') also has its own peer dependency ('typescript'), pnpm will group 'react' with the specific version of 'typescript' resolved from the project's dependencies. This leads to different 'node_modules' paths for 'card' and 'react' even if their versions are the same, depending on the 'typescript' version used by the consuming project.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/resolve-dependencies/CHANGELOG.md#_snippet_6
+
+LANGUAGE: Filesystem
+CODE:
+```
+node_modules
+  .pnpm
+    card@1.0.0(react@16.8.0(typescript@7.0.0))
+      node_modules
+        card
+        react --> ../../react@16.8.0(typescript@7.0.0)/node_modules/react
+    react@16.8.0(typescript@7.0.0)
+      node_modules
+        react
+        typescript --> ../../typescript@7.0.0/node_modules/typescript
+    typescript@7.0.0
+      node_modules
+        typescript
+    card@1.0.0(react@16.8.0(typescript@8.0.0))
+      node_modules
+        card
+        react --> ../../react@16.8.0(typescript@8.0.0)/node_modules/react
+    react@16.8.0(typescript@8.0.0)
+      node_modules
+        react
+        typescript --> ../../typescript@8.0.0/node_modules/typescript
+    typescript@8.0.0
+      node_modules
+        typescript
+```
+
+----------------------------------------
+
+TITLE: Configuring pnpm Overrides to Remove a Dependency (JSON)
+DESCRIPTION: This JSON snippet demonstrates how to configure `pnpm.overrides` in a `package.json` file to remove a specific dependency. By setting the dependency's value to `"-"`, pnpm will exclude it from the project's dependencies during installation. This feature provides granular control over the dependency tree.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/hooks/read-package-hook/CHANGELOG.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "overrides": {
+      "lodash": "-"
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Allowing Any Peer Dependency Version in pnpm (JSON)
+DESCRIPTION: This JSON configuration illustrates the `pnpm.peerDependencyRules.allowAny` setting, which allows specified peer dependencies to resolve from any version, bypassing range restrictions. It accepts an array of package name patterns to mute warnings about version mismatches for those dependencies.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/packages/types/CHANGELOG.md#_snippet_10
+
+LANGUAGE: json
+CODE:
+```
+{
+  "pnpm": {
+    "peerDependencyRules": {
+      "allowAny": ["@babel/*", "eslint"]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Managing Build Script Approvals with pnpm approve-builds
+DESCRIPTION: The `pnpm approve-builds` command provides control over which dependencies are allowed to run postinstall scripts. Recent updates enable its use with globally installed packages (`--global`), ensure functionality from workspace subdirectories, and integrate with an auto-ignore build list. It also sorts package names in the 'pnpm.onlyBuiltDependencies' list for improved readability.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/exec/build-commands/CHANGELOG.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm approve-builds
+pnpm approve-builds --global
+```
+
+----------------------------------------
+
+TITLE: pnpm Patching Dependencies Feature (v14.0.0 Major Change)
+DESCRIPTION: Details the new behavior for `pnpm.patchedDependencies` and `pnpm patch` commands introduced in pnpm v14.0.0. This feature allows users to apply patches to all versions of a package or to a specific exact version, with different failure behaviors based on the configuration. It also explains how `pnpm patch` and `pnpm patch-commit` interact with this new functionality.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/exec/build-modules/CHANGELOG.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Add ability to apply patch to all versions:
+If the key of `pnpm.patchedDependencies` is a package name without a version (e.g. `pkg`), pnpm will attempt to apply the patch to all versions of
+the package, failure will be skipped.
+If it is a package name and an exact version (e.g. `pkg@x.y.z`), pnpm will attempt to apply the patch to that exact version only, failure will
+cause pnpm to fail.
+
+If there's only one version of `pkg` installed, `pnpm patch pkg` and subsequent `pnpm patch-commit $edit_dir` will create an entry named `pkg` in
+`pnpm.patchedDependencies`. And pnpm will attempt to apply this patch to other versions of `pkg` in the future.
+
+If there's multiple versions of `pkg` installed, `pnpm patch pkg` will ask which version to edit and whether to attempt to apply the patch to all.
+If the user chooses to apply the patch to all, `pnpm patch-commit $edit_dir` would create a `pkg` entry in `pnpm.patchedDependencies`.
+If the user chooses not to apply the patch to all, `pnpm patch-commit $edit_dir` would create a `pkg@x.y.z` entry in `pnpm.patchedDependencies` with
+`x.y.z` being the version the user chose to edit.
+
+If the user runs `pnpm patch pkg@x.y.z` with `x.y.z` being the exact version of `pkg` that has been installed, `pnpm patch-commit $edit_dir` will always
+create a `pkg@x.y.z` entry in `pnpm.patchedDependencies`.
+```
+
+----------------------------------------
+
+TITLE: Major Change: Dropped Node.js v16 Support Requirement
+DESCRIPTION: pnpm no longer supports Node.js v16. Users are now required to use Node.js v18.12 or a newer version to ensure compatibility, proper functionality, and access to the latest features.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/reviewing/plugin-commands-listing/CHANGELOG.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Node.js Compatibility:
+  - Minimum Required Version: v18.12
+  - Dropped Support For: v16
+```
+
+----------------------------------------
+
+TITLE: Configure pnpm Supported Architectures for Optional Dependencies
+DESCRIPTION: This `package.json` configuration allows developers to specify target operating systems and CPU architectures for which pnpm should install optional dependencies. It is particularly useful for cross-platform development, enabling the installation of platform-specific binaries without matching the host system's architecture. The `current` value for `os` or `cpu` ensures the host system's architecture is also included.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/resolve-dependencies/CHANGELOG.md#_snippet_20
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32"],
+      "cpu": ["x64"]
+    }
+  }
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32", "darwin", "current"],
+      "cpu": ["x64", "arm64"]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Committing Changes with Git for PR
+DESCRIPTION: This Git command commits all staged changes to the current branch. The `-a` option automatically stages modified and deleted files, simplifying the commit process. A descriptive commit message adhering to project conventions is crucial for release note generation.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/CONTRIBUTING.md#_snippet_5
+
+LANGUAGE: shell
+CODE:
+```
+git commit -a
+```
+
+----------------------------------------
+
+TITLE: Support for pnpm packages patching
+DESCRIPTION: pnpm now supports patching packages. This includes throwing an error if a patch couldn't be applied and updating dependencies when a patch file is modified, even when scripts are ignored.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/exec/build-modules/CHANGELOG.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+Feature: Package Patching
+  Description: pnpm now supports applying patches to packages.
+  Behavior:
+    - Throws an error if a patch fails to apply.
+    - Updates dependencies when a patch file is modified.
+    - Applies patches even when scripts are ignored.
+```
+
+----------------------------------------
+
+TITLE: Add pnpm-lock.yaml format v6 support
+DESCRIPTION: Introduces support for the new `pnpm-lock.yaml` format v6, which will be the default lockfile format in pnpm v8. Users can enable it immediately using the `use-lockfile-v6=true` setting in `.npmrc` or by running `pnpm install --use-lockfile-v6`.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/plugin-commands-installation/CHANGELOG.md#_snippet_32
+
+LANGUAGE: Configuration
+CODE:
+```
+use-lockfile-v6=true
+```
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm install --use-lockfile-v6
+```
+
+----------------------------------------
+
+TITLE: Install Node.js Globally using pnpm env use
+DESCRIPTION: This command allows users to install a specific Node.js version globally. The `<version>` placeholder can be replaced with an exact version number or a semver range.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/env/plugin-commands-env/CHANGELOG.md#_snippet_5
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm env use --global <version>
+```
+
+----------------------------------------
+
+TITLE: Configure pnpm audit to ignore vulnerabilities
+DESCRIPTION: Demonstrates how to use the `pnpm audit` command with new flags to ignore specific vulnerabilities or all unfixable ones. The `--ignore-unfixable` flag ignores vulnerabilities without a resolution, while the `--ignore` flag allows specifying a list of CVEs to ignore, even if they have a resolution.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/lockfile/plugin-commands-audit/CHANGELOG.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+pnpm audit --ignore-unfixable
+```
+
+LANGUAGE: shell
+CODE:
+```
+pnpm audit --ignore=CVE-2021-1234 --ignore=CVE-2021-5678
+```
+
+----------------------------------------
+
+TITLE: Enable Global Virtual Store in pnpm-workspace.yaml
+DESCRIPTION: Instructions for enabling the experimental global virtual store feature in pnpm, which can significantly speed up installations by symlinking to a central store. This feature is configured by adding a specific entry to the root `pnpm-workspace.yaml`.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/resolve-dependencies/CHANGELOG.md#_snippet_1
+
+LANGUAGE: YAML
+CODE:
+```
+enableGlobalVirtualStore: true
+```
+
+----------------------------------------
+
+TITLE: Configure Node.js Path Prepending for pnpm Scripts
+DESCRIPTION: Introduces the `scriptsPrependNodePath` setting, which can be `true`, `false`, or `warn-only`. When `true`, the `node` executable's path used by pnpm is prepended to script `PATH`. When `warn-only`, pnpm warns if scripts use a different `node` binary.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_104
+
+LANGUAGE: APIDOC
+CODE:
+```
+Setting: scriptsPrependNodePath
+  Type: boolean | 'warn-only'
+  Values:
+    - true: Prepend pnpm's Node.js executable path to script PATH.
+    - false: Do not prepend Node.js executable path.
+    - warn-only: Print warning if script Node.js binary differs from pnpm's.
+```
+
+----------------------------------------
+
+TITLE: Update Specific Packages with Depth in pnpm
+DESCRIPTION: This snippet introduces a new capability for `pnpm update`, allowing users to update specific packages up to a defined dependency depth. The `--depth` option provides fine-grained control over the update process, enabling updates for transitive dependencies or limiting the scope.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/plugin-commands-installation/CHANGELOG.md#_snippet_50
+
+LANGUAGE: CLI
+CODE:
+```
+pnpm update <package-pattern> --depth <number|Infinity>
+# Example: pnpm update @types/* --depth Infinity
+```
+
+----------------------------------------
+
+TITLE: Ignoring CVE Vulnerabilities in pnpm Audit (JSON)
+DESCRIPTION: This snippet demonstrates how to configure pnpm to ignore specific vulnerabilities identified by their CVE (Common Vulnerabilities and Exposures) codes. The `ignoreCves` array within `pnpm.auditConfig` in `package.json` allows users to list CVE identifiers that should be excluded from audit reports.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/packages/types/CHANGELOG.md#_snippet_7
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "auditConfig": {
+      "ignoreCves": [
+        "CVE-2019-10742",
+        "CVE-2020-28168",
+        "CVE-2021-3749",
+        "CVE-2020-7598"
+      ]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Update `filterPackages` API and add `--filter-prod` CLI argument
+DESCRIPTION: The `filterPackages` function's second argument has been updated to accept an array of objects, each containing a `filter` string and a `followProdDepsOnly` boolean. Setting `followProdDepsOnly` to `true` will exclude `devDependencies` when building the package graph. A new CLI argument, `--filter-prod`, has also been added, which functions similarly to `--filter` but automatically sets `followProdDepsOnly` to `true` for its filters, allowing users to filter projects while ignoring development dependencies.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/workspace/filter-workspace-packages/CHANGELOG.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+filterPackages(
+  packages: Package[],
+  filters: Array<{ filter: string, followProdDepsOnly: boolean }>
+): FilteredPackageGraph
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+const newFilters = oldFilters.map(filter => ({ filter, followProdDepsOnly: false }));
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pnpm filter --filter-prod <package-selector>
+```
+
+----------------------------------------
+
+TITLE: pnpm Configuration: nodeLinker New Values
+DESCRIPTION: The `nodeLinker` setting now accepts two new values: `isolated` and `hoisted`. `hoisted` creates a classic `node_modules` without symlinks, while `isolated` (the new default) creates a symlinked `node_modules`.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_97
+
+LANGUAGE: APIDOC
+CODE:
+```
+Setting: nodeLinker
+Accepted Values:
+- isolated: Creates a symlinked node_modules (default).
+- hoisted: Creates a classic node_modules without symlinks.
+```
+
+----------------------------------------
+
+TITLE: Adding JSR Packages - With Version Range (pnpm)
+DESCRIPTION: This command shows how to add a JSR package with a specific version range using pnpm. It extends the basic `pnpm add jsr:` syntax to include a version specifier, allowing for more precise dependency management from the JSR registry.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/normalize-registries/CHANGELOG.md#_snippet_1
+
+LANGUAGE: sh
+CODE:
+```
+pnpm add jsr:<pkg_name>@<range>
+```
+
+----------------------------------------
+
+TITLE: Install JSR packages using pnpm
+DESCRIPTION: Demonstrates the syntax for adding JSR packages using `pnpm add`, including examples with and without version ranges. It also illustrates how the `package.json` entry is initially added and subsequently transformed for publishing compatibility.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/package-requester/CHANGELOG.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm add jsr:<pkg_name>
+
+pnpm add jsr:<pkg_name>@<range>
+
+pnpm add jsr:@foo/bar
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "dependencies": {
+    "@foo/bar": "jsr:^0.1.2"
+  }
+}
+
+{
+  "dependencies": {
+    "@foo/bar": "npm:@jsr/foo__bar@^0.1.2"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Ignoring GHSA Vulnerabilities in pnpm Audit (JSON)
+DESCRIPTION: This snippet illustrates how to configure pnpm to ignore specific vulnerabilities identified by their GHSA codes. The `ignoreGhsas` array within `pnpm.auditConfig` in `package.json` allows users to list GHSA identifiers that should be excluded from audit reports.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/packages/types/CHANGELOG.md#_snippet_1
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "auditConfig": {
+      "ignoreGhsas": [
+        "GHSA-42xw-2xvc-qx8m",
+        "GHSA-4w2v-q235-vp99",
+        "GHSA-cph5-m8f7-6c5x",
+        "GHSA-vh95-rmgr-6w4m"
+      ]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Set pnpm Workspace Protocol to Rolling Alias
+DESCRIPTION: The `save-workspace-protocol` option can be set to `rolling` to save workspace versions using a rolling alias (e.g., `workspace:^`) instead of pinning a specific version number. This ensures that workspace dependencies automatically update to the latest compatible version within the workspace. Use this option with the `add` command.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/resolve-dependencies/CHANGELOG.md#_snippet_15
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm --save-workspace-protocol=rolling add foo
+```
+
+----------------------------------------
+
+TITLE: Installing JSR Packages with pnpm CLI
+DESCRIPTION: This command demonstrates the basic syntax for adding a JSR package to a project using `pnpm add`. It allows specifying the package name with the `jsr:` protocol prefix. This is a new feature introduced to support JSR packages directly.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manifest/exportable-manifest/CHANGELOG.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm add jsr:<pkg_name>
+```
+
+----------------------------------------
+
+TITLE: pnpm Behavior Change: Disable Default Type Hoisting
+DESCRIPTION: By default, pnpm no longer hoists types to the root of `node_modules`. This change affects how TypeScript types are resolved and might require adjustments in projects relying on implicit type hoisting.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_81
+
+LANGUAGE: APIDOC
+CODE:
+```
+Behavior: Type Hoisting
+Default: Types are not hoisted to node_modules root
+Previous Behavior: Types were hoisted by default
+Related Issue: #4459
+```
+
+----------------------------------------
+
+TITLE: pnpm Configuration: scriptsPrependNodePath Setting
+DESCRIPTION: Introduces the `scriptsPrependNodePath` setting, which controls whether the pnpm Node.js executable path is prepended to the `PATH` environment variable for scripts. It can be set to `true` (always prepend), `false` (never prepend), or `warn-only` (warn if Node.js versions differ).
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/headless/CHANGELOG.md#_snippet_28
+
+LANGUAGE: APIDOC
+CODE:
+```
+scriptsPrependNodePath: boolean | "warn-only"
+  Description: Controls whether the path to the `node` executable with which pnpm executed is prepended to the `PATH` of the scripts.
+  Values:
+    true: The Node.js executable path is prepended to the script's PATH.
+    false: The Node.js executable path is not prepended.
+    warn-only: pnpm will print a warning if the scripts run with a `node` binary that differs from the `node` binary executing the pnpm CLI.
+```
+
+----------------------------------------
+
+TITLE: Install JSR Packages using pnpm
+DESCRIPTION: Demonstrates how to install JSR packages using the `pnpm add` command, including examples for basic installation and version ranges. It also illustrates the resulting `package.json` entry and its transformation for compatibility with npm, older Yarn, and previous pnpm versions.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/resolve-dependencies/CHANGELOG.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm add jsr:<pkg_name>
+pnpm add jsr:<pkg_name>@<range>
+pnpm add jsr:@foo/bar
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "dependencies": {
+    "@foo/bar": "jsr:^0.1.2"
+  }
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "dependencies": {
+    "@foo/bar": "npm:@jsr/foo__bar@^0.1.2"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Install JSR Packages with pnpm
+DESCRIPTION: Details the new support for installing JSR packages using the `jsr:` prefix. It shows how to add JSR packages with or without a version range, and how the `package.json` entry is transformed for compatibility during publishing.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_7
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm add jsr:<pkg_name>
+```
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm add jsr:<pkg_name>@<range>
+```
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm add jsr:@foo/bar
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "dependencies": {
+    "@foo/bar": "jsr:^0.1.2"
+  }
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "dependencies": {
+    "@foo/bar": "npm:@jsr/foo__bar@^0.1.2"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Allow Building Specific Dependencies with pnpm add
+DESCRIPTION: Demonstrates how to use the new `--allow-build` flag with `pnpm add` to permit postinstall scripts for a specific dependency, such as `esbuild`, ensuring it runs its build process during installation. This also adds the dependency to `pnpm.onlyBuiltDependencies` in `package.json` for future allowance.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/plugin-commands-installation/CHANGELOG.md#_snippet_7
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm --allow-build=esbuild add bundle
+```
+
+----------------------------------------
+
+TITLE: Configuring Version-Aware Patches in pnpm
+DESCRIPTION: This YAML configuration demonstrates how to apply different patches to a package based on its version. Exact versions take precedence over version ranges, which in turn override name-only patches. For instance, `foo@2.1.0` receives `foo-3.patch`, `foo@^2.0.0` (excluding `2.1.0`) receives `foo-2.patch`, and other `foo` versions receive `foo-1.patch`.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/patching/config/CHANGELOG.md#_snippet_0
+
+LANGUAGE: YAML
+CODE:
+```
+patchedDependencies:
+  foo: patches/foo-1.patch
+  foo@^2.0.0: patches/foo-2.patch
+  foo@2.1.0: patches/foo-3.patch
+```
+
+----------------------------------------
+
+TITLE: Configure pnpm settings in pnpm-workspace.yaml
+DESCRIPTION: This snippet demonstrates how to configure pnpm settings directly within the `pnpm-workspace.yaml` file. It shows examples for `verifyDepsBeforeRun`, `optimisticRepeatInstall`, and `publicHoistPattern`, which now accept camelCase settings previously found in `.npmrc`.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/plugin-commands-installation/CHANGELOG.md#_snippet_6
+
+LANGUAGE: yaml
+CODE:
+```
+verifyDepsBeforeRun: install
+optimisticRepeatInstall: true
+publicHoistPattern:
+  - "*types*"
+  - "!@types/react"
+```
+
+----------------------------------------
+
+TITLE: Update pnpm configuration: Replace hoistedAliases and shamefullyHoist
+DESCRIPTION: As of pnpm v14.0.0, the `node_modules/.modules.yaml` file no longer uses `hoistedAliases` and `shamefullyHoist`. These have been replaced by `hoistedDependencies` and `publicHoistPattern` respectively, requiring updates to existing configurations.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/headless/CHANGELOG.md#_snippet_30
+
+LANGUAGE: YAML
+CODE:
+```
+# Old configuration keys (pre-v14.0.0)
+# hoistedAliases: <boolean>
+# shamefullyHoist: <boolean>
+
+# New configuration keys (v14.0.0+)
+hoistedDependencies: <boolean>
+publicHoistPattern: <string>
+```
+
+----------------------------------------
+
+TITLE: Configure Patched Dependencies in pnpm
+DESCRIPTION: This configuration allows users to apply custom patches to specific package dependencies. It is defined within the `pnpm.patchedDependencies` field of the `package.json` file, requiring the package name with its exact version and the relative path to the patch file.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/resolve-dependencies/CHANGELOG.md#_snippet_16
+
+LANGUAGE: json
+CODE:
+```
+{
+  "pnpm": {
+    "patchedDependencies": {
+      "eslint@1.0.0": "./patches/eslint@1.0.0.patch"
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Configure pnpm Version Management in package.json
+DESCRIPTION: pnpm can now manage its own version by reading the 'packageManager' field in 'package.json'. If the 'manage-package-manager-versions' setting is enabled, pnpm will automatically switch to the specified version, aligning with Corepack's functionality.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_31
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "packageManager": "pnpm@9.3.0"
+}
+```
+
+----------------------------------------
+
+TITLE: Configure pnpm settings in pnpm-workspace.yaml
+DESCRIPTION: This example demonstrates how to configure pnpm settings directly within the `pnpm-workspace.yaml` file. This new feature allows centralizing configuration previously managed in `.npmrc`, supporting camelCase for settings like `verifyDepsBeforeRun`, `optimisticRepeatInstall`, and `publicHoistPattern`.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/patching/plugin-commands-patching/CHANGELOG.md#_snippet_4
+
+LANGUAGE: YAML
+CODE:
+```
+verifyDepsBeforeRun: install
+optimisticRepeatInstall: true
+publicHoistPattern:
+  - "*types*"
+  - "!@types/react"
+```
+
+----------------------------------------
+
+TITLE: Configure pnpm Supported Architectures in package.json
+DESCRIPTION: Examples of `package.json` configuration to specify supported architectures for installing optional dependencies. This feature allows pnpm to install dependencies for operating systems, CPU architectures, and libc environments different from the one running the install, enabling more flexible cross-platform dependency management.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/exec/plugin-commands-rebuild/CHANGELOG.md#_snippet_3
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32"],
+      "cpu": ["x64"]
+    }
+  }
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32", "darwin", "current"],
+      "cpu": ["x64", "arm64"]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Configuring Supported Architectures for Optional Dependencies (JSON)
+DESCRIPTION: This configuration allows pnpm to install optional dependencies for specific operating systems, CPU architectures, and libc versions, even if they differ from the system running the install. It's defined within the 'pnpm' field of 'package.json'. The 'os' and 'cpu' fields accept arrays of target platforms, and 'current' can be used to include the host system's architecture.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/package-is-installable/CHANGELOG.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32"],
+      "cpu": ["x64"]
+    }
+  }
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32", "darwin", "current"],
+      "cpu": ["x64", "arm64"]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Configure Supported Architectures for Optional Dependencies in pnpm
+DESCRIPTION: This JSON configuration snippet demonstrates how to use the `supportedArchitectures` field within the `pnpm` section of your `package.json`. This feature allows pnpm to install optional dependencies for specified operating systems, CPU architectures, and libc versions, even if they differ from the system running the install. This is useful for cross-platform development or building artifacts for multiple environments.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/cli/cli-utils/CHANGELOG.md#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32"],
+      "cpu": ["x64"]
+    }
+  }
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32", "darwin", "current"],
+      "cpu": ["x64", "arm64"]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Configure pnpm for Multi-Architecture Dependency Installation
+DESCRIPTION: This configuration demonstrates how to use the `supportedArchitectures` field in `package.json` to specify target operating systems and CPU architectures for installing optional dependencies. This allows pnpm to install dependencies for architectures different from the system running the install, enhancing cross-platform compatibility.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/reviewing/license-scanner/CHANGELOG.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+    "pnpm": {
+      "supportedArchitectures": {
+        "os": ["win32"],
+        "cpu": ["x64"]
+      }
+    }
+  }
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+    "pnpm": {
+      "supportedArchitectures": {
+        "os": ["win32", "darwin", "current"],
+        "cpu": ["x64", "arm64"]
+      }
+    }
+  }
+```
+
+----------------------------------------
+
+TITLE: pnpm Node.js Version Support Update
+DESCRIPTION: pnpm has dropped support for Node.js v16. Users are now required to use Node.js v18.12 or a newer version to ensure compatibility and proper functionality.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/get-context/CHANGELOG.md#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+Requirement: Node.js Version
+  Minimum: v18.12
+  Dropped Support: Node.js v16
+```
+
+----------------------------------------
+
+TITLE: pnpm Major Change: Dropped Node.js v16 Support
+DESCRIPTION: pnpm v3.0.0 and later no longer support Node.js v16. Users must upgrade to Node.js v18.12 or higher to continue using pnpm.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/reviewing/dependencies-hierarchy/CHANGELOG.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+Breaking Change: Node.js Version Requirement
+  Minimum Version: Node.js v18.12
+  Dropped Support: Node.js v16
+```
+
+----------------------------------------
+
+TITLE: Change Default Lifecycle Script Execution for Dependencies
+DESCRIPTION: By default, pnpm no longer runs lifecycle scripts of dependencies during installation. To allow scripts for specific dependencies, they must be explicitly listed in the `pnpm.onlyBuiltDependencies` field of `package.json`, enhancing control over build processes.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_22
+
+LANGUAGE: APIDOC
+CODE:
+```
+Behavior: By default, don't run lifecycle scripts of dependencies during installation.
+Configuration: To allow lifecycle scripts of specific dependencies, list them in the `pnpm.onlyBuiltDependencies` field of `package.json`.
+```
+
+----------------------------------------
+
+TITLE: Configure Registry-Scoped SSL for pnpm
+DESCRIPTION: This snippet demonstrates how to set up registry-scoped SSL configurations in pnpm, allowing specific certificate, key, and CA files to be used for a given registry URL. This enhances security for private registries.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_32
+
+LANGUAGE: pnpm config
+CODE:
+```
+//registry.mycomp.com/:certfile=server-cert.pem
+//registry.mycomp.com/:keyfile=server-key.pem
+//registry.mycomp.com/:cafile=client-cert.pem
+```
+
+----------------------------------------
+
+TITLE: List Node.js Versions with pnpm env
+DESCRIPTION: Use this command to list all globally installed Node.js versions or available remote Node.js versions that can be managed by pnpm. This helps in managing different Node.js environments.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/env/plugin-commands-env/CHANGELOG.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm env list
+```
+
+----------------------------------------
+
+TITLE: Configure Peer Dependency Warning Rules in pnpm package.json
+DESCRIPTION: This JSON snippet demonstrates how to configure peer dependency warning rules within the 'pnpm' section of a 'package.json' file. It shows how to ignore missing peer dependencies like 'babel-loader' and specify allowed versions for others, such as '@angular/common', to suppress warnings.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/plugin-commands-installation/CHANGELOG.md#_snippet_44
+
+LANGUAGE: JSON
+CODE:
+```
+{
+    "name": "foo",
+    "version": "0.0.0",
+    "pnpm": {
+      "peerDependencyRules": {
+        "ignoreMissing": ["babel-loader"],
+        "allowedVersions": {
+          "@angular/common": "13"
+        }
+      }
+    }
+  }
+```
+
+----------------------------------------
+
+TITLE: Configure pnpm to Ignore Vulnerabilities by GHSA Code
+DESCRIPTION: This configuration snippet demonstrates how to use the `pnpm.auditConfig.ignoreGhsas` setting within your `package.json` file. This setting allows you to specify a list of GHSA (GitHub Security Advisory) codes for vulnerabilities that pnpm's audit command should disregard. This is useful for managing known vulnerabilities that may not be relevant to your specific project or have been addressed through other means.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/lockfile/plugin-commands-audit/CHANGELOG.md#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+{
+  "pnpm": {
+    "auditConfig": {
+      "ignoreGhsas": [
+        "GHSA-42xw-2xvc-qx8m",
+        "GHSA-4w2v-q235-vp99",
+        "GHSA-cph5-m8f7-6c5x",
+        "GHSA-vh95-rmgr-6w4m"
+      ]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: pnpm dlx command resolves exact package versions and updates cache key
+DESCRIPTION: The `pnpm dlx` command now ensures that packages are resolved to their exact versions for cache key generation, guaranteeing the installation of the newest versions. Additionally, the cache key generation for `dlx` has been updated to use SHA256 hashing.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/exec/plugin-commands-script-runners/CHANGELOG.md#_snippet_5
+
+LANGUAGE: CLI
+CODE:
+```
+pnpm dlx command:
+  Description: Executes a package from the npm registry without installing it globally.
+  Behavior Change (v13.0.0):
+    - Package Resolution: Always resolves packages to their exact versions.
+    - Cache Key: Uses the exact resolved versions to create a cache key.
+    - Cache Hashing: Cache key generation now uses SHA256.
+```
+
+----------------------------------------
+
+TITLE: Change Default Public Hoist Pattern for eslint/prettier
+DESCRIPTION: Packages containing 'eslint' or 'prettier' in their name are no longer hoisted to the root of `node_modules` by default. This changes the default value of the `public-hoist-pattern` setting, affecting how these specific packages are organized.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_27
+
+LANGUAGE: APIDOC
+CODE:
+```
+Setting: `public-hoist-pattern`
+Default Value Change: Do not hoist packages containing `eslint` or `prettier` in their name to the root of `node_modules`.
+```
+
+----------------------------------------
+
+TITLE: Configure executable files in pnpm publishConfig
+DESCRIPTION: Demonstrates how to use the `executableFiles` field within `publishConfig` to mark additional files as executable in the resulting package archive, ensuring portability. By default, only files listed in the `bin` field are marked executable.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/releasing/plugin-commands-publishing/CHANGELOG.md#_snippet_9
+
+LANGUAGE: json
+CODE:
+```
+"publishConfig": {
+  "executableFiles": [
+    "./dist/shim.js"
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Install Subdirectory from Git Repository with pnpm
+DESCRIPTION: Demonstrates how to install a specific subdirectory from a Git repository as a dependency using `pnpm add`. This feature allows specifying a path within the repository and can be combined with other parameters like a branch name.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/fetching/tarball-fetcher/CHANGELOG.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm add github:user/repo#path:packages/foo
+```
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm add github:user/repo#dev&path:packages/bar
+```
+
+----------------------------------------
+
+TITLE: Install JSR Packages with pnpm
+DESCRIPTION: Demonstrates how to add JSR packages using the `pnpm add` command, either by package name or with a specific version range. This feature allows pnpm to install packages directly from the JSR registry.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/store/store-controller-types/CHANGELOG.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+pnpm add jsr:<pkg_name>
+pnpm add jsr:<pkg_name>@<range>
+```
+
+----------------------------------------
+
+TITLE: pnpm: Enable Lockfile Format v6
+DESCRIPTION: Adds support for `pnpm-lock.yaml` format v6, which will be the default in pnpm v8. Users can opt-in to this new format using a command-line flag or an `.npmrc` setting.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/resolve-dependencies/CHANGELOG.md#_snippet_9
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm install --use-lockfile-v6
+```
+
+LANGUAGE: INI
+CODE:
+```
+use-lockfile-v6=true
+```
+
+----------------------------------------
+
+TITLE: Configure pnpm patchedDependencies with Version Specificity
+DESCRIPTION: This YAML configuration demonstrates how to use `patchedDependencies` in `pnpm-workspace.yaml` to apply different patches to a package based on its version. Patches can be specified for exact versions, version ranges, or package names, with exact versions taking precedence over ranges, and ranges over name-only patches.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/headless/CHANGELOG.md#_snippet_3
+
+LANGUAGE: YAML
+CODE:
+```
+patchedDependencies:
+  foo: patches/foo-1.patch
+  foo@^2.0.0: patches/foo-2.patch
+  foo@2.1.0: patches/foo-3.patch
+```
+
+----------------------------------------
+
+TITLE: Update Node.js Version Requirement for pnpm
+DESCRIPTION: pnpm has dropped support for Node.js v16. Users must now use Node.js v18.12 or newer to ensure compatibility and proper functionality.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/fetching/directory-fetcher/CHANGELOG.md#_snippet_0
+
+LANGUAGE: Node.js
+CODE:
+```
+Requirement: Node.js v18.12+
+Dropped Support: Node.js v16
+```
+
+----------------------------------------
+
+TITLE: pnpm.patchedDependencies Configuration Schema
+DESCRIPTION: Describes the structure and behavior of the `pnpm.patchedDependencies` configuration within `package.json`. It explains how defining a package name without a version applies a patch to all versions (skipping failures), while defining with an exact version applies it only to that specific version (failing on errors).
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/headless/CHANGELOG.md#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+pnpm.patchedDependencies:
+  <package_name>: # Example: pkg
+    # Behavior: Patch applied to all installed versions of the package.
+    # Failure to apply will be skipped.
+  <package_name>@<version>: # Example: pkg@x.y.z
+    # Behavior: Patch applied only to the exact specified version.
+    # Failure to apply will cause pnpm to fail.
+```
+
+----------------------------------------
+
+TITLE: Configure Experimental Inline Specifiers Lockfile Format
+DESCRIPTION: This setting enables an experimental lockfile format designed to reduce merge conflicts within the `importers` section of the lockfile. It is configured in the `.npmrc` file. If committed to a repository, it is recommended to update the `engines` field in `package.json` to enforce a minimum pnpm version.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/lockfile/fs/CHANGELOG.md#_snippet_1
+
+LANGUAGE: Configuration
+CODE:
+```
+use-inline-specifiers-lockfile-format = true
+```
+
+----------------------------------------
+
+TITLE: Defining Package Scripts in package.json (JSON)
+DESCRIPTION: This JSON snippet illustrates a basic `package.json` structure for a test fixture. It defines a `build` script that simply echoes a string, serving as a common pattern for testing package script execution within the pnpm ecosystem.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/__utils__/test-ipc-server/README.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "@pnpm/example-test-fixture",
+  "private": true,
+  "scripts": {
+    "build": "echo 'This script should run'"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Merge pnpm.overrides with resolutions
+DESCRIPTION: Instead of `pnpm.overrides` replacing `resolutions`, the two are now merged. This change facilitates migration from Yarn by allowing users to retain `resolutions` while adding pnpm-specific overrides.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_35
+
+LANGUAGE: APIDOC
+CODE:
+```
+Configuration: pnpm.overrides, resolutions
+Behavior: Merged instead of replaced. Allows combining Yarn's 'resolutions' with pnpm's 'overrides'.
+```
+
+----------------------------------------
+
+TITLE: Using pnpm exec with shell-mode for advanced script execution
+DESCRIPTION: Demonstrates the new `--shell-mode` (`-c`) option for `pnpm exec`, which allows commands to be interpreted by a shell. This feature is particularly useful for executing commands that require shell-specific functionalities like variable expansion. Examples are provided for direct command-line usage and integration within a `package.json` script.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/exec/plugin-commands-script-runners/CHANGELOG.md#_snippet_16
+
+LANGUAGE: shell
+CODE:
+```
+pnpm -r --shell-mode exec -- echo "\$PNPM_PACKAGE_NAME"
+pnpm -r -c exec -- echo "\$PNPM_PACKAGE_NAME"
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "scripts": {
+    "check": " pnpm -r --shell-mode exec -- echo \"\\$PNPM_PACKAGE_NAME\""
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: pnpm.patchedDependencies Configuration and Patching Commands
+DESCRIPTION: Documents the pnpm.patchedDependencies field in package.json and associated pnpm patch commands. It explains how to configure patches to apply to all versions of a package or to a specific exact version, detailing the behavior of pnpm patch and pnpm patch-commit commands based on user input and package versioning.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/resolve-dependencies/CHANGELOG.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+pnpm.patchedDependencies: object
+  Description: Configuration in package.json to apply patches to dependencies.
+  Properties:
+    "<package_name>": string (path to patch file)
+      Description: Applies patch to all versions of the package. Failure to apply is skipped.
+      Example: "pkg": "./patches/pkg.patch"
+    "<package_name>@<version>": string (path to patch file)
+      Description: Applies patch to a specific exact version of the package. Failure to apply causes pnpm to fail.
+      Example: "pkg@1.2.3": "./patches/pkg@1.2.3.patch"
+  Commands:
+    pnpm patch <pkg_name>: Initiates patching process for a package.
+      Behavior:
+        - If single version installed: Creates "pkg" entry in pnpm.patchedDependencies.
+        - If multiple versions installed: Prompts user to choose version and whether to apply to all.
+          - "Apply to all": Creates "pkg" entry.
+          - "Not apply to all": Creates "pkg@x.y.z" entry.
+    pnpm patch <pkg_name>@<version>: Initiates patching process for a specific package version.
+      Behavior: Always creates "pkg@x.y.z" entry.
+    pnpm patch-commit $edit_dir: Commits the patch changes.
+```
+
+----------------------------------------
+
+TITLE: Retrieve and List pnpm Configuration Settings
+DESCRIPTION: Shows how to use `pnpm config get` to retrieve a specific configuration setting and `pnpm config list` to display all current settings, including those defined in `pnpm-workspace.yaml`.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_9
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm config get <setting-name>
+```
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm config list
+```
+
+----------------------------------------
+
+TITLE: Configuring `patchedDependencies` with Version Ranges and Exact Versions (YAML)
+DESCRIPTION: This YAML configuration illustrates how to define `patchedDependencies` in `pnpm-workspace.yaml` to apply specific patches based on package name, version range, or exact version. It demonstrates the precedence where exact versions override version ranges, which in turn override name-only patches. For example, `foo@2.1.0` gets `foo-3.patch`, `foo@^2.0.0` (excluding `2.1.0`) gets `foo-2.patch`, and other `foo` versions get `foo-1.patch`.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/patching/types/CHANGELOG.md#_snippet_0
+
+LANGUAGE: yaml
+CODE:
+```
+patchedDependencies:
+  foo: patches/foo-1.patch
+  foo@^2.0.0: patches/foo-2.patch
+  foo@2.1.0: patches/foo-3.patch
+```
+
+----------------------------------------
+
+TITLE: Building Project Artifacts - pnpm
+DESCRIPTION: Executes the `build` script defined in the project's `package.json` using `pnpm`. This command compiles source code, bundles assets, or performs other tasks necessary to generate the final distributable artifacts of the project.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/__utils__/build-artifacts/README.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm build
+```
+
+----------------------------------------
+
+TITLE: Rebasing and Force Pushing Git Branch for PR Updates
+DESCRIPTION: These Git commands are used to update a pull request after feedback. `git rebase main -i` interactively reapplies commits on top of the latest `main` branch, cleaning up history. `git push -f` then force-pushes the rebased branch to the remote, updating the existing pull request.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/CONTRIBUTING.md#_snippet_7
+
+LANGUAGE: shell
+CODE:
+```
+git rebase main -i
+git push -f
+```
+
+----------------------------------------
+
+TITLE: Configure pnpm Supported Architectures for Optional Dependencies
+DESCRIPTION: Examples of `package.json` configurations using the `pnpm.supportedArchitectures` field to specify target operating systems, CPU architectures, and libc for installing optional dependencies. This allows installing dependencies for architectures different from the system running the install.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/store/plugin-commands-store/CHANGELOG.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32"],
+      "cpu": ["x64"]
+    }
+  }
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "pnpm": {
+    "supportedArchitectures": {
+      "os": ["win32", "darwin", "current"],
+      "cpu": ["x64", "arm64"]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Recursively Pack pnpm Workspace Packages
+DESCRIPTION: Demonstrates how to recursively pack all packages within a pnpm workspace using the `-r` (recursive) option. This command allows for packaging multiple projects simultaneously.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/releasing/plugin-commands-publishing/CHANGELOG.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm -r pack
+```
+
+----------------------------------------
+
+TITLE: Add pnpm dedupe command
+DESCRIPTION: Introduces the `pnpm dedupe` command, which re-resolves the dependency graph to remove redundant dependencies from the lockfile. This functionality is similar to Yarn's `yarn dedupe --strategy highest` command.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/pkg-manager/plugin-commands-installation/CHANGELOG.md#_snippet_30
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm dedupe
+```
+
+----------------------------------------
+
+TITLE: pnpm System Requirements: Node.js 12 Deprecation
+DESCRIPTION: Node.js version 12 is no longer supported by pnpm. Users should upgrade to a newer Node.js version to ensure compatibility and receive continued support.
+SOURCE: https://github.com/pnpm/pnpm/blob/main/config/config/CHANGELOG.md#_snippet_90
+
+LANGUAGE: APIDOC
+CODE:
+```
+Requirement: Node.js Version
+Status: Node.js 12 is not supported.
+Recommendation: Upgrade to a newer Node.js version.
+```

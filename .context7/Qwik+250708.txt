@@ -1,0 +1,1193 @@
+TITLE: Cookie Interface API Documentation
+DESCRIPTION: Documents the `Cookie` interface, which provides a comprehensive set of methods for interacting with `Request` and `Response` cookie headers, including `append`, `delete`, `get`, `getAll`, `has`, `headers`, and `set`.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/api/qwik-city-middleware-request-handler/index.mdx#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Cookie:
+  Methods:
+    append(name, value, options): Appends a `Response` cookie header using the `Set-Cookie` header. The difference between `set()` and `append()` is that if the specified header already exists, `set()` will overwrite the existing value with the new one, whereas `append()` will append the new value onto the end of the set of values.
+    delete(name, options): Deletes cookie value by name using the `Response` cookie header.
+    get(name): Gets a `Request` cookie header value by name.
+    getAll(): Gets all `Request` cookie headers.
+    has(name): Checks if the `Request` cookie header name exists.
+    headers(): Returns an array of all the set `Response` `Set-Cookie` header values.
+    set(name, value, options): Sets a `Response` cookie header using the `Set-Cookie` header.
+```
+
+----------------------------------------
+
+TITLE: Initialize a Qwik Project with Builder API Integration
+DESCRIPTION: Shows the steps to create a Qwik project integrated with Builder's Qwik API using `npm init qwik`. This includes selecting the 'Starter Builder' template, installing necessary packages, and starting the application.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/(blog)/blog/(articles)/introducing-qwik-starters/index.mdx#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+> npm init qwik
+💫 Let's create a Qwik project 💫
+
+✔ Project name … qwik-builder
+✔ Select a starter › Starter Builder
+✔ Select a server › Express
+
+⭐️ Success! Project saved in qwik-builder directory
+
+📟 Next steps:
+  cd qwik-builder
+  npm install
+  npm start
+
+> (cd qwik-builder; npm install; npm start)
+```
+
+----------------------------------------
+
+TITLE: QwikCityProvider Component API Reference
+DESCRIPTION: API documentation for the `QwikCityProvider` component, detailing its role in initializing Qwik City and providing core context.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/docs/(qwikcity)/api/index.mdx#_snippet_17
+
+LANGUAGE: APIDOC
+CODE:
+```
+QwikCityProvider:
+  Description: Initializes Qwik City in the existing document, providing the necessary context for Qwik City to work, such as useContent() and useLocation().
+  Location: Usually at the very root of your application, often in `src/root.tsx`.
+  Notes: Does not render any DOM element, not even the matched route. It merely initializes Qwik City core logic so it should not be used more than once in the same app.
+```
+
+----------------------------------------
+
+TITLE: componentQrl API Reference
+DESCRIPTION: Detailed API documentation for the `componentQrl` function, including parameters, types, and return values.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/api/qwik/index.mdx#_snippet_38
+
+LANGUAGE: APIDOC
+CODE:
+```
+Parameter: componentQrl
+Type: [QRL](#qrl)<[OnRenderFn](#onrenderfn)<PROPS>>
+Description: 
+
+Returns: [Component](#component)<PROPS>
+```
+
+----------------------------------------
+
+TITLE: Qwik Netlify Edge Entry Middleware Example
+DESCRIPTION: Example of the `src/entry.netlify-edge.tsx` file, demonstrating how to use `createQwikCity` from `@builder.io/qwik-city/middleware/netlify-edge` to set up the middleware for Netlify Edge Functions.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/docs/deployments/netlify-edge/index.mdx#_snippet_4
+
+LANGUAGE: tsx
+CODE:
+```
+import { createQwikCity } from '@builder.io/qwik-city/middleware/netlify-edge';
+import qwikCityPlan from '@qwik-city-plan';
+import render from './entry.ssr';
+
+export default createQwikCity({ render, qwikCityPlan });
+```
+
+----------------------------------------
+
+TITLE: QwikCityMockProvider Component API Reference
+DESCRIPTION: API documentation for the `QwikCityMockProvider` component, outlining its use for testing Qwik City-dependent components.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/docs/(qwikcity)/api/index.mdx#_snippet_18
+
+LANGUAGE: APIDOC
+CODE:
+```
+QwikCityMockProvider:
+  Description: Initializes a Qwik City context for testing. It provides the necessary context for Qwik City code to work in tests, such as useContent(), useNavigate(), <Link>, and useLocation().
+  Usage: Recommended for use in test files.
+  Notes: Does not render any DOM elements, meaning it won't be visible in snapshots.
+  Props:
+    goto: Function (path: string, options: any) => Promise<void> (optional)
+      Description: A prop that can be passed to customize the navigate behavior during tests.
+```
+
+----------------------------------------
+
+TITLE: Qwik Optimizer `implicit$FirstArg` API Reference
+DESCRIPTION: Explains the `implicit$FirstArg` rule, which allows functions ending in `$` to automatically treat their first argument as a lazy-loadable resource, simplifying syntax. Provides an example of equivalent function calls.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik/src/core/readme.md#_snippet_17
+
+LANGUAGE: APIDOC
+CODE:
+```
+`implicit$FirstArg`
+Create a `____$(...)` convenience method from `___(...)`.
+
+It is very common for functions to take a lazy-loadable resource as a first argument. For this reason, the Qwik Optimizer automatically extracts the first argument from any function which ends in `$`.
+
+This means that `foo$(arg0)` and `foo($(arg0))` are equivalent with respect to Qwik Optimizer. The former is just a shorthand for the latter.
+
+For example, these function calls are equivalent:
+- `component$(() => {...})` is same as `component($(() => {...}))`
+
+@param fn - a function that should have its first argument automatically `$`.
+@public
+```
+
+----------------------------------------
+
+TITLE: API Definitions for @builder.io/qwik-city
+DESCRIPTION: Defines the public API surface for the `@builder.io/qwik-city` package, including the `denoServerAdapter` function and the `DenoServerAdapterOptions` interface, along with re-exported types.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik-city/src/adapters/deno-server/adapter.deno-server.api.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+import { ServerAdapterOptions } from '../../shared/vite';
+import type { StaticGenerateRenderOptions } from '@builder.io/qwik-city/static';
+
+// @alpha (undocumented)
+export function denoServerAdapter(opts?: DenoServerAdapterOptions): any;
+
+// @alpha (undocumented)
+export interface DenoServerAdapterOptions extends ServerAdapterOptions {
+    // (undocumented)
+    name?: string;
+}
+
+export { StaticGenerateRenderOptions }
+
+// (No @packageDocumentation comment for this package)
+
+```
+
+----------------------------------------
+
+TITLE: API Reference for @builder.io/qwik-city
+DESCRIPTION: Comprehensive API documentation for the `@builder.io/qwik-city` package, detailing its public classes, interfaces, types, and functions. This includes definitions for request handling, cookies, environment variables, and error management within Qwik City applications.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik-city/src/middleware/request-handler/middleware.request-handler.api.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+import type { Action } from '@builder.io/qwik-city';
+import type { _deserializeData } from '@builder.io/qwik';
+import type { EnvGetter as EnvGetter_2 } from '@builder.io/qwik-city/middleware/request-handler';
+import type { FailReturn } from '@builder.io/qwik-city';
+import type { Loader as Loader_2 } from '@builder.io/qwik-city';
+import type { QwikCityPlan } from '@builder.io/qwik-city';
+import type { QwikIntrinsicElements } from '@builder.io/qwik';
+import type { Render } from '@builder.io/qwik/server';
+import type { RenderOptions } from '@builder.io/qwik/server';
+import type { RequestEvent as RequestEvent_2 } from '@builder.io/qwik-city';
+import type { RequestHandler as RequestHandler_2 } from '@builder.io/qwik-city/middleware/request-handler';
+import type { ResolveSyncValue as ResolveSyncValue_2 } from '@builder.io/qwik-city/middleware/request-handler';
+import type { _serializeData } from '@builder.io/qwik';
+import type { ValueOrPromise } from '@builder.io/qwik';
+import type { _verifySerializable } from '@builder.io/qwik';
+
+// @public (undocumented)
+export class AbortMessage {
+}
+
+// Warning: (ae-forgotten-export) The symbol "CacheControlOptions" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type CacheControl = CacheControlOptions | number | 'day' | 'week' | 'month' | 'year' | 'no-cache' | 'immutable' | 'private';
+
+// @public (undocumented)
+export interface ClientConn {
+    // (undocumented)
+    country?: string;
+    // (undocumented)
+    ip?: string;
+}
+
+// @public (undocumented)
+export interface Cookie {
+    append(name: string, value: string | number | Record<string, any>, options?: CookieOptions): void;
+    delete(name: string, options?: Pick<CookieOptions, 'path' | 'domain' | 'sameSite'>): void;
+    get(name: string): CookieValue | null;
+    getAll(): Record<string, CookieValue>;
+    has(name: string): boolean;
+    headers(): string[];
+    set(name: string, value: string | number | Record<string, any>, options?: CookieOptions): void;
+}
+
+// @public
+export interface CookieOptions {
+    domain?: string;
+    expires?: Date | string;
+    httpOnly?: boolean;
+    maxAge?: number | [number, 'seconds' | 'minutes' | 'hours' | 'days' | 'weeks'];
+    path?: string;
+    sameSite?: 'strict' | 'lax' | 'none' | 'Strict' | 'Lax' | 'None' | boolean;
+    secure?: boolean;
+}
+
+// @public (undocumented)
+export interface CookieValue {
+    // (undocumented)
+    json: <T = unknown>() => T;
+    // (undocumented)
+    number: () => number;
+    // (undocumented)
+    value: string;
+}
+
+// @public (undocumented)
+export type DeferReturn<T> = () => Promise<T>;
+
+// @public (undocumented)
+export interface EnvGetter {
+    // (undocumented)
+    get(key: string): string | undefined;
+}
+
+// @public (undocumented)
+export function getErrorHtml(status: number, e: any): string;
+
+// @public (undocumented)
+export const mergeHeadersCookies: (headers: Headers, cookies: Cookie) => Headers;
+
+// @public (undocumented)
+export class RedirectMessage extends AbortMessage {
+}
+
+// @public (undocumented)
+export interface RequestEvent<PLATFORM = QwikCityPlatform> extends RequestEventCommon<PLATFORM> {
+    readonly exited: boolean;
+    readonly getWritableStream: () => WritableStream<Uint8Array>;
+    readonly headersSent: boolean;
+    readonly next: () => Promise<void>;
+}
+
+// @public (undocumented)
+export interface RequestEventAction<PLATFORM = QwikCityPlatform> extends RequestEventCommon<PLATFORM> {
+    // (undocumented)
+    fail: <T extends Record<string, any>>(status: number, returnData: T) => FailReturn<T>;
+}
+
+// @public (undocumented)
+export interface RequestEventBase<PLATFORM = QwikCityPlatform> {
+    readonly basePathname: string;
+    // Warning: (ae-forgotten-export) The symbol "CacheControlTarget" needs to be exported by the entry point index.d.ts
+    readonly cacheControl: (cacheControl: CacheControl, target?: CacheControlTarget) => void;
+    readonly clientConn: ClientConn;
+    readonly cookie: Cookie;
+    readonly env: EnvGetter;
+    readonly headers: Headers;
+    readonly method: string;
+    readonly originalUrl: URL;
+    readonly params: Readonly<Record<string, string>>;
+    readonly parseBody: () => Promise<unknown>;
+    readonly pathname: string;
+    readonly platform: PLATFORM;
+    readonly query: URLSearchParams;
+    readonly request: Request;
+    readonly sharedMap: Map<string, any>;
+    readonly signal: AbortSignal;
+    readonly url: URL;
+}
+
+// @public (undocumented)
+export interface RequestEventCommon<PLATFORM = QwikCityPlatform> extends RequestEventBase<PLATFORM> {
+    // Warning: (ae-forgotten-export) The symbol "ErrorCodes" needs to be exported by the entry point index.d.ts
+    readonly error: <T = any>(statusCode: ErrorCodes, message: T) => ServerError<T>;
+    // (undocumented)
+    readonly exit: () => AbortMessage;
+}
+```
+
+----------------------------------------
+
+TITLE: API Documentation for implicit$FirstArg
+DESCRIPTION: Provides detailed API documentation for the `implicit$FirstArg` utility, including its parameters and return type, explaining how it modifies function signatures for Qwik's lazy-loading optimization.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/api/qwik/index.mdx#_snippet_90
+
+LANGUAGE: APIDOC
+CODE:
+```
+implicit$FirstArg:
+  Parameter:
+    fn: (qrl: QRL<FIRST>, ...rest: REST) => RET
+      Description: A function that should have its first argument automatically `$`.
+  Returns:
+    ((qrl: FIRST, ...rest: REST) => RET)
+```
+
+----------------------------------------
+
+TITLE: Qwik City Endpoint: Handling GET Request with JSON Response
+DESCRIPTION: Demonstrates how to create a standalone API endpoint in Qwik City using the `onGet` method. This approach allows direct handling of HTTP requests and returning a JSON response, bypassing Qwik component rendering, which is ideal for building RESTful APIs.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/docs/(qwikcity)/routing/index.mdx#_snippet_5
+
+LANGUAGE: tsx
+CODE:
+```
+import type { RequestHandler } from '@builder.io/qwik-city';
+
+export const onGet: RequestHandler = ({ json }) => {
+  json(200, { message: 'Hello World' });
+};
+```
+
+----------------------------------------
+
+TITLE: Copy Qwik Example Folder
+DESCRIPTION: This command copies an existing Qwik example directory, such as 'hello-world', to a new location, serving as a starting point for developing a new application example.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/examples/apps/README.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+cp -r introduction/hello-world introduction/my-new-example
+```
+
+----------------------------------------
+
+TITLE: Add New Qwik Example Metadata
+DESCRIPTION: This code snippet demonstrates how to update the `examples-menu.json` file to register a new Qwik example. It shows the addition of a new entry with an ID, title, description, and an icon within an existing category's 'apps' array.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/examples/apps/README.md#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+[
+  {
+    "id": "introduction",
+    "title": "Introduction",
+    "apps": [
+      {
+        "id": "hello-world",
+        "title": "Hello World",
+        "description": "The simplest Qwik app.",
+        "icon": "🌎"
+      },
++      {
++        "id": "my-new-example",
++        "title": "New demo",
++        "description": "Just some text.",
++        "icon": "🙊"
++      }
+    ]
+  }
+]
+```
+
+----------------------------------------
+
+TITLE: Other Qwik Utility APIs
+DESCRIPTION: Miscellaneous utility APIs for advanced Qwik features, including creating QRLs, controlling serialization, handling error boundaries, and integrating with Vite.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/docs/(qwik)/components/overview/index.mdx#_snippet_19
+
+LANGUAGE: APIDOC
+CODE:
+```
+$()
+  Description: creates a QRL (Qwik URL)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+noSerialize()
+  Description: prevents an object from being serialized by Qwik
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+useErrorBoundary()
+  Description: hook for handling errors within a Qwik component tree
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+qwikVite()
+  Description: entry point for qwik with vite
+```
+
+----------------------------------------
+
+TITLE: API Definition for setupServiceWorker
+DESCRIPTION: This snippet defines the `setupServiceWorker` constant, a function that takes no arguments and returns void. It is marked as public and deprecated according to the API report generated by API Extractor.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik-city/src/runtime/src/service-worker/qwik-city.service-worker.api.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+// @public @deprecated (undocumented)
+export const setupServiceWorker: () => void;
+
+// (No @packageDocumentation comment for this package)
+```
+
+----------------------------------------
+
+TITLE: CorePlatform API Reference
+DESCRIPTION: Detailed API documentation for the `CorePlatform` interface, outlining its methods and properties for platform abstraction and symbol management in Qwik. This API is generally for internal use and handles differences in import maps between client and server environments.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/api/qwik/index.mdx#_snippet_44
+
+LANGUAGE: APIDOC
+CODE:
+```
+CorePlatform:
+  Properties:
+    chunkForSymbol: (symbolName: string, chunk: string | null, parent?: string) => readonly [symbol: string, chunk: string] | undefined
+      Description: Retrieve chunk name for the symbol. When the application is running on the server the symbols may be imported from different files (as server build is typically a single javascript chunk.) For this reason, it is necessary to convert the chunks from server format to client (browser) format. This is done by looking up symbols (which are globally unique) in the manifest. (Manifest is the mapping of symbols to the client chunk names.)
+    importSymbol: (containerEl: Element | undefined, url: string | URL | undefined | null, symbol: string) => ValueOrPromise<any>
+      Description: Retrieve a symbol value from QRL. Qwik needs to lazy load data and closures. For this Qwik uses QRLs that are serializable references of resources that are needed. The QRLs contain all the information necessary to retrieve the reference using `importSymbol`. Why not use `import()`? Because `import()` is relative to the current file, and the current file is always the Qwik framework. So QRLs have additional information that allows them to serialize imports relative to application base rather than the Qwik framework file.
+    isServer: boolean
+      Description: True if running on the server platform.
+    nextTick: (fn: () => any) => Promise<any>
+      Description: Perform operation on next tick.
+    raf: (fn: () => any) => Promise<any>
+      Description: Perform operation on next request-animation-frame.
+```
+
+----------------------------------------
+
+TITLE: eventQrl Function API Documentation
+DESCRIPTION: API documentation for the `eventQrl` function, which takes an existing QRL and returns it, ensuring proper QRL handling for events.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/api/qwik/index.mdx#_snippet_68
+
+LANGUAGE: APIDOC
+CODE:
+```
+eventQrl: <T>(qrl: QRL<T>) => QRL<T>
+  Parameters:
+    qrl: QRL<T>
+  Returns:
+    QRL<T>
+```
+
+----------------------------------------
+
+TITLE: Qwik Context API Minimal Usage Example
+DESCRIPTION: Demonstrates the basic usage of Qwik's context API, including `createContextId` to define a context, `useContextProvider` to provide a signal value, and `useContext` to consume the value in a child component. This example shows how to flip a theme between 'dark' and 'light'.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/docs/(qwik)/components/context/index.mdx#_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+import { type Signal, component$, useSignal } from '@builder.io/qwik';
+import {
+  useContext,
+  useContextProvider,
+  createContextId,
+} from '@builder.io/qwik';
+
+export const ThemeContext = createContextId<Signal<string>>(
+  'docs.theme-context'
+);
+
+export default component$(() => {
+  const theme = useSignal('dark');
+  useContextProvider(ThemeContext, theme);
+  return (
+    <>
+      <button
+        onClick$={() =>
+          (theme.value = theme.value == 'dark' ? 'light' : 'dark')
+        }
+      >
+        Flip
+      </button>
+      <Child />
+    </>
+  );
+});
+
+const Child = component$(() => {
+  const theme = useContext(ThemeContext);
+  return <div>Theme is {theme.value}</div>;
+});
+```
+
+----------------------------------------
+
+TITLE: API Documentation for @builder.io/qwik-city Cloudflare Pages Integration
+DESCRIPTION: This section documents the public API surface of `@builder.io/qwik-city` relevant to Cloudflare Pages. It includes the `createQwikCity` function for initializing the Qwik City application on Cloudflare Pages, and interfaces like `PlatformCloudflarePages` and `QwikCityCloudflarePagesOptions` that define the expected environment and configuration.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik-city/src/middleware/cloudflare-pages/middleware.cloudflare-pages.api.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+import type { ServerRenderOptions } from '@builder.io/qwik-city/middleware/request-handler';
+
+// @public (undocumented)
+export function createQwikCity(opts: QwikCityCloudflarePagesOptions): (request: PlatformCloudflarePages['request'], env: PlatformCloudflarePages['env'] & {
+    ASSETS: {
+        fetch: (req: Request) => Response;
+    };
+}, ctx: PlatformCloudflarePages['ctx']) => Promise<Response>;
+
+// @public (undocumented)
+export interface PlatformCloudflarePages {
+    // (undocumented)
+    ctx: {
+        waitUntil: (promise: Promise<any>) => void;
+    };
+    // (undocumented)
+    env?: Record<string, any>;
+    // (undocumented)
+    request: Request;
+}
+
+// @public (undocumented)
+export interface QwikCityCloudflarePagesOptions extends ServerRenderOptions {
+}
+
+// (No @packageDocumentation comment for this package)
+
+```
+
+----------------------------------------
+
+TITLE: Integrate Turso Client in Qwik Server-Side APIs
+DESCRIPTION: An example demonstrating how to import and utilize the `tursoClient` within Qwik's server-side functions, such as `routeLoader$()`, to initiate a database client instance and execute queries.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/docs/integrations/turso/index.mdx#_snippet_7
+
+LANGUAGE: ts
+CODE:
+```
+import { tursoClient } from "~/utils/turso";
+
+export const useRouteLoader = routeLoader$(
+  async (requestEvent: RequestEventBase) => {
+    const client = tursoClient(requestEvent);
+
+    const items = await client.execute("select * from table");
+
+    return {
+      items: items.rows,
+    };
+  }
+);
+```
+
+----------------------------------------
+
+TITLE: API Documentation for createDOM function
+DESCRIPTION: Documents the `createDOM` function, a public API from `@builder.io/qwik`, which facilitates server-side rendering and DOM interaction for testing or manipulation. It returns an object containing utilities for rendering JSX, accessing the DOM screen, and simulating user events.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik/src/testing/qwik.testing.api.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package: @builder.io/qwik
+
+Public Function: createDOM
+  Description: Initializes a DOM environment for server-side rendering and testing Qwik components.
+  Signature: ({ html?: string }) => Promise<{ render: (jsxElement: JSXOutput) => Promise<RenderResult>; screen: HTMLElement; userEvent: (queryOrElement: string | Element | keyof HTMLElementTagNameMap | null, eventNameCamel: string | keyof WindowEventMap, eventPayload?: any) => Promise<void>; }>
+
+  Parameters:
+    - options (object, optional):
+      - html (string, optional): Initial HTML content to pre-populate the DOM.
+
+  Returns: Promise<object>
+    - render (function):
+      Description: Renders a Qwik JSX element into the created DOM.
+      Signature: (jsxElement: JSXOutput) => Promise<RenderResult>
+      Parameters:
+        - jsxElement (JSXOutput): The JSX element to be rendered.
+      Returns: Promise<RenderResult>
+
+    - screen (HTMLElement):
+      Description: The root HTMLElement of the simulated DOM environment.
+
+    - userEvent (function):
+      Description: Simulates a user event (e.g., click, input) on a specified DOM element.
+      Signature: (queryOrElement: string | Element | keyof HTMLElementTagNameMap | null, eventNameCamel: string | keyof WindowEventMap, eventPayload?: any) => Promise<void>
+      Parameters:
+        - queryOrElement (string | Element | keyof HTMLElementTagNameMap | null): A CSS selector, an HTMLElement, a tag name, or null to target the document body.
+        - eventNameCamel (string | keyof WindowEventMap): The camelCase name of the event to dispatch (e.g., 'click', 'input', 'change').
+        - eventPayload (any, optional): An object containing event-specific data to be passed with the event.
+      Returns: Promise<void>
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+import type { JSXOutput } from '@builder.io/qwik';
+import { RenderResult } from '@builder.io/qwik';
+
+// @public
+export const createDOM: ({ html }?: {
+    html?: string;
+}) => Promise<{
+    render: (jsxElement: JSXOutput) => Promise<RenderResult>;
+    screen: HTMLElement;
+    userEvent: (queryOrElement: string | Element | keyof HTMLElementTagNameMap | null, eventNameCamel: string | keyof WindowEventMap, eventPayload?: any) => Promise<void>;
+}>;
+```
+
+----------------------------------------
+
+TITLE: QwikVitePluginApi Interface
+DESCRIPTION: Provides an API for interacting with the Qwik Vite plugin, offering methods to retrieve build-related directories, the manifest, the optimizer instance, and the plugin's normalized options.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik/src/optimizer/src/qwik.optimizer.api.md#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+QwikVitePluginApi:
+  getAssetsDir: () => string | undefined
+  getClientOutDir: () => string | null
+  getClientPublicOutDir: () => string | null
+  getManifest: () => QwikManifest | null
+  getOptimizer: () => Optimizer | null
+  getOptions: () => NormalizedQwikPluginOptions
+  getRootDir: () => string | null
+  registerBundleGraphAdder: (adder: BundleGraphAdder) => void
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Optimizer Interface
+DESCRIPTION: Defines the Optimizer interface, which provides methods for transforming file systems and modules, and includes a reference to the OptimizerSystem.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/api/qwik-optimizer/index.mdx#_snippet_17
+
+LANGUAGE: APIDOC
+CODE:
+```
+export interface Optimizer {
+  // Properties
+  sys: OptimizerSystem; // Optimizer system use. This can be updated with a custom file system.
+
+  // Methods
+  transformFs(opts): void; // Transforms the directory from the file system.
+  transformFsSync(opts): void; // Transforms the directory from the file system.
+  transformModules(opts): void; // Transforms the input code string, does not access the file system.
+  transformModulesSync(opts): void; // Transforms the input code string, does not access the file system.
+}
+```
+
+----------------------------------------
+
+TITLE: Qwik Public API Definitions
+DESCRIPTION: This snippet provides the public API surface of the @builder.io/qwik library, including type definitions, interfaces, and enums. It outlines the structure and available components for developers interacting with the Qwik framework.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik/src/optimizer/src/qwik.optimizer.api.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+import type { Plugin as Plugin_2 } from 'vite';
+
+// @public
+export type BundleGraphAdder = (manifest: QwikManifest) => Record<string, {
+    imports?: string[];
+    dynamicImports?: string[];
+}>;
+
+// @public (undocumented)
+export interface ComponentEntryStrategy {
+    // (undocumented)
+    manual?: Record<string, string>;
+    // (undocumented)
+    type: 'component';
+}
+
+// @public (undocumented)
+export const createOptimizer: (optimizerOptions?: OptimizerOptions) => Promise<Optimizer>;
+
+// @public (undocumented)
+export interface Diagnostic {
+    // (undocumented)
+    category: DiagnosticCategory;
+    // (undocumented)
+    code: string | null;
+    // (undocumented)
+    file: string;
+    // (undocumented)
+    highlights: SourceLocation[];
+    // (undocumented)
+    message: string;
+    // (undocumented)
+    scope: string;
+    // (undocumented)
+    suggestions: string[] | null;
+}
+
+// @public (undocumented)
+export type DiagnosticCategory = 'error' | 'warning' | 'sourceError';
+
+// Warning: (ae-forgotten-export) The symbol "HoistEntryStrategy" needs to be exported by the entry point index.d.ts
+// Warning: (ae-forgotten-export) The symbol "HookEntryStrategy_2" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export type EntryStrategy = InlineEntryStrategy | HoistEntryStrategy | SingleEntryStrategy | HookEntryStrategy_2 | SegmentEntryStrategy | ComponentEntryStrategy | SmartEntryStrategy;
+
+// @alpha
+export enum ExperimentalFeatures {
+    enableRequestRewrite = "enableRequestRewrite",
+    noSPA = "noSPA",
+    preventNavigate = "preventNavigate",
+    valibot = "valibot"
+}
+
+// @public (undocumented)
+export interface GlobalInjections {
+    // (undocumented)
+    attributes?: {
+        [key: string]: string;
+    };
+    // (undocumented)
+    location: 'head' | 'body';
+    // (undocumented)
+    tag: string;
+}
+
+// @public (undocumented)
+export interface InlineEntryStrategy {
+    // (undocumented)
+    type: 'inline';
+}
+
+// @public (undocumented)
+export type MinifyMode = 'simplify' | 'none';
+
+// @public (undocumented)
+export interface Optimizer {
+    sys: OptimizerSystem;
+    transformFs(opts: TransformFsOptions): Promise<TransformOutput>;
+    transformFsSync(opts: TransformFsOptions): TransformOutput;
+    transformModules(opts: TransformModulesOptions): Promise<TransformOutput>;
+    transformModulesSync(opts: TransformModulesOptions): TransformOutput;
+}
+
+// @public (undocumented)
+export interface OptimizerOptions {
+    // (undocumented)
+    binding?: any;
+    inlineStylesUpToBytes?: number;
+    sourcemap?: boolean;
+    // (undocumented)
+    sys?: OptimizerSystem;
+}
+
+// @public (undocumented)
+export interface OptimizerSystem {
+    // (undocumented)
+    cwd: () => string;
+    // (undocumented)
+    dynamicImport: (path: string) => Promise<any>;
+    // (undocumented)
+    env: SystemEnvironment;
+    // (undocumented)
+    getInputFiles?: (rootDir: string) => Promise<TransformModuleInput[]>;
+    // (undocumented)
+    os: string;
+    // (undocumented)
+    path: Path;
+    // (undocumented)
+    strictDynamicImport: (path: string) => Promise<any>;
+}
+
+// @public (undocumented)
+export interface Path {
+    // (undocumented)
+    basename(path: string, ext?: string): string;
+    // (undocumented)
+    readonly delimiter: string;
+    // (undocumented)
+    dirname(path: string): string;
+    // (undocumented)
+    extname(path: string): string;
+    // (undocumented)
+    format(pathObject: {
+        root: string;
+        dir: string;
+        base: string;
+        ext: string;
+        name: string;
+    }): string;
+    // (undocumented)
+    isAbsolute(path: string): boolean;
+    // (undocumented)
+    join(...paths: string[]): string;
+    // (undocumented)
+    normalize(path: string): string;
+    // (undocumented)
+    parse(path: string): {
+        root: string;
+        dir: string;
+        base: string;
+        ext: string;
+        name: string;
+    };
+    // (undocumented)
+    readonly posix: Path;
+    // (undocumented)
+    relative(from: string, to: string): string;
+    // (undocumented)
+    resolve(...paths: string[]): string;
+    // (undocumented)
+    readonly sep: string;
+    // (undocumented)
+    readonly win32: null;
+}
+
+// @public (undocumented)
+export interface QwikAsset {
+    name: string | undefined;
+    size: number;
+}
+
+// @public (undocumented)
+export type QwikBuildMode = 'production' | 'development';
+
+// @public (undocumented)
+export type QwikBuildTarget = 'client' | 'ssr' | 'lib' | 'test';
+
+// @public (undocumented)
+export interface QwikBundle {
+    dynamicImports?: string[];
+    imports?: string[];
+    interactivity?: number;
+    origins?: string[];
+    size: number;
+    symbols?: string[];
+    total: number;
+}
+
+// @public
+export type QwikBundleGraph = Array<string | number>;
+
+// @public
+export interface QwikManifest {
+    assets?: {
+```
+
+----------------------------------------
+
+TITLE: QwikCity Firebase Integration API Definitions
+DESCRIPTION: Defines the public API for integrating QwikCity with Firebase, including options for server-side rendering and platform-specific interfaces. This snippet outlines the `createQwikCity` function, `PlatformFirebase` interface, and `QwikCityFirebaseOptions` interface.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik-city/src/middleware/firebase/middleware.firebase.api.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+import type { ServerRenderOptions } from '@builder.io/qwik-city/middleware/request-handler';
+
+// @public (undocumented)
+export function createQwikCity(opts: QwikCityFirebaseOptions): (req: any, res: any) => Promise<void>;
+
+// @public (undocumented)
+export interface PlatformFirebase extends Object {
+}
+
+// @public (undocumented)
+export interface QwikCityFirebaseOptions extends ServerRenderOptions {
+}
+```
+
+----------------------------------------
+
+TITLE: RouterOutlet Component API Reference
+DESCRIPTION: API documentation for the `RouterOutlet` component, explaining its function in rendering matched routes and nested layouts.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/docs/(qwikcity)/api/index.mdx#_snippet_19
+
+LANGUAGE: APIDOC
+CODE:
+```
+RouterOutlet:
+  Description: Responsible for rendering the matched route at a given moment. It internally uses useContent() to render the current page, as well as all of the nested layouts.
+  Location: Usually located as a child of `<body>`, often in `src/root.tsx` (refer to the example in QwikCityProvider).
+```
+
+----------------------------------------
+
+TITLE: Qwik City Bun Server Adapter API Definition
+DESCRIPTION: Defines the API for the Bun server adapter within the @builder.io/qwik-city package, including the `bunServerAdapter` function and `bunServerAdapterOptions` interface. This report is automatically generated by API Extractor.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik-city/src/adapters/bun-server/adapter.bun-server.api.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+import { ServerAdapterOptions } from '../../shared/vite';
+import type { StaticGenerateRenderOptions } from '@builder.io/qwik-city/static';
+
+// @alpha (undocumented)
+export function bunServerAdapter(opts?: bunServerAdapterOptions): any;
+
+// @alpha (undocumented)
+export interface bunServerAdapterOptions extends ServerAdapterOptions {
+    // (undocumented)
+    name?: string;
+}
+
+export { StaticGenerateRenderOptions }
+
+// (No @packageDocumentation comment for this package)
+
+```
+
+----------------------------------------
+
+TITLE: Retrieve User IP and Country using Qwik clientConn API
+DESCRIPTION: A Qwik `routeLoader$` example demonstrating how to access the `clientConn` API to obtain the user's IP address and country. This API normalizes data from various edge platforms like Cloudflare, Vercel, and Netlify.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/(blog)/blog/(articles)/qwik-1-2-performance-autopilot/index.mdx#_snippet_7
+
+LANGUAGE: tsx
+CODE:
+```
+export const useGetCountryAndIP = routeLoader$(({clientConn}) => {
+  return {
+    ip: clientConn.ip,
+    country: clientConn.country
+  };
+});
+```
+
+----------------------------------------
+
+TITLE: Get Qwik Platform Function
+DESCRIPTION: Returns the current CorePlatform instance, providing access to platform-specific functionalities within Qwik. This function is publicly available.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik/src/core/qwik.core.api.md#_snippet_30
+
+LANGUAGE: APIDOC
+CODE:
+```
+export const getPlatform: () => CorePlatform;
+```
+
+----------------------------------------
+
+TITLE: API Definitions for @builder.io/qwik-city Package
+DESCRIPTION: This snippet outlines the public API surface of the `@builder.io/qwik-city` package, including type exports, function declarations, and interface definitions as generated by API Extractor. It details the `StaticGenerateRenderOptions` type, the `vercelEdgeAdapter` function with its optional `VercelEdgeAdapterOptions`, and the structure of `VercelEdgeAdapterOptions` itself, which extends `ServerAdapterOptions` and includes properties for output configuration, static paths, target environment, and Vercel configuration.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik-city/src/adapters/vercel-edge/adapter.vercel-edge.api.md#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+\nimport { ServerAdapterOptions } from '../../shared/vite';\nimport type { StaticGenerateRenderOptions } from '@builder.io/qwik-city/static';\n\nexport { StaticGenerateRenderOptions }\n\n// @public (undocumented)\nexport function vercelEdgeAdapter(opts?: VercelEdgeAdapterOptions): any;\n\n// @public (undocumented)\nexport interface VercelEdgeAdapterOptions extends ServerAdapterOptions {\n    outputConfig?: boolean;\n    staticPaths?: string[];\n    target?: 'webworker' | 'node';\n    vcConfigEntryPoint?: string;\n    vcConfigEnvVarsInUse?: string[];\n}\n\n// (No @packageDocumentation comment for this package)\n
+```
+
+----------------------------------------
+
+TITLE: Define Styled Components with styled-vanilla-extract
+DESCRIPTION: Example of creating a styled component using the `styled` function from `styled-vanilla-extract/qwik`. This approach mimics the styled-components API, allowing for component-based styling with tagged template literals.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/docs/integrations/styled-vanilla-extract/index.mdx#_snippet_3
+
+LANGUAGE: tsx
+CODE:
+```
+import { styled } from 'styled-vanilla-extract/qwik';
+
+export const BlueBox = styled.div`
+  display: block;
+  width: 100%;
+  height: 500px;
+  background: blue;
+`;
+```
+
+----------------------------------------
+
+TITLE: Implement Qwik City GET Request Handler
+DESCRIPTION: This snippet demonstrates how to implement an `onGet` request handler in Qwik City using TypeScript/TSX. It shows how to access URL parameters from the `RequestEvent` object and return structured data, typically for a REST endpoint. The example hardcodes data for simplicity but indicates where database access would occur.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/docs/(qwikcity)/advanced/request-handling/index.mdx#_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+import type { RequestHandler } from '@builder.io/qwik-city';
+
+export const onGet: RequestHandler<ProductData> = async ({ params }) => {
+  // put your DB access here (hard coding data for simplicity)
+  return {
+    skuId: params.skuId,
+    price: 123.45,
+    description: `Description for ${params.skuId}`,
+  };
+};
+```
+
+----------------------------------------
+
+TITLE: Qwik Core API Reference
+DESCRIPTION: This section provides a reference for core Qwik functions, interfaces, and types. It includes definitions for resolving manifests, configuring document serialization, setting up the server platform, defining streaming behaviors, specifying symbol prefetching, and accessing framework version details.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik/src/server/qwik.server.api.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+/**
+ * Functions
+ */
+export function resolveManifest(manifest?: Partial<QwikManifest | ResolvedManifest_2> | undefined): ResolvedManifest_2 | undefined;
+export function setServerPlatform(manifest?: Partial<QwikManifest | ResolvedManifest>): Promise<void>;
+
+/**
+ * Interfaces
+ */
+export interface SerializeDocumentOptions {
+    debug?: boolean;
+    manifest?: Partial<QwikManifest | ResolvedManifest>;
+    symbolMapper?: SymbolMapperFn;
+}
+export interface StreamingOptions {
+    inOrder?: InOrderStreaming;
+}
+
+/**
+ * Types
+ */
+export type SymbolsToPrefetch = 'auto' | ((opts: {
+    manifest: ServerQwikManifest;
+}) => PrefetchResource[]);
+
+/**
+ * Constants
+ */
+export const versions: {
+    readonly qwik: string;
+    readonly qwikDom: string;
+};
+```
+
+----------------------------------------
+
+TITLE: API Documentation for isSignal
+DESCRIPTION: Provides detailed API documentation for the `isSignal` function, including its parameters and return type, explaining its use as a type guard for Qwik `Signal` objects.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/api/qwik/index.mdx#_snippet_96
+
+LANGUAGE: APIDOC
+CODE:
+```
+isSignal:
+  Description: Checks if a given object is a `Signal`.
+  Parameter:
+    obj: any
+      Description: The object to check if `Signal`.
+  Returns:
+    obj is Signal<T>
+      Description: Boolean - True if the object is a `Signal`.
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Path Interface
+DESCRIPTION: Defines the Path interface, providing properties and methods for manipulating file paths in a cross-platform manner.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/docs/src/routes/api/qwik-optimizer/index.mdx#_snippet_21
+
+LANGUAGE: APIDOC
+CODE:
+```
+export interface Path {
+  // Properties
+  delimiter: readonly string;
+  posix: readonly Path;
+  sep: readonly string;
+  win32: readonly null;
+
+  // Methods
+  basename(path, ext): void;
+  dirname(path): void;
+  extname(path): void;
+  format(pathObject): void;
+  isAbsolute(path): void;
+  join(paths): void;
+  normalize(path): void;
+  parse(path): void;
+  relative(from, to): void;
+  resolve(paths): void;
+}
+```
+
+----------------------------------------
+
+TITLE: QwikCity Deno Integration API Definitions
+DESCRIPTION: This snippet provides the TypeScript definitions for the QwikCity Deno integration API. It includes the `createQwikCity` function for setting up routing and static file serving, and interfaces like `NetAddr`, `QwikCityDenoOptions`, and `ServeHandlerInfo` which define the structure for network addresses, Deno-specific server rendering options, and request handler information.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik-city/src/middleware/deno/middleware.deno.api.md#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+import type { ClientConn } from '@builder.io/qwik-city/middleware/request-handler';
+import type { ServerRenderOptions } from '@builder.io/qwik-city/middleware/request-handler';
+
+// @public (undocumented)
+export function createQwikCity(opts: QwikCityDenoOptions): {
+  router: (request: Request, info: ServeHandlerInfo) => Promise<Response | null>;
+  notFound: (request: Request) => Promise<Response>;
+  staticFile: (request: Request) => Promise<Response | null>;
+};
+
+// @public (undocumented)
+export interface NetAddr {
+  // (undocumented)
+  hostname: string;
+  // (undocumented)
+  port: number;
+  // (undocumented)
+  transport: 'tcp' | 'udp';
+}
+
+// @public (undocumented)
+export interface QwikCityDenoOptions extends ServerRenderOptions {
+  // (undocumented)
+  getClientConn?: (request: Request, info: ServeHandlerInfo) => ClientConn;
+  static?: {
+    root?: string;
+    cacheControl?: string;
+  };
+}
+
+// @public (undocumented)
+export interface ServeHandlerInfo {
+  // (undocumented)
+  remoteAddr: NetAddr;
+}
+
+// (No @packageDocumentation comment for this package)
+```
+
+----------------------------------------
+
+TITLE: Qwik City AWS Lambda API Definition
+DESCRIPTION: Defines the core API for integrating Qwik City with AWS Lambda, including the `createQwikCity` function for handling requests and static files, and related interfaces like `PlatformAwsLambda` and `QwikCityAwsLambdaOptions`.
+SOURCE: https://github.com/qwikdev/qwik/blob/main/packages/qwik-city/src/middleware/aws-lambda/middleware.aws-lambda.api.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+/// <reference types="node" />
+
+import type { EnvGetter } from '@builder.io/qwik-city/middleware/request-handler';
+import { Http2ServerRequest } from 'http2';
+import { IncomingMessage } from 'http';
+import { NodeRequestNextFunction } from '@builder.io/qwik-city/middleware/node';
+import type { QwikIntrinsicElements } from '@builder.io/qwik';
+import type { QwikManifest } from '@builder.io/qwik/optimizer';
+import type { RequestHandler } from '@builder.io/qwik-city/middleware/request-handler';
+import type { ResolvedManifest } from '@builder.io/qwik/optimizer';
+import type { ResolveSyncValue } from '@builder.io/qwik-city/middleware/request-handler';
+import type { ServerQwikManifest } from '@builder.io/qwik/optimizer';
+import type { ServerRenderOptions } from '@builder.io/qwik-city/middleware/request-handler';
+import { ServerResponse } from 'http';
+import type { SnapshotResult } from '@builder.io/qwik';
+import type { StreamWriter } from '@builder.io/qwik';
+import type { SymbolMapperFn } from '@builder.io/qwik/optimizer';
+
+// Warning: (ae-forgotten-export) The symbol "AwsOpt" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export function createQwikCity(opts: AwsOpt): {
+    fixPath: (pathT: string) => string;
+    router: (req: IncomingMessage | Http2ServerRequest, res: ServerResponse<IncomingMessage>, next: NodeRequestNextFunction) => Promise<void>;
+    staticFile: (req: IncomingMessage | Http2ServerRequest, res: ServerResponse<IncomingMessage>, next: (e?: any) => void) => Promise<void>;
+    notFound: (req: IncomingMessage | Http2ServerRequest, res: ServerResponse<IncomingMessage>, next: (e: any) => void) => Promise<void>;
+    handle: (req: any, res: any) => void;
+};
+
+// @public (undocumented)
+export interface PlatformAwsLambda extends Object {
+}
+
+// @public (undocumented)
+export interface QwikCityAwsLambdaOptions extends ServerRenderOptions {
+}
+
+// (No @packageDocumentation comment for this package)
+
+```
