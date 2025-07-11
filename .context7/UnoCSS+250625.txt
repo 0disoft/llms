@@ -1,0 +1,1806 @@
+TITLE: Defining a Static CSS Utility Rule in UnoCSS (TypeScript)
+DESCRIPTION: This snippet demonstrates how to define a static CSS utility rule, 'm-1', in the UnoCSS configuration file. It maps the class 'm-1' to a CSS property 'margin: 1px'. This rule will only generate CSS when the 'm-1' class is used in the project.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/guide/index.md#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+import { defineConfig } from 'unocss'
+
+export default defineConfig({
+  rules: [
+    ['m-1', { margin: '1px' }],
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS with SvelteKit and extractorSvelte in Vite
+DESCRIPTION: This snippet outlines the setup for UnoCSS with SvelteKit, enabling support for `class:foo` and `class:foo={bar}`. It involves importing `extractorSvelte` and configuring it within the `extractors` option of the `UnoCSS` plugin, which should be placed before `@sveltejs/kit/vite` in `vite.config.ts`.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/vite.md#_snippet_13
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { sveltekit } from '@sveltejs/kit/vite'
+import extractorSvelte from '@unocss/extractor-svelte'
+import UnoCSS from 'unocss/vite'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [
+    UnoCSS({
+      extractors: [
+        extractorSvelte()
+      ],
+      /* more options */
+    }),
+    sveltekit()
+  ]
+})
+```
+
+----------------------------------------
+
+TITLE: Creating uno.config.ts for UnoCSS Options
+DESCRIPTION: This TypeScript snippet shows how to create a `uno.config.ts` file, which serves as the central configuration point for UnoCSS. You can define custom rules, presets, and other UnoCSS options within the `defineConfig` object.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/vite.md#_snippet_5
+
+LANGUAGE: ts
+CODE:
+```
+import { defineConfig } from 'unocss'
+
+export default defineConfig({
+  // ...UnoCSS options
+})
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS Vite Plugin in vite.config.ts
+DESCRIPTION: This TypeScript snippet demonstrates how to import and configure the UnoCSS Vite plugin within your `vite.config.ts` file. Adding `UnoCSS()` to the `plugins` array enables UnoCSS processing for your Vite project.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/vite.md#_snippet_4
+
+LANGUAGE: ts
+CODE:
+```
+import UnoCSS from 'unocss/vite'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [
+    UnoCSS(),
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Defining Static Shortcuts in UnoCSS (TypeScript)
+DESCRIPTION: This snippet demonstrates how to define static utility shortcuts in UnoCSS using an object literal within the `shortcuts` configuration. It allows combining multiple utility classes into a single shorthand (e.g., 'btn') or creating aliases for individual utilities (e.g., 'red'). These defined shortcuts can then be used directly in HTML or other templates.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/shortcuts.md#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+shortcuts: {
+  // shortcuts to multiple utilities
+  'btn': 'py-2 px-4 font-semibold rounded-lg shadow-md',
+  'btn-green': 'text-white bg-green-500 hover:bg-green-700',
+  // single utility alias
+  'red': 'text-red-100',
+}
+```
+
+----------------------------------------
+
+TITLE: Integrating UnoCSS with React and Attributify Preset
+DESCRIPTION: This TypeScript snippet specifies the correct plugin order when using `@vitejs/plugin-react` alongside `@unocss/preset-attributify`. For proper functionality, `UnoCSS()` must be listed before `React()` in the `plugins` array within your `vite.config.ts`.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/vite.md#_snippet_9
+
+LANGUAGE: ts
+CODE:
+```
+import React from '@vitejs/plugin-react'
+import UnoCSS from 'unocss/vite'
+
+export default {
+  plugins: [
+    UnoCSS(),
+    React(),
+  ],
+}
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS with Multiple Presets (TypeScript)
+DESCRIPTION: This snippet demonstrates how to configure UnoCSS by importing and applying multiple presets, such as `presetAttributify` and `presetWind3`, within your `uno.config.ts` file. When `presets` are explicitly defined, the default UnoCSS preset is automatically ignored.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/guide/presets.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { defineConfig, presetAttributify, presetWind3 } from 'unocss'
+
+export default defineConfig({
+  presets: [
+    presetAttributify({ /* preset options */}),
+    presetWind3(),
+    // ...custom presets
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Full UnoCSS Configuration in `uno.config.ts`
+DESCRIPTION: This snippet demonstrates a comprehensive `uno.config.ts` file for UnoCSS, showcasing the use of `defineConfig` to set up shortcuts, themes, various presets (Wind3, Attributify, Icons, Typography, WebFonts), and transformers (Directives, VariantGroup). This dedicated file is recommended for optimal IDE and integration experiences.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/guide/config-file.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+import {
+  defineConfig,
+  presetAttributify,
+  presetIcons,
+  presetTypography,
+  presetWebFonts,
+  presetWind3,
+  transformerDirectives,
+  transformerVariantGroup
+} from 'unocss'
+
+export default defineConfig({
+  shortcuts: [
+    // ...
+  ],
+  theme: {
+    colors: {
+      // ...
+    }
+  },
+  presets: [
+    presetWind3(),
+    presetAttributify(),
+    presetIcons(),
+    presetTypography(),
+    presetWebFonts({
+      fonts: {
+        // ...
+      },
+    }),
+  ],
+  transformers: [
+    transformerDirectives(),
+    transformerVariantGroup(),
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Defining a Dynamic CSS Utility Rule in UnoCSS (TypeScript)
+DESCRIPTION: This snippet modifies the UnoCSS configuration to define a dynamic margin utility rule using a regular expression. It allows for arbitrary margin values like 'm-1' or 'm-7.5', generating CSS only when these dynamic classes are used.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/guide/index.md#_snippet_3
+
+LANGUAGE: ts
+CODE:
+```
+export default defineConfig({
+  rules: [
+    [/^m-([\.\d]+)$/, ([_, num]) => ({ margin: `${num}px` })],
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Defining UnoCSS Configuration File (`uno.config.ts`)
+DESCRIPTION: Illustrates the creation of a `uno.config.ts` file, which serves as the central configuration point for UnoCSS options and is automatically detected by the Webpack plugin.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/webpack.md#_snippet_3
+
+LANGUAGE: ts
+CODE:
+```
+import { defineConfig } from 'unocss'
+
+export default defineConfig({
+  // ...UnoCSS options
+})
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS Pipeline Content Inclusion (TypeScript)
+DESCRIPTION: This configuration snippet for uno.config.ts demonstrates how to customize the files UnoCSS scans within the build pipeline. It shows the default include patterns and how to add .js and .ts files for scanning, ensuring all relevant files are processed for utility extraction.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/guide/extracting.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+export default defineConfig({
+  content: {
+    pipeline: {
+      include: [
+        // the default
+        /\.(vue|svelte|[jt]sx|vine.ts|mdx?|astro|elm|php|phtml|html)($|\?)/,
+        // include js/ts files
+        'src/**/*.{js,ts}',
+      ],
+      // exclude files
+      // exclude: []
+    }
+  }
+})
+```
+
+----------------------------------------
+
+TITLE: Installing UnoCSS Vite Plugin with yarn
+DESCRIPTION: This snippet provides the command to install UnoCSS as a development dependency using the yarn package manager. It's the first step to integrate UnoCSS into a Vite project.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/vite.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+yarn add -D unocss
+```
+
+----------------------------------------
+
+TITLE: Importing virtual:uno.css in Main Entry File
+DESCRIPTION: This TypeScript snippet illustrates how to import `virtual:uno.css` into your main entry file (e.g., `main.ts`). This import is crucial for injecting the generated UnoCSS stylesheet into your application, making the utility classes available.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/vite.md#_snippet_6
+
+LANGUAGE: ts
+CODE:
+```
+import 'virtual:uno.css'
+```
+
+----------------------------------------
+
+TITLE: Defining Dynamic UnoCSS Rules with RegExp (TypeScript)
+DESCRIPTION: This snippet shows how to create dynamic UnoCSS rules using regular expressions. It defines rules for `margin` and `padding` where the numeric value is extracted from the class name (e.g., `m-100`) and used to calculate the `rem` value. The body function receives the `RegExp` match result.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/rules.md#_snippet_3
+
+LANGUAGE: TypeScript
+CODE:
+```
+rules: [
+  [/^m-(\d+)$/, ([, d]) => ({ margin: `${d / 4}rem` })],
+  [/^p-(\d+)$/, match => ({ padding: `${match[1] / 4}rem` })],
+]
+```
+
+----------------------------------------
+
+TITLE: Manually Specifying UnoCSS Config in Vite
+DESCRIPTION: This code snippet illustrates how to explicitly define the path to your UnoCSS configuration file within a `vite.config.ts` file. By using the `configFile` option of the `UnoCSS` Vite plugin, you can specify a custom location for your UnoCSS configuration, overriding the default lookup behavior.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/guide/config-file.md#_snippet_1
+
+LANGUAGE: TypeScript
+CODE:
+```
+import UnoCSS from 'unocss/vite'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [
+    UnoCSS({
+      configFile: '../my-uno.config.ts',
+    }),
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Defining Multi-selector UnoCSS Rules with Generators (TypeScript)
+DESCRIPTION: This snippet uses a JavaScript Generator function to define multiple CSS rules from a single UnoCSS utility. For `button-color`, it generates a base `background` rule and a separate `:hover` rule with a `color-mix` background, demonstrating advanced selector modification via `symbols.selector`.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/rules.md#_snippet_11
+
+LANGUAGE: TypeScript
+CODE:
+```
+rules: [
+  [/^button-(.*)$/, function* ([, color], { symbols }) {
+    yield {
+      background: color
+    }
+    yield {
+      [symbols.selector]: selector => `${selector}:hover`,
+      // https://developer.mozilla.org/en-US/docs/Web/CSS/color_value/color-mix
+      background: `color-mix(in srgb, ${color} 90%, black)`
+    }
+  }],
+]
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS Integration in Astro
+DESCRIPTION: Demonstrates how to import and register the UnoCSS Astro integration within the `astro.config.ts` file, enabling UnoCSS processing for the Astro project.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/astro.md#_snippet_1
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { defineConfig } from 'astro/config'
+import UnoCSS from 'unocss/astro'
+
+export default defineConfig({
+  integrations: [
+    UnoCSS(),
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Configure UnoCSS in Next.js
+DESCRIPTION: Create a configuration file (`uno.config.ts` or `uno.config.js`) at the root of your project. This file is where you define your UnoCSS presets, rules, and other settings.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/next.md#_snippet_1
+
+LANGUAGE: typescript
+CODE:
+```
+import {
+  defineConfig,
+  presetAttributify,
+  presetIcons,
+  presetWebFonts,
+  presetWind3
+} from 'unocss'
+
+export default defineConfig({
+  presets: [
+    presetWind3(),
+    // ...
+  ],
+})
+```
+
+LANGUAGE: javascript
+CODE:
+```
+import {
+  defineConfig,
+  presetAttributify,
+  presetIcons,
+  presetWebFonts,
+  presetWind3
+} from 'unocss'
+
+export default defineConfig({
+  presets: [
+    presetWind3(),
+    // ...
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Defining Dynamic Shortcuts in UnoCSS (TypeScript)
+DESCRIPTION: This snippet illustrates how to define dynamic shortcuts in UnoCSS using an array of definitions within the `shortcuts` configuration. It includes both an object-style static shortcut and a dynamic shortcut defined with a regular expression matcher and a handler function. This powerful feature allows for generating variations of a shortcut (e.g., `btn-green`, `btn-red`) based on a pattern, providing flexibility and reducing boilerplate.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/shortcuts.md#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+shortcuts: [
+  // you could still have object style
+  {
+    btn: 'py-2 px-4 font-semibold rounded-lg shadow-md',
+  },
+  // dynamic shortcuts
+  [/^btn-(.*)$/, ([, c]) => `bg-${c}-400 text-${c}-100 py-2 px-4 rounded-lg`],
+]
+```
+
+----------------------------------------
+
+TITLE: UnoCSS Configuration Options API Reference
+DESCRIPTION: Detailed API documentation for the various configuration options available in UnoCSS, including their types, default values, and descriptions for customizing CSS generation and utility extraction.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/index.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+UnoCSS Configuration Options:
+  rules:
+    Type: Rule<Theme>[]
+    Description: Rules to generate CSS utilities. Later entries have higher priority.
+  shortcuts:
+    Type: UserShortcuts<Theme>
+    Description: Similar to Windi CSS's shortcuts, allows you to create new utilities by combining existing ones. Later entries have higher priority.
+  theme:
+    Type: Theme
+    Description: Theme object for shared configuration between rules.
+  extendTheme:
+    Type: Arrayable<ThemeExtender<Theme>>
+    Description: Custom functions mutate the theme object. It's also possible to return a new theme object to completely replace the original one.
+  variants:
+    Type: Variant<Theme>[]
+    Description: Variants that preprocess the selectors, having the ability to rewrite the CSS object.
+  extractors:
+    Type: Extractor[]
+    Description: Extractors to handle the source file and output possible classes/selectors. Can be language-aware.
+  preflights:
+    Type: Preflight<Theme>[]
+    Description: Raw CSS injections.
+  layers:
+    Type: Record<string, number>
+    Description: Layer orders. Default to 0.
+  outputToCssLayers:
+    Type: boolean | UseCssLayersOptions
+    Default: false
+    Description: Outputs the layers to CSS Cascade Layers.
+    cssLayerName:
+      Type: (internalLayer: string) => string | undefined | null
+      Description: Specifies the name of the CSS layer the internal layer should be output to (can be a sublayer e.g. "mylayer.mysublayer"). If `undefined` is return, the internal layer name wil be used as the CSS layer name. If `null` is return, the internal layer will not be output to a CSS layer.
+  sortLayers:
+    Type: (layers: string[]) => string[]
+    Description: Custom function to sort layers.
+  presets:
+    Type: (PresetOrFactory<Theme> | PresetOrFactory<Theme>[])[]
+    Description: Predefined configurations for common use cases.
+  transformers:
+    Type: SourceCodeTransformer[]
+    Description: Custom transformers to the source code.
+  blocklist:
+    Type: BlocklistRule[]
+    Description: Rules to exclude the selectors for your design system (to narrow down the possibilities). Combining `warnExcluded` options can also help you identify wrong usages.
+  safelist:
+    Type: string[]
+    Description: Utilities that are always included.
+  preprocess:
+    Type: Arrayable<Preprocessor>
+    Description: Preprocess the incoming utilities, return falsy value to exclude.
+  postprocess:
+    Type: Arrayable<Postprocessor>
+    Description: Postprocess the generate utils object.
+  separators:
+    Type: Arrayable<string>
+    Default: [':', '-']
+    Description: Variant separator.
+  extractorDefault:
+    Type: Extractor | null | false
+    Default: import('@unocss/core').defaultExtractor
+    Description: Default extractor that are always applied. By default it split the source code by whitespace and quotes. It maybe be replaced by preset or user config, only one default extractor can be presented, later one will override the previous one. Pass `null` or `false` to disable the default extractor.
+  autocomplete:
+    Description: Additional options for auto complete.
+    templates:
+      Type: Arrayable<AutoCompleteFunction | AutoCompleteTemplate>
+      Description: Custom functions / templates to provide autocomplete suggestions.
+    extractors:
+      Type: Arrayable<AutoCompleteExtractor>
+      Description: Custom extractors to pickup possible classes and transform class-name style suggestions to the correct format.
+    shorthands:
+      Type: Record<string, string | string[]>
+      Description: Custom shorthands to provide autocomplete suggestions. if values is an array, it will be joined with `|` and wrapped with `()`.
+  content:
+    Description: Options for sources to be extracted as utilities usages. Supported sources: filesystem - extract from file system, inline - extract from plain inline text, pipeline - extract from build tools' transformation pipeline, such as Vite and Webpack. The usage extracted from each source will be merged together.
+```
+
+----------------------------------------
+
+TITLE: Attributify Mode Button Markup
+DESCRIPTION: Demonstrates how the same button from the traditional example can be styled using UnoCSS's attributify mode, grouping related utilities into custom attributes for better readability.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/presets/attributify.md#_snippet_4
+
+LANGUAGE: html
+CODE:
+```
+<button
+  bg="blue-400 hover:blue-500 dark:blue-500 dark:hover:blue-600"
+  text="sm white"
+  font="mono light"
+  p="y-2 x-4"
+  border="2 rounded blue-200"
+>
+  Button
+</button>
+```
+
+----------------------------------------
+
+TITLE: Configuring Flexbox Layouts with UnoCSS
+DESCRIPTION: Illustrates various UnoCSS utility classes for configuring flexbox containers and items. This includes setting flex direction, item alignment, and using important modifiers.
+SOURCE: https://github.com/unocss/unocss/blob/main/test/cases/preset-attributify/case-1/matched.txt#_snippet_1
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[flex~="col"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[flex~="items-center"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[flex~="justify-center"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[flex~="!~"]
+```
+
+----------------------------------------
+
+TITLE: Configure PostCSS for UnoCSS Integration
+DESCRIPTION: Create a `postcss.config.mjs` file to integrate UnoCSS into the Next.js build process. The `@unocss/postcss` plugin scans your project files for utility classes to generate the necessary CSS.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/next.md#_snippet_2
+
+LANGUAGE: javascript
+CODE:
+```
+export default {
+  plugins: {
+    '@unocss/postcss': {
+      content: ['./app/**/*.{html,js,ts,jsx,tsx}'],
+    },
+  },
+}
+```
+
+----------------------------------------
+
+TITLE: Defining Custom Colors in UnoCSS Theme (TypeScript)
+DESCRIPTION: This snippet demonstrates how to define custom color palettes within the `theme.colors` property of the UnoCSS configuration. It shows examples of direct color values, nested color objects for brand palettes, and the use of CSS variables. These custom colors can then be used to generate utility classes like `text-very-cool` or `bg-brand-primary`.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/theme.md#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+theme: {
+  // ...
+  colors: {
+    veryCool: '#0000ff', // class="text-very-cool"
+    brand: {
+      primary: 'hsl(var(--hue, 217) 78% 51%)', //class="bg-brand-primary"
+      DEFAULT: '#942192' //class="bg-brand"
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Defining UnoCSS Rules with Custom Layers (TypeScript)
+DESCRIPTION: Explains how to assign a specific layer to UnoCSS rules using the third item in the rule definition array. Demonstrates both explicit layer assignment ('utilities') and the default layer behavior when omitted.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/layers.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+rules: [
+  [/^m-(\d)$/, ([, d]) => ({ margin: `${d / 4}rem` }), { layer: 'utilities' }],
+  // when you omit the layer, it will be `default`
+  ['btn', { padding: '4px' }],
+]
+```
+
+----------------------------------------
+
+TITLE: Basic Icon Usage with UnoCSS in HTML
+DESCRIPTION: This HTML snippet illustrates the fundamental syntax for integrating icons using UnoCSS utility classes. It showcases various icon applications, including basic display, custom coloring, size adjustments, and conditional rendering based on dark mode or hover states, adhering to the `<prefix><collection>-<icon>` convention.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/presets/icons.md#_snippet_1
+
+LANGUAGE: HTML
+CODE:
+```
+<!-- A basic anchor icon from Phosphor icons -->
+<div class="i-ph-anchor-simple-thin" />
+<!-- An orange alarm from Material Design Icons -->
+<div class="i-mdi-alarm text-orange-400" />
+<!-- A large Vue logo -->
+<div class="i-logos-vue text-3xl" />
+<!-- Sun in light mode, Moon in dark mode, from Carbon -->
+<button class="i-carbon-sun dark:i-carbon-moon" />
+<!-- Twemoji of laugh, turns to tear on hovering -->
+<div class="i-twemoji-grinning-face-with-smiling-eyes hover:i-twemoji-face-with-tears-of-joy" />
+```
+
+----------------------------------------
+
+TITLE: Using Dynamic UnoCSS Utility Classes (HTML)
+DESCRIPTION: This HTML snippet demonstrates the application of dynamic margin utility classes, 'm-1' and 'm-7.5', enabled by the regular expression rule. UnoCSS will detect these usages and generate the corresponding CSS on demand.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/guide/index.md#_snippet_4
+
+LANGUAGE: html
+CODE:
+```
+<div class="m-1">Hello</div>
+<div class="m-7.5">World</div>
+```
+
+----------------------------------------
+
+TITLE: Basic Svelte Scoped Transformation
+DESCRIPTION: This example shows how a Svelte component with a utility class is transformed by the Svelte Scoped plugin. The utility class is replaced with a unique hashed class, and the corresponding CSS is injected into a `<style>` block using `:global()`.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/svelte-scoped.md#_snippet_0
+
+LANGUAGE: svelte
+CODE:
+```
+<!-- Before -->
+<div class="mb-1" />
+
+<!-- After -->
+<div class="uno-ei382o" />
+
+<style>
+  :global(.uno-ei382o) {
+    margin-bottom: 0.25rem;
+  }
+</style>
+```
+
+----------------------------------------
+
+TITLE: Consuming Theme Colors in UnoCSS Dynamic Shortcuts (TypeScript)
+DESCRIPTION: This example demonstrates how to use theme properties, specifically `theme.colors`, within dynamic UnoCSS shortcuts. It defines a shortcut that matches `badge-*` and generates a set of utility classes (`bg-*, text-*, rounded`) if the captured color name exists in the theme's colors, allowing for theme-aware shortcut creation.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/theme.md#_snippet_3
+
+LANGUAGE: ts
+CODE:
+```
+shortcuts: [
+  [/^badge-(.*)$/, ([, c], { theme }) => {
+    if (Object.keys(theme.colors).includes(c))
+      return `bg-${c}4:10 text-${c}5 rounded`
+  }]
+]
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS with Variant Group Transformer
+DESCRIPTION: This TypeScript snippet shows how to integrate the `transformerVariantGroup` into your `uno.config.ts` file. By adding it to the `transformers` array within `defineConfig`, you enable the variant group feature for your UnoCSS project.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/transformers/variant-group.md#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+import transformerVariantGroup from '@unocss/transformer-variant-group'
+import { defineConfig } from 'unocss'
+
+export default defineConfig({
+  // ...
+  transformers: [
+    transformerVariantGroup(),
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Basic UnoCSS Injection in CSS
+DESCRIPTION: Demonstrates the basic usage of the `@unocss` at-rule, which acts as a placeholder and will be replaced by all generated UnoCSS styles.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/postcss.md#_snippet_3
+
+LANGUAGE: css
+CODE:
+```
+@unocss;
+```
+
+----------------------------------------
+
+TITLE: Exploring Advanced UnoCSS Features and Variants
+DESCRIPTION: Showcases more advanced UnoCSS features, including layer-specific utilities, important modifiers, responsive breakpoints, direct CSS value attributes, and pseudo-element content.
+SOURCE: https://github.com/unocss/unocss/blob/main/test/cases/preset-attributify/case-1/matched.txt#_snippet_12
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[uno-layer-base~="c-white/10"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[flex~="!~"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[!leading-4=""]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[important~="text-red"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[important~="bg-red"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[sm~="[color:red]"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[md~="[--var:var(--another)]"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[lg~="bg-blue-600"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[un-children~="m-auto"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[after~="content-[quoted:uno_css]"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[bg~="hover:blue-500"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[uno-layer-base~="hover:c-black/20"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[bg~="dark:!blue-500"]
+```
+
+LANGUAGE: UnoCSS
+CODE:
+```
+[bg~="dark:hover:blue-600"]
+```
+
+----------------------------------------
+
+TITLE: Registering UnoCSS Nuxt Module in Nuxt Config
+DESCRIPTION: This snippet shows how to register the `@unocss/nuxt` module within your `nuxt.config.ts` file by adding it to the `modules` array of the `defineNuxtConfig` function. This step is essential for Nuxt to recognize and utilize the UnoCSS module in your application.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/nuxt.md#_snippet_1
+
+LANGUAGE: typescript
+CODE:
+```
+export default defineNuxtConfig({
+  modules: [
+    '@unocss/nuxt',
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS with Attributify Preset (uno.config.ts)
+DESCRIPTION: Demonstrates how to integrate the `presetAttributify` into your `uno.config.ts` file, enabling attributify mode for other UnoCSS presets.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/presets/attributify.md#_snippet_1
+
+LANGUAGE: typescript
+CODE:
+```
+import presetAttributify from '@unocss/preset-attributify'
+
+export default defineConfig({
+  presets: [
+    presetAttributify({ /* preset options */ }),
+    // ...
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Using UnoCSS `@apply` Directive
+DESCRIPTION: Explains how the `@apply` directive allows grouping existing UnoCSS utility classes into custom CSS rules, showing the transformation from a directive to standard CSS properties.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/postcss.md#_snippet_7
+
+LANGUAGE: css
+CODE:
+```
+.custom-div {
+  @apply text-center my-0 font-medium;
+}
+```
+
+LANGUAGE: css
+CODE:
+```
+.custom-div {
+  margin-top: 0rem;
+  margin-bottom: 0rem;
+  text-align: center;
+  font-weight: 500;
+}
+```
+
+----------------------------------------
+
+TITLE: Defining Custom Hover Variant and Margin Rule in UnoCSS (TypeScript)
+DESCRIPTION: This TypeScript snippet demonstrates how to configure custom variants and rules in UnoCSS. It defines a `hover:` variant that transforms the matcher and appends `:hover` to the selector, alongside a basic rule for generating margin utilities based on a numerical value.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/variants.md#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+variants: [
+  // hover:
+  (matcher) => {
+    if (!matcher.startsWith('hover:'))
+      return matcher
+    return {
+      // slice `hover:` prefix and passed to the next variants and rules
+      matcher: matcher.slice(6),
+      selector: s => `${s}:hover`,
+    }
+  },
+],
+rules: [
+  [/^m-(\d)$/, ([, d]) => ({ margin: `${d / 4}rem` })],
+]
+```
+
+----------------------------------------
+
+TITLE: Install UnoCSS PostCSS Plugin
+DESCRIPTION: Instructions for installing the UnoCSS PostCSS plugin and its core dependency using various Node.js package managers.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/postcss.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+pnpm add -D unocss @unocss/postcss
+```
+
+LANGUAGE: bash
+CODE:
+```
+yarn add -D unocss @unocss/postcss
+```
+
+LANGUAGE: bash
+CODE:
+```
+npm install -D unocss @unocss/postcss
+```
+
+LANGUAGE: bash
+CODE:
+```
+bun add -D unocss @unocss/postcss
+```
+
+----------------------------------------
+
+TITLE: Creating a Custom UnoCSS Preset (TypeScript)
+DESCRIPTION: This snippet illustrates how to create a reusable custom UnoCSS preset. It defines dynamic rules for both margin ('m-') and padding ('p-') utilities, which can then be shared and imported into other UnoCSS configurations.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/guide/index.md#_snippet_6
+
+LANGUAGE: ts
+CODE:
+```
+import { Preset } from 'unocss'
+
+export const myPreset: Preset = {
+  name: 'my-preset',
+  rules: [
+    [/^m-([\.\d]+)$/, ([_, num]) => ({ margin: `${num}px` })],
+    [/^p-([\.\d]+)$/, ([_, num]) => ({ padding: `${num}px` })],
+  ],
+  variants: [/* ... */],
+  shortcuts: [/* ... */],
+  // ...
+}
+```
+
+----------------------------------------
+
+TITLE: Creating UnoCSS Configuration File
+DESCRIPTION: This code creates a basic `uno.config.ts` file, which is the recommended place to define UnoCSS options. It imports `defineConfig` from `unocss` and exports a configuration object, allowing for custom UnoCSS rules, presets, and variants.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/nuxt.md#_snippet_2
+
+LANGUAGE: typescript
+CODE:
+```
+import { defineConfig } from 'unocss'
+
+export default defineConfig({
+  // ...UnoCSS options
+})
+```
+
+----------------------------------------
+
+TITLE: Configuring Preflights with Theme Access in TypeScript
+DESCRIPTION: This snippet demonstrates how to define preflights within the UnoCSS configuration. It utilizes the `getCSS` function to dynamically generate raw CSS, allowing access to the `theme` object. This enables the application of theme-specific values, such as colors, for global styling or CSS resets.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/preflights.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+preflights: [
+  {
+    getCSS: ({ theme }) => `
+      * {
+        color: ${theme.colors.gray?.[700] ?? '#333'};
+        padding: 0;
+        margin: 0;
+      }
+    `,
+  },
+]
+```
+
+----------------------------------------
+
+TITLE: Import UnoCSS Directives in Global Styles
+DESCRIPTION: Add the `@unocss all;` directive to your main CSS file (e.g., `globals.css`). This directive will be replaced by the generated UnoCSS styles during the build process.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/next.md#_snippet_3
+
+LANGUAGE: css
+CODE:
+```
+@unocss all;
+
+/* ... */
+```
+
+----------------------------------------
+
+TITLE: Configure Web Fonts Preset in uno.config.ts
+DESCRIPTION: Import and add `presetWebFonts` to the presets array in your `uno.config.ts` file. This enables the web font functionality within your UnoCSS setup.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/presets/web-fonts.md#_snippet_1
+
+LANGUAGE: typescript
+CODE:
+```
+import presetWebFonts from '@unocss/preset-web-fonts'
+import presetWind3 from '@unocss/preset-wind3'
+import { defineConfig } from 'unocss'
+
+export default defineConfig({
+  presets: [
+    presetWind3(),
+    presetWebFonts({ /* options */ }),
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS with Directives Transformer
+DESCRIPTION: This TypeScript snippet demonstrates how to integrate the `transformerDirectives` into your UnoCSS configuration file (`uno.config.ts`). It imports the transformer and adds it to the `transformers` array within the `defineConfig` function, enabling the use of `@apply`, `@screen`, and `theme()` directives.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/transformers/directives.md#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+import transformerDirectives from '@unocss/transformer-directives'
+import { defineConfig } from 'unocss'
+
+export default defineConfig({
+  // ...
+  transformers: [
+    transformerDirectives(),
+  ],
+})
+```
+
+LANGUAGE: ts
+CODE:
+```
+import { transformerDirectives } from 'unocss'
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS to Use Icons Preset
+DESCRIPTION: This TypeScript configuration for `uno.config.ts` shows how to import `presetIcons` and include it in the `presets` array of the UnoCSS configuration. This step activates the icon functionality, allowing UnoCSS to process icon utility classes.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/presets/icons.md#_snippet_3
+
+LANGUAGE: TypeScript
+CODE:
+```
+import presetIcons from '@unocss/preset-icons'
+import { defineConfig } from 'unocss'
+
+export default defineConfig({
+  presets: [
+    presetIcons({ /* options */ }),
+    // ...other presets
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Combining External and File System Icon Loaders in UnoCSS
+DESCRIPTION: This example illustrates how to combine multiple external package icon loaders with a `FileSystemIconLoader` for local SVG files. It allows for defining diverse icon sources within the `presetIcons` collections, including custom transformations for file system icons.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/presets/icons.md#_snippet_13
+
+LANGUAGE: typescript
+CODE:
+```
+import { createExternalPackageIconLoader } from '@iconify/utils/lib/loader/external-pkg'
+import { defineConfig, presetIcons } from 'unocss'
+import { FileSystemIconLoader } from 'unplugin-icons/loaders'
+
+export default defineConfig({
+  presets: [
+    presetIcons({
+      collections: {
+        ...createExternalPackageIconLoader('other-awesome-collection'),
+        ...createExternalPackageIconLoader('@my-awesome-collections/some-collection'),
+        ...createExternalPackageIconLoader('@my-awesome-collections/some-other-collection'),
+        'my-yet-other-icons': FileSystemIconLoader(
+          './assets/icons',
+          svg => svg.replace(/^<svg /, '<svg fill="currentColor" ')
+        )
+      }
+    })
+  ]
+})
+```
+
+----------------------------------------
+
+TITLE: Configure the UnoCSS Vite Plugin for Svelte
+DESCRIPTION: Add the `@unocss/svelte-scoped/vite` plugin to your `vite.config.ts` file to enable UnoCSS in your Svelte or SvelteKit project. This setup injects generated styles directly into Svelte components.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/svelte-scoped.md#_snippet_7
+
+LANGUAGE: typescript
+CODE:
+```
+import { sveltekit } from '@sveltejs/kit/vite'
+import UnoCSS from '@unocss/svelte-scoped/vite'
+import { defineConfig } from 'vite'
+
+export default defineConfig({
+  plugins: [
+    UnoCSS({
+      // injectReset: '@unocss/reset/normalize.css', // see type definition for all included reset options or how to pass in your own
+      // ...other Svelte Scoped options
+    }),
+    sveltekit(),
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Extending UnoCSS Breakpoints with `extendTheme` (TypeScript)
+DESCRIPTION: This snippet demonstrates how to extend the default UnoCSS breakpoints using the `extendTheme` function. By spreading the existing `theme.breakpoints` and adding new ones, it allows users to inherit and augment the original breakpoints instead of completely overriding them, providing more flexibility for responsive design.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/theme.md#_snippet_5
+
+LANGUAGE: ts
+CODE:
+```
+extendTheme: (theme) => {
+  return {
+    ...theme,
+    breakpoints: {
+      ...theme.breakpoints,
+      sm: '320px',
+      md: '640px'
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Using UnoCSS Utility Classes in a Next.js Component
+DESCRIPTION: Apply UnoCSS utility classes directly in your JSX to style components. This example demonstrates how to style a `main` container, a `span`, an icon, and a `button` within a Next.js page component.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/next.md#_snippet_5
+
+LANGUAGE: tsx
+CODE:
+```
+export default function Home() {
+  return (
+    <main className="py-20 px-12 text-center flex flex-col items-center gap-20px">
+      <span className="text-blue text-5xl text-hover:red cursor-default">Nextjs</span>
+      <div className="i-carbon-car inline-block text-4xl" />
+      <button className="btn w-10rem">Button</button>
+    </main>
+  )
+}
+```
+
+LANGUAGE: javascript
+CODE:
+```
+export default function Home() {
+  return (
+    <main className="py-20 px-12 text-center flex flex-col items-center gap-20px">
+      <span className="text-blue text-5xl text-hover:red cursor-default">Nextjs</span>
+      <div className="i-carbon-car inline-block text-4xl" />
+      <button className="btn w-10rem">Button</button>
+    </main>
+  )
+}
+```
+
+----------------------------------------
+
+TITLE: Integrating a Custom UnoCSS Preset (TypeScript)
+DESCRIPTION: This snippet demonstrates how to integrate a custom UnoCSS preset ('myPreset') into the main UnoCSS configuration. By adding the preset to the 'presets' array, all rules, variants, and shortcuts defined within it become available in the project.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/guide/index.md#_snippet_7
+
+LANGUAGE: ts
+CODE:
+```
+import { defineConfig } from 'unocss'
+import { myPreset } from './my-preset'
+
+export default defineConfig({
+  presets: [
+    myPreset, // your own preset
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Extending Preact JSX HTMLAttributes for UnoCSS Attributify (TypeScript)
+DESCRIPTION: This snippet demonstrates how to extend Preact's `JSX.HTMLAttributes` interface to include `AttributifyAttributes` from `@unocss/preset-attributify`. This allows UnoCSS attributify mode to be used directly within Preact components, enabling type-checking and autocompletion for attributify properties.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/presets/attributify.md#_snippet_15
+
+LANGUAGE: ts
+CODE:
+```
+import type { AttributifyAttributes } from '@unocss/preset-attributify'
+
+declare module 'preact' {
+  namespace JSX {
+    interface HTMLAttributes extends AttributifyAttributes {}
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Dynamic HTML Class Concatenation (Problem)
+DESCRIPTION: Demonstrates a dynamic class concatenation in HTML that UnoCSS's static extraction cannot process at build time. This snippet highlights the problem that the `safelist` option aims to solve.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/guide/extracting.md#_snippet_5
+
+LANGUAGE: HTML
+CODE:
+```
+<div class="p-${size}"></div>
+<!-- this won't work! -->
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS Webpack Plugin for ESM (v0.59.0+)
+DESCRIPTION: Demonstrates how to configure the UnoCSS Webpack plugin for projects using UnoCSS v0.59.0 and newer (ESM-only), requiring dynamic import. Includes configurations for both Webpack 5 and Webpack 4, handling `realContentHash` and CSS extraction.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/webpack.md#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+// webpack.config.js
+module.exports = function () {
+  return import('@unocss/webpack').then(({ default: UnoCSS }) => ({
+    plugins: [
+      UnoCSS()
+    ],
+    optimization: {
+      realContentHash: true
+    }
+  }))
+}
+```
+
+LANGUAGE: js
+CODE:
+```
+// webpack.config.js
+module.exports = function () {
+  return import('@unocss/webpack').then(({ default: UnoCSS }) => ({
+    plugins: [
+      UnoCSS()
+    ],
+    css: {
+      extract: {
+        filename: '[name].[hash:9].css'
+      },
+    },
+  }))
+}
+```
+
+----------------------------------------
+
+TITLE: Using @apply with CSS Variables
+DESCRIPTION: This CSS snippet demonstrates an alternative way to use the `@apply` directive by leveraging CSS custom properties (e.g., `--at-apply`) for better compatibility with vanilla CSS.
+SOURCE: https://github.com/unocss/unocss/blob/main/packages-presets/transformer-directives/README.md#_snippet_4
+
+LANGUAGE: css
+CODE:
+```
+.custom-div {
+  --at-apply: text-center my-0 font-medium;
+}
+```
+
+----------------------------------------
+
+TITLE: Defining a Custom UnoCSS Preset in TypeScript
+DESCRIPTION: This snippet demonstrates how to define a custom preset in UnoCSS using the `definePreset` function. It exports a constructor that can accept preset-specific options and returns a preset object containing configuration properties like rules and variants, enabling modular and reusable styling configurations.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/presets.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { definePreset, Preset } from 'unocss'
+
+export default definePreset((options?: MyPresetOptions) => {
+  return {
+    name: 'my-preset',
+    rules: [
+      // ...
+    ],
+    variants: [
+      // ...
+    ],
+    // it supports most of the configuration you could have in the root config
+  }
+})
+```
+
+----------------------------------------
+
+TITLE: Defining Custom UnoCSS Rules with Direct CSS Output (TypeScript)
+DESCRIPTION: This snippet illustrates how to define an advanced UnoCSS rule that directly returns a CSS string, bypassing the default object-based CSS generation. It demonstrates handling selector escaping, accessing theme values, and embedding multiple CSS rules or media queries within the returned string, while optionally disabling variant application for this specific rule.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/rules.md#_snippet_13
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { defineConfig, toEscapedSelector as e } from 'unocss'
+
+export default defineConfig({
+  rules: [
+    [/^custom-(.+)$/, ([, name], { rawSelector, currentSelector, variantHandlers, theme }) => {
+      // discard mismatched rules
+      if (name.includes('something'))
+        return
+
+      // if you want, you can disable the variants for this rule
+      if (variantHandlers.length)
+        return
+      const selector = e(rawSelector)
+      // return a string instead of an object
+      return `
+${selector} {
+  font-size: ${theme.fontSize.sm};
+}
+/* you can have multiple rules */
+${selector}::after {
+  content: 'after';
+}
+.foo > ${selector} {
+  color: red;
+}
+/* or media queries */
+@media (min-width: ${theme.breakpoints.sm}) {
+  ${selector} {
+    font-size: ${theme.fontSize.sm};
+  }
+}
+`
+    }],
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: TypeScript Type Declaration for React HTML Attributes
+DESCRIPTION: Extends React's `HTMLAttributes` interface with `AttributifyAttributes` to provide TypeScript support for UnoCSS attributify mode in React projects.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/presets/attributify.md#_snippet_10
+
+LANGUAGE: typescript
+CODE:
+```
+import type { AttributifyAttributes } from '@unocss/preset-attributify'
+
+declare module 'react' {
+  interface HTMLAttributes<T> extends AttributifyAttributes {}
+}
+```
+
+----------------------------------------
+
+TITLE: UnoCSS Configuration: configFile
+DESCRIPTION: Specifies whether UnoCSS should load configurations from external files. Setting it to 'false' disables this behavior.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/index.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+configFile:
+  Type: string | false
+  Description: Load from configs files. Set false to disable.
+```
+
+----------------------------------------
+
+TITLE: Using UnoCSS `@screen` Directive for Breakpoints
+DESCRIPTION: Demonstrates how the `@screen` directive generates media queries based on named breakpoints defined in the theme configuration, transforming custom screen names into standard CSS media queries.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/postcss.md#_snippet_8
+
+LANGUAGE: css
+CODE:
+```
+.grid {
+  @apply grid grid-cols-2;
+}
+@screen xs {
+  .grid {
+    @apply grid-cols-1;
+  }
+}
+@screen sm {
+  .grid {
+    @apply grid-cols-3;
+  }
+}
+/* ... */
+```
+
+LANGUAGE: css
+CODE:
+```
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (min-width: 320px) {
+  .grid {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+@media (min-width: 640px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+/* ... */
+```
+
+----------------------------------------
+
+TITLE: Using @apply Directive in CSS
+DESCRIPTION: This snippet illustrates the usage of the `@apply` directive in CSS to group multiple UnoCSS utility classes into a single custom class. The first code block shows the directive's syntax, and the second block demonstrates how it is transformed into standard CSS properties.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/transformers/directives.md#_snippet_2
+
+LANGUAGE: css
+CODE:
+```
+.custom-div {
+  @apply text-center my-0 font-medium;
+}
+```
+
+LANGUAGE: css
+CODE:
+```
+.custom-div {
+  margin-top: 0rem;
+  margin-bottom: 0rem;
+  text-align: center;
+  font-weight: 500;
+}
+```
+
+----------------------------------------
+
+TITLE: Using @apply Directive in CSS
+DESCRIPTION: This CSS snippet illustrates the basic usage of the `@apply` directive, allowing you to group multiple UnoCSS utility classes into a single custom CSS class.
+SOURCE: https://github.com/unocss/unocss/blob/main/packages-presets/transformer-directives/README.md#_snippet_2
+
+LANGUAGE: css
+CODE:
+```
+.custom-div {
+  @apply text-center my-0 font-medium;
+}
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS with Attributify JSX Transformer
+DESCRIPTION: Demonstrates how to integrate `@unocss/transformer-attributify-jsx` into your `uno.config.ts` file by adding it to the `transformers` array, alongside `presetAttributify`.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/transformers/attributify-jsx.md#_snippet_4
+
+LANGUAGE: ts
+CODE:
+```
+import { defineConfig, presetAttributify } from 'unocss'
+import transformerAttributifyJsx from '@unocss/transformer-attributify-jsx'
+
+export default defineConfig({
+  // ...
+  presets: [
+    // ...
+    presetAttributify(),
+  ],
+  transformers: [
+    transformerAttributifyJsx(), // <--
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: TypeScript Type Declaration for Vue 3 HTML Attributes
+DESCRIPTION: Extends Vue 3's `HTMLAttributes` interface with `AttributifyAttributes` to provide TypeScript support for UnoCSS attributify mode in Vue 3 projects.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/presets/attributify.md#_snippet_11
+
+LANGUAGE: typescript
+CODE:
+```
+import type { AttributifyAttributes } from '@unocss/preset-attributify'
+
+declare module '@vue/runtime-dom' {
+  interface HTMLAttributes extends AttributifyAttributes {}
+}
+```
+
+----------------------------------------
+
+TITLE: Using Arbitrary Variants in HTML
+DESCRIPTION: This HTML snippet demonstrates the application of arbitrary variants within class attributes. The extractor captures complex variant patterns like `[&>*]:m-1` and `[&[open]]:p-2`, allowing for highly specific styling based on parent or element states.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/extractors/arbitrary-variants.md#_snippet_0
+
+LANGUAGE: html
+CODE:
+```
+<div class="[&>*]:m-1 [&[open]]:p-2"></div>
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS with Svelte and extractorSvelte in Vite
+DESCRIPTION: This configuration integrates UnoCSS with Svelte, ensuring support for `class:foo` and `class:foo={bar}` syntax. It requires adding `extractorSvelte` to the `extractors` option within the `UnoCSS` plugin and placing the `UnoCSS` plugin before `@sveltejs/vite-plugin-svelte` in `vite.config.ts`.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/vite.md#_snippet_12
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { svelte } from '@sveltejs/vite-plugin-svelte'
+import extractorSvelte from '@unocss/extractor-svelte'
+import UnoCSS from 'unocss/vite'
+
+export default {
+  plugins: [
+    UnoCSS({
+      extractors: [
+        extractorSvelte()
+      ],
+      /* more options */
+    }),
+    svelte()
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Defining Static UnoCSS Rule (TypeScript)
+DESCRIPTION: This snippet demonstrates how to define a static UnoCSS rule using a simple array. It maps the utility class `m-1` directly to the CSS property `margin: 0.25rem`. This rule will generate the specified CSS whenever `m-1` is detected in the codebase.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/rules.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+rules: [
+  ['m-1', { margin: '0.25rem' }],
+]
+```
+
+----------------------------------------
+
+TITLE: Installing UnoCSS Vite Plugin with npm
+DESCRIPTION: This snippet provides the command to install UnoCSS as a development dependency using the npm package manager. It's the first step to integrate UnoCSS into a Vite project.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/vite.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+npm install -D unocss
+```
+
+----------------------------------------
+
+TITLE: TypeScript Type Declaration for Svelte/SvelteKit HTML Attributes
+DESCRIPTION: Extends Svelte's `svelteHTML.HTMLAttributes` type with `AttributifyAttributes` to provide TypeScript support for UnoCSS attributify mode in Svelte and SvelteKit projects.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/presets/attributify.md#_snippet_13
+
+LANGUAGE: typescript
+CODE:
+```
+declare namespace svelteHTML {
+  import type { AttributifyAttributes } from '@unocss/preset-attributify'
+
+  type HTMLAttributes = AttributifyAttributes
+}
+```
+
+----------------------------------------
+
+TITLE: Importing UnoCSS Icons Preset from Main Package
+DESCRIPTION: This TypeScript snippet provides an alternative import path for `presetIcons` directly from the `unocss` package. This method is convenient when the main `unocss` package is already installed and preferred for importing its bundled presets.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/presets/icons.md#_snippet_4
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { presetIcons } from 'unocss'
+```
+
+----------------------------------------
+
+TITLE: Overriding Default Breakpoints in UnoCSS Theme (TypeScript)
+DESCRIPTION: This snippet shows how to define custom breakpoints within the `theme.breakpoints` property of the UnoCSS configuration. When a custom `breakpoints` object is provided, it completely overrides the default breakpoints, allowing users to define their own responsive design breakpoints like `sm:` and `md:`.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/config/theme.md#_snippet_4
+
+LANGUAGE: ts
+CODE:
+```
+theme: {
+  // ...
+  breakpoints: {
+    sm: '320px',
+    md: '640px'
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Add UnoCSS Preprocessor to Svelte Config
+DESCRIPTION: To use utility styles directly within your Svelte components, add the `@unocss/svelte-scoped/preprocess` preprocessor to your `svelte.config.js` file. This allows styles to be generated and placed directly into the built components.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/svelte-scoped.md#_snippet_11
+
+LANGUAGE: typescript
+CODE:
+```
+import adapter from '@sveltejs/adapter-auto'
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte'
+import UnoCSS from '@unocss/svelte-scoped/preprocess'
+
+const config = {
+  preprocess: [
+    vitePreprocess(),
+    UnoCSS({
+      // ... preprocessor options
+    }),
+  ],
+  // other Svelte config
+}
+```
+
+----------------------------------------
+
+TITLE: Importing Tailwind CSS Reset in TypeScript
+DESCRIPTION: This TypeScript import statement adds the Tailwind CSS Reset stylesheet from the `@unocss/reset` package. This reset is designed to be compatible with Tailwind CSS, providing a consistent base for utility-first styling.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/guide/style-reset.md#_snippet_4
+
+LANGUAGE: ts
+CODE:
+```
+import '@unocss/reset/tailwind.css'
+```
+
+----------------------------------------
+
+TITLE: UnoCSS VS Code Extension Configurations
+DESCRIPTION: A comprehensive list of configuration options for the UnoCSS VS Code extension. These settings allow customization of features like language detection, file inclusion/exclusion, visual decorations, and autocomplete behavior.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/vscode.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+unocss.disable
+  Description: Disable the UnoCSS extension
+  Type: boolean
+  Default: false
+
+unocss.languageIds
+  Description: Language identifiers to be scanned by UnoCSS.
+  Type: array
+  Default: []
+
+unocss.root
+  Description: Project root that contains the UnoCSS configuration file.
+  Type: array, string
+  Default: ""
+
+unocss.include
+  Description: Directory of files to be detected.
+  Type: array, string
+  Default: []
+
+unocss.exclude
+  Description: Directory of files not to be detected.
+  Type: array, string
+  Default: []
+
+unocss.underline
+  Description: Enable/disable underline decoration for class names.
+  Type: boolean
+  Default: true
+
+unocss.colorPreview
+  Description: Enable/disable color preview decorations.
+  Type: boolean
+  Default: true
+
+unocss.colorPreviewRadius
+  Description: Radius for color preview.
+  Type: string
+  Default: "50%"
+
+unocss.remToPxPreview
+  Description: Enable/disable rem to px preview in hover.
+  Type: boolean
+  Default: true
+
+unocss.remToPxRatio
+  Description: Ratio of rem to px.
+  Type: number
+  Default: 16
+
+unocss.selectionStyle
+  Description: Enable/disable selection style decorations.
+  Type: boolean
+  Default: true
+
+unocss.strictAnnotationMatch
+  Description: Be strict about where to show annotations.
+  Type: boolean
+  Default: false
+
+unocss.autocomplete.matchType
+  Description: The matching type for autocomplete.
+  Type: string
+  Default: "prefix"
+
+unocss.autocomplete.strict
+  Description: Be strict about where to show autocomplete.
+  Type: boolean
+  Default: false
+
+unocss.autocomplete.maxItems
+  Description: The maximum number of items to show in autocomplete.
+  Type: number
+  Default: 1000
+```
+
+----------------------------------------
+
+TITLE: Configuring UnoCSS with Attributify JSX Transformer
+DESCRIPTION: This TypeScript snippet demonstrates how to integrate `transformerAttributifyJsx` into your `uno.config.ts` file by importing it and adding it to the `transformers` array, ensuring it works alongside `presetAttributify`.
+SOURCE: https://github.com/unocss/unocss/blob/main/packages-presets/transformer-attributify-jsx/README.md#_snippet_4
+
+LANGUAGE: ts
+CODE:
+```
+import transformerAttributifyJsx from '@unocss/transformer-attributify-jsx'
+// uno.config.ts
+import { defineConfig, presetAttributify } from 'unocss'
+
+export default defineConfig({
+  // ...
+  presets: [
+    // ...
+    presetAttributify()
+  ],
+  transformers: [
+    transformerAttributifyJsx(), // <--
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Example Svelte Component with UnoCSS Utility Classes
+DESCRIPTION: This Svelte component demonstrates various ways to apply UnoCSS utility classes, including direct class attributes, Svelte `class:` directives, and `@apply` within a `<style>` block. It showcases how UnoCSS classes are used alongside custom CSS.
+SOURCE: https://github.com/unocss/unocss/blob/main/examples/sveltekit-scoped/README.md#_snippet_1
+
+LANGUAGE: svelte
+CODE:
+```
+<span class:logo />
+<!-- Assuming logo is set as a shortcut and it is a variable in this component -->
+
+<div class="bg-red-100 text-lg">Hello</div>
+
+<div class:text-sm={bar}>World</div>
+<div class:text-sm>World</div>
+
+<div class="fixed flex top:0 ltr:left-0 rtl:right-0 space-x-1 foo">
+  <div class="px-2 py-1">Logo</div>
+  <Button class="py-1 px-2">Login</Button>
+</div>
+
+<style>
+  div {
+    --at-apply: text-blue-500 underline;
+  }
+  .foo {
+    color: red;
+  }
+</style>
+```
+
+----------------------------------------
+
+TITLE: Configure UnoCSS PostCSS Plugin
+DESCRIPTION: Example configuration for `postcss.config.mjs` to integrate UnoCSS as a PostCSS plugin, enabling its directives and transformations.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/postcss.md#_snippet_1
+
+LANGUAGE: typescript
+CODE:
+```
+import UnoCSS from '@unocss/postcss'
+
+export default {
+  plugins: [
+    UnoCSS(),
+  ],
+}
+```
+
+----------------------------------------
+
+TITLE: Configure UnoCSS with uno.config.ts
+DESCRIPTION: Create an `uno.config.ts` file to define your UnoCSS settings. Use the `defineConfig` function from 'unocss' to export your configuration object. While presets and transformers are supported, extractors are not, due to differences in Svelte Scoped usage.
+SOURCE: https://github.com/unocss/unocss/blob/main/docs/integrations/svelte-scoped.md#_snippet_15
+
+LANGUAGE: typescript
+CODE:
+```
+import { defineConfig } from 'unocss'
+
+export default defineConfig({
+  // ...UnoCSS options
+})
+```

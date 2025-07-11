@@ -1,0 +1,1649 @@
+TITLE: Example PayloadCMS Posts API Response
+DESCRIPTION: This JSON object illustrates a typical API response from the PayloadCMS '/api/posts' endpoint. It contains an array of 'docs' representing individual post entries, along with pagination metadata such as 'totalDocs', 'limit', and 'page'.
+SOURCE: https://docs.astro.build/en/guides/cms/payload
+
+LANGUAGE: JSON
+CODE:
+```
+{
+"docs":[
+{
+"id":"64098b16483b0f06a7e20ed4",
+"title":"Astro & PayloadCMS Title 🚀",
+"content":"Astro & PayloadCMS Content",
+"slug":"astro-payloadcms-slug",
+"createdAt":"2023-03-09T07:30:30.837Z",
+"updatedAt":"2023-03-09T07:30:30.837Z"
+}
+],
+"totalDocs":1,
+"limit":10,
+"totalPages":1,
+"page":1,
+"pagingCounter":1,
+"hasPrevPage":false,
+"hasNextPage":false,
+"prevPage":null,
+"nextPage":null
+}
+```
+
+----------------------------------------
+
+TITLE: Client-side Dev Toolbar App Receiving Message Example
+DESCRIPTION: Example demonstrating how to use `server.on()` within the `init` hook of a Dev Toolbar App to register a callback that logs data received from the server for a specific event.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: javascript
+CODE:
+```
+init(canvas, app, server) {
+  server.on('server-message', (data) => {
+    console.log(data.message);
+  });
+}
+```
+
+----------------------------------------
+
+TITLE: Astro Middleware Integration Example (String Entrypoint)
+DESCRIPTION: Shows how to add custom middleware to an Astro project using a string-based entrypoint. This example includes the integration setup that calls `addMiddleware` and the definition of the middleware itself, demonstrating how to handle requests.
+SOURCE: https://docs.astro.build/en/reference/integrations-reference
+
+LANGUAGE: JavaScript
+CODE:
+```
+/**
+ * @type {() => import('astro').AstroIntegration}
+ */
+export default () => ({
+  name: "my-middleware-package",
+  hooks: {
+    "astro:config:setup": ({ addMiddleware }) => {
+      addMiddleware({
+        entrypoint: '@my-package/middleware',
+        order: 'pre'
+      });
+    },
+  },
+});
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { defineMiddleware } from 'astro:middleware';
+
+export const onRequest = defineMiddleware(async (context, next) => {
+  if(context.url.pathname === '/some-test-path') {
+    return Response.json({
+      ok: true
+    });
+  }
+  return next();
+});
+```
+
+----------------------------------------
+
+TITLE: Astro Image Component `src` Property Examples
+DESCRIPTION: Examples demonstrating how to use the `src` property with different image sources: local imported images, images from the `public/` folder, and remote images.
+SOURCE: https://docs.astro.build/en/reference/modules/astro-assets
+
+LANGUAGE: Astro
+CODE:
+```
+--- import { Image } from 'astro:assets'; import myImportedImage from '../assets/my-local-image.png'; --- <Image src={myImportedImage} alt="descriptive text" />
+```
+
+LANGUAGE: Astro
+CODE:
+```
+--- import { Image } from 'astro:assets'; --- <Image src="/images/my-public-image.png" alt="descriptive text" width="200" height="150" />
+```
+
+LANGUAGE: Astro
+CODE:
+```
+--- import { Image } from 'astro:assets'; --- <Image src="https://example.com/remote-image.jpg" alt="descriptive text" width="200" height="150" />
+```
+
+----------------------------------------
+
+TITLE: Server-side Astro Integration Receiving Message Example
+DESCRIPTION: Example demonstrating how to use `toolbar.on()` within the `astro:server:setup` hook of an Astro integration to register a callback that logs data received from the client for a specific event.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: javascript
+CODE:
+```
+'astro:server:setup': ({ toolbar }) => {
+  toolbar.on('my-app:my-message', (data) => {
+    console.log(data.message);
+  });
+},
+```
+
+----------------------------------------
+
+TITLE: Astro API Reference Overview
+DESCRIPTION: Lists the available Runtime APIs and other development-focused APIs within the Astro framework, providing a high-level overview of the API surface.
+SOURCE: https://docs.astro.build/en/tutorial/4-layouts/3
+
+LANGUAGE: APIDOC
+CODE:
+```
+Runtime API:
+  - Render context
+  - astro:actions
+  - astro:assets
+  - astro:config
+  - astro:content
+  - astro:env
+  - astro:i18n
+  - astro:middleware
+  - astro:transitions
+
+Other development APIs:
+  - Integration API
+  - Adapter API
+  - Content Loader API
+  - Image Service API
+  - Dev Toolbar App API
+  - Container API (experimental)
+  - Programmatic Astro API (experimental)
+```
+
+----------------------------------------
+
+TITLE: Astro Container API: `routeType` Option for Endpoint Rendering and Testing
+DESCRIPTION: Illustrates the usage of the `routeType` option to render Astro API endpoints. Includes examples for basic endpoint rendering, consuming JSON responses, defining API endpoint functions, and testing specific HTTP methods like POST using the `request` option.
+SOURCE: https://docs.astro.build/en/reference/container-reference
+
+LANGUAGE: JavaScript
+CODE:
+```
+container.renderToString(Endpoint, { routeType: "endpoint" });
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+import * as Endpoint from "../src/pages/api/endpoint.js";
+
+const response = await container.renderToResponse(Endpoint, {
+routeType: "endpoint"
+});
+
+const json = await response.json();
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+export function GET() {}
+
+// need to test this
+
+export function POST() {}
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+import * as Endpoint from "../src/pages/api/endpoint.js";
+
+const response = await container.renderToResponse(Endpoint, {
+routeType: "endpoint",
+request: new Request("https://example.com", {
+method: "POST" // Specify POST method for testing
+})
+});
+
+const json = await response.json();
+```
+
+----------------------------------------
+
+TITLE: Define astro:server:start Astro Integration Hook API
+DESCRIPTION: This API documentation details the `astro:server:start` hook, which is invoked immediately after the dev server begins listening. It provides access to the server's `address` information and a `logger`, enabling integrations to interact with the server's network state or log events.
+SOURCE: https://docs.astro.build/en/reference/integrations-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+'astro:server:start'?: (options: {
+  address: AddressInfo;
+  logger: AstroIntegrationLogger;
+}) => void | Promise<void>;
+
+address option:
+  Type: AddressInfo
+  Description: The address, family and port number supplied by the Node.js Net module.
+```
+
+----------------------------------------
+
+TITLE: Comprehensive Astro Font Configuration Example
+DESCRIPTION: A complete `astro.config.mjs` example showcasing the configuration of multiple fonts, including remote providers (Google, Fontsource) and a local font. It demonstrates various options such as `weights`, `styles`, `subsets`, `fallbacks`, and `variants` for fine-grained control over font loading.
+SOURCE: https://docs.astro.build/en/reference/experimental-flags/fonts
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { defineConfig, fontProviders } from "astro/config";
+
+export default defineConfig({
+
+experimental: {
+
+fonts: [
+
+{
+
+name: "Roboto",
+
+cssVariable: "--font-roboto",
+
+provider: fontProviders.google(),
+
+// Default included:
+
+// weights: [400] ,
+
+// styles: ["normal", "italics"],
+
+// subsets: ["cyrillic-ext", "cyrillic", "greek-ext", "greek", "vietnamese", "latin-ext", "latin"],
+
+// fallbacks: ["sans-serif"],
+
+},
+
+{
+
+name: "Inter",
+
+cssVariable: "--font-inter",
+
+provider: fontProviders.fontsource(),
+
+// Specify weights that are actually used
+
+weights: [400, 500, 600, 700],
+
+// Specify styles that are actually used
+
+styles: ["normal"],
+
+// Download only font files for characters used on the page
+
+subsets: ["cyrillic"],
+
+},
+
+{
+
+name: "JetBrains Mono",
+
+cssVariable: "--font-jetbrains-mono",
+
+provider: fontProviders.fontsource(),
+
+// Download only font files for characters used on the page
+
+subsets: ["latin"],
+
+// Use a fallback font family matching the intended appearance
+
+fallbacks: ["monospace"],
+
+},
+
+{
+
+name: "Poppins",
+
+cssVariable: "--font-poppins",
+
+provider: "local",
+
+// Weight and style are not specified so Astro
+
+// will try to infer them for each variant
+
+variants: [
+
+{
+
+src: [
+
+"./src/assets/fonts/Poppins-regular.woff2",
+
+"./src/assets/fonts/Poppins-regular.woff",
+
+]
+
+},
+
+{
+
+src: [
+
+"./src/assets/fonts/Poppins-bold.woff2",
+
+"./src/assets/fonts/Poppins-bold.woff",
+
+]
+
+},
+
+]
+
+}
+
+],
+
+}
+
+});
+```
+
+----------------------------------------
+
+TITLE: Astro Middleware Integration Example (URL Entrypoint)
+DESCRIPTION: Demonstrates how to add custom middleware to an Astro project using a URL for the entrypoint, a feature introduced in Astro 5.0.0. This example focuses on the integration setup that utilizes `new URL()` for the middleware entrypoint.
+SOURCE: https://docs.astro.build/en/reference/integrations-reference
+
+LANGUAGE: JavaScript
+CODE:
+```
+/**
+ * @type {() => import('astro').AstroIntegration}
+ */
+export default () => ({
+  name: "my-middleware-package",
+  hooks: {
+    "astro:config:setup": ({ addMiddleware }) => {
+      addMiddleware({
+        entrypoint: new URL('./middleware.js', import.meta.url),
+        order: 'pre'
+      });
+    },
+  },
+});
+```
+
+----------------------------------------
+
+TITLE: Client-side Dev Toolbar App Sending Message Example
+DESCRIPTION: Example demonstrating how to use `server.send()` within the `init` hook of a Dev Toolbar App to send a message with a specific event name and data to the server. It also advises on event naming conventions.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: javascript
+CODE:
+```
+init(canvas, app, server) {
+  server.send('my-app:my-message', { message: 'Hello!' });
+}
+```
+
+----------------------------------------
+
+TITLE: Create and configure astro-dev-toolbar-tooltip (JavaScript)
+DESCRIPTION: Illustrates how to programmatically create an `astro-dev-toolbar-tooltip` element and populate its `sections` property with an array of objects. This example includes a title, icon, content, and a `clickAction` for a single section.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: JavaScript
+CODE:
+```
+const tooltip = document.createElement('astro-dev-toolbar-tooltip');
+
+tooltip.sections = [{
+
+title: 'My section',
+
+icon: 'astro:logo',
+
+content: 'My content',
+
+clickAction: () => {
+
+console.log('Clicked!')
+
+},
+
+clickDescription: 'Click me!'
+
+}]
+```
+
+----------------------------------------
+
+TITLE: Astro Container API: create() method
+DESCRIPTION: Documents the `create()` method of the experimental Astro Container API, detailing its purpose and the `streaming` and `renderers` options available for configuration.
+SOURCE: https://docs.astro.build/en/reference/container-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+experimental_AstroContainer.create(options?: AstroContainerOptions)
+  Description: Creates a new instance of the container.
+  Parameters:
+    options: AstroContainerOptions (optional)
+      streaming: boolean
+        Description: Enables rendering components using HTML streaming.
+      renderers: AddServerRenderer[]
+        Description: An array of server-side renderers to add.
+```
+
+----------------------------------------
+
+TITLE: Server-side Astro Integration Sending Message Example
+DESCRIPTION: Example demonstrating how to use `toolbar.send()` within the `astro:server:setup` hook of an Astro integration to send a message with a specific event name and data to the client.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: javascript
+CODE:
+```
+'astro:server:setup': ({ toolbar }) => {
+  toolbar.send('server-message', { message: 'Hello!' });
+},
+```
+
+----------------------------------------
+
+TITLE: Astro Middleware: onRequest(), context, and next() API Reference
+DESCRIPTION: Comprehensive API documentation for Astro's middleware functions, including the type signatures and descriptions for `onRequest()`, its `context` object, and the `next()` function used for chaining middleware.
+SOURCE: https://docs.astro.build/en/reference/modules/astro-middleware
+
+LANGUAGE: APIDOC
+CODE:
+```
+onRequest:
+  Type: (context: APIContext, next: MiddlewareNext) => Promise<Response> | Response | Promise<void> | void
+  Description: A required exported function from src/middleware.js that will be called before rendering every page or API route. It receives two arguments: context and next(). onRequest() must return a Response: either directly, or by calling next().
+  Parameters:
+    context:
+      Type: APIContext
+      Description: The first argument of onRequest() is a context object. It mirrors many of the Astro global properties.
+    next():
+      Type: (rewritePayload?: string | URL | Request) => Promise<Response>
+      Description: The second argument of onRequest() is a function that calls all the subsequent middleware in the chain and returns a Response. For example, other middleware could modify the HTML body of a response and awaiting the result of next() would allow your middleware to respond to those changes. Since Astro v4.13.0, next() accepts an optional URL path parameter in the form of a string, URL, or Request to rewrite the current request without retriggering a new rendering phase.
+```
+
+----------------------------------------
+
+TITLE: Example Usage of `SchemaContext` for Reusable Schemas
+DESCRIPTION: Provides a TypeScript example demonstrating how to define a reusable `imageSchema` using `SchemaContext`'s `image` helper. It then shows how to integrate this reusable schema into a `defineCollection` call for a `blog` collection, including other schema properties like `title` and `permalink`.
+SOURCE: https://docs.astro.build/en/reference/modules/astro-content
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { defineCollection, z, type SchemaContext } from "astro:content";
+
+export const imageSchema = ({ image }: SchemaContext) =>
+
+z.object({
+
+image: image(),
+
+description: z.string().optional(),
+
+});
+
+const blog = defineCollection({
+
+loader: /* ... */,
+
+schema: ({ image }) => z.object({
+
+title: z.string(),
+
+permalink: z.string().optional(),
+
+image: imageSchema({ image })
+
+}),
+
+});
+```
+
+----------------------------------------
+
+TITLE: Define astro:build:start Astro Integration Hook API
+DESCRIPTION: This API documentation specifies the `astro:build:start` hook, which runs after `astro:config:done` but before the production build process begins. It's intended for setting up global objects or clients required for the build or extending build configuration options via the adapter API.
+SOURCE: https://docs.astro.build/en/reference/integrations-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+'astro:build:start'?: (options: {
+  logger: AstroIntegrationLogger;
+}) => void | Promise<void>;
+```
+
+----------------------------------------
+
+TITLE: Create Astro Dev Toolbar Window
+DESCRIPTION: Demonstrates how to create and populate an `astro-dev-toolbar-window` component using both declarative HTML and imperative JavaScript. The JavaScript example shows how to append content to the light DOM.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: HTML
+CODE:
+```
+<astro-dev-toolbar-window>
+
+<p>My content</p>
+
+</astro-dev-toolbar-window>
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+const myWindow = document.createElement('astro-dev-toolbar-window');
+
+const myContent = document.createElement('p');
+myContent.textContent = 'My content';
+
+// use appendChild directly on `window`, not `myWindow.shadowRoot`
+myWindow.appendChild(myContent);
+```
+
+----------------------------------------
+
+TITLE: Client-side `server.send()` Method API Reference
+DESCRIPTION: API documentation for the `send()` method available on the `server` object within a client-side Dev Toolbar App. It specifies the signature, parameters, and purpose of sending data from the client to the server.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+send<T>(event: stringify, data: T) => void
+Sends data to the server from logic defined in your toolbar app.
+```
+
+----------------------------------------
+
+TITLE: Configure Kontent.ai API Keys in .env
+DESCRIPTION: Example `.env` file configuration to securely store Kontent.ai environment ID, preview API key, and management API key. These credentials are required by the model generator to access your Kontent.ai project's structural information.
+SOURCE: https://docs.astro.build/en/guides/cms/kontent-ai
+
+LANGUAGE: dotenv
+CODE:
+```
+KONTENT_ENVIRONMENT_ID=YOUR_ENVIRONMENT_ID
+KONTENT_PREVIEW_API_KEY=YOUR_PREVIEW_API_KEY
+KONTENT_MANAGEMENT_API_KEY=YOUR_MANAGEMENT_API_KEY
+```
+
+----------------------------------------
+
+TITLE: Astro Container API Options Reference
+DESCRIPTION: Detailed API documentation for the `locals`, `routeType`, and `partial` options available in Astro's Container API, including their types, default values, and descriptions.
+SOURCE: https://docs.astro.build/en/reference/container-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+locals option:
+  Type: App.Locals
+  Description: An option to pass information from Astro.locals for rendering your component. Use this option to when your component needs information stored during the lifecycle of a request in order to render, such as logged in status.
+
+routeType option:
+  Type: "page" | "endpoint"
+  Description: An option available when using renderToResponse to specify that you are rendering an endpoint.
+
+partial option:
+  Type: boolean
+  Default: true
+  Added in: astro@4.16.6
+  Description: Whether or not the Container API renders components as if they were page partials. This is usually the behavior you want when rendering `components.boolean` so you can render components without a full page shell. To render a component as a full Astro page, including <!DOCTYPE html>, you can opt-out of this behavior by setting partial to false.
+```
+
+----------------------------------------
+
+TITLE: Astro Dev Toolbar App API Reference
+DESCRIPTION: Comprehensive API documentation for integrating custom applications into the Astro Dev Toolbar, covering integration setup, app lifecycle methods, client-side event handling, client-server communication patterns, and a list of available UI components.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+Toolbar app integration setup:
+  addDevToolbarApp(options: object):
+    Purpose: Registers a new Dev Toolbar App integration.
+    Parameters:
+      id: string - Unique identifier for the app.
+      name: string - Display name of the app.
+      icon: string - Path or name of the icon for the app.
+      entrypoint: string - Path to the app's client-side entrypoint.
+
+Structure of a Dev Toolbar App:
+  defineToolbarApp():
+    Purpose: Defines the main structure and lifecycle methods of a toolbar app.
+  init():
+    Purpose: Lifecycle method called when the app is initialized.
+  beforeTogglingOff():
+    Purpose: Lifecycle method called before the app is toggled off.
+
+Client-side Events:
+  onToggled():
+    Purpose: Event handler for when the app's toggle state changes.
+  onToolbarPlacementUpdated():
+    Purpose: Event handler for when the toolbar's placement is updated.
+  toggleState():
+    Purpose: Function to programmatically toggle the app's state.
+  toggleNotification():
+    Purpose: Function to display or hide a notification for the app.
+
+Client-Server Communication:
+  On the client:
+    Details on how client-side code communicates with the server.
+  On the server:
+    Details on how server-side code handles client communication.
+
+Component Library:
+  astro-dev-toolbar-window:
+    Description: UI component for creating a window within the toolbar.
+  astro-dev-toolbar-button:
+    Description: UI component for a clickable button.
+  astro-dev-toolbar-badge:
+    Description: UI component for displaying a small badge/indicator.
+  astro-dev-toolbar-card:
+    Description: UI component for displaying content in a card format.
+  astro-dev-toolbar-toggle:
+    Description: UI component for a toggle switch.
+  astro-dev-toolbar-radio-checkbox:
+    Description: UI component for radio buttons or checkboxes.
+  astro-dev-toolbar-highlight:
+    Description: UI component for highlighting elements.
+  astro-dev-toolbar-tooltip:
+    Description: UI component for displaying tooltips.
+  astro-dev-toolbar-icon:
+    Description: UI component for displaying icons.
+```
+
+----------------------------------------
+
+TITLE: Client-side `server.on()` Method API Reference
+DESCRIPTION: API documentation for the `on()` method available on the `server` object within a client-side Dev Toolbar App. It specifies the signature, parameters, and purpose of registering a callback for incoming server messages.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+on<T>(event: string, callback: (data: T) => void) => void
+Registers a callback to be called when the server sends a message with the specified event.
+```
+
+----------------------------------------
+
+TITLE: Fetching Drupal Article Data in Astro Component
+DESCRIPTION: An Astro component example demonstrating how to fetch and display article data from a Drupal JSON:API endpoint. It uses `drupal-jsonapi-params` to construct the query and `jsona` to deserialize the JSON:API response, then renders the content.
+SOURCE: https://docs.astro.build/en/guides/cms/drupal
+
+LANGUAGE: Astro
+CODE:
+```
+---
+import {Jsona} from "jsona";
+import {DrupalJsonApiParams} from "drupal-jsonapi-params";
+import type {TJsonApiBody} from "jsona/lib/JsonaTypes";
+
+// Get the Drupal base URL
+export const baseUrl: string = import.meta.env.DRUPAL_BASE_URL;
+
+// Generate the JSON:API Query. Get all title and body from published articles.
+const params: DrupalJsonApiParams = new DrupalJsonApiParams();
+params.addFields("node--article", [
+"title",
+"body",
+])
+.addFilter("status", "1");
+
+// Generates the query string.
+const path: string = params.getQueryString();
+const url: string = baseUrl + '/jsonapi/node/article?' + path;
+
+// Get the articles
+const request: Response = await fetch(url);
+const json: string | TJsonApiBody = await request.json();
+
+// Initiate Jsona.
+const dataFormatter: Jsona = new Jsona();
+
+// Deserialise the response.
+const articles = dataFormatter.deserialize(json);
+---
+
+<body>
+{articles?.length ? articles.map((article: any) => (
+<section>
+<h2>{article.title}</h2>
+<article set:html={article.body.value}></article>
+</section>
+)): <div><h1>No Content found</h1></div> }
+</body>
+```
+
+----------------------------------------
+
+TITLE: Astro Custom Dev Toolbar App Example
+DESCRIPTION: Illustrates how to integrate and define a custom dev toolbar application in Astro. This example includes the Astro configuration, the integration file that utilizes `addDevToolbarApp`, and the definition of the dev toolbar app plugin itself.
+SOURCE: https://docs.astro.build/en/reference/integrations-reference
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { defineConfig } from 'astro/config';
+import devToolbarIntegration from './astro-dev-toolbar-app/integration.js'
+
+// https://astro.build/config
+export default defineConfig({
+  integrations: [
+    devToolbarIntegration()
+  ],
+});
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+/**
+ * @type {() => import('astro').AstroIntegration}
+ */
+export default () => ({
+  name: "dev-toolbar-app",
+  hooks: {
+    "astro:config:setup": ({ addDevToolbarApp }) => {
+      addDevToolbarApp({
+        entrypoint: "./astro-dev-toolbar-app/plugin.js",
+        id: "my-plugin",
+        name: "My Plugin"
+      });
+    },
+  },
+});
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+/**
+ * @type {import('astro').DevToolbarApp}
+ */
+export default {
+  id: "my-plugin",
+  name: "My Plugin",
+  icon: "<svg>...</svg>",
+  init() {
+    console.log("I'm a dev toolbar app!")
+  },
+};
+```
+
+----------------------------------------
+
+TITLE: Implement Start Function for Server Initialization
+DESCRIPTION: This JavaScript example illustrates the `start` function, which can be exported from an Astro adapter's `serverEntrypoint`. This function is called when the bundle script runs, allowing the adapter to initialize and start a server, for instance, by listening to a port or handling fetch events, suitable for hosts that expect the adapter to manage the server lifecycle.
+SOURCE: https://docs.astro.build/en/reference/adapter-reference
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { App } from 'astro/app';
+
+export function start(manifest) {
+  const app = new App(manifest);
+  addEventListener('fetch', event => {
+    // ...
+  });
+}
+```
+
+----------------------------------------
+
+TITLE: Example: Configuring a Blog Collection with defineCollection
+DESCRIPTION: Demonstrates how to use `defineCollection()` in `src/content.config.ts` to define a 'blog' content collection. It includes a `loader` for Markdown files and a `schema` for validating content properties like title and permalink using Zod.
+SOURCE: https://docs.astro.build/en/reference/modules/astro-content
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { z, defineCollection } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+const blog = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/data/blog' }),
+  schema: z.object({
+    title: z.string(),
+    permalink: z.string().optional(),
+  }),
+});
+
+// Expose your defined collection to Astro
+// with the `collections` export
+export const collections = { blog };
+```
+
+----------------------------------------
+
+TITLE: Astro App Render Method Signature
+DESCRIPTION: Documents the `app.render()` method, which takes a `Request` object and optional `RenderOptions`, returning a `Promise` that resolves to a `Response` object. This method is used for rendering both pages and API routes.
+SOURCE: https://docs.astro.build/en/reference/adapter-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+(request: Request, options?: RenderOptions) => Promise<Response>
+```
+
+----------------------------------------
+
+TITLE: Astro Dev Toolbar App API Reference
+DESCRIPTION: Detailed API documentation for the Astro Dev Toolbar app development, outlining the available objects, methods, and their parameters.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+Astro Dev Toolbar App API:
+
+defineToolbarApp(options: object): object
+  Description: Defines and registers a custom application for the Astro Dev Toolbar.
+  Parameters:
+    options: object
+      An object containing configuration and lifecycle hooks for the app.
+      Properties:
+        init(canvas: ShadowRoot, app: EventTarget, server: object): void
+          Description: The main initialization function for the app, called when the app is loaded.
+          Parameters:
+            canvas: ShadowRoot
+              The ShadowRoot of the app, used for rendering UI elements.
+            app: EventTarget
+              An EventTarget instance with additional helper methods for client-side events.
+            server: object
+              An object providing methods for communication with the server.
+        beforeTogglingOff(canvas: ShadowRoot): boolean | void
+          Description: An optional function called when the user attempts to toggle off the app.
+                       Can be used for cleanup or to request user confirmation.
+                       Returning a falsy value cancels the toggling off action.
+          Parameters:
+            canvas: ShadowRoot
+              The ShadowRoot of the app.
+
+app (EventTarget) object:
+  Description: Provides methods for client-side event handling and app state management.
+  Methods:
+    onToggled(callback: (options: {state: boolean})) => void
+      Description: Registers a callback to be invoked when the app's enabled/disabled state changes.
+      Parameters:
+        callback: function
+          A function that receives an object with the current state.
+          options:
+            state: boolean
+              The current state of the app (true for enabled, false for disabled).
+    onToolbarPlacementUpdated(callback: (options: {placement: 'bottom-left' | 'bottom-center' | 'bottom-right'})) => void
+      Description: Registers a callback to be invoked when the Dev Toolbar's placement changes.
+      Parameters:
+        callback: function
+          A function that receives an object with the new placement.
+          options:
+            placement: 'bottom-left' | 'bottom-center' | 'bottom-right'
+              The new placement of the toolbar.
+    toggleState(options: {state: boolean}) => void
+      Description: Programmatically changes the enabled/disabled state of the app.
+      Parameters:
+        options: object
+          state: boolean
+            The desired state for the app (true to enable, false to disable).
+    toggleNotification(options: {state?: boolean, level?: 'error' | 'warning' | 'info'}) => void
+      Description: Toggles a visual notification on the app icon.
+      Parameters:
+        options: object
+          state?: boolean (default: true)
+            If true, displays a notification; if false, removes it.
+          level?: 'error' | 'warning' | 'info' (default: 'error')
+            The severity level of the notification, affecting its appearance.
+
+server (object) object:
+  Description: Provides methods for client-server communication.
+  Methods:
+    send(messageType: string, data: object): void
+      Description: Sends a message from the client to the server.
+      Parameters:
+        messageType: string
+          A string identifying the type of message.
+        data: object
+          The data payload to send.
+    on(messageType: string, callback: (data: object) => void): void
+      Description: Registers a callback to listen for messages from the server.
+      Parameters:
+        messageType: string
+          A string identifying the type of message to listen for.
+        callback: function
+          A function that receives the data payload from the server message.
+```
+
+----------------------------------------
+
+TITLE: Astro i18n Middleware Helper Functions API
+DESCRIPTION: API reference for helper functions provided by `astro:i18n` module for manual i18n routing.
+SOURCE: https://docs.astro.build/en/guides/internationalization
+
+LANGUAGE: APIDOC
+CODE:
+```
+redirectToDefaultLocale(statusCode?: number): Response
+  - Redirects the current request to the default locale's index page.
+  - `statusCode`: Optional HTTP status code for the redirect (e.g., 302).
+
+notFound(): Response
+  - Returns a 404 Not Found response.
+
+redirectToFallback(locale: string, statusCode?: number): Response
+  - Redirects the current request to a specified fallback locale.
+  - `locale`: The locale string to redirect to.
+  - `statusCode`: Optional HTTP status code for the redirect.
+```
+
+----------------------------------------
+
+TITLE: Filtering Drupal JSON:API Requests with Query Strings
+DESCRIPTION: Demonstrates how to apply filters to Drupal JSON:API requests using URL query parameters. Examples show filtering by field name and status, and combining filters for specific entities.
+SOURCE: https://docs.astro.build/en/guides/cms/drupal
+
+LANGUAGE: HTTP Request
+CODE:
+```
+GET: /jsonapi/{entity_type_id}/{bundle_id}?filter[field_name]=value&filter[field_other]=value
+```
+
+LANGUAGE: HTTP Request
+CODE:
+```
+/jsonapi/node/article?filter[title]=Testing JSON:API&filter[status]=1
+```
+
+LANGUAGE: HTTP Request
+CODE:
+```
+/jsonapi/node/article/2ee9f0ef-1b25-4bbe-a00f-8649c68b1f7e?fields[node--article]=title&filter[title]=Testing JSON:API
+```
+
+----------------------------------------
+
+TITLE: Programmatic Astro CLI Usage in Astro v3.0
+DESCRIPTION: Astro v3.0 introduces new experimental JavaScript APIs (`dev()`, `build()`, `preview()`, `sync()`) for programmatic control of the Astro CLI. This example demonstrates how to start and stop the development server and build an Astro project using these new APIs.
+SOURCE: https://docs.astro.build/en/guides/upgrade-to/v3
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { dev, build } from "astro";
+
+// Start the Astro dev server
+
+const devServer = await dev();
+
+await devServer.stop();
+
+// Build your Astro project
+
+await build();
+```
+
+----------------------------------------
+
+TITLE: matchPort() Usage Example
+DESCRIPTION: Illustrates how to use `matchPort` to compare a URL's port with a specified port, handling cases with and without explicit port definitions.
+SOURCE: https://docs.astro.build/en/reference/image-service-reference
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { matchPort } from 'astro/assets/utils';
+
+const testURL1 = new URL('https://example.com:8080/resource');
+
+const testURL2 = new URL('https://example.com/resource');
+
+// Example usage of matchPort
+
+const portToMatch = '8080';
+
+// Match a URL with a port specified
+
+const isPortMatch1 = matchPort(testURL1, portToMatch);
+
+console.log(`Does the port match? ${isPortMatch1}`); // Output: true
+
+// Match a URL without a port specified (default port will be assumed)
+
+const isPortMatch2 = matchPort(testURL2, portToMatch);
+
+console.log(`Does the port match? ${isPortMatch2}`); // Output: false
+
+// Check a URL without explicitly providing a port (defaults to true if port is undefined)
+
+const isPortMatch3 = matchPort(testURL1);
+
+console.log(`Does the port match (no port specified)? ${isPortMatch3}`); // Output: true
+```
+
+----------------------------------------
+
+TITLE: Handle OAuth Callback and Exchange Code for Session (Astro API Route)
+DESCRIPTION: This Astro API route (GET method) processes the OAuth callback. It extracts the authorization code from the URL, exchanges it for a user session (access and refresh tokens) with Supabase, and then sets these tokens as secure cookies before redirecting the user to a dashboard. Error handling is included for invalid or missing codes.
+SOURCE: https://docs.astro.build/en/guides/backend/supabase
+
+LANGUAGE: typescript
+CODE:
+```
+import type { APIRoute } from "astro";
+import { supabase } from "../../../lib/supabase";
+
+export const GET: APIRoute = async ({ url, cookies, redirect }) => {
+  const authCode = url.searchParams.get("code");
+
+  if (!authCode) {
+    return new Response("No code provided", { status: 400 });
+  }
+
+  const { data, error } = await supabase.auth.exchangeCodeForSession(authCode);
+
+  if (error) {
+    return new Response(error.message, { status: 500 });
+  }
+
+  const { access_token, refresh_token } = data.session;
+
+  cookies.set("sb-access-token", access_token, {
+    path: "/",
+  });
+
+  cookies.set("sb-refresh-token", refresh_token, {
+    path: "/",
+  });
+
+  return redirect("/dashboard");
+};
+```
+
+----------------------------------------
+
+TITLE: Initialize a new Astro project with npm
+DESCRIPTION: This command uses npm to create a new Astro project, guiding the user through the initial setup process. It's the recommended way to start building an Astro site.
+SOURCE: https://docs.astro.build/en/getting-started
+
+LANGUAGE: Shell
+CODE:
+```
+npm create astro@latest
+```
+
+----------------------------------------
+
+TITLE: Astro Container API: `locals` Option Usage and Testing
+DESCRIPTION: Demonstrates how to use the `locals` option to pass data to Astro components via `Astro.locals` for conditional rendering, and provides examples for testing components that rely on `locals` using `container.renderToString` with mock data.
+SOURCE: https://docs.astro.build/en/reference/container-reference
+
+LANGUAGE: Astro
+CODE:
+```
+---
+const { checkAuth } = Astro.locals;
+const isAuthenticated = checkAuth();
+---
+{isAuthenticated ? <span>You're in</span> : <span>You're out</span> }
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+import Card from "../src/components/Card.astro";
+
+test("User is in", async () => {
+const result = await container.renderToString(Card, {
+locals: {
+checkAuth() { return true; }
+}
+});
+// assert result contains "You're in"
+});
+
+test("User is out", async () => {
+const result = await container.renderToString(Card, {
+locals: {
+checkAuth() { return false; }
+}
+});
+// assert result contains "You're out"
+});
+```
+
+----------------------------------------
+
+TITLE: Fetch Homepage Data from DatoCMS in Astro
+DESCRIPTION: This Astro component demonstrates how to query the DatoCMS GraphQL API to retrieve data for a single-instance model, such as a homepage. It shows the use of `fetch` with `POST` method, `Authorization` header, and a GraphQL query to get the page title.
+SOURCE: https://docs.astro.build/en/guides/cms/datocms
+
+LANGUAGE: Astro
+CODE:
+```
+---
+const response = await fetch('https://graphql.datocms.com/', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    Authorization: `Bearer ${import.meta.env.DATOCMS_API_KEY}`,
+  },
+  body: JSON.stringify({
+    query: `query Homepage {
+      home {
+        title
+      }
+    }`,
+  }),
+});
+const json = await response.json();
+const data = json.data.home;
+---
+<h1>{data.title}</h1>
+```
+
+----------------------------------------
+
+TITLE: Example: Add File to Astro Dev Server Watch List
+DESCRIPTION: Illustrates how to use the `addWatchFile()` function to instruct the Astro development server to watch a specific file. This example shows adding both an absolute path string and a URL object to the watch list, ensuring server reloads upon file changes.
+SOURCE: https://docs.astro.build/en/reference/integrations-reference
+
+LANGUAGE: typescript
+CODE:
+```
+// Must be an absolute path!
+addWatchFile('/home/user/.../my-config.json');
+addWatchFile(new URL('./ec.config.mjs', config.root));
+```
+
+----------------------------------------
+
+TITLE: Astro Middleware: Basic onRequest() Implementation
+DESCRIPTION: A basic example of the `onRequest` function in `src/middleware.js`. This function intercepts requests and calls `next()` to proceed with the request, allowing for pre-processing or post-processing of responses.
+SOURCE: https://docs.astro.build/en/reference/modules/astro-middleware
+
+LANGUAGE: JavaScript
+CODE:
+```
+export function onRequest (context, next) {
+  // intercept response data from a request
+  // optionally, transform the response
+  // return a Response directly, or the result of calling `next()`
+  return next();
+};
+```
+
+----------------------------------------
+
+TITLE: Astro Dev Toolbar Button API
+DESCRIPTION: API documentation for the `astro-dev-toolbar-button` component, detailing its customizable properties.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+astro-dev-toolbar-button:
+  Properties:
+    size:
+      Type: string
+      Values: 'small', 'medium', 'large'
+      Description: The size of the button.
+    buttonStyle:
+      Type: string
+      Values: 'ghost', 'outline', 'purple', 'gray', 'red', 'green', 'yellow', 'blue'
+      Description: The visual style of the button. Use 'buttonStyle' in JavaScript to avoid conflicts with native 'style'. When 'ghost' is used, only the content is visible.
+    buttonBorderRadius:
+      Type: string
+      Values: 'normal', 'rounded'
+      Description: The border radius of the button. 'rounded' provides rounded corners and uniform padding. Added in Astro 4.8.0. Use 'buttonBorderRadius' in JavaScript.
+```
+
+----------------------------------------
+
+TITLE: Example Usage of `render()` with `astro:content`
+DESCRIPTION: Demonstrates how to import and use the `render()` function along with `getEntry` from `astro:content` to retrieve and process a content collection entry. It shows how to handle errors if an entry is not found and destructure the returned properties.
+SOURCE: https://docs.astro.build/en/reference/modules/astro-content
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { getEntry, render } from 'astro:content';
+
+const entry = await getEntry('blog', 'entry-1');
+
+if (!entry) {
+
+// Handle Error, for example:
+
+throw new Error('Could not find blog post 1');
+
+}
+
+const { Content, headings, remarkPluginFrontmatter } = await render(entry);
+```
+
+----------------------------------------
+
+TITLE: Server-side `toolbar.send()` Method API Reference
+DESCRIPTION: API documentation for the `send()` method available on the `toolbar` object within an Astro integration. It specifies the signature, parameters, and purpose of sending data from the server to the client.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+send<T>(event: string, data: T) => void
+Sends data to the client.
+```
+
+----------------------------------------
+
+TITLE: Initialize Astro Container
+DESCRIPTION: Demonstrates how to import and create a new instance of the experimental Astro Container API, which allows for isolated rendering of Astro components.
+SOURCE: https://docs.astro.build/en/reference/container-reference
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { experimental_AstroContainer } from "astro/container";
+
+const container = await experimental_AstroContainer.create();
+```
+
+----------------------------------------
+
+TITLE: Astro Live Content Collections API Reference
+DESCRIPTION: This section provides a reference for the core API elements introduced with Astro's experimental Live Content Collections, highlighting their purpose and how they differ from traditional content collection APIs.
+SOURCE: https://docs.astro.build/en/reference/experimental-flags/live-content-collections
+
+LANGUAGE: APIDOC
+CODE:
+```
+Live Content Collections API:
+
+Configuration:
+  - src/live.config.ts: Configuration file for live collections.
+
+Collection Definition:
+  - defineLiveCollection(): Function used to define a live content collection.
+    (Contrast with defineCollection() for build-time collections)
+
+Loader API Methods (within defineLiveCollection):
+  - loadCollection(): Method to implement for loading an entire collection of entries.
+  - loadEntry(): Method to implement for loading a single entry from a collection.
+    (Contrast with a single load() method for build-time loaders)
+
+User-Facing Functions:
+  - getLiveCollection(collectionName: string): Function to retrieve a live content collection.
+  - getLiveEntry(collectionName: string, entryId: string): Function to retrieve a single live content entry.
+    (Contrast with getCollection() and getEntry() for build-time collections)
+```
+
+----------------------------------------
+
+TITLE: Example Usage of `astro:build:done` Hook to Write Metadata
+DESCRIPTION: Illustrates how to implement the `astro:build:done` hook in an Astro integration to perform post-build operations. This example shows how to asynchronously write integration metadata to a JSON file within the build output directory, utilizing `fileURLToPath` for cross-platform path handling.
+SOURCE: https://docs.astro.build/en/reference/integrations-reference
+
+LANGUAGE: javascript
+CODE:
+```
+import { writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+
+export default function myIntegration() {
+  return {
+    hooks: {
+      'astro:build:done': async ({ dir }) => {
+        const metadata = await getIntegrationMetadata();
+        // Use fileURLToPath to get a valid, cross-platform absolute path string
+        const outFile = fileURLToPath(new URL('./my-integration.json', dir));
+        await writeFile(outFile, JSON.stringify(metadata));
+      }
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Astro Middleware Utilities API
+DESCRIPTION: API reference for core Astro middleware utilities: `defineMiddleware` for creating middleware functions and `sequence` for composing multiple middleware functions.
+SOURCE: https://docs.astro.build/en/guides/internationalization
+
+LANGUAGE: APIDOC
+CODE:
+```
+defineMiddleware(handler: (context: APIContext, next: MiddlewareNext) => Response | Promise<Response>): MiddlewareHandler
+  - Defines an Astro middleware function.
+  - `handler`: The asynchronous function that defines the middleware logic.
+
+sequence(...handlers: MiddlewareHandler[]): MiddlewareHandler
+  - Composes multiple middleware functions into a single handler.
+  - `handlers`: A variadic list of `MiddlewareHandler` functions to be executed in order.
+```
+
+----------------------------------------
+
+TITLE: Astro API Endpoint for User Sign-out
+DESCRIPTION: TypeScript code for an Astro API endpoint (`GET /api/auth/signout`) that handles user sign-out. It removes the Supabase access and refresh tokens from cookies, effectively logging out the user.
+SOURCE: https://docs.astro.build/en/guides/backend/supabase
+
+LANGUAGE: TypeScript
+CODE:
+```
+// With `output: 'static'` configured:
+// export const prerender = false;
+import type { APIRoute } from "astro";
+
+export const GET: APIRoute = async ({ cookies, redirect }) => {
+  cookies.delete("sb-access-token", { path: "/" });
+  cookies.delete("sb-refresh-token", { path: "/" });
+  return redirect("/signin");
+};
+```
+
+----------------------------------------
+
+TITLE: Astro Custom Client Directive Example
+DESCRIPTION: Demonstrates how to register and implement a custom `client:click` directive in Astro. This example covers the Astro configuration, the integration file that uses `addClientDirective`, the actual client-side directive logic, and the necessary TypeScript type definitions.
+SOURCE: https://docs.astro.build/en/reference/integrations-reference
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { defineConfig } from 'astro/config';
+import clickDirective from './astro-click-directive/register.js'
+
+// https://astro.build/config
+export default defineConfig({
+  integrations: [
+    clickDirective()
+  ],
+});
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+/**
+ * @type {() => import('astro').AstroIntegration}
+ */
+export default () => ({
+  name: "client:click",
+  hooks: {
+    "astro:config:setup": ({ addClientDirective }) => {
+      addClientDirective({
+        name: "click",
+        entrypoint: "./astro-click-directive/click.js",
+      });
+    },
+  },
+});
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+/**
+ * Hydrate on first click on the window
+ * @type {import('astro').ClientDirective}
+ */
+export default (load, opts, el) => {
+  window.addEventListener('click', async () => {
+    const hydrate = await load()
+    await hydrate()
+  }, { once: true })
+}
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+import 'astro'
+
+declare module 'astro' {
+  interface AstroClientDirectives {
+    'client:click'?: boolean
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Example Usage of `CollectionKey` with `getCollection`
+DESCRIPTION: Illustrates how to use the `CollectionKey` type in a generic asynchronous function `queryCollection` that takes a collection name and filters entries based on their `draft` status using `getCollection`.
+SOURCE: https://docs.astro.build/en/reference/modules/astro-content
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { type CollectionKey, getCollection } from 'astro:content';
+
+async function queryCollection(collection: CollectionKey) {
+
+return getCollection(collection, ({ data }) => {
+
+return data.draft !== true;
+
+});
+
+}
+```
+
+----------------------------------------
+
+TITLE: API Reference for createContext()
+DESCRIPTION: Provides the signature for `createContext()`, a low-level API introduced in Astro 2.8.0. This function generates an `APIContext` object, primarily used by integrations and adapters to programmatically invoke Astro middleware's `onRequest` function.
+SOURCE: https://docs.astro.build/en/reference/modules/astro-middleware
+
+LANGUAGE: APIDOC
+CODE:
+```
+createContext(context: CreateContext) => APIContext
+```
+
+----------------------------------------
+
+TITLE: Example of Injecting TypeScript Types in Astro Integration
+DESCRIPTION: This JavaScript example demonstrates how to use the `injectTypes()` function within an Astro integration to add a new `.d.ts` file to the user's project. It shows how to specify the filename and content for the injected type definition.
+SOURCE: https://docs.astro.build/en/reference/integrations-reference
+
+LANGUAGE: JavaScript
+CODE:
+```
+const path = injectTypes({
+	filename: "types.d.ts",
+	content: "declare module 'virtual:integration' {}"
+})
+console.log(path) // URL
+```
+
+----------------------------------------
+
+TITLE: DevServer.handle() Method
+DESCRIPTION: A handle for raw Node HTTP requests. You can call `handle()` with an `http.IncomingMessage` and an `http.ServerResponse` instead of sending a request through the network.
+SOURCE: https://docs.astro.build/en/reference/programmatic-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+DevServer.handle():
+  Type: (req: http.IncomingMessage, res: http.ServerResponse<http.IncomingMessage>) => void
+  Description: A handle for raw Node HTTP requests. You can call handle() with an http.IncomingMessage and an http.ServerResponse instead of sending a request through the network.
+```
+
+----------------------------------------
+
+TITLE: Astro Dev Toolbar Card API
+DESCRIPTION: API documentation for the `astro-dev-toolbar-card` component, specifically its style property.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: APIDOC
+CODE:
+```
+astro-dev-toolbar-card:
+  Properties:
+    cardStyle:
+      Type: string
+      Values: 'purple', 'gray', 'red', 'green', 'yellow', 'blue'
+      Description: The style of the card. The color is applied to the border on hover. Use 'cardStyle' in JavaScript.
+```
+
+----------------------------------------
+
+TITLE: Server-side Astro Integration App Initialization Callback Example
+DESCRIPTION: Example demonstrating how to use `toolbar.onInitialized()` within the `astro:server:setup` hook of an Astro integration to register a callback that logs a message when a specific Dev Toolbar app is fully initialized.
+SOURCE: https://docs.astro.build/en/reference/dev-toolbar-app-reference
+
+LANGUAGE: javascript
+CODE:
+```
+'astro:server:setup': ({ toolbar }) => {
+  toolbar.onInitialized('my-app', () => {
+    console.log('The app is now initialized!');
+  });
+},
+```
+
+----------------------------------------
+
+TITLE: Example usage of IntegrationResolvedRoute.generate() method
+DESCRIPTION: This snippet provides an example of how to use the generate() method of the IntegrationResolvedRoute interface. It shows how to pass parameters to the function to construct a dynamic route path, illustrating its utility for creating URLs based on route patterns.
+SOURCE: https://docs.astro.build/en/reference/integrations-reference
+
+LANGUAGE: TypeScript
+CODE:
+```
+console.log(generate({ id: 'presentation' })) // will log `/blog/presentation`
+```
+
+----------------------------------------
+
+TITLE: Fetch and Display PayloadCMS Posts in Astro
+DESCRIPTION: This Astro component fetches post data from the PayloadCMS API endpoint. It then iterates through the 'docs' array of the JSON response to render each post's title and content using Astro's `set:html` directive within a `HomeLayout`.
+SOURCE: https://docs.astro.build/en/guides/cms/payload
+
+LANGUAGE: Astro
+CODE:
+```
+---
+import HomeLayout from "../layouts/HomeLayout.astro";
+const res = await fetch("http://localhost:5000/api/posts") // http://localhost:4321/api/posts by default
+const posts = await res.json()
+---
+<HomeLayout title='Astro Blog'>
+{
+posts.docs.map((post) => (
+<h2 set:html={post.title} />
+<p set:html={post.content} />
+))
+}
+</HomeLayout>
+```
+
+----------------------------------------
+
+TITLE: MDX File Migration Example
+DESCRIPTION: An example of an MDX file (.mdx) demonstrating the new structure for imports (outside frontmatter) and component usage, replacing the old 'setup' property.
+SOURCE: https://docs.astro.build/en/guides/upgrade-to/v1
+
+LANGUAGE: MDX
+CODE:
+```
+--- \n\nlayout: '../../layouts/BaseLayout.astro'\n\nsetup: |\n\nimport ReactCounter from '../../components/ReactCounter.jsx'\n\ntitle: 'Migrating to MDX'\n\ndate: 2022-07-26\n\ntags: ["markdown", "mdx", "astro"]\n\n---\n\nimport ReactCounter from '../../components/ReactCounter.jsx'\n\n# {frontmatter.title}\n\nHere is my counter component, working in MDX:\n\n<ReactCounter client:load />
+```
+
+----------------------------------------
+
+TITLE: matchPathname() Usage Example
+DESCRIPTION: Shows how to use `matchPathname` to verify if a URL's pathname matches a specified pattern, including wildcard matching.
+SOURCE: https://docs.astro.build/en/reference/image-service-reference
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { matchPathname } from 'astro/assets/utils';
+
+const testURL = new URL('https://example.com/images/photo.jpg');
+
+// Example pathname to match
+
+const pathnameToMatch = '/images/photo.jpg';
+
+// Match without wildcard
+
+const isMatchWithoutWildcard = matchPathname(testURL, pathnameToMatch);
+
+console.log(`Does the pathname match without wildcard? ${isMatchWithoutWildcard}`); // Output: true
+
+// Match with wildcard
+
+const wildcardPathname = '/images/*';
+
+const isMatchWithWildcard = matchPathname(testURL, wildcardPathname, true);
+
+console.log(`Does the pathname match with wildcard? ${isMatchWithWildcard}`); // Output: true
+```
+
+----------------------------------------
+
+TITLE: matchPattern() Usage Example
+DESCRIPTION: Demonstrates how to use `matchPattern` to check if a URL conforms to a defined remote pattern, including protocol, hostname, and pathname.
+SOURCE: https://docs.astro.build/en/reference/image-service-reference
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { matchPattern } from 'astro/assets/utils';
+
+const testURL = new URL('https://images.example.com/photos/test.jpg');
+
+// Define a remote pattern to match the URL
+
+const remotePattern = {
+
+protocol: 'https',
+
+hostname: 'images.example.com',
+
+pathname: '/photos/**', // Wildcard to allow all files under /photos/
+
+port: '', // Optional: Match any port or leave empty for default
+
+};
+
+// Check if the URL matches the remote pattern
+
+const isPatternMatched = matchPattern(testURL, remotePattern);
+
+console.log(`Does the URL match the remote pattern? ${isPatternMatched}`); // Output: true
+```
+
+----------------------------------------
+
+TITLE: Example of Astro Route Segments Structure
+DESCRIPTION: Illustrates the structure of the `segments` property for a dynamic Astro route, showing content, dynamic, and spread flags for each part. This example is based on the route `/pages/[blog]/[...slug].astro`.
+SOURCE: https://docs.astro.build/en/reference/integrations-reference
+
+LANGUAGE: JavaScript
+CODE:
+```
+[
+  [ { content: 'pages', dynamic: false, spread: false } ],
+  [ { content: 'blog', dynamic: true, spread: false } ],
+  [ { content: '...slug', dynamic: true, spread: true } ]
+]
+```
