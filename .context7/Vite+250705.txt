@@ -1,0 +1,1642 @@
+TITLE: Vite createServer Basic Usage Example
+DESCRIPTION: Demonstrates how to create and start a Vite development server programmatically. It configures the server with a custom port and disables the default config file resolution, printing the server URLs and binding CLI shortcuts.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-javascript.md#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+import { fileURLToPath } from 'node:url'
+import { createServer } from 'vite'
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
+
+const server = await createServer({
+  // any valid user config options, plus `mode` and `configFile`
+  configFile: false,
+  root: __dirname,
+  server: {
+    port: 1337,
+  },
+})
+await server.listen()
+
+server.printUrls()
+server.bindCLIShortcuts({ print: true })
+```
+
+----------------------------------------
+
+TITLE: Scaffold Project with degit
+DESCRIPTION: This snippet shows how to use `degit` to clone a project template from a GitHub repository. After cloning, it navigates into the new directory, installs dependencies, and starts the development server.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/index.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+npx degit user/project#main my-project
+cd my-project
+
+npm install
+npm run dev
+```
+
+----------------------------------------
+
+TITLE: Programmatic Vite Build Example
+DESCRIPTION: Demonstrates how to programmatically use the `build` function in Vite to bundle a project. It shows how to configure the root directory, base path, and Rollup options for the build process.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-javascript.md#_snippet_7
+
+LANGUAGE: javascript
+CODE:
+```
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { build } from 'vite'
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url))
+
+await build({
+  root: path.resolve(__dirname, './project'),
+  base: '/foo/',
+  build: {
+    rollupOptions: {
+      // ...
+    }
+  }
+})
+```
+
+----------------------------------------
+
+TITLE: Vite Environment API: FetchableDevEnvironment Usage
+DESCRIPTION: Illustrates the creation and usage of a `FetchableDevEnvironment` within a Vite server. This environment allows custom handling of requests via a `handleRequest` callback. The example shows how to configure the environment and then dispatch a `Request` object using `dispatchFetch` to receive a `Response`.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-frameworks.md#_snippet_1
+
+LANGUAGE: typescript
+CODE:
+```
+import {
+  createServer,
+  createFetchableDevEnvironment,
+  isFetchableDevEnvironment,
+} from 'vite'
+
+const server = await createServer({
+  server: { middlewareMode: true },
+  appType: 'custom',
+  environments: {
+    custom: {
+      dev: {
+        createEnvironment(name, config) {
+          return createFetchableDevEnvironment(name, config, {
+            handleRequest(request: Request): Promise<Response> | Response {
+              // handle Request and return a Response
+            },
+          })
+        },
+      },
+    },
+  },
+})
+
+// Any consumer of the environment API can now call `dispatchFetch`
+if (isFetchableDevEnvironment(server.environments.custom)) {
+  const response: Response = await server.environments.custom.dispatchFetch(
+    new Request('/request-to-handle'),
+  )
+}
+```
+
+----------------------------------------
+
+TITLE: Vite Dev Server API Migration to Environment Instances
+DESCRIPTION: This section provides a direct mapping for `ViteDevServer` APIs that have been moved to `DevEnvironment` instances in Vite v6. It guides plugin authors on how to update their code by replacing old `server` methods with their new `environment` counterparts, ensuring compatibility with the updated architecture.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/changes/per-environment-apis.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+server.moduleGraph -> environment.moduleGraph
+server.transformRequest(url, ssr) -> environment.transformRequest(url)
+server.warmupRequest(url, ssr) -> environment.warmupRequest(url)
+```
+
+----------------------------------------
+
+TITLE: Vite Environment API: RunnableDevEnvironment and ModuleRunner
+DESCRIPTION: Documents the `RunnableDevEnvironment` class, which extends `DevEnvironment` and exposes a `ModuleRunner`. The `ModuleRunner` provides an `import` method for executing modules. An example demonstrates how to check for a runnable environment and use its runner to import a module.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-frameworks.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+RunnableDevEnvironment:
+  extends: DevEnvironment
+  properties:
+    runner: ModuleRunner (readonly)
+
+ModuleRunner:
+  methods:
+    import(url: string): Promise<Record<string, any>>
+      url: URL to execute. Accepts file path, server path, or id relative to the root.
+      returns: An instantiated module (same as in ssrLoadModule)
+    Other ModuleRunner methods...
+
+Usage Example (TypeScript):
+  if (isRunnableDevEnvironment(server.environments.ssr)) {
+    await server.environments.ssr.runner.import('/entry-point.js')
+  }
+```
+
+----------------------------------------
+
+TITLE: Vite createServer Middleware Mode with Proxy Example
+DESCRIPTION: Illustrates how to integrate Vite's development server into an existing Node.js HTTP server using middleware mode. It shows how to configure proxying for WebSockets by providing the parent server instance.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-javascript.md#_snippet_2
+
+LANGUAGE: ts
+CODE:
+```
+import http from 'http'
+import { createServer } from 'vite'
+
+const parentServer = http.createServer() // or express, koa, etc.
+
+const vite = await createServer({
+  server: {
+    // Enable middleware mode
+    middlewareMode: {
+      // Provide the parent http server for proxy WebSocket
+      server: parentServer,
+    },
+    proxy: {
+      '/ws': {
+        target: 'ws://localhost:3000',
+        // Proxying WebSocket
+        ws: true,
+      },
+    },
+  },
+})
+
+// @noErrors: 2339
+parentServer.use(vite.middlewares)
+```
+
+----------------------------------------
+
+TITLE: Decoupling Vite API Code and User Modules for SSR
+DESCRIPTION: This example illustrates how to decouple code that uses Vite's APIs from user modules when `runner.import` is not available in the raw `DevEnvironment`. It shows the process of creating a Vite server, accessing the SSR environment, and dynamically importing an entrypoint to handle requests.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-frameworks.md#_snippet_3
+
+LANGUAGE: ts
+CODE:
+```
+// code using the Vite's APIs
+import { createServer } from 'vite'
+
+const server = createServer()
+const ssrEnvironment = server.environment.ssr
+const input = {}
+
+const { createHandler } = await ssrEnvironment.runner.import('./entrypoint.js')
+const handler = createHandler(input)
+const response = handler(new Request('/'))
+
+// -------------------------------------
+// ./entrypoint.js
+export function createHandler(input) {
+  return function handler(req) {
+    return new Response('hello')
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Run Vite Development Server with Various Package Managers
+DESCRIPTION: This snippet demonstrates how to start the Vite development server using different package managers. The server serves the `index.html` file, typically on `http://localhost:5173`.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/index.md#_snippet_5
+
+LANGUAGE: bash
+CODE:
+```
+npx vite
+```
+
+LANGUAGE: bash
+CODE:
+```
+yarn vite
+```
+
+LANGUAGE: bash
+CODE:
+```
+pnpm vite
+```
+
+LANGUAGE: bash
+CODE:
+```
+bunx vite
+```
+
+LANGUAGE: bash
+CODE:
+```
+deno run -A npm:vite
+```
+
+----------------------------------------
+
+TITLE: Create a Basic Vite index.html File
+DESCRIPTION: This snippet shows a minimal `index.html` file, which serves as the entry point for a Vite application. Vite treats this file as source code and processes it during development.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/index.md#_snippet_4
+
+LANGUAGE: html
+CODE:
+```
+<p>Hello Vite!</p>
+```
+
+----------------------------------------
+
+TITLE: JavaScript: Example Usage of ModuleRunner
+DESCRIPTION: Demonstrates how to import and instantiate `ModuleRunner` and `ESModulesEvaluator`, then use `moduleRunner.import` to execute an entry point module. It also shows how to pass a `transport` option to the runner's configuration.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-runtimes.md#_snippet_5
+
+LANGUAGE: js
+CODE:
+```
+import { ModuleRunner, ESModulesEvaluator } from 'vite/module-runner'
+import { transport } from './rpc-implementation.js'
+
+const moduleRunner = new ModuleRunner(
+  {
+    transport,
+  },
+  new ESModulesEvaluator(),
+)
+
+await moduleRunner.import('/src/entry-point.js')
+```
+
+----------------------------------------
+
+TITLE: Define Library Entry File Exports
+DESCRIPTION: This JavaScript file serves as an example of a library's main entry point. It imports components from other local files and then exports them, making them available for users who import the library. This structure ensures that the library's public API is clearly defined.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/build.md#_snippet_5
+
+LANGUAGE: js
+CODE:
+```
+import Foo from './Foo.vue'
+import Bar from './Bar.vue'
+export { Foo, Bar }
+```
+
+----------------------------------------
+
+TITLE: Inter-runtime Communication using ssrEnvironment.send
+DESCRIPTION: This example illustrates how to use `ssrEnvironment.send` for communication between code using Vite's APIs and user modules, especially when Node.js-specific APIs are involved. It shows sending a serialized request object with a unique ID to the SSR environment.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-frameworks.md#_snippet_6
+
+LANGUAGE: ts
+CODE:
+```
+// code using the Vite's APIs
+import { createServer } from 'vite'
+
+const server = createServer({
+  plugins: [
+    // a plugin that handles `virtual:entrypoint`
+    {
+      name: 'virtual-module',
+      /* plugin implementation */
+    },
+  ],
+})
+const ssrEnvironment = server.environment.ssr
+const input = {}
+
+// use exposed functions by each environment factories that runs the code
+// check for each environment factories what they provide
+if (ssrEnvironment instanceof RunnableDevEnvironment) {
+  ssrEnvironment.runner.import('virtual:entrypoint')
+} else if (ssrEnvironment instanceof CustomDevEnvironment) {
+  ssrEnvironment.runEntrypoint('virtual:entrypoint')
+} else {
+  throw new Error(`Unsupported runtime for ${ssrEnvironment.name}`)
+}
+
+const req = new Request('/')
+
+const uniqueId = 'a-unique-id'
+ssrEnvironment.send('request', serialize({ req, uniqueId }))
+```
+
+----------------------------------------
+
+TITLE: Vite API: `PreviewServer` Interface
+DESCRIPTION: Defines the structure of the object returned by the `preview` function, providing access to the resolved Vite config, connect middlewares, the native HTTP server, resolved URLs, and methods to print URLs and bind CLI shortcuts.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-javascript.md#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+interface PreviewServer {
+  /**
+   * The resolved vite config object
+   */
+  config: ResolvedConfig
+  /**
+   * A connect app instance.
+   * - Can be used to attach custom middlewares to the preview server.
+   * - Can also be used as the handler function of a custom http server
+   *   or as a middleware in any connect-style Node.js frameworks
+   *
+   * https://github.com/senchalabs/connect#use-middleware
+   */
+  middlewares: Connect.Server
+  /**
+   * native Node http server instance
+   */
+  httpServer: http.Server
+  /**
+   * The resolved urls Vite prints on the CLI (URL-encoded). Returns `null`
+   * if the server is not listening on any port.
+   */
+  resolvedUrls: ResolvedServerUrls | null
+  /**
+   * Print server urls
+   */
+  printUrls(): void
+  /**
+   * Bind CLI shortcuts
+   */
+  bindCLIShortcuts(options?: BindCLIShortcutsOptions<PreviewServer>): void
+}
+```
+
+----------------------------------------
+
+TITLE: Vite Development Server Configuration API
+DESCRIPTION: Detailed API documentation for Vite's development server options, covering host settings, allowed hostnames for security, port configuration, and HTTPS enablement.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/config/server-options.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+server.host:
+  Type: string | boolean
+  Default: 'localhost'
+  Description: Specify which IP addresses the server should listen on. Set this to 0.0.0.0 or true to listen on all addresses, including LAN and public addresses.
+  CLI Usage: --host 0.0.0.0 or --host
+  Note: DNS reordering (Node.js under v17) can cause issues with 'localhost'. Vite prints resolved address if it differs. You can set dns.setDefaultResultOrder('verbatim') to disable reordering.
+
+server.allowedHosts:
+  Type: string[] | true
+  Default: []
+  Description: The hostnames that Vite is allowed to respond to. localhost, domains under .localhost, and all IP addresses are allowed by default. Skipped when using HTTPS.
+  Wildcard Behavior: If a string starts with '.', it allows that hostname without the '.' and all subdomains (e.g., .example.com allows example.com, foo.example.com).
+  True Behavior: If set to true, the server is allowed to respond to requests for any hosts.
+  Security Warning: Setting server.allowedHosts to true allows DNS rebinding attacks, potentially exposing source code. Always use an explicit list. (See GHSA-vg6x-rcgg-rjx6)
+  Environment Variable: __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS can be set to add an additional allowed host.
+
+server.port:
+  Type: number
+  Default: 5173
+  Description: Specify server port. If port is already used, Vite automatically tries the next available port.
+
+server.strictPort:
+  Type: boolean
+  Description: Set to true to exit if port is already in use, instead of automatically trying the next available port.
+
+server.https:
+  Type: https.ServerOptions
+  Description: Enable TLS + HTTP/2. The value is an options object passed to https.createServer().
+  Note: Downgrades to TLS only when the server.proxy option is also used.
+  Certificate: A valid certificate is needed. @vitejs/plugin-basic-ssl can create self-signed certificates, but creating your own is recommended.
+```
+
+----------------------------------------
+
+TITLE: Use a Plugin Preset in Vite Configuration
+DESCRIPTION: This example shows how to import and utilize a previously defined plugin preset function within the `plugins` array of `vite.config.js`. This simplifies configuration by allowing multiple plugins to be activated with a single function call.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { defineConfig } from 'vite'
+import framework from 'vite-plugin-framework'
+
+export default defineConfig({
+  plugins: [framework()]
+})
+```
+
+----------------------------------------
+
+TITLE: Build and Link Vite from Source
+DESCRIPTION: Provides step-by-step instructions to clone the Vite repository, install dependencies, build the package, and link it globally. This method allows developers to use the very latest version of Vite directly from its source code. It requires pnpm for the build process and global linking.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/index.md#_snippet_8
+
+LANGUAGE: bash
+CODE:
+```
+git clone https://github.com/vitejs/vite.git
+cd vite
+pnpm install
+cd packages/vite
+pnpm run build
+pnpm link --global # use your preferred package manager for this step
+```
+
+----------------------------------------
+
+TITLE: Listen for Server Events on Vite Client
+DESCRIPTION: Illustrates how to use `import.meta.hot.on` on the client side to listen for custom events sent from the Vite server. It demonstrates accessing the payload data from the received event.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_25
+
+LANGUAGE: TypeScript
+CODE:
+```
+import 'vite/client'
+// ---cut---
+// client side
+if (import.meta.hot) {
+  import.meta.hot.on('my:greetings', (data) => {
+    console.log(data.msg) // hello
+  })
+}
+```
+
+----------------------------------------
+
+TITLE: Vite Plugin Example with Per-environment State Management
+DESCRIPTION: Demonstrates how to manage state per environment within a Vite plugin using a `Map`. This pattern ensures that state (e.g., transformed module count) is isolated for each development environment (client, SSR, etc.), preventing conflicts and ensuring correct behavior across different build contexts.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-plugins.md#_snippet_7
+
+LANGUAGE: js
+CODE:
+```
+function PerEnvironmentCountTransformedModulesPlugin() {
+  const state = new Map<Environment, { count: number }>()
+  return {
+    name: 'count-transformed-modules',
+    perEnvironmentStartEndDuringDev: true,
+    buildStart() {
+      state.set(this.environment, { count: 0 })
+    },
+    transform(id) {
+      state.get(this.environment).count++
+    },
+    buildEnd() {
+      console.log(this.environment.name, state.get(this.environment).count)
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Using Virtual Modules for Runtime Agnostic SSR
+DESCRIPTION: This example demonstrates how to use a virtual module when your code can run in the same runtime as user modules, eliminating the need for direct value access from Vite's APIs. It includes a placeholder for a virtual module plugin and conditional logic to run the entrypoint based on the SSR environment type.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-frameworks.md#_snippet_4
+
+LANGUAGE: ts
+CODE:
+```
+// code using the Vite's APIs
+import { createServer } from 'vite'
+
+const server = createServer({
+  plugins: [
+    // a plugin that handles `virtual:entrypoint`
+    {
+      name: 'virtual-module',
+      /* plugin implementation */
+    },
+  ],
+})
+const ssrEnvironment = server.environment.ssr
+const input = {}
+
+// use exposed functions by each environment factories that runs the code
+// check for each environment factories what they provide
+if (ssrEnvironment instanceof RunnableDevEnvironment) {
+  ssrEnvironment.runner.import('virtual:entrypoint')
+} else if (ssrEnvironment instanceof CustomDevEnvironment) {
+  ssrEnvironment.runEntrypoint('virtual:entrypoint')
+} else {
+  throw new Error(`Unsupported runtime for ${ssrEnvironment.name}`)
+}
+
+// -------------------------------------
+// virtual:entrypoint
+const { createHandler } = await import('./entrypoint.js')
+const handler = createHandler(input)
+const response = handler(new Request('/'))
+
+// -------------------------------------
+// ./entrypoint.js
+export function createHandler(input) {
+  return function handler(req) {
+    return new Response('hello')
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: `preprocessCSS` Function Type Signature and Result Interface
+DESCRIPTION: This API documentation defines the asynchronous `preprocessCSS` function, detailing its input parameters: `code` (string), `filename` (string), and `config` (ResolvedConfig). It also specifies the `PreprocessCSSResult` interface, which is the function's return type, including `code` (string), optional `map` (SourceMapInput), optional `modules` (Record<string, string>), and optional `deps` (Set<string>).
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-javascript.md#_snippet_17
+
+LANGUAGE: APIDOC
+CODE:
+```
+async function preprocessCSS(
+  code: string,
+  filename: string,
+  config: ResolvedConfig,
+): Promise<PreprocessCSSResult>
+
+interface PreprocessCSSResult {
+  code: string
+  map?: SourceMapInput
+  modules?: Record<string, string>
+  deps?: Set<string>
+}
+```
+
+----------------------------------------
+
+TITLE: Run Vite Documentation Site (pnpm)
+DESCRIPTION: After building the documentation types, this command starts the Vite documentation site locally. It allows contributors to preview and test changes made to the `docs/` content.
+SOURCE: https://github.com/vitejs/vite/blob/main/CONTRIBUTING.md#_snippet_4
+
+LANGUAGE: sh
+CODE:
+```
+pnpm run docs
+```
+
+----------------------------------------
+
+TITLE: Send Events from Vite Client to Server
+DESCRIPTION: Explains how to use `import.meta.hot.send` on the client side to send custom events and data to the Vite server. This is useful for client-initiated interactions with the server.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_26
+
+LANGUAGE: TypeScript
+CODE:
+```
+// client side
+if (import.meta.hot) {
+  import.meta.hot.send('my:from-client', { msg: 'Hey!' })
+}
+```
+
+----------------------------------------
+
+TITLE: Configure Vite and Rollup Plugins in Vite Config
+DESCRIPTION: This example demonstrates how to import and configure both Vite-specific and Rollup-compatible plugins within the `plugins` array of your `vite.config.js` file. It shows a basic setup for integrating external plugins into a Vite project.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+import vitePlugin from 'vite-plugin-feature'
+import rollupPlugin from 'rollup-plugin-feature'
+
+export default defineConfig({
+  plugins: [vitePlugin(), rollupPlugin()]
+})
+```
+
+----------------------------------------
+
+TITLE: Vite Plugin Hook: Configure Development Server
+DESCRIPTION: Provides examples for using the `configureServer` hook to customize the Vite development server. This includes adding custom middlewares, injecting post-middlewares, and storing the server instance for access in other plugin hooks.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_13
+
+LANGUAGE: javascript
+CODE:
+```
+const myPlugin = () => ({
+  name: 'configure-server',
+  configureServer(server) {
+    server.middlewares.use((req, res, next) => {
+      // custom handle request...
+    })
+  },
+})
+
+```
+
+LANGUAGE: javascript
+CODE:
+```
+const myPlugin = () => ({
+  name: 'configure-server',
+  configureServer(server) {
+    // return a post hook that is called after internal middlewares are
+    // installed
+    return () => {
+      server.middlewares.use((req, res, next) => {
+        // custom handle request...
+      })
+    }
+  },
+})
+
+```
+
+LANGUAGE: javascript
+CODE:
+```
+const myPlugin = () => {
+  let server
+  return {
+    name: 'configure-server',
+    configureServer(_server) {
+      server = _server
+    },
+    transform(code, id) {
+      if (server) {
+        // use server...
+      }
+    },
+  }
+}
+
+```
+
+----------------------------------------
+
+TITLE: Vite Plugin Hook: configureServer API Reference
+DESCRIPTION: API documentation for the `configureServer` hook, detailing its type signature, asynchronous nature, and sequential execution. This hook is used for configuring the Vite development server, typically for adding custom middlewares.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_12
+
+LANGUAGE: APIDOC
+CODE:
+```
+`configureServer`:
+  Type: (server: ViteDevServer) => (() => void) | void | Promise<(() => void) | void>
+  Kind: async, sequential
+  See also: ViteDevServer
+  Description: Hook for configuring the dev server. The most common use case is adding custom middlewares to the internal connect app.
+```
+
+----------------------------------------
+
+TITLE: Vite defineConfig with server.open Example
+DESCRIPTION: Example demonstrating how to configure `server.open` within `vite.config.js` to automatically open the browser to a specific path when the development server starts.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/config/server-options.md#_snippet_3
+
+LANGUAGE: js
+CODE:
+```
+export default defineConfig({
+  server: {
+    open: '/docs/index.html'
+  }
+})
+```
+
+----------------------------------------
+
+TITLE: Define Entrypoint Handler Function
+DESCRIPTION: This snippet defines a simple `createHandler` function, typically found in an `entrypoint.js` file. It takes an `input` and returns another function that acts as a request handler, always responding with 'hello'.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-frameworks.md#_snippet_8
+
+LANGUAGE: javascript
+CODE:
+```
+export function createHandler(input) {
+  return function handler(req) {
+    return new Response('hello')
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: DevEnvironment Class API Reference
+DESCRIPTION: Documents the `DevEnvironment` class, a core component in Vite's environment API. It outlines its properties such as `name`, `hot`, `moduleGraph`, `plugins`, `pluginContainer`, and `config`, along with its constructor and asynchronous methods like `transformRequest` and `warmupRequest` for processing module requests.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-instances.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+class DevEnvironment:
+  name: string
+    Unique identifier for the environment in a Vite server. By default Vite exposes 'client' and 'ssr' environments.
+  hot: NormalizedHotChannel
+    Communication channel to send and receive messages from the associated module runner in the target runtime.
+  moduleGraph: EnvironmentModuleGraph
+    Graph of module nodes, with the imported relationship between processed modules and the cached result of the processed code.
+  plugins: Plugin[]
+    Resolved plugins for this environment, including the ones created using the per-environment `create` hook.
+  pluginContainer: EnvironmentPluginContainer
+    Allows to resolve, load, and transform code through the environment plugins pipeline.
+  config: ResolvedConfig & ResolvedDevEnvironmentOptions
+    Resolved config options for this environment. Options at the server global scope are taken as defaults for all environments, and can be overridden (resolve conditions, external, optimizedDeps).
+
+  constructor(name: string, config: ResolvedConfig, context: DevEnvironmentContext):
+    name: string
+    config: ResolvedConfig
+    context: DevEnvironmentContext
+
+  async transformRequest(url: string): Promise<TransformResult | null>:
+    url: string
+      Resolve the URL to an id, load it, and process the code using the plugins pipeline. The module graph is also updated.
+
+  async warmupRequest(url: string): Promise<void>:
+    url: string
+      Register a request to be processed with low priority. This is useful to avoid waterfalls. The Vite server has information about the imported modules by other requests, so it can warmup the module graph so the modules are already processed when they are requested.
+```
+
+----------------------------------------
+
+TITLE: Default Vite Scripts in package.json
+DESCRIPTION: This snippet illustrates the common npm scripts found in a scaffolded Vite project's `package.json` file. These scripts provide convenient commands for development, production builds, and local previewing of the build output.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/index.md#_snippet_6
+
+LANGUAGE: json
+CODE:
+```
+{
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Implement ModuleRunnerTransport with Worker Threads
+DESCRIPTION: This example demonstrates how to use `ModuleRunnerTransport` for communication between a main thread (server) and a worker thread. It shows the worker setting up the transport to listen for messages and the server creating a `DevEnvironment` with a custom `workerHotChannel` for inter-thread communication, enabling the module runner to operate in a separate thread.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-runtimes.md#_snippet_9
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { parentPort } from 'node:worker_threads'
+import { fileURLToPath } from 'node:url'
+import { ESModulesEvaluator, ModuleRunner } from 'vite/module-runner'
+
+/** @type {import('vite/module-runner').ModuleRunnerTransport} */
+const transport = {
+  connect({ onMessage, onDisconnection }) {
+    parentPort.on('message', onMessage)
+    parentPort.on('close', onDisconnection)
+  },
+  send(data) {
+    parentPort.postMessage(data)
+  },
+}
+
+const runner = new ModuleRunner(
+  {
+    transport,
+  },
+  new ESModulesEvaluator(),
+)
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { BroadcastChannel } from 'node:worker_threads'
+import { createServer, RemoteEnvironmentTransport, DevEnvironment } from 'vite'
+
+function createWorkerEnvironment(name, config, context) {
+  const worker = new Worker('./worker.js')
+  const handlerToWorkerListener = new WeakMap()
+
+  const workerHotChannel = {
+    send: (data) => worker.postMessage(data),
+    on: (event, handler) => {
+      if (event === 'connection') return
+
+      const listener = (value) => {
+        if (value.type === 'custom' && value.event === event) {
+          const client = {
+            send(payload) {
+              worker.postMessage(payload)
+            },
+          }
+          handler(value.data, client)
+        }
+      }
+      handlerToWorkerListener.set(handler, listener)
+      worker.on('message', listener)
+    },
+    off: (event, handler) => {
+      if (event === 'connection') return
+      const listener = handlerToWorkerListener.get(handler)
+      if (listener) {
+        worker.off('message', listener)
+        handlerToWorkerListener.delete(handler)
+      }
+    },
+  }
+
+  return new DevEnvironment(name, config, {
+    transport: workerHotChannel,
+  })
+}
+
+await createServer({
+  environments: {
+    worker: {
+      dev: {
+        createEnvironment: createWorkerEnvironment,
+      },
+    },
+  },
+})
+```
+
+----------------------------------------
+
+TITLE: Vite API: `searchForWorkspaceRoot` Function
+DESCRIPTION: Searches for the root directory of a potential workspace, checking for `package.json` with `workspaces` field, `lerna.json`, or `pnpm-workspace.yaml`. If no workspace root is found, it falls back to the provided `root`.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-javascript.md#_snippet_12
+
+LANGUAGE: APIDOC
+CODE:
+```
+function searchForWorkspaceRoot(
+  current: string,
+  root = searchForPackageRoot(current),
+): string
+```
+
+----------------------------------------
+
+TITLE: Vite Plugin Hook: config API Reference
+DESCRIPTION: API documentation for the `config` hook, detailing its type signature, asynchronous nature, and sequential execution. This hook allows modification of the Vite user configuration before it is resolved.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+`config`:
+  Type: (config: UserConfig, env: { mode: string, command: string }) => UserConfig | null | void
+  Kind: async, sequential
+  Description: Modify Vite config before it's resolved. The hook receives the raw user config (CLI options merged with config file) and the current config env which exposes the `mode` and `command` being used. It can return a partial config object that will be deeply merged into existing config, or directly mutate the config (if the default merging cannot achieve the desired result).
+```
+
+----------------------------------------
+
+TITLE: Scaffold a Vite Project
+DESCRIPTION: Use the `pnpm create vite` command to quickly scaffold a new Vite project, allowing selection of a preferred framework. This command is the primary way to get started with Vite 5.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/blog/announcing-vite5.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm create vite
+```
+
+----------------------------------------
+
+TITLE: Vite API: `preview` Function
+DESCRIPTION: Initializes and returns a Vite preview server. This asynchronous function can accept an optional `InlineConfig` object to customize server behavior, such as port and open settings. It returns a `Promise` that resolves to a `PreviewServer` instance.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-javascript.md#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+async function preview(inlineConfig?: InlineConfig): Promise<PreviewServer>
+```
+
+LANGUAGE: ts
+CODE:
+```
+import { preview } from 'vite'
+
+const previewServer = await preview({
+  // any valid user config options, plus `mode` and `configFile`
+  preview: {
+    port: 8080,
+    open: true,
+  },
+})
+
+previewServer.printUrls()
+previewServer.bindCLIShortcuts({ print: true })
+```
+
+----------------------------------------
+
+TITLE: APIDOC: ModuleRunner Class Definition
+DESCRIPTION: Defines the `ModuleRunner` class, which is instantiated in the target runtime for module execution. It includes a constructor for initialization and public methods like `import`, `clearCache`, `close`, and `isClosed` for managing module loading and lifecycle.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-runtimes.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+export class ModuleRunner {
+  constructor(
+    public options: ModuleRunnerOptions,
+    public evaluator: ModuleEvaluator = new ESModulesEvaluator(),
+    private debug?: ModuleRunnerDebugger,
+  ) {}
+  /**
+   * URL to execute.
+   * Accepts file path, server path, or id relative to the root.
+   */
+  public async import<T = any>(url: string): Promise<T>
+  /**
+   * Clear all caches including HMR listeners.
+   */
+  public clearCache(): void
+  /**
+   * Clear all caches, remove all HMR listeners, reset sourcemap support.
+   * This method doesn't stop the HMR connection.
+   */
+  public async close(): Promise<void>
+  /**
+   * Returns `true` if the runner has been closed by calling `close()`.
+   */
+  public isClosed(): boolean
+}
+```
+
+----------------------------------------
+
+TITLE: Vite defineConfig with server.proxy Examples
+DESCRIPTION: Comprehensive examples of configuring `server.proxy` in Vite, showcasing string shorthand, options objects for path rewriting, regular expressions, direct proxy instance configuration, and WebSocket proxying for the development server.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/config/server-options.md#_snippet_5
+
+LANGUAGE: js
+CODE:
+```
+export default defineConfig({
+  server: {
+    proxy: {
+      // string shorthand:
+      // http://localhost:5173/foo
+      //   -> http://localhost:4567/foo
+      '/foo': 'http://localhost:4567',
+      // with options:
+      // http://localhost:5173/api/bar
+      //   -> http://jsonplaceholder.typicode.com/bar
+      '/api': {
+        target: 'http://jsonplaceholder.typicode.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      },
+      // with RegExp:
+      // http://localhost:5173/fallback/
+      //   -> http://jsonplaceholder.typicode.com/
+      '^/fallback/.*': {
+        target: 'http://jsonplaceholder.typicode.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/fallback/, '')
+      },
+      // Using the proxy instance
+      '/api': {
+        target: 'http://jsonplaceholder.typicode.com',
+        changeOrigin: true,
+        configure: (proxy, options) => {
+          // proxy will be an instance of 'http-proxy'
+        }
+      },
+      // Proxying websockets or socket.io:
+      // ws://localhost:5173/socket.io
+      //   -> ws://localhost:5174/socket.io
+      // Exercise caution using `rewriteWsOrigin` as it can leave the
+      // proxying open to CSRF attacks.
+      '/socket.io': {
+        target: 'ws://localhost:5174',
+        ws: true,
+        rewriteWsOrigin: true
+      }
+    }
+  }
+})
+```
+
+----------------------------------------
+
+TITLE: Scaffold a new Vite project with various package managers
+DESCRIPTION: Initialize a new Vite project using different package managers. These commands will prompt you for project details such as the project name and the desired framework template.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/index.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+$ npm create vite@latest
+```
+
+LANGUAGE: bash
+CODE:
+```
+$ yarn create vite
+```
+
+LANGUAGE: bash
+CODE:
+```
+$ pnpm create vite
+```
+
+LANGUAGE: bash
+CODE:
+```
+$ bun create vite
+```
+
+LANGUAGE: bash
+CODE:
+```
+$ deno init --npm vite
+```
+
+----------------------------------------
+
+TITLE: Vite createServer Function Type Signature
+DESCRIPTION: Defines the asynchronous function signature for `createServer`, which optionally accepts an `InlineConfig` and returns a `Promise` resolving to a `ViteDevServer` instance.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-javascript.md#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+async function createServer(inlineConfig?: InlineConfig): Promise<ViteDevServer>
+```
+
+----------------------------------------
+
+TITLE: Vite Development Server Universal Plugin Hooks
+DESCRIPTION: This section documents the Rollup build hooks that are invoked by the Vite development server. It categorizes hooks by their invocation timing: server start (`options`, `buildStart`), per module request (`resolveId`, `load`, `transform`), and server close (`buildEnd`, `closeBundle`), noting differences from Rollup's full build process.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+Rollup Build Hooks invoked by Vite Dev Server:
+
+Hooks called once on server start:
+- options
+- buildStart
+
+Hooks called on each incoming module request:
+- resolveId
+- load
+- transform
+
+Hooks called when the server is closed:
+- buildEnd
+- closeBundle
+
+Notes:
+- moduleParsed hook is NOT called during dev.
+- Output Generation Hooks (except closeBundle) are NOT called during dev.
+```
+
+----------------------------------------
+
+TITLE: ViteDevServer Interface Definition
+DESCRIPTION: Defines the structure and capabilities of the Vite development server, including its configuration, middleware, HTTP server, watcher, WebSocket server, plugin container, module graph, and various methods for transforming requests, handling SSR, triggering HMR, and server lifecycle management.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-javascript.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+interface ViteDevServer {
+  config: ResolvedConfig
+  middlewares: Connect.Server
+  httpServer: http.Server | null
+  watcher: FSWatcher
+  ws: WebSocketServer
+  pluginContainer: PluginContainer
+  moduleGraph: ModuleGraph
+  resolvedUrls: ResolvedServerUrls | null
+  transformRequest(
+    url: string,
+    options?: TransformOptions
+  ): Promise<TransformResult | null>
+  transformIndexHtml(
+    url: string,
+    html: string,
+    originalUrl?: string
+  ): Promise<string>
+  ssrLoadModule(
+    url: string,
+    options?: { fixStacktrace?: boolean }
+  ): Promise<Record<string, any>>
+  ssrFixStacktrace(e: Error): void
+  reloadModule(module: ModuleNode): Promise<void>
+  listen(port?: number, isRestart?: boolean): Promise<ViteDevServer>
+  restart(forceOptimize?: boolean): Promise<void>
+  close(): Promise<void>
+  bindCLIShortcuts(options?: BindCLIShortcutsOptions<ViteDevServer>): void
+  waitForRequestsIdle: (ignoredId?: string) => Promise<void>
+}
+```
+
+----------------------------------------
+
+TITLE: Example of a JavaScript Barrel File
+DESCRIPTION: This snippet illustrates a typical barrel file in JavaScript, which re-exports APIs from multiple other files within the same directory. While convenient, such files can lead to unnecessary fetching and transformation of all re-exported modules, slowing down initial page loads in Vite.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/performance.md#_snippet_3
+
+LANGUAGE: js
+CODE:
+```
+export * from './color.js'
+export * from './dom.js'
+export * from './slash.js'
+```
+
+----------------------------------------
+
+TITLE: Vite HmrContext Interface Definition
+DESCRIPTION: Defines the structure of the HmrContext object passed to the handleHotUpdate hook, including properties like file, timestamp, modules, read function, and the ViteDevServer instance.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_16
+
+LANGUAGE: APIDOC
+CODE:
+```
+interface HmrContext {
+  file: string
+  timestamp: number
+  modules: Array<ModuleNode>
+  read: () => string | Promise<string>
+  server: ViteDevServer
+}
+```
+
+----------------------------------------
+
+TITLE: Vite Plugin Hook: Configure Build/Dev Server
+DESCRIPTION: Demonstrates how to use the `config` hook in Vite plugins to modify the user configuration before it is resolved. Examples include returning a partial config object for merging and directly mutating the config object.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_9
+
+LANGUAGE: javascript
+CODE:
+```
+// return partial config (recommended)
+const partialConfigPlugin = () => ({
+  name: 'return-partial',
+  config: () => ({
+    resolve: {
+      alias: {
+        foo: 'bar',
+      },
+    },
+  }),
+})
+
+```
+
+LANGUAGE: javascript
+CODE:
+```
+// mutate the config directly (use only when merging doesn't work)
+const mutateConfigPlugin = () => ({
+  name: 'mutate-config',
+  config(config, { command }) {
+    if (command === 'build') {
+      config.root = 'foo'
+    }
+  },
+})
+
+```
+
+----------------------------------------
+
+TITLE: Scaffold Vite Project with Various Package Managers
+DESCRIPTION: This snippet demonstrates how to quickly create a new Vite project using different package managers like npm, Yarn, pnpm, Bun, and Deno. It initializes a project with a specified template, such as 'vue', in a new directory.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/index.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+npm create vite@latest my-vue-app -- --template vue
+```
+
+LANGUAGE: bash
+CODE:
+```
+yarn create vite my-vue-app --template vue
+```
+
+LANGUAGE: bash
+CODE:
+```
+pnpm create vite my-vue-app --template vue
+```
+
+LANGUAGE: bash
+CODE:
+```
+bun create vite my-vue-app --template vue
+```
+
+LANGUAGE: bash
+CODE:
+```
+deno init --npm vite my-vue-app --template vue
+```
+
+----------------------------------------
+
+TITLE: Customize Vite Logger to Filter Warnings
+DESCRIPTION: This example demonstrates how to use Vite's `createLogger` API to obtain the default logger and then customize its `warn` method to filter out specific messages, such as warnings about empty CSS files.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/config/shared-options.md#_snippet_30
+
+LANGUAGE: ts
+CODE:
+```
+import { createLogger, defineConfig } from 'vite'
+
+const logger = createLogger()
+const loggerWarn = logger.warn
+
+logger.warn = (msg, options) => {
+  // Ignore empty CSS files warning
+  if (msg.includes('vite:css') && msg.includes(' is empty')) return
+  loggerWarn(msg, options)
+}
+
+export default defineConfig({
+  customLogger: logger
+})
+```
+
+----------------------------------------
+
+TITLE: Vite Legacy Plugin: Polyfill Specifier Formats and Configuration Example
+DESCRIPTION: Defines the valid formats for polyfill specifier strings used with `polyfills` and `modernPolyfills` options in `@vitejs/plugin-legacy`. An example demonstrates how to configure specific polyfills using these specifiers within a Vite plugin setup.
+SOURCE: https://github.com/vitejs/vite/blob/main/packages/plugin-legacy/README.md#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+Polyfill Specifiers:
+  Description: |
+    Polyfill specifier strings for `polyfills` and `modernPolyfills` can be either of the following:
+    - Any [`core-js` 3 sub import paths](https://unpkg.com/browse/core-js@latest/) - e.g. `es/map` will import `core-js/es/map`
+    - Any [individual `core-js` 3 modules](https://unpkg.com/browse/core-js@latest/modules/) - e.g. `es.array.iterator` will import `core-js/modules/es.array.iterator.js`
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+import legacy from '@vitejs/plugin-legacy'
+
+export default {
+  plugins: [
+    legacy({
+      polyfills: ['es.promise.finally', 'es/map', 'es/set'],
+      modernPolyfills: ['es.promise.finally'],
+    }),
+  ],
+}
+```
+
+----------------------------------------
+
+TITLE: Vite Plugin Hook: configResolved API Reference
+DESCRIPTION: API documentation for the `configResolved` hook, detailing its type signature, asynchronous nature, and parallel execution. This hook is called after the Vite config is resolved, allowing plugins to read and store the final configuration.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+`configResolved`:
+  Type: (config: ResolvedConfig) => void | Promise<void>
+  Kind: async, parallel
+  Description: Called after the Vite config is resolved. Use this hook to read and store the final resolved config. It is also useful when the plugin needs to do something different based on the command being run.
+```
+
+----------------------------------------
+
+TITLE: Initialize a new Vite project
+DESCRIPTION: This command quickly sets up a new Vite-powered application. It requires Node.js version 12 or higher to run successfully. This is the simplest way to begin development with Vite.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/blog/announcing-vite2.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm init @vitejs/app
+```
+
+----------------------------------------
+
+TITLE: Install and Build Vite Monorepo (pnpm)
+DESCRIPTION: This snippet outlines the initial steps to set up the Vite monorepo locally. It involves installing all project dependencies and then building the entire project, which is a prerequisite for further development.
+SOURCE: https://github.com/vitejs/vite/blob/main/CONTRIBUTING.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+pnpm i
+pnpm run build
+```
+
+----------------------------------------
+
+TITLE: Configure Vite Plugin with applyToEnvironment for Non-Shareable State
+DESCRIPTION: This example shows how to integrate a third-party plugin that might not be environment-aware into Vite's per-environment system. By wrapping it within an `applyToEnvironment` hook, a new instance of the `nonShareablePlugin` can be created for each environment, ensuring isolated state.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-plugins.md#_snippet_9
+
+LANGUAGE: js
+CODE:
+```
+import { nonShareablePlugin } from 'non-shareable-plugin'
+
+export default defineConfig({
+  plugins: [
+    {
+      name: 'per-environment-plugin',
+      applyToEnvironment(environment) {
+        return nonShareablePlugin({ outputName: environment.name })
+      }
+    }
+  ]
+})
+```
+
+----------------------------------------
+
+TITLE: APIDOC: ModuleRunnerOptions Interface Definition
+DESCRIPTION: Defines the `ModuleRunnerOptions` interface, which configures the behavior of the `ModuleRunner`. It includes properties for `transport` (communication with the server), `sourcemapInterceptor` (source map resolution), `hmr` settings (Hot Module Replacement), and `evaluatedModules` for custom module caching.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-runtimes.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+interface ModuleRunnerOptions {
+  /**
+   * A set of methods to communicate with the server.
+   */
+  transport: ModuleRunnerTransport
+  /**
+   * Configure how source maps are resolved.
+   * Prefers `node` if `process.setSourceMapsEnabled` is available.
+   * Otherwise it will use `prepareStackTrace` by default which overrides
+   * `Error.prepareStackTrace` method.
+   * You can provide an object to configure how file contents and
+   * source maps are resolved for files that were not processed by Vite.
+   */
+  sourcemapInterceptor?:
+    | false
+    | 'node'
+    | 'prepareStackTrace'
+    | InterceptorOptions
+  /**
+   * Disable HMR or configure HMR options.
+   *
+   * @default true
+   */
+  hmr?: boolean | ModuleRunnerHmr
+  /**
+   * Custom module cache. If not provided, it creates a separate module
+   * cache for each module runner instance.
+   */
+  evaluatedModules?: EvaluatedModules
+}
+```
+
+----------------------------------------
+
+TITLE: Recommended package.json for Library Distribution
+DESCRIPTION: These `package.json` examples illustrate the recommended setup for distributing a library built with Vite. They define the `type`, `files`, `main`, `module`, and `exports` fields to correctly specify the entry points for different module systems (ESM, CommonJS) based on single or multiple library entries, ensuring proper consumption by various bundlers and environments.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/build.md#_snippet_7
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "my-lib",
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/my-lib.umd.cjs",
+  "module": "./dist/my-lib.js",
+  "exports": {
+    ".": {
+      "import": "./dist/my-lib.js",
+      "require": "./dist/my-lib.umd.cjs"
+    }
+  }
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "my-lib",
+  "type": "module",
+  "files": ["dist"],
+  "main": "./dist/my-lib.cjs",
+  "module": "./dist/my-lib.js",
+  "exports": {
+    ".": {
+      "import": "./dist/my-lib.js",
+      "require": "./dist/my-lib.cjs"
+    },
+    "./secondary": {
+      "import": "./dist/secondary.js",
+      "require": "./dist/secondary.cjs"
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Vite Fetch JSON Data
+DESCRIPTION: Shows how to fetch JSON data using the standard `fetch` API. It demonstrates conditional fetching based on the development environment and parsing the response as JSON.
+SOURCE: https://github.com/vitejs/vite/blob/main/playground/json/index.html#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+fetch(import.meta.env.DEV ? '/test.json' : '/public.json')
+  .then((r) => r.json())
+  .then((data) => {
+    text('.fetch', JSON.stringify(data))
+  })
+```
+
+----------------------------------------
+
+TITLE: Send Events from Vite Server to Client
+DESCRIPTION: Shows how a Vite plugin can use `server.ws.send` within `configureServer` to broadcast custom events from the server to connected clients. It highlights the importance of prefixing event names to avoid collisions.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_24
+
+LANGUAGE: JavaScript
+CODE:
+```
+export default defineConfig({
+  plugins: [
+    {
+      // ...
+      configureServer(server) {
+        server.ws.on('connection', () => {
+          server.ws.send('my:greetings', { msg: 'hello' })
+        })
+      },
+    },
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Install Vite CLI as a Development Dependency
+DESCRIPTION: This snippet provides commands to install the Vite command-line interface as a development dependency in your project. It covers various package managers including npm, Yarn, pnpm, Bun, and Deno.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/index.md#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+npm install -D vite
+```
+
+LANGUAGE: bash
+CODE:
+```
+yarn add -D vite
+```
+
+LANGUAGE: bash
+CODE:
+```
+pnpm add -D vite
+```
+
+LANGUAGE: bash
+CODE:
+```
+bun add -D vite
+```
+
+LANGUAGE: bash
+CODE:
+```
+deno add -D npm:vite
+```
+
+----------------------------------------
+
+TITLE: Define Custom HMR Event Types in Vite
+DESCRIPTION: Provides a TypeScript declaration file example (`events.d.ts`) for extending Vite's `CustomEventMap` interface. This allows for strong typing of custom HMR events and their payloads, improving type safety in plugins and client code.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_28
+
+LANGUAGE: TypeScript
+CODE:
+```
+import 'vite/types/customEvent.d.ts'
+
+declare module 'vite/types/customEvent.d.ts' {
+  interface CustomEventMap {
+    'custom:foo': { msg: string }
+    // 'event-key': payload
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Create a Multi-Plugin Preset Function
+DESCRIPTION: This snippet illustrates how to define a JavaScript function that acts as a plugin preset, returning an array of multiple individual plugins. This pattern is useful for grouping related functionalities or implementing complex features like framework integrations under a single configurable entry point.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-plugin.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+// framework-plugin
+import frameworkRefresh from 'vite-plugin-framework-refresh'
+import frameworkDevtools from 'vite-plugin-framework-devtools'
+
+export default function framework(config) {
+  return [frameworkRefresh(config), frameworkDevTools(config)]
+}
+```
+
+----------------------------------------
+
+TITLE: Build Vite Documentation Types (pnpm)
+DESCRIPTION: This command is the first step to developing the Vite documentation site. It builds the necessary types for `twoslash` to function correctly within code examples, ensuring proper type checking and highlighting in the documentation.
+SOURCE: https://github.com/vitejs/vite/blob/main/CONTRIBUTING.md#_snippet_3
+
+LANGUAGE: sh
+CODE:
+```
+pnpm run build
+```
+
+----------------------------------------
+
+TITLE: Implement Vite SSR Middleware with RunnableDevEnvironment
+DESCRIPTION: This JavaScript code sets up a Vite development server in middleware mode and implements a server-side rendering (SSR) middleware. It reads an `index.html` template, applies Vite HTML transforms, loads a server entry point using `serverEnvironment.runner.import`, renders the application HTML, and injects it into the template before sending the response. This setup leverages Vite's `environments` API for SSR.
+SOURCE: https://github.com/vitejs/vite/blob/main/docs/guide/api-environment-frameworks.md#_snippet_2
+
+LANGUAGE: js
+CODE:
+```
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+import { createServer } from 'vite'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+const viteServer = await createServer({
+  server: { middlewareMode: true },
+  appType: 'custom',
+  environments: {
+    server: {
+      // by default, modules are run in the same process as the vite server
+    },
+  },
+})
+
+// You might need to cast this to RunnableDevEnvironment in TypeScript or
+// use isRunnableDevEnvironment to guard the access to the runner
+const serverEnvironment = viteServer.environments.server
+
+app.use('*', async (req, res, next) => {
+  const url = req.originalUrl
+
+  // 1. Read index.html
+  const indexHtmlPath = path.resolve(__dirname, 'index.html')
+  let template = fs.readFileSync(indexHtmlPath, 'utf-8')
+
+  // 2. Apply Vite HTML transforms. This injects the Vite HMR client,
+  //    and also applies HTML transforms from Vite plugins, e.g. global
+  //    preambles from @vitejs/plugin-react
+  template = await viteServer.transformIndexHtml(url, template)
+
+  // 3. Load the server entry. import(url) automatically transforms
+  //    ESM source code to be usable in Node.js! There is no bundling
+  //    required, and provides full HMR support.
+  const { render } = await serverEnvironment.runner.import(
+    '/src/entry-server.js',
+  )
+
+  // 4. render the app HTML. This assumes entry-server.js's exported
+  //     `render` function calls appropriate framework SSR APIs,
+  //    e.g. ReactDOMServer.renderToString()
+  const appHtml = await render(url)
+
+  // 5. Inject the app-rendered HTML into the template.
+  const html = template.replace(`<!--ssr-outlet-->`, appHtml)
+
+  // 6. Send the rendered HTML back.
+  res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
+})
+```

@@ -1,0 +1,1555 @@
+TITLE: Debug Info Module Public API Example
+DESCRIPTION: This entry describes an example function from the debug info module's public API, which is designed to insert correct metadata into LLVM IR. Functions like this are called by external clients to drive the metadata generation process.
+SOURCE: https://github.com/rust-lang/rust/blob/master/compiler/rustc_codegen_llvm/src/debuginfo/doc.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Function: debuginfo::create_local_var_metadata
+  Parameters:
+    bx: block - The basic block context.
+    local: &ast::local - The abstract syntax tree local variable.
+```
+
+----------------------------------------
+
+TITLE: Rust Constructor Usage Example
+DESCRIPTION: Demonstrates the usage of the `Foo::new()` constructor, including an attribute to suppress unused mutable variable warnings, as an example for API documentation.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rust-analyzer/crates/ide/src/syntax_highlighting/test_data/highlight_doctest.html#_snippet_6
+
+LANGUAGE: rust
+CODE:
+```
+# #![allow(unused_mut)]
+let mut foo: Foo = Foo::new();
+```
+
+----------------------------------------
+
+TITLE: API Documentation for The Borrow Checker
+DESCRIPTION: Information on the borrow checker, its guide, definition, and main entry point.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustc-dev-guide/src/overview.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+The Borrow Checker:
+  Guide: MIR Borrow Check
+  Definition: rustc_borrowck
+  Main Entry Point: mir_borrowck query
+```
+
+----------------------------------------
+
+TITLE: Rust-analyzer IDE API: AnalysisHost and Analysis Types
+DESCRIPTION: This section outlines the core API types, `AnalysisHost` and `Analysis`, used for implementing IDE features in rust-analyzer. It describes their responsibilities, key methods, and the design philosophy behind their separation and cancellable operations for responsiveness.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rust-analyzer/docs/book/src/contributing/guide.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Type: AnalysisHost
+  Description: Manages the state of the rust-analyzer and provides access to analysis instances.
+  Methods:
+    default(): AnalysisHost
+      Description: Creates an empty analysis instance.
+    apply_change(&mut self): void
+      Description: Applies changes to the analyzer's state. This method cancels all outstanding Analysis instances, waits for them to drop, and then applies changes in-place.
+    analysis(&self): Analysis
+      Description: Returns an instance of the Analysis type for querying the current state.
+
+Type: Analysis
+  Description: Provides a wide range of methods for IDE features (e.g., goto_definition, completions). Inputs and outputs are formulated in terms of files and offsets, not Rust-specific concepts.
+  Return Type Property: All methods return Cancellable<T>.
+  Key Features:
+    - Supports IDE features like goto_definition and completions.
+    - Operates on file offsets rather than Rust-specific types.
+    - All operations are cancellable to ensure responsiveness in an IDE environment.
+```
+
+----------------------------------------
+
+TITLE: API Documentation for MIR Optimizations
+DESCRIPTION: Details the MIR optimization phase, including its guide, definition, and main entry point.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustc-dev-guide/src/overview.md#_snippet_11
+
+LANGUAGE: APIDOC
+CODE:
+```
+MIR Optimizations:
+  Guide: MIR Optimizations
+  Definition: rustc_mir_transform
+  Main Entry Point: optimized_mir query
+```
+
+----------------------------------------
+
+TITLE: Rustfmt Internal Configuration Options API
+DESCRIPTION: API documentation for internal configuration options within Rustfmt. These options are typically not exposed for general user configuration and are used for specific internal behaviors or command-line flags.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/Configurations.md#_snippet_117
+
+LANGUAGE: APIDOC
+CODE:
+```
+emit_mode: Internal option
+make_backup: Internal option, use --backup
+print_misformatted_file_names: Internal option, use -l or --files-with-diff
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Code Generation
+DESCRIPTION: Covers the code generation phase, including guides, the main entry point for generating LLVM-IR, and details on monomorphization.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustc-dev-guide/src/overview.md#_snippet_12
+
+LANGUAGE: APIDOC
+CODE:
+```
+Code Generation:
+  Guide: Code Generation
+  Generating Machine Code from LLVM-IR with LLVM: TODO: reference?
+  Main Entry Point: rustc_codegen_ssa::base::codegen_crate
+  Note: This monomorphizes and produces LLVM-IR for one codegen unit. It then starts a background thread to run LLVM, which must be joined later.
+  Monomorphization happens lazily via FunctionCx::monomorphize and rustc_codegen_ssa::base::codegen_instance
+```
+
+----------------------------------------
+
+TITLE: Recommended Structure for Rust Item Documentation
+DESCRIPTION: Outlines the suggested structure for documenting individual public API items in Rust. This structure includes a short introductory sentence, a more detailed explanation, at least one copy-pasteable code example, and optional advanced explanations. It highlights the critical role of code examples in helping users understand usage and purpose.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustdoc/src/how-to-write-documentation.md#_snippet_1
+
+LANGUAGE: text
+CODE:
+```
+[short sentence explaining what it is]
+
+[more detailed explanation]
+
+[at least one code example that users can copy/paste to try it]
+
+[even more advanced explanations if necessary]
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Type Inference
+DESCRIPTION: Details the type inference and type checking processes within the Rust compiler, including relevant guides and main entry points.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustc-dev-guide/src/overview.md#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+Type Inference:
+  Guides:
+    - Type Inference
+    - The ty Module: Representing Types (semantics)
+  Main Entry Point (type inference): InferCtxtBuilder::enter
+  Main Entry Point (type checking bodies): the typeck query
+  Note: These two functions can't be decoupled.
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Parsing
+DESCRIPTION: Outlines the parsing stage, where the token stream is converted into an Abstract Syntax Tree (AST), including related guides and entry points.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustc-dev-guide/src/overview.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+Parsing:
+  Guides:
+    - Lexing and Parsing
+    - Macro Expansion
+    - Name Resolution
+  Parser Definition: rustc_parse
+  Main Entry Points:
+    - Entry point for first file in crate
+    - Entry point for outline module parsing
+    - Entry point for macro fragments
+  AST Definition: rustc_ast
+  Feature Gating: TODO
+  Early Linting: TODO
+```
+
+----------------------------------------
+
+TITLE: Filter GitHub Issues for Rust Contribution Opportunities
+DESCRIPTION: Discover how to refine GitHub issue searches to find specific contribution opportunities within the Rust project. Examples include filtering by repository for Clippy issues, or by labels for compiler-related or diagnostic-related tasks.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustc-dev-guide/src/getting-started.md#_snippet_1
+
+LANGUAGE: GitHub Search
+CODE:
+```
+repo:rust-lang/rust-clippy
+```
+
+LANGUAGE: GitHub Search
+CODE:
+```
+label:T-compiler
+```
+
+LANGUAGE: GitHub Search
+CODE:
+```
+label:A-diagnostics
+```
+
+----------------------------------------
+
+TITLE: GlobalState API for Rust Analyzer's LSP Core
+DESCRIPTION: This section describes the fundamental methods of the `GlobalState` API, which are central to initializing the language server, managing its event loop, and processing workspace and project configuration changes. It outlines the steps for setup, resource management, and how the system determines what code to analyze.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rust-analyzer/docs/book/src/contributing/guide.md#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+GlobalState:
+  run(): Initiates the event loop pattern to manage changes and concurrency within the language server.
+  new(): Performs one-time initialization and tearing down of resources at server startup.
+  fetch_workspaces(): Determines the analysis scope by executing `cargo metadata` and scanning the `sysroot` to identify Cargo packages and standard library crates.
+  process_changes(): Lowers the `ProjectModel` into a `Change` object, which involves:
+    - Creating `SourceRoot`s for each Cargo package and sysroot.
+    - Scheduling a filesystem scan of these roots.
+    - Creating an analyzer's `Crate` for each Cargo target and sysroot crate.
+    - Setting up dependencies between the identified crates.
+```
+
+----------------------------------------
+
+TITLE: API Documentation for High Level Intermediate Representation (HIR)
+DESCRIPTION: Provides information on the HIR, including its definition, guides on its structure and lowering, and how to inspect it.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustc-dev-guide/src/overview.md#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+High Level Intermediate Representation (HIR):
+  Guides:
+    - The HIR
+    - Identifiers in the HIR
+    - The HIR Map
+    - Lowering AST to HIR
+  How to view HIR representation for your code: cargo rustc -- -Z unpretty=hir-tree
+  Rustc HIR Definition: rustc_hir
+  Main Entry Point: TODO
+  Late Linting: TODO
+```
+
+----------------------------------------
+
+TITLE: Enable Rustdoc example scraping via Cargo CLI
+DESCRIPTION: This `bash` command demonstrates how to enable the unstable `rustdoc-scrape-examples` feature. It uses `cargo doc` with the `-Zunstable-options` flag to generate documentation that includes scraped examples.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustdoc/src/scraped-examples.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+cargo doc -Zunstable-options -Zrustdoc-scrape-examples
+```
+
+----------------------------------------
+
+TITLE: API Method: experimental/externalDocs
+DESCRIPTION: Requests the server to provide web and local URLs for documentation related to the symbol under the cursor.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rust-analyzer/docs/book/src/contributing/lsp-extensions.md#_snippet_26
+
+LANGUAGE: APIDOC
+CODE:
+```
+Method: experimental/externalDocs
+Request: TextDocumentPositionParams
+Response: string | null
+```
+
+----------------------------------------
+
+TITLE: Rustc Linting API Overview
+DESCRIPTION: This section describes core traits and methods used for registering and implementing lints within the `rustc_lint` framework. It differentiates between `EarlyLintPass` (AST-based) and `LateLintPass` (type-checked based) and highlights the `LintStore` methods for registration.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/clippy/CONTRIBUTING.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+rustc_lint::LintStore:
+  - register_early_pass(): Registers lints implementing `EarlyLintPass`.
+  - register_late_pass(): Registers lints implementing `LateLintPass`.
+
+EarlyLintPass trait:
+  - Purpose: For lints operating on Abstract Syntax Tree (AST) information.
+
+LateLintPass trait:
+  - Purpose: For lints operating after type checking, providing type information via `LateContext`.
+```
+
+----------------------------------------
+
+TITLE: Rustfmt `wrap_comments` Configuration Option API
+DESCRIPTION: API documentation for the `wrap_comments` configuration option in Rustfmt. This option dictates whether comments should be broken to fit within the line length, with specific exceptions for markdown header doc comments and comments containing URLs. It details default and possible values, and stability.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/Configurations.md#_snippet_115
+
+LANGUAGE: APIDOC
+CODE:
+```
+wrap_comments:
+  Default value: false
+  Possible values: true, false
+  Stable: No (tracking issue: #3347)
+  Notes:
+    - No wrapping if comment is start of markdown header doc comment.
+    - No wrapping if URL found in comment.
+```
+
+----------------------------------------
+
+TITLE: Rust `Foo::foo` Method Examples
+DESCRIPTION: Various examples demonstrating the usage of the `foo` method on the `Foo` struct, including basic calls, method chaining, generic function syntax, and shell commands.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rust-analyzer/crates/ide/src/syntax_highlighting/test_data/highlight_doctest.html#_snippet_7
+
+LANGUAGE: rust
+CODE:
+```
+use x::y;
+
+let foo = Foo::new();
+
+// calls bar on foo
+assert!(foo.bar());
+
+let bar = foo.bar || Foo::bar;
+
+/* multi-line
+       comment */
+
+let multi_line_string = "Foo
+  bar\n
+         ";
+```
+
+LANGUAGE: rust
+CODE:
+```
+let foobar = Foo::new().bar();
+```
+
+LANGUAGE: rust
+CODE:
+```
+// code block with tilde.
+let foobar = Foo::new().bar();
+```
+
+LANGUAGE: rust
+CODE:
+```
+// functions
+fn foo<T, const X: usize>(arg: i32) {
+    let x: T = X;
+}
+```
+
+LANGUAGE: sh
+CODE:
+```
+echo 1
+```
+
+----------------------------------------
+
+TITLE: Rust Main Function Example with Option Handling
+DESCRIPTION: An example Rust `main` function demonstrating the use of `and_then` with `Option` and a `match` statement for handling `None` and `Some` variants, showcasing control flow with optional values.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/Configurations.md#_snippet_35
+
+LANGUAGE: Rust
+CODE:
+```
+fn main() {
+    result.and_then(|maybe_value| {
+        match maybe_value {
+            None => foo(),
+            Some(value) => bar(),
+        }
+    });
+
+    match lorem {
+        None => {
+            |ipsum| {
+                println!("Hello World");
+            }
+        }
+        Some(dolor) => foo(),
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Clippy Changelog Entry Examples
+DESCRIPTION: Examples of different types of changelog entries required for contributions to the Clippy project, including new lints, bug fixes, internal changes, and multiple entries.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/clippy/CONTRIBUTING.md#_snippet_5
+
+LANGUAGE: Text
+CODE:
+```
+changelog: new lint: [`missing_trait_methods`]
+```
+
+LANGUAGE: Text
+CODE:
+```
+changelog: Fix [`unused_peekable`] false positive when peeked in a closure or called as `f(&mut peekable)`
+```
+
+LANGUAGE: Text
+CODE:
+```
+changelog: none
+```
+
+LANGUAGE: Text
+CODE:
+```
+changelog: Something 1
+changelog: Something 2
+changelog: Something 3
+```
+
+----------------------------------------
+
+TITLE: Rustfmt `version` Configuration Option API
+DESCRIPTION: API documentation for the `version` configuration option in Rustfmt. This option is deprecated and has been replaced by `style_edition`. It specifies the default and possible values, along with its stability status.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/Configurations.md#_snippet_111
+
+LANGUAGE: APIDOC
+CODE:
+```
+version:
+  Default value: One
+  Possible values: One, Two
+  Stable: No (tracking issue: #3383)
+```
+
+----------------------------------------
+
+TITLE: Rustdoc Example Template for stdarch Intrinsics
+DESCRIPTION: Provides a template for writing documentation examples for `stdarch` intrinsics, ensuring they are only run by `cargo test --doc` when the CPU supports the required features. It highlights necessary feature flags (`cfg_target_feature`, `target_feature`) and a worker function pattern for safe execution.
+SOURCE: https://github.com/rust-lang/rust/blob/master/library/stdarch/CONTRIBUTING.md#_snippet_1
+
+LANGUAGE: Rust
+CODE:
+```
+/// # // We need cfg_target_feature to ensure the example is only
+/// # // run by `cargo test --doc` when the CPU supports the feature
+/// # #![feature(cfg_target_feature)]
+/// # // We need target_feature for the intrinsic to work
+/// # #![feature(target_feature)]
+/// #
+/// # // rustdoc by default uses `extern crate stdarch`, but we need the
+/// # // `#[macro_use]`
+/// # #[macro_use] extern crate stdarch;
+/// #
+/// # // The real main function
+/// # fn main() {
+/// #     // Only run this if `<target feature>` is supported
+/// #     if cfg_feature_enabled!("<target feature>") {
+/// #         // Create a `worker` function that will only be run if the target feature
+/// #         // is supported and ensure that `target_feature` is enabled for your worker
+/// #         // function
+/// #         #[target_feature(enable = "<target feature>")]
+/// #         unsafe fn worker() {
+///
+/// // Write your example here. Feature specific intrinsics will work here! Go wild!
+///
+/// #         }
+/// #         unsafe { worker(); }
+/// #     }
+/// # }
+```
+
+----------------------------------------
+
+TITLE: Vue.js Method for Handling API Request Failures
+DESCRIPTION: This `handleReqFailure` method provides robust error handling for API requests within the Vue.js application. It displays user-friendly messages for common issues such as 404 Not Found errors, GitHub API rate limits (403), and other general errors, guiding the user on how to proceed or report issues.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/docs/index.html#_snippet_5
+
+LANGUAGE: JavaScript
+CODE:
+```
+methods: {
+  handleReqFailure(e) {
+    if (e.response.status === 404) {
+      this.aboutHtml = "<p>Failed to get configuration options for this version, please select the version from the dropdown above.</p>";
+    } else if (
+      e.response.status === 403 && e.response.headers["X-RateLimit-Remaining"] === 0
+    ) {
+      const resetDate = new Date(
+        e.response.headers['X-RateLimit-Reset'] * 1000
+      ).toLocaleString();
+      this.aboutHtml = `<p>You have hit the GitHub API rate limit; documentation cannot be updated.</p>` +
+        `<p>The rate limit will be reset at ${resetDate}.</p>`;
+    } else {
+      this.aboutHtml = `<p>Encountered an error when fetching documentation data:</p>` +
+        `<pre><code>${e.response.data}</code></pre>` +
+        `<p>We would appreciate <a href="https://github.com/rust-lang/rustfmt/issues/new?template=bug_report.md">a bug report</a>.</p>` +
+        `<p>Try refreshing the page.</p>`;
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Analysis and ProjectModel API Interaction for LSP Requests
+DESCRIPTION: This snippet details how the `ProjectModel` serves as input for change processing and how the `Analysis` API handles specific Language Server Protocol requests, such as 'goto definition'. It explains the mechanism for scheduling tasks on a threadpool and the system's ability to cancel ongoing tasks when new changes are applied to maintain consistency.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rust-analyzer/docs/book/src/contributing/guide.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+ProjectModel:
+  Description: Represents the Cargo and sysroot specific project structure. This model is an intermediate representation that must be lowered into a `Change` object for the analyzer to process.
+
+Analysis:
+  Description: The core API used to handle various language server requests (e.g., 'goto definition'). It provides methods to query the analyzed code.
+  schedule(task: AnalysisTask):
+    - Schedules a task (which consumes an `Analysis` instance) on a dedicated threadpool for background processing.
+    - The task is responsible for calling the appropriate `Analysis` method and converting the results into the LSP representation.
+    - Tasks are subject to cancellation if a new change is introduced and `apply_change` is invoked on the `AnalysisHost`.
+
+AnalysisHost:
+  apply_change(change: Change):
+    - Applies a grouped set of changes to the analysis state.
+    - This operation always occurs on the main thread and blocks the event loop.
+    - Applying changes can lead to the cancellation of previously scheduled `Analysis` tasks to ensure data consistency.
+```
+
+----------------------------------------
+
+TITLE: Configuring HTML Playground URL
+DESCRIPTION: Specifies the base URL for the 'run' buttons that appear on documentation examples, enabling interactive code execution. When a user clicks 'run', the button sends a request to this configured URL, including the example code, Rust channel, and edition as query parameters.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustdoc/src/write-documentation/the-doc-attribute.md#_snippet_5
+
+LANGUAGE: Rust
+CODE:
+```
+#![doc(html_playground_url = "https://playground.example.com/")]
+```
+
+----------------------------------------
+
+TITLE: Rustdoc Search By Type Signature Examples
+DESCRIPTION: Provides examples of searching for functions by their type signatures in Rustdoc, specifying parameters and return types using commas (",") and an arrow ("->"). This allows for more specific searches based on function behavior.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustdoc/src/read-documentation/search.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+usize -> vec
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+vec, vec -> bool
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+option<T>, fnonce -> option<U>
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+option<T>, (fnonce (T) -> bool) -> option<T>
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+option<T>, (T -> bool) -> option<T>
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+option -> default
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+stdout, [u8]
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+any -> !
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+vec::intoiter<T> -> [T]
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+iterator<T>, fnmut -> T
+```
+
+----------------------------------------
+
+TITLE: Rust Doc Comment Formatting Example (format_code_in_doc_comments: true)
+DESCRIPTION: Illustrates how code snippets within doc comments appear when `format_code_in_doc_comments` is set to `true`, demonstrating that rustfmt applies its formatting rules to the code block within the doc comment.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/Configurations.md#_snippet_38
+
+LANGUAGE: Rust
+CODE:
+```
+/// Adds one to the number given.
+///
+/// # Examples
+///
+/// ```rust
+/// let five = 5;
+///
+/// assert_eq!(6, add_one(5));
+/// # fn add_one(x: i32) -> i32 {
+/// #     x + 1
+/// # }
+/// ```
+fn add_one(x: i32) -> i32 {
+    x + 1
+}
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Go Date and Time Libraries
+DESCRIPTION: Provides an overview of key date and time libraries and their core components available in Go, with links to official documentation.
+SOURCE: https://github.com/rust-lang/rust/blob/master/__wiki__/Lib-datetime.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+time:
+  Duration: a duration with an int64 nanosecond count.
+  Location: maps time instants to the zone in use at that time.
+  Time: an instant in time with nanosecond precision.
+```
+
+----------------------------------------
+
+TITLE: Configure Doc Comment Code Block Formatting (format_code_in_doc_comments)
+DESCRIPTION: API documentation for the `format_code_in_doc_comments` option in rustfmt. This setting controls whether code snippets embedded within doc comments are formatted. It is currently an unstable feature.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/Configurations.md#_snippet_36
+
+LANGUAGE: APIDOC
+CODE:
+```
+format_code_in_doc_comments:
+  Default value: false
+  Possible values: true, false
+  Stable: No (tracking issue: #3348)
+```
+
+----------------------------------------
+
+TITLE: APIDOC: experimental/openCargoToml Method
+DESCRIPTION: Documents the experimental `openCargoToml` server capability and method. This client-to-server request opens the current project's `Cargo.toml` file, returning a `Location` to the `[package]` keyword.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rust-analyzer/docs/book/src/contributing/lsp-extensions.md#_snippet_45
+
+LANGUAGE: APIDOC
+CODE:
+```
+Experimental Server Capability: { "openCargoToml": boolean }
+Method: experimental/openCargoToml
+Request: OpenCargoTomlParams
+Response: Location | null
+```
+
+----------------------------------------
+
+TITLE: Configure Doc Comment Code Block Max Width (doc_comment_code_block_width)
+DESCRIPTION: API documentation for the `doc_comment_code_block_width` option. This setting defines the maximum line width for code snippets within doc comments and is only active when `format_code_in_doc_comments` is enabled. It is an unstable feature.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/Configurations.md#_snippet_39
+
+LANGUAGE: APIDOC
+CODE:
+```
+doc_comment_code_block_width:
+  Default value: 100
+  Possible values: any positive integer that is less than or equal to the value specified for max_width
+  Stable: No (tracking issue: #5359)
+```
+
+----------------------------------------
+
+TITLE: Manually Constructing ParamEnv (Rust Compiler API)
+DESCRIPTION: Explains the methods for manually constructing a `ParamEnv`, typically required at the start of top-level analyses like HIR type checking or borrow checking. It details the `param_env` query, creating an empty environment, and constructing with arbitrary where clauses.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustc-dev-guide/src/typing_parameter_envs.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+ParamEnv Construction Methods:\n  1. Query:\n      method: tcx.param_env(def_id)\n      description: Returns the environment associated with a given definition. Most common method.\n  2. Empty Environment:\n      method: ParamEnv::empty()\n      description: Creates an empty environment. Used in codegen or analyses not expecting generic parameters.\n  3. From Arbitrary Where Clauses:\n      method: ParamEnv::new(where_clauses)\n      description: Constructs an environment with an arbitrary set of where clauses.\n      post_construction_step: traits::normalize_param_env_or_error(env)\n      post_construction_description: Handles normalizing and elaborating all where clauses.\n      usage_note: Usually unnecessary unless the environment does not correspond to an actual item.
+```
+
+----------------------------------------
+
+TITLE: Configure docs.rs to enable Rustdoc example scraping
+DESCRIPTION: This TOML configuration snippet is added to `Cargo.toml` to enable the unstable `rustdoc-scrape-examples` feature specifically for `docs.rs`. It passes the necessary `cargo-args` to the documentation build process on the platform.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustdoc/src/scraped-examples.md#_snippet_3
+
+LANGUAGE: toml
+CODE:
+```
+[package.metadata.docs.rs]
+cargo-args = ["-Zunstable-options", "-Zrustdoc-scrape-examples"]
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Command Line Parsing
+DESCRIPTION: Details the components and entry points related to parsing command-line arguments for the Rust compiler.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustc-dev-guide/src/overview.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Command Line Parsing:
+  Guide: The Rustc Driver and Interface
+  Driver Definition: rustc_driver
+  Main Entry Point: rustc_session::config::build_session_options
+```
+
+----------------------------------------
+
+TITLE: Rust Doc Comment Formatting Example (format_code_in_doc_comments: false)
+DESCRIPTION: Illustrates how code snippets within doc comments appear when `format_code_in_doc_comments` is set to `false` (the default value), showing the code block as it is written without additional formatting applied by rustfmt.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/Configurations.md#_snippet_37
+
+LANGUAGE: Rust
+CODE:
+```
+/// Adds one to the number given.
+///
+/// # Examples
+///
+/// ```rust
+/// let five=5;
+///
+/// assert_eq!(
+///     6,
+///     add_one(5)
+/// );
+/// # fn add_one(x: i32) -> i32 {
+/// #     x + 1
+/// # }
+/// ```
+fn add_one(x: i32) -> i32 {
+    x + 1
+}
+```
+
+----------------------------------------
+
+TITLE: Implement Rust Functions with Generics, Lifetimes, and Const Parameters
+DESCRIPTION: This section illustrates various advanced function definitions in Rust. It includes examples of recursive functions, functions with generic type parameters and lifetimes, diverging functions (!), functions utilizing const generics, higher-order functions with trait bounds (Fn), and functions returning impl Trait.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rust-analyzer/crates/ide/src/syntax_highlighting/test_data/highlight_general.html#_snippet_1
+
+LANGUAGE: Rust
+CODE:
+```
+fn str() {
+    str();
+}
+
+fn foo<'a, T>() -> T {
+    foo::<'a, i32>()
+}
+
+fn never() -> ! {
+    loop {}
+}
+
+fn const_param<const FOO: usize>() -> usize {
+    const_param::<{ FOO }>();
+    FOO
+}
+
+use core::ops::Fn;
+fn baz<F: Fn() -> ()>(f: F) {
+    f()
+}
+
+fn foobar() -> impl Copy {}
+```
+
+----------------------------------------
+
+TITLE: Run All Rust Documentation Tests by Stage
+DESCRIPTION: This command executes all available documentation tests for a specified build stage `[N]`, providing a comprehensive check of code snippets across various guides and API docs.
+SOURCE: https://github.com/rust-lang/rust/blob/master/__wiki__/Note-testsuite.md#_snippet_32
+
+LANGUAGE: bash
+CODE:
+```
+make check-stage[N]-doc
+```
+
+----------------------------------------
+
+TITLE: Rust Data-Driven Test Structure Example
+DESCRIPTION: This Rust code snippet demonstrates the data-driven testing pattern used in rust-analyzer. It shows how a generic 'check' function can be used to abstract away direct API calls, allowing for numerous test cases to be defined concisely with input strings and expected outputs. This approach simplifies API refactoring and ensures test reproducibility.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rust-analyzer/docs/book/src/contributing/architecture.md#_snippet_1
+
+LANGUAGE: Rust
+CODE:
+```
+#[track_caller]
+fn check(input: &str, expect: expect_test::Expect) {
+    // The single place that actually exercises a particular API
+}
+
+#[test]
+fn foo() {
+    check("foo", expect![["bar"]]);
+}
+
+#[test]
+fn spam() {
+    check("spam", expect![["eggs"]]);
+}
+// ...and a hundred more tests that don't care about the specific API at all.
+```
+
+----------------------------------------
+
+TITLE: Call a Documented Rust Function in an Example
+DESCRIPTION: This snippet illustrates how to create an example file (`examples/ex.rs`) that calls a public function defined in a Rust library. Rustdoc will scrape this example to include it in the documentation for `a_func`.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/librustdoc/html/static/scrape-examples-help.md#_snippet_1
+
+LANGUAGE: Rust
+CODE:
+```
+// examples/ex.rs
+fn main() {
+  a_crate::a_func();
+}
+```
+
+----------------------------------------
+
+TITLE: Rustdoc `#[doc(hidden)]` attribute
+DESCRIPTION: The `#[doc(hidden)]` attribute prevents an item from appearing in the generated documentation unless the `--document-hidden-items` flag is used. It's useful for internal-only items or items not meant for public API.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustdoc/src/write-documentation/the-doc-attribute.md#_snippet_15
+
+LANGUAGE: APIDOC
+CODE:
+```
+#[doc(hidden)]
+```
+
+----------------------------------------
+
+TITLE: Rust Inline Code Comment Style Guide
+DESCRIPTION: This Rust code snippet demonstrates the recommended style for inline comments. 'GOOD' examples show comments written as complete sentences, starting with a capital letter and ending with a period. 'BAD' examples illustrate comments that do not follow this convention, lacking proper capitalization and punctuation. The rationale is to encourage more detailed and contextual comments.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rust-analyzer/docs/book/src/contributing/style.md#_snippet_36
+
+LANGUAGE: rust
+CODE:
+```
+// GOOD
+
+// Only simple single segment paths are allowed.
+MergeBehavior::Last => {
+    tree.use_tree_list().is_none() && tree.path().map(path_len) <= Some(1)
+}
+
+// BAD
+
+// only simple single segment paths are allowed
+MergeBehavior::Last => {
+    tree.use_tree_list().is_none() && tree.path().map(path_len) <= Some(1)
+}
+```
+
+----------------------------------------
+
+TITLE: Demonstrate Rust Main Function, Variables, and Control Flow
+DESCRIPTION: This snippet provides a main function example showcasing common Rust programming patterns. It covers variable declaration, mutability, references, struct instantiation and destructuring, method calls, closure definition, tuple manipulation, boolean operations, and labeled loop statements for fine-grained control flow.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rust-analyzer/crates/ide/src/syntax_highlighting/test_data/highlight_general.html#_snippet_2
+
+LANGUAGE: Rust
+CODE:
+```
+fn foo() {
+    let bar = foobar();
+}
+
+// comment
+fn main() {
+    let mut x = 42;
+    x += 1;
+    let y = &mut x;
+    let z = &y;
+
+    let Foo { x: z, y } = Foo { x: z, y };
+
+    y;
+
+    let mut foo = Foo { x, y: x };
+    let foo2 = Foo { x, y: x };
+    foo.quop();
+    foo.qux();
+    foo.baz(foo2);
+
+    let mut copy = FooCopy { x };
+    copy.quop();
+    copy.qux();
+    copy.baz(copy);
+
+    let a = |x| x;
+    let bar = Foo::baz;
+
+    let baz = (-42,);
+    let baz = -baz.0;
+
+    let _ = !true;
+
+    'foo: loop {
+        break 'foo;
+        continue 'foo;
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Run Rust Standard Library Crate API Documentation Tests
+DESCRIPTION: This command runs documentation tests for the standard library crate's API documentation at a specified build stage `[N]`, verifying the embedded code examples for the standard library.
+SOURCE: https://github.com/rust-lang/rust/blob/master/__wiki__/Note-testsuite.md#_snippet_31
+
+LANGUAGE: bash
+CODE:
+```
+make check-stage[N]-doc-crate-std
+```
+
+----------------------------------------
+
+TITLE: Normalize Rust doc attributes to `///` and `//!`
+DESCRIPTION: Illustrates the effect of `normalize_doc_attributes` on Rust documentation attributes. When `true`, it converts `#![doc]` and `#[doc]` attributes to `//!` and `///` doc comments, respectively.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/Configurations.md#_snippet_82
+
+LANGUAGE: Rust
+CODE:
+```
+#![doc = "Example documentation"]
+
+#[doc = "Example item documentation"]
+pub enum Bar {}
+
+/// Example item documentation
+pub enum Foo {}
+```
+
+LANGUAGE: Rust
+CODE:
+```
+//! Example documentation
+
+/// Example item documentation
+pub enum Foo {}
+```
+
+----------------------------------------
+
+TITLE: Configure Generated File Marker Search Limit (generated_marker_line_search_limit)
+DESCRIPTION: API documentation for the `generated_marker_line_search_limit` option. This setting specifies how many lines from the start of a file rustfmt checks for a `@generated` pragma header. Setting it to `0` treats all files as non-generated, and it has no effect if `format_generated_files` is `true`. It is an unstable feature.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/Configurations.md#_snippet_41
+
+LANGUAGE: APIDOC
+CODE:
+```
+generated_marker_line_search_limit:
+  Default value: 5
+  Possible values: any positive integer
+  Stable: No (tracking issue: #5080)
+```
+
+----------------------------------------
+
+TITLE: Go io Package Interfaces and Functions
+DESCRIPTION: Documentation for key interfaces and functions within Go's standard `io` package, detailing common I/O patterns such as reading, writing, seeking, and closing, along with specialized interfaces for byte and rune operations. It also includes a utility function for reading all data.
+SOURCE: https://github.com/rust-lang/rust/blob/master/__wiki__/Lib-io.md#_snippet_0
+
+LANGUAGE: Go
+CODE:
+```
+io package:
+  Interfaces:
+    ByteReader: ReadByte()
+    ByteScanner: interface ByteReader + UnreadByte()
+    ByteWriter: WriteByte()
+    Closer: Close()
+    ReadCloser: interfaces Reader + Closer
+    ReadSeeker: interfaces Reader + Seeker
+    ReadWriteCloser: interfaces Reader + Writer + Closer
+    ReadWriteSeeker: interfaces Reader + Writer + Seeker
+    ReadWriter: interfaces Reader + Writer
+    Reader: Read()
+    ReaderAt: ReadAt()
+    ReaderFrom: ReadFrom()
+    RuneReader: ReadRune()
+    RuneScanner: interface RuneReader + UnreadRune()
+    Seeker: Seek()
+    WriteCloser: interfaces Writer + Closer
+    WriteSeeker: interfaces Writer + Seeker
+    Writer: Write()
+    WriterAt: WriteAt()
+    WriterTo: WriteTo()
+  io.util package:
+    Functions:
+      ReadAll: reads from r until an error or EOF and returns the data it read.
+```
+
+----------------------------------------
+
+TITLE: Utilize Rust Module Items and Invoke Macros
+DESCRIPTION: This example demonstrates how to interact with items defined within a module, such as structs, constants, and functions. It also shows the invocation of a macro (foo::die!) and conditional logic based on a custom control flow enum.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rust-analyzer/crates/ide/src/syntax_highlighting/test_data/highlight_general.html#_snippet_5
+
+LANGUAGE: Rust
+CODE:
+```
+fn use_foo_items() {
+    let bob = foo::Person {
+        name: "Bob",
+        age: foo::consts::NUMBER,
+    };
+
+    let control_flow = foo::identity(foo::ControlFlow::Continue);
+
+    if control_flow.should_die() {
+        foo::die!();
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Rustc Compiler API References
+DESCRIPTION: API documentation for key structs, modules, and methods within the rustc compiler's internal crates, including parsing, AST, HIR, and type system components. These references provide insight into the compiler's internal architecture and available functionalities.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustc-dev-guide/src/overview.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+rustc_parse::parser::Parser:
+  Type: struct
+  Description: The main parser struct for Rust source code.
+  Methods:
+    bump(): Parses and consumes the next token.
+    check(): Checks if the next token matches a specific kind without consuming it.
+    eat(): Consumes the next token if it matches a specific kind.
+    expect(): Consumes the next token, asserting it matches a specific kind, or emits an error.
+    look_ahead(): Peeks at a token further in the stream without consuming.
+    parse_crate_mod(): Parses the root module of a crate.
+    parse_mod(): Parses a module.
+    parse_nonterminal(): Parses a non-terminal grammar rule.
+
+rustc_ast::ast::Crate:
+  Type: struct
+  Description: Represents the root of an abstract syntax tree (AST) for a crate.
+
+rustc_errors::Diag:
+  Type: struct
+  Description: Represents a diagnostic message (error, warning, etc.) emitted by the compiler.
+
+rustc_ast::ast::Expr:
+  Type: struct
+  Description: Represents an expression node in the abstract syntax tree.
+
+rustc_hir::hir::Ty:
+  Type: struct
+  Description: Represents a type in the High-level Intermediate Representation (HIR).
+
+rustc_ast::ast::Pat:
+  Type: struct
+  Description: Represents a pattern node in the abstract syntax tree.
+
+rustc_interface::interface::Config:
+  Type: struct
+  Description: Configuration options for the rustc compiler interface, used to set up a compilation session.
+
+rustc_parse::lexer::Lexer:
+  Type: struct
+  Description: The lexer (tokenizer) responsible for converting source code into a stream of tokens.
+
+rustc_middle::ty::Ty<'tcx>:
+  Type: struct
+  Description: Represents a type within the compiler's type context, often with a lifetime parameter.
+
+Modules:
+  rustc_ast::ast: Module containing definitions for the Abstract Syntax Tree (AST).
+  rustc_driver: The main driver crate for the rustc compiler.
+  rustc_lexer: Crate providing the lexical analysis (tokenization) functionality for Rust.
+  rustc_parse::lexer: Module within rustc_parse specifically for lexer-related functionalities.
+  rustc_parse: Crate responsible for parsing Rust source code into an AST.
+
+Functions:
+  rustc_expand::module::parse_external_mod(): Parses an external module, typically from a file.
+```
+
+----------------------------------------
+
+TITLE: Controlling Documentation Visibility for `use` Statements
+DESCRIPTION: Illustrates how `#[doc(inline)]` and `#[doc(no_inline)]` attributes, when applied to `use` statements, control where the documentation for re-exported items appears. This allows for fine-grained control over the organization and visibility of documentation for public API elements.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustdoc/src/write-documentation/the-doc-attribute.md#_snippet_10
+
+LANGUAGE: Rust
+CODE:
+```
+pub use bar::Bar;
+
+/// bar docs
+pub mod bar {
+    /// the docs for Bar
+    pub struct Bar;
+}
+```
+
+----------------------------------------
+
+TITLE: #[crate_id] Attribute Examples and Structure
+DESCRIPTION: This API documentation outlines various formats for the `#[crate_id]` attribute, detailing how different values map to the crate's path, name, and version. It provides examples demonstrating simple names, versioned names, and names including a repository path.
+SOURCE: https://github.com/rust-lang/rust/blob/master/__wiki__/Doc-detailed-release-notes.md#_snippet_17
+
+LANGUAGE: APIDOC
+CODE:
+```
+#[crate_id] Attribute Structure:
+- `crate_id`: The full string value of the attribute.
+- `path`: The derived path component of the crate ID.
+- `name`: The derived name component of the crate ID.
+- `version`: The derived version component of the crate ID.
+
+Examples:
+- `crate_id`: "foo"
+  - `path`: "foo"
+  - `name`: "foo"
+  - `version`: "0.0"
+- `crate_id`: "foo#1.0"
+  - `path`: "foo"
+  - `name`: "foo"
+  - `version`: "1.0"
+- `crate_id`: "github.com/foo/bar;foo#1.0"
+  - `path`: "github.com/foo/bar"
+  - `name`: "foo"
+  - `version`: "1.0"
+```
+
+----------------------------------------
+
+TITLE: Rustfmt `where_single_line` Option Examples
+DESCRIPTION: Demonstrates the effect of the `where_single_line` option on Rust code. The first example shows the default multi-line formatting for a `where` clause, while the second example illustrates the single-line formatting when the option is enabled.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/Configurations.md#_snippet_114
+
+LANGUAGE: Rust
+CODE:
+```
+impl<T> Lorem for T
+where
+    Option<T>: Ipsum,
+{
+    // body
+}
+```
+
+LANGUAGE: Rust
+CODE:
+```
+impl<T> Lorem for T
+where Option<T>: Ipsum
+{
+    // body
+}
+```
+
+----------------------------------------
+
+TITLE: Windows File System API Constants, Flags, and Functions
+DESCRIPTION: Comprehensive reference for Windows API elements related to file system operations, including file creation, disposition, attributes, sharing, information retrieval, search, control codes, and locking mechanisms.
+SOURCE: https://github.com/rust-lang/rust/blob/master/library/std/src/sys/pal/windows/c/bindings.txt#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+FILE_CREATE_TREE_CONNECTION
+FILE_CREATION_DISPOSITION
+FILE_CURRENT
+FILE_DELETE_CHILD
+FILE_DELETE_ON_CLOSE
+FILE_DIRECTORY_FILE
+FILE_DISALLOW_EXCLUSIVE
+FILE_DISPOSITION_FLAG_DELETE
+FILE_DISPOSITION_FLAG_DO_NOT_DELETE
+FILE_DISPOSITION_FLAG_FORCE_IMAGE_SECTION_CHECK
+FILE_DISPOSITION_FLAG_IGNORE_READONLY_ATTRIBUTE
+FILE_DISPOSITION_FLAG_ON_CLOSE
+FILE_DISPOSITION_FLAG_POSIX_SEMANTICS
+FILE_DISPOSITION_INFO
+FILE_DISPOSITION_INFO_EX
+FILE_DISPOSITION_INFO_EX_FLAGS
+FILE_END
+FILE_END_OF_FILE_INFO
+FILE_EXECUTE
+FILE_FLAG_BACKUP_SEMANTICS
+FILE_FLAG_DELETE_ON_CLOSE
+FILE_FLAG_FIRST_PIPE_INSTANCE
+FILE_FLAG_NO_BUFFERING
+FILE_FLAG_OPEN_NO_RECALL
+FILE_FLAG_OPEN_REPARSE_POINT
+FILE_FLAG_OVERLAPPED
+FILE_FLAG_POSIX_SEMANTICS
+FILE_FLAG_RANDOM_ACCESS
+FILE_FLAG_SEQUENTIAL_SCAN
+FILE_FLAG_SESSION_AWARE
+FILE_FLAG_WRITE_THROUGH
+FILE_FLAGS_AND_ATTRIBUTES
+FILE_GENERIC_EXECUTE
+FILE_GENERIC_READ
+FILE_GENERIC_WRITE
+FILE_ID_BOTH_DIR_INFO
+FILE_INFO_BY_HANDLE_CLASS
+FILE_IO_PRIORITY_HINT_INFO
+FILE_LIST_DIRECTORY
+FILE_NAME_NORMALIZED
+FILE_NAME_OPENED
+FILE_NO_EA_KNOWLEDGE
+FILE_NO_INTERMEDIATE_BUFFERING
+FILE_NON_DIRECTORY_FILE
+FILE_OPEN
+FILE_OPEN_BY_FILE_ID
+FILE_OPEN_FOR_BACKUP_INTENT
+FILE_OPEN_FOR_FREE_SPACE_QUERY
+FILE_OPEN_IF
+FILE_OPEN_REPARSE_POINT
+FILE_OPEN_REQUIRING_OPLOCK
+FILE_OVERWRITE
+FILE_OVERWRITE_IF
+FILE_PIPE_ACCEPT_REMOTE_CLIENTS
+FILE_PIPE_BYTE_STREAM_MODE
+FILE_PIPE_BYTE_STREAM_TYPE
+FILE_PIPE_COMPLETE_OPERATION
+FILE_PIPE_MESSAGE_MODE
+FILE_PIPE_MESSAGE_TYPE
+FILE_PIPE_QUEUE_OPERATION
+FILE_PIPE_REJECT_REMOTE_CLIENTS
+FILE_RANDOM_ACCESS
+FILE_READ_ATTRIBUTES
+FILE_READ_DATA
+FILE_READ_EA
+FILE_RENAME_FLAG_POSIX_SEMANTICS
+FILE_RENAME_FLAG_REPLACE_IF_EXISTS
+FILE_RENAME_INFO
+FILE_RESERVE_OPFILTER
+FILE_SEQUENTIAL_ONLY
+FILE_SESSION_AWARE
+FILE_SHARE_DELETE
+FILE_SHARE_MODE
+FILE_SHARE_NONE
+FILE_SHARE_READ
+FILE_SHARE_WRITE
+FILE_STANDARD_INFO
+FILE_SUPERSEDE
+FILE_SYNCHRONOUS_IO_ALERT
+FILE_SYNCHRONOUS_IO_NONALERT
+FILE_TRAVERSE
+FILE_TYPE
+FILE_TYPE_CHAR
+FILE_TYPE_DISK
+FILE_TYPE_PIPE
+FILE_TYPE_REMOTE
+FILE_TYPE_UNKNOWN
+FILE_WRITE_ATTRIBUTES
+FILE_WRITE_DATA
+FILE_WRITE_EA
+FILE_WRITE_THROUGH
+FileAlignmentInfo
+FileAllocationInfo
+FileAttributeTagInfo
+FileBasicInfo
+FileCaseSensitiveInfo
+FileCompressionInfo
+FileDispositionInfo
+FileDispositionInfoEx
+FileEndOfFileInfo
+FileFullDirectoryInfo
+FileFullDirectoryRestartInfo
+FileIdBothDirectoryInfo
+FileIdBothDirectoryRestartInfo
+FileIdExtdDirectoryInfo
+FileIdExtdDirectoryRestartInfo
+FileIdInfo
+FileIoPriorityHintInfo
+FileNameInfo
+FileNormalizedNameInfo
+FileRemoteProtocolInfo
+FileRenameInfo
+FileRenameInfoEx
+FileStandardInfo
+FileStorageInfo
+FileStreamInfo
+FILETIME
+FindClose
+FindExInfoBasic
+FindExSearchNameMatch
+FindFirstFileExW
+FindNextFileW
+FlushFileBuffers
+FSCTL_GET_REPARSE_POINT
+FSCTL_SET_REPARSE_POINT
+GetFileAttributesW
+GetFileInformationByHandle
+GetFileInformationByHandleEx
+GetFileSizeEx
+GetFileType
+GETFINALPATHNAMEBYHANDLE_FLAGS
+GetFinalPathNameByHandleW
+GetFullPathNameW
+INVALID_FILE_ATTRIBUTES
+IO_REPARSE_TAG_MOUNT_POINT
+IO_REPARSE_TAG_SYMLINK
+LOCKFILE_EXCLUSIVE_LOCK
+LOCKFILE_FAIL_IMMEDIATELY
+LockFileEx
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Haskell Date and Time Libraries
+DESCRIPTION: Provides an overview of key date and time libraries and their core components available in Haskell, with links to official documentation.
+SOURCE: https://github.com/rust-lang/rust/blob/master/__wiki__/Lib-datetime.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+Data.Time
+```
+
+----------------------------------------
+
+TITLE: Common Regular Expression API Structures and Functions
+DESCRIPTION: This section outlines common API patterns observed in various regular expression libraries, including separate types for compiled regex and search results, compilation options, and core search, replace, and split functionalities.
+SOURCE: https://github.com/rust-lang/rust/blob/master/__wiki__/Lib-re.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Common Regex API Patterns:
+  - Separate types for compiled regex and search results:
+    - SearchResult:
+      - start: int
+      - end: int
+      - groups: list (or equivalent)
+  - Function for compiling a regex:
+    - compile(pattern: str, options: dict) -> CompiledRegex
+      - options:
+        - ignore_case: bool
+        - multiline: bool (for ^/$ matching line boundaries)
+        - bytes_vs_unicode: enum (specify input type)
+        - verbose_mode: bool (whitespace ignored unless escaped)
+  - Function for searching:
+    - search(compiled_regex: CompiledRegex, text: str, start_index: int = 0, end_index: int = None) -> SearchResult | None
+    - match(compiled_regex: CompiledRegex, text: str) -> SearchResult | None (anchored to start)
+    - full_match(compiled_regex: CompiledRegex, text: str) -> SearchResult | None (anchored to full string)
+  - Function for search and replace:
+    - replace(compiled_regex: CompiledRegex, text: str, replacement: str, count: int = -1) -> str
+  - Function for splitting text by a regex:
+    - split(compiled_regex: CompiledRegex, text: str, maxsplit: int = 0) -> list[str]
+```
+
+----------------------------------------
+
+TITLE: APIDOC: Markdown Smart Punctuation Mappings
+DESCRIPTION: This table documents the automatic conversion of common ASCII punctuation sequences into their corresponding fancy Unicode characters by `rustdoc`'s smart punctuation feature.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustdoc/src/how-to-write-documentation.md#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+Smart Punctuation Mappings:
+  -- : –
+  --- : —
+  ... : …
+  " : “ or ”, depending on context
+  ' : ‘ or ’, depending on context
+```
+
+----------------------------------------
+
+TITLE: Rust: Documenting a Macro with Doc Tests
+DESCRIPTION: Provides an example of how to document a Rust macro using doc tests. It highlights the need for `#[macro_use] extern crate` and `fn main()` boilerplate within the doc test, which can be hidden with `#` comments to keep the documentation clean and focused on the macro's usage.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustdoc/src/write-documentation/documentation-tests.md#_snippet_11
+
+LANGUAGE: Rust
+CODE:
+```
+/// Panic with a given message unless an expression evaluates to true.
+///
+/// # Examples
+///
+/// ```
+/// # #[macro_use] extern crate foo;
+/// # fn main() {
+/// panic_unless!(1 + 1 == 2, “Math is broken.”);
+/// # }
+/// ```
+///
+/// ```should_panic
+/// # #[macro_use] extern crate foo;
+/// # fn main() {
+/// panic_unless!(true == false, “I’m broken.”);
+/// # }
+/// ```
+#[macro_export]
+macro_rules! panic_unless {
+    ($condition:expr, $($rest:expr),+) => ({ if ! $condition { panic!($($rest),+); } });
+}
+# fn main() {}
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Python Date and Time Libraries
+DESCRIPTION: Provides an overview of key date and time libraries and their core components available in Python, with links to official documentation.
+SOURCE: https://github.com/rust-lang/rust/blob/master/__wiki__/Lib-datetime.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+builtin:
+  datetime:
+    distinguishes between "naive" and "aware" date/time objects
+    datetime.date
+    datetime.time
+```
+
+----------------------------------------
+
+TITLE: Incorrect Rust Doc Inline with Anonymous Import
+DESCRIPTION: This example demonstrates the incorrect usage of `#[doc(inline)]` with an anonymous import (`use foo::Foo as _`), which results in an error because anonymous imports are always `no_inline`.
+SOURCE: https://github.com/rust-lang/rust/blob/master/compiler/rustc_error_codes/src/error_codes/E0780.md#_snippet_0
+
+LANGUAGE: Rust
+CODE:
+```
+#[doc(inline)] // error: invalid doc argument
+pub use foo::Foo as _;
+```
+
+----------------------------------------
+
+TITLE: Rust `map` and `?` Operator Usage Example
+DESCRIPTION: A concise Rust code snippet demonstrating the use of the `map` method on an `ipsum` object, applying a closure `dolor.sit()`, and utilizing the `?` operator for ergonomic error propagation.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/tools/rustfmt/Configurations.md#_snippet_110
+
+LANGUAGE: Rust
+CODE:
+```
+fn main() {
+    let lorem = ipsum.map(|dolor| dolor.sit())?;
+}
+```
+
+----------------------------------------
+
+TITLE: C function signature for FFI example
+DESCRIPTION: A C function signature used as an example for Foreign Function Interface (FFI) bindings. It demonstrates a common pattern for C library functions that take a pointer and return an integer.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustdoc/src/write-documentation/the-doc-attribute.md#_snippet_17
+
+LANGUAGE: C
+CODE:
+```
+int lib_name_do_something(Obj *obj);
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Java Date and Time Libraries
+DESCRIPTION: Provides an overview of key date and time libraries and their core components available in Java, with links to official documentation.
+SOURCE: https://github.com/rust-lang/rust/blob/master/__wiki__/Lib-datetime.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+JSR-310
+Joda-Time:
+  DateTime: the datetime as milliseconds from the Unix epoch and a Chronology (calendar system).
+  Chronology
+  LocalDate: a date without a time zone.
+  LocalTime: a time without a time zone.
+  LocalDateTime: a datetime without a time zone.
+java.util:
+  java.util.Date: a time period with millisecond duration
+  java.util.Calendar
+  java.util.GregorianCalendar
+  java.util.TimeZone
+  java.util.SimpleTimeZone
+```
+
+----------------------------------------
+
+TITLE: Automatically Generate #[doc(cfg)] with doc_auto_cfg
+DESCRIPTION: Demonstrates how `doc_auto_cfg` automatically generates `#[doc(cfg)]` attributes for conditional compilation. It shows examples for Windows, Unix, and feature-gated structs, and how to hide the `doc` configuration using `doc_cfg_hide`.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustdoc/src/unstable-features.md#_snippet_3
+
+LANGUAGE: Rust
+CODE:
+```
+#![feature(doc_auto_cfg)]
+
+/// Token struct that can only be used on Windows.
+#[cfg(any(windows, doc))]
+pub struct WindowsToken;
+
+/// Token struct that can only be used on Unix.
+#[cfg(any(unix, doc))]
+pub struct UnixToken;
+
+/// Token struct that is only available with the `serde` feature
+#[cfg(feature = "serde")]
+#[derive(serde::Deserialize)]
+pub struct SerdeToken;
+```
+
+LANGUAGE: Rust
+CODE:
+```
+#![feature(doc_cfg_hide)]
+#![doc(cfg_hide(doc))]
+```
+
+----------------------------------------
+
+TITLE: API Documentation for Lexical Analysis
+DESCRIPTION: Describes the lexing phase of the Rust compiler, which converts the user program into a stream of tokens.
+SOURCE: https://github.com/rust-lang/rust/blob/master/src/doc/rustc-dev-guide/src/overview.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+Lexical Analysis:
+  Guide: Lexing and Parsing
+  Lexer Definition: rustc_lexer
+  Main Entry Point: rustc_lexer::cursor::Cursor::advance_token
+```

@@ -1,0 +1,1813 @@
+TITLE: Go API: net/http
+DESCRIPTION: API documentation for the Go `net/http` package, detailing its types, methods, functions, and constants.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.3.txt#_snippet_11
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package: net/http
+
+Type: Client struct
+  Fields:
+    Timeout time.Duration
+
+Type: ConnState int
+  Methods:
+    (ConnState) String() string
+
+Type: Response struct
+  Fields:
+    TLS *tls.ConnectionState
+
+Type: Server struct
+  Fields:
+    ConnState func(net.Conn, ConnState)
+    ErrorLog *log.Logger
+  Methods:
+    (*Server) SetKeepAlivesEnabled(bool)
+
+Type: Transport struct
+  Fields:
+    TLSHandshakeTimeout time.Duration
+
+Constants:
+  StateActive = 1
+  StateActive ConnState
+  StateClosed = 4
+  StateClosed ConnState
+  StateHijacked = 3
+  StateHijacked ConnState
+  StateIdle = 2
+  StateIdle ConnState
+  StateNew = 0
+  StateNew ConnState
+```
+
+----------------------------------------
+
+TITLE: Go API: regexp/syntax
+DESCRIPTION: API documentation for the Go `regexp/syntax` package, detailing its types, methods, functions, and constants.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.3.txt#_snippet_12
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package: regexp/syntax
+
+Type: Inst
+  Methods:
+    (*Inst) MatchRunePos(int32) int
+
+Type: InstOp
+  Methods:
+    (InstOp) String() string
+```
+
+----------------------------------------
+
+TITLE: Go API: debug/plan9obj
+DESCRIPTION: API documentation for the Go `debug/plan9obj` package, detailing its types, methods, functions, and constants.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.3.txt#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package: debug/plan9obj
+
+Type: File struct
+  Fields:
+    Sections []*Section
+    embedded FileHeader
+  Methods:
+    (*File) Symbols() ([]Sym, error)
+
+Type: FileHeader struct
+  Fields:
+    Bss uint32
+    Entry uint64
+    Magic uint32
+    PtrSize int
+
+Type: Section struct
+  Fields:
+    embedded SectionHeader
+    embedded io.ReaderAt
+  Methods:
+    (*Section) Data() ([]uint8, error)
+    (*Section) Open() io.ReadSeeker
+    (Section) ReadAt([]uint8, int64) (int, error)
+
+Type: SectionHeader struct
+  Fields:
+    Name string
+    Offset uint32
+    Size uint32
+
+Type: Sym struct
+  Fields:
+    Name string
+    Type int32
+    Value uint64
+```
+
+----------------------------------------
+
+TITLE: Go API: go/build
+DESCRIPTION: API documentation for the Go `go/build` package, detailing its types, methods, functions, and constants.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.3.txt#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package: go/build
+
+Type: Package struct
+  Fields:
+    MFiles []string
+```
+
+----------------------------------------
+
+TITLE: Go API: net
+DESCRIPTION: API documentation for the Go `net` package, detailing its types, methods, functions, and constants.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.3.txt#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package: net
+
+Type: Dialer struct
+  Fields:
+    KeepAlive time.Duration
+```
+
+----------------------------------------
+
+TITLE: Go API: math/big
+DESCRIPTION: API documentation for the Go `math/big` package, detailing its types, methods, functions, and constants.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.3.txt#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package: math/big
+
+Type: Int
+  Methods:
+    (*Int) MarshalText() ([]uint8, error)
+    (*Int) UnmarshalText([]uint8) error
+
+Type: Rat
+  Methods:
+    (*Rat) MarshalText() ([]uint8, error)
+    (*Rat) UnmarshalText([]uint8) error
+```
+
+----------------------------------------
+
+TITLE: Go `net/http/pprof` Package API Reference
+DESCRIPTION: Provides API documentation for the Go `net/http/pprof` package, detailing its functions, methods, types, and variables.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.5.txt#_snippet_52
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http/pprof:
+  func Trace(http.ResponseWriter, *http.Request)
+```
+
+----------------------------------------
+
+TITLE: Go Module and Source File Definitions for Examples
+DESCRIPTION: These are the supporting Go module (`go.mod`) and source code files (`.go` files) that define the project structure and dependencies used in the `go get` examples. They illustrate how `rsc.io/quote` is a test-only dependency for package `a` and how package `b` imports package `a`.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_test.txt#_snippet_6
+
+LANGUAGE: Go
+CODE:
+```
+module m
+```
+
+LANGUAGE: Go
+CODE:
+```
+package a
+```
+
+LANGUAGE: Go
+CODE:
+```
+package a_test
+
+import _ "rsc.io/quote"
+```
+
+LANGUAGE: Go
+CODE:
+```
+package b
+
+import _ "m/a"
+```
+
+LANGUAGE: Go
+CODE:
+```
+package b_test
+
+import _ "m/a"
+```
+
+----------------------------------------
+
+TITLE: Go net/http Package API Reference
+DESCRIPTION: API documentation for the `net/http` package, covering functions and methods related to HTTP server and client operations. This includes serving files from an `fs.FS` and handling path values in HTTP requests.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.22.txt#_snippet_16
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, func FileServerFS(fs.FS) Handler
+pkg net/http, func NewFileTransportFS(fs.FS) RoundTripper
+pkg net/http, func ServeFileFS(ResponseWriter, *Request, fs.FS, string)
+pkg net/http, method (*Request) PathValue(string) string
+pkg net/http, method (*Request) SetPathValue(string, string)
+```
+
+----------------------------------------
+
+TITLE: bufio Package API Reference
+DESCRIPTION: API documentation for the `bufio` package, including methods for scanner buffer management and error variables.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.6.txt#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package: bufio
+  method (*Scanner) Buffer([]uint8, int)
+  var ErrFinalToken error
+```
+
+----------------------------------------
+
+TITLE: Go API: encoding/asn1
+DESCRIPTION: API documentation for the Go `encoding/asn1` package, detailing its types, methods, functions, and constants.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.3.txt#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package: encoding/asn1
+
+Type: ObjectIdentifier
+  Methods:
+    (ObjectIdentifier) String() string
+```
+
+----------------------------------------
+
+TITLE: Go net/http/httptrace Package API Reference
+DESCRIPTION: API documentation for the `net/http/httptrace` package, detailing callback functions within the `ClientTrace` struct for HTTP client events.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.11.txt#_snippet_17
+
+LANGUAGE: APIDOC
+CODE:
+```
+type ClientTrace struct, Got1xxResponse func(int, textproto.MIMEHeader) error
+type ClientTrace struct, WroteHeaderField func(string, []string)
+```
+
+----------------------------------------
+
+TITLE: Go `go doc` Specific Usage Examples
+DESCRIPTION: Illustrates practical examples of using the `go doc` command to retrieve documentation for packages, symbols, and methods using different argument formats, showing expected output (represented by '.').
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/doc.txt#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+go doc p/v2
+.
+
+go doc p/v2 Symbol
+.
+
+go doc p/v2 Symbol Method
+.
+
+go doc p/v2.Symbol
+.
+
+go doc p/v2.Symbol.Method
+.
+
+go doc Symbol
+.
+
+go doc Symbol Method
+.
+
+go doc Symbol.Method
+.
+
+go doc p/v2.Method
+.
+
+go doc p/v2 Method
+.
+
+go doc Method
+.
+```
+
+----------------------------------------
+
+TITLE: Import Example Go Package
+DESCRIPTION: A simple Go file for the 'example' package, importing 'example.com/p' to ensure its presence for documentation lookup. This file is part of the main module.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_doc_path.txt#_snippet_3
+
+LANGUAGE: Go
+CODE:
+```
+package example
+
+import _ "example.com/p"
+```
+
+----------------------------------------
+
+TITLE: Initial Go Module Configuration Files
+DESCRIPTION: Provides the baseline `go.mod` and `go.sum` file contents used as the starting point for the dependency management examples. These files define the module name, Go version, and initial direct dependencies.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_changes.txt#_snippet_3
+
+LANGUAGE: Go Module
+CODE:
+```
+module m
+
+go 1.16
+
+require rsc.io/sampler v1.0.0
+```
+
+LANGUAGE: Go Sum
+CODE:
+```
+rsc.io/sampler v1.0.0 h1:SRJnjyQ07sAtq6G4RcfJEmz8JxqLyj3PoGXG2VhbDWo=
+rsc.io/sampler v1.0.0/go.mod h1:cqxpM3ZVz9VtirqxZPmrWzkQ+UkiNiGtkrN+B+i8kx8=
+```
+
+----------------------------------------
+
+TITLE: rsc.io/sampler Go Package API Reference
+DESCRIPTION: API documentation for the `sampler` Go package, providing functions for localized text retrieval and language preference handling.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/mod/rsc.io_sampler_v1.3.1.txt#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package sampler:
+  Package sampler shows simple texts in a variety of languages.
+
+  Functions:
+    DefaultUserPrefs() []language.Tag
+      Description: Returns the default user language preferences.
+      Consults: $LC_ALL, $LC_MESSAGES, and $LANG environment variables, in that order.
+      Returns: A slice of language.Tag representing user preferences.
+
+    Hello(prefs ...language.Tag) string
+      Description: Returns a localized greeting.
+      Parameters:
+        prefs: Optional. A variadic slice of language.Tag representing preferred languages. If empty, DefaultUserPrefs is used.
+      Returns: A localized "Hello, world." string.
+
+    Glass(prefs ...language.Tag) string
+      Description: Returns a localized silly phrase.
+      Parameters:
+        prefs: Optional. A variadic slice of language.Tag representing preferred languages. If empty, DefaultUserPrefs is used.
+      Returns: A localized "I can eat glass and it doesn't hurt me." string.
+
+  Types:
+    type text struct
+      Description: A localized text structure.
+      Fields:
+        byTag: map[string]string - Maps language tags (string representation) to their translated text.
+        matcher: language.Matcher - Used to match preferred languages against available translations.
+
+      Methods:
+        func newText(s string) *text
+          Description: Creates a new localized text instance.
+          Parameters:
+            s: A multi-line string containing translations in the format "Language: tag: text".
+          Returns: A pointer to a new text struct.
+
+        func (t *text) find(prefs []language.Tag) string
+          Description: Finds the most suitable localized text based on preferences.
+          Parameters:
+            prefs: A slice of language.Tag representing preferred languages.
+          Returns: The localized string matching the best preferred language. Handles RTL formatting.
+```
+
+----------------------------------------
+
+TITLE: Go encoding/base32 Package API Reference
+DESCRIPTION: API documentation for the `encoding/base32` package, covering padding constants and the `Encoding.WithPadding` method.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.9.txt#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package encoding/base32:
+  Constants:
+    NoPadding = -1 (int32)
+    StdPadding = 61 (int32)
+  Methods:
+    (Encoding) WithPadding(int32) *Encoding
+```
+
+----------------------------------------
+
+TITLE: Go `go/doc` Package API Reference
+DESCRIPTION: API documentation for the `go/doc` package in the Go standard library, detailing its methods, types, functions, and variables for extracting documentation from Go source code.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_22
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg go/doc, func IsPredeclared(string) bool
+```
+
+----------------------------------------
+
+TITLE: Go `net/http` Package API Reference
+DESCRIPTION: API documentation for the `net/http` package in the Go standard library, detailing its methods, types, functions, and variables for HTTP client and server implementations.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_26
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, const TrailerPrefix ideal-string
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, const TrailerPrefix = "Trailer:"
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, method (*Server) Close() error
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, method (*Server) Shutdown(context.Context) error
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, type Pusher interface { Push }
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, type Pusher interface, Push(string, *PushOptions) error
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, type PushOptions struct
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, type PushOptions struct, Header Header
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, type PushOptions struct, Method string
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, type Request struct, GetBody func() (io.ReadCloser, error)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, type Server struct, IdleTimeout time.Duration
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, type Server struct, ReadHeaderTimeout time.Duration
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, type Transport struct, ProxyConnectHeader Header
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, var ErrAbortHandler error
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, var ErrServerClosed error
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http, var NoBody noBody
+```
+
+----------------------------------------
+
+TITLE: Go `net/http` Package API Reference
+DESCRIPTION: Provides API documentation for the Go `net/http` package, detailing its functions, methods, types, and variables.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.5.txt#_snippet_50
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http:
+  type Request struct, Cancel <-chan struct
+```
+
+----------------------------------------
+
+TITLE: Go `net/http/httptrace` Package API Reference
+DESCRIPTION: API documentation for the `net/http/httptrace` package in the Go standard library, detailing its methods, types, functions, and variables for HTTP client tracing.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_27
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http/httptrace, type ClientTrace struct, TLSHandshakeDone func(tls.ConnectionState, error)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http/httptrace, type ClientTrace struct, TLSHandshakeStart func()
+```
+
+----------------------------------------
+
+TITLE: Go `runtime/trace` Package API Reference
+DESCRIPTION: Provides API documentation for the Go `runtime/trace` package, detailing its functions, methods, types, and variables.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.5.txt#_snippet_60
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg runtime/trace:
+  func Start(io.Writer) error
+  func Stop()
+```
+
+----------------------------------------
+
+TITLE: rsc.io/sampler Package API Documentation
+DESCRIPTION: API documentation for the `sampler` package, detailing functions for detecting user language preferences, retrieving localized greetings, and internal structures for managing translated texts.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/mod/rsc.io_sampler_v1.2.0.txt#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package sampler // import "rsc.io/sampler"
+
+DefaultUserPrefs() []language.Tag
+  Description: Returns the default user language preferences. It consults the $LC_ALL, $LC_MESSAGES, and $LANG environment variables, in that order.
+  Returns: A slice of language.Tag representing user preferences.
+
+Hello(prefs ...language.Tag) string
+  Description: Returns a localized greeting. If no prefs are given, Hello uses DefaultUserPrefs.
+  Parameters:
+    prefs: Optional, variadic slice of language.Tag representing preferred languages.
+  Returns: A string containing the localized greeting.
+
+A text is a localized text.
+type text struct
+  Description: A struct representing a localized text, containing a map of translations by tag and a language matcher.
+  Fields:
+    byTag: map[string]string - Stores translations mapped by language tag string.
+    matcher: language.Matcher - Used to match preferred languages to available translations.
+  Methods:
+    newText(s string) *text
+      Description: Creates a new localized text object from a multi-line string of translations.
+      Parameters:
+        s: string - A string containing translations in the format "Language: tag: text".
+      Returns: A pointer to a new text object.
+    find(prefs []language.Tag) string
+      Description: Finds the appropriate localized text based on the given language preferences. Handles RTL text formatting.
+      Parameters:
+        prefs: []language.Tag - A slice of preferred language tags.
+      Returns: A string containing the matched localized text.
+```
+
+----------------------------------------
+
+TITLE: Go Get Package from Submodule Without Explicit Upgrade
+DESCRIPTION: This example illustrates `go get`'s ability to find and fetch a package from a submodule without explicitly specifying an upgrade version. It starts with a fresh module, then fetches the package, relying on the module system to resolve the latest compatible version. The `go list` command confirms the resolved module version.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_moved.txt#_snippet_2
+
+LANGUAGE: go
+CODE:
+```
+rm go.mod
+go mod init example.com/foo
+go get example.com/split/subpkg
+go list -m all
+```
+
+----------------------------------------
+
+TITLE: Go runtime/trace Package API Reference
+DESCRIPTION: API documentation for the `runtime/trace` package, including functions for checking trace enablement and logging events.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.11.txt#_snippet_22
+
+LANGUAGE: APIDOC
+CODE:
+```
+func IsEnabled() bool
+func Log(context.Context, string, string)
+```
+
+----------------------------------------
+
+TITLE: Main Example Go File
+DESCRIPTION: A minimal Go source file for the `example` module, demonstrating a simple import of `example.net/a` to establish a dependency.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_patch.txt#_snippet_6
+
+LANGUAGE: go
+CODE:
+```
+package example
+
+import _ "example.net/a"
+```
+
+----------------------------------------
+
+TITLE: Go Get Package from Parent Module Without Explicit Upgrade
+DESCRIPTION: This example illustrates `go get`'s ability to find and fetch a package from a parent module without explicitly specifying an upgrade version. It starts with a fresh module, then fetches the package, relying on the module system to resolve the latest compatible version. The `go list` command confirms the resolved module version.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_moved.txt#_snippet_5
+
+LANGUAGE: go
+CODE:
+```
+rm go.mod
+go mod init example.com/foo
+go get example.com/join/subpkg@v1.1.0
+go list -m all
+```
+
+----------------------------------------
+
+TITLE: Go testing Package API Reference
+DESCRIPTION: API documentation for the Go `testing` package, detailing its exported functions, methods, types, variables, and constants across various platforms where applicable.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_40
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg testing, func CoverMode() string
+pkg testing, func MainStart(testDeps, []InternalTest, []InternalBenchmark, []InternalExample) *M
+pkg testing, method (*B) Name() string
+pkg testing, method (*T) Name() string
+pkg testing, type TB interface, Name() string
+```
+
+----------------------------------------
+
+TITLE: Go `net/http/fcgi` Package API Reference
+DESCRIPTION: Provides API documentation for the Go `net/http/fcgi` package, detailing its functions, methods, types, and variables.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.5.txt#_snippet_51
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http/fcgi:
+  var ErrConnClosed error
+  var ErrRequestAborted error
+```
+
+----------------------------------------
+
+TITLE: Go debug/plan9obj Package Functions and File Methods
+DESCRIPTION: Provides functions to create and open Plan 9 object files from an `io.ReaderAt` or a file path, along with methods on the `*File` type to close the file and retrieve specific sections by name.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.3.txt#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg debug/plan9obj
+
+func NewFile(r io.ReaderAt) (*File, error)
+func Open(name string) (*File, error)
+
+// Methods on *File
+func (f *File) Close() error
+func (f *File) Section(name string) *Section
+```
+
+----------------------------------------
+
+TITLE: Go runtime Package API Reference
+DESCRIPTION: API documentation for the Go `runtime` package, detailing its exported functions, methods, types, variables, and constants across various platforms where applicable.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_37
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg runtime, func MutexProfile([]BlockProfileRecord) (int, bool)
+pkg runtime, func SetMutexProfileFraction(int) int
+pkg runtime, type MemStats struct, NumForcedGC uint32
+```
+
+----------------------------------------
+
+TITLE: Go go/build Package API Reference
+DESCRIPTION: API documentation for the `go/build` package, detailing its constants, types, methods, and functions.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.6.txt#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+go/build Package:
+  Constants:
+    IgnoreVendor = 8
+    IgnoreVendor ImportMode
+  Types:
+    Package struct:
+      InvalidGoFiles []string
+```
+
+----------------------------------------
+
+TITLE: Go `runtime` Package API Reference
+DESCRIPTION: Provides API documentation for the Go `runtime` package, detailing its functions, methods, types, and variables.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.5.txt#_snippet_59
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg runtime:
+  func ReadTrace() []uint8
+  func StartTrace() error
+  func StopTrace()
+  type MemStats struct, GCCPUFraction float64
+```
+
+----------------------------------------
+
+TITLE: Go `strings` Package API Reference
+DESCRIPTION: Provides API documentation for the Go `strings` package, detailing its functions, methods, types, and variables.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.5.txt#_snippet_61
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg strings:
+  func Compare(string, string) int
+  func LastIndexByte(string, uint8) int
+  method (*Reader) Size() int64
+```
+
+----------------------------------------
+
+TITLE: Go time Package Methods
+DESCRIPTION: Documents key methods from the `time` package. This includes the `Abs` method for `Duration` to get its absolute value, and `ZoneBounds` for `Time` to determine the start and end times of its current time zone.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.19.txt#_snippet_23
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg time, method (Duration) Abs() Duration
+pkg time, method (Time) ZoneBounds() (Time, Time)
+```
+
+----------------------------------------
+
+TITLE: Go plugin Package API Reference
+DESCRIPTION: API documentation for the Go `plugin` package, detailing its exported functions, methods, types, variables, and constants across various platforms where applicable.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_35
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg plugin, func Open(string) (*Plugin, error)
+pkg plugin, method (*Plugin) Lookup(string) (Symbol, error)
+pkg plugin, type Plugin struct
+pkg plugin, type Symbol interface {}
+```
+
+----------------------------------------
+
+TITLE: Go go/doc Package API: Package Methods
+DESCRIPTION: Provides an overview of methods available on the `Package` type within the `go/doc` package. These methods facilitate the generation of HTML, Markdown, and plain text documentation, and provide access to parser and printer instances for Go package documentation.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.19.txt#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg go/doc, method (*Package) HTML(string) []uint8
+pkg go/doc, method (*Package) Markdown(string) []uint8
+pkg go/doc, method (*Package) Parser() *comment.Parser
+pkg go/doc, method (*Package) Printer() *comment.Printer
+pkg go/doc, method (*Package) Synopsis(string) string
+pkg go/doc, method (*Package) Text(string) []uint8
+```
+
+----------------------------------------
+
+TITLE: s390x Load Multiple Registers Example
+DESCRIPTION: Demonstrates loading a range of registers (R5, R6, R7) from memory starting at the address specified by R9 using the LMG (Load Multiple) instruction in IBM z/Architecture (s390x) Go assembly.
+SOURCE: https://github.com/golang/go/blob/master/doc/asm.html#_snippet_26
+
+LANGUAGE: Go Assembly
+CODE:
+```
+LMG (R9), R5, R7
+```
+
+----------------------------------------
+
+TITLE: Go `encoding/base64` Package API Reference
+DESCRIPTION: API documentation for the `encoding/base64` package in the Go standard library, detailing its methods, types, functions, and variables related to Base64 encoding and decoding.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_19
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg encoding/base64, method (Encoding) Strict() *Encoding
+```
+
+----------------------------------------
+
+TITLE: Go `net/http/httputil` Package API Reference
+DESCRIPTION: API documentation for the `net/http/httputil` package in the Go standard library, detailing its methods, types, functions, and variables for HTTP utilities.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_28
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/http/httputil, type ReverseProxy struct, ModifyResponse func(*http.Response) error
+```
+
+----------------------------------------
+
+TITLE: Go Get All: Including Test Dependencies
+DESCRIPTION: The `go get all` command should consider test dependencies, regardless of whether the `-t` flag is explicitly used. This example confirms that `rsc.io/quote` (a test dependency of `m/a`) is added to `go.mod` when `go get all` is executed.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_test.txt#_snippet_5
+
+LANGUAGE: Shell
+CODE:
+```
+cp go.mod.empty go.mod
+go get all
+grep 'rsc.io/quote v1.5.2$' go.mod
+```
+
+----------------------------------------
+
+TITLE: Go `mime` Package API Reference
+DESCRIPTION: Provides API documentation for the Go `mime` package, detailing its functions, methods, types, and variables.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.5.txt#_snippet_47
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg mime:
+  func ExtensionsByType(string) ([]string, error)
+  method (*WordDecoder) Decode(string) (string, error)
+  method (*WordDecoder) DecodeHeader(string) (string, error)
+  method (WordEncoder) Encode(string, string) string
+  type WordDecoder struct
+  type WordDecoder struct, CharsetReader func(string, io.Reader) (io.Reader, error)
+  type WordEncoder uint8
+```
+
+----------------------------------------
+
+TITLE: Example go.mod File Content
+DESCRIPTION: Presents the initial, minimal content of the 'go.mod' file used in this test. This file serves as a baseline and is expected to be modified by the 'go get' command during the test execution.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_fossil.txt#_snippet_2
+
+LANGUAGE: Go
+CODE:
+```
+module x
+```
+
+----------------------------------------
+
+TITLE: Go go/doc/comment Package API: Functions and Methods
+DESCRIPTION: Documents key functions and methods for comment parsing and rendering within the `go/doc/comment` package. This includes utilities for default package lookup, ID generation for headings, list property checks, and core parsing/printing operations for `Doc` objects.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.19.txt#_snippet_11
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg go/doc/comment, func DefaultLookupPackage(string) (string, bool)
+pkg go/doc/comment, method (*DocLink) DefaultURL(string) string
+pkg go/doc/comment, method (*Heading) DefaultID() string
+pkg go/doc/comment, method (*List) BlankBefore() bool
+pkg go/doc/comment, method (*List) BlankBetween() bool
+pkg go/doc/comment, method (*Parser) Parse(string) *Doc
+pkg go/doc/comment, method (*Printer) Comment(*Doc) []uint8
+pkg go/doc/comment, method (*Printer) HTML(*Doc) []uint8
+pkg go/doc/comment, method (*Printer) Markdown(*Doc) []uint8
+pkg go/doc/comment, method (*Printer) Text(*Doc) []uint8
+```
+
+----------------------------------------
+
+TITLE: Go Get with -t: Including Test Dependencies
+DESCRIPTION: The `-t` flag instructs `go get` to consider test dependencies of the named package. This example shows that `rsc.io/quote` (a test dependency of `m/a`) is correctly added to `go.mod` when `go get -t m/a` is run.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_test.txt#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+cp go.mod.empty go.mod
+go get -t m/a
+grep 'rsc.io/quote v1.5.2$' go.mod
+```
+
+----------------------------------------
+
+TITLE: Go `mime/quotedprintable` Package API Reference
+DESCRIPTION: Provides API documentation for the Go `mime/quotedprintable` package, detailing its functions, methods, types, and variables.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.5.txt#_snippet_48
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg mime/quotedprintable:
+  func NewReader(io.Reader) *Reader
+  func NewWriter(io.Writer) *Writer
+  method (*Reader) Read([]uint8) (int, error)
+  method (*Writer) Close() error
+  method (*Writer) Write([]uint8) (int, error)
+  type Reader struct
+  type Writer struct
+  type Writer struct, Binary bool
+```
+
+----------------------------------------
+
+TITLE: Go go/token Package API Reference
+DESCRIPTION: API documentation for the `go/token` package, detailing methods of the `File` type for managing line and column information.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.11.txt#_snippet_13
+
+LANGUAGE: APIDOC
+CODE:
+```
+method (*File) AddLineColumnInfo(int, string, int, int)
+```
+
+----------------------------------------
+
+TITLE: Go html/template Package API Reference
+DESCRIPTION: API documentation for the `html/template` package, detailing its constants, types, methods, and functions.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.6.txt#_snippet_12
+
+LANGUAGE: APIDOC
+CODE:
+```
+html/template Package:
+  Methods:
+    (*Template) DefinedTemplates() string
+  Functions:
+    IsTrue(interface{}) (bool, bool)
+```
+
+----------------------------------------
+
+TITLE: Go encoding/base64 Package API Reference
+DESCRIPTION: API documentation for the `encoding/base64` package, providing details on constants, methods, and variables for Base64 encoding and decoding operations.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.5.txt#_snippet_16
+
+LANGUAGE: Go
+CODE:
+```
+const NoPadding int32 = -1
+```
+
+LANGUAGE: Go
+CODE:
+```
+const StdPadding int32 = 61
+```
+
+LANGUAGE: Go
+CODE:
+```
+func (Encoding) WithPadding(int32) *Encoding
+```
+
+LANGUAGE: Go
+CODE:
+```
+var RawStdEncoding *Encoding
+```
+
+LANGUAGE: Go
+CODE:
+```
+var RawURLEncoding *Encoding
+```
+
+----------------------------------------
+
+TITLE: Go `encoding/json` Package API Reference
+DESCRIPTION: API documentation for the `encoding/json` package in the Go standard library, detailing its methods, types, functions, and variables related to JSON encoding and decoding.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_20
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg encoding/json, method (RawMessage) MarshalJSON() ([]uint8, error)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg encoding/json, type UnmarshalTypeError struct, Field string
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg encoding/json, type UnmarshalTypeError struct, Struct string
+```
+
+----------------------------------------
+
+TITLE: Go hash/fnv Package API Reference
+DESCRIPTION: API documentation for the `hash/fnv` package, detailing functions for creating FNV-128 and FNV-128a hash.Hash instances.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.9.txt#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package hash/fnv:
+  Functions:
+    New128() hash.Hash
+    New128a() hash.Hash
+```
+
+----------------------------------------
+
+TITLE: Go net/http/httputil Package API Reference
+DESCRIPTION: API documentation for the `net/http/httputil` package, specifically the `ErrorHandler` field of the `ReverseProxy` struct.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.11.txt#_snippet_18
+
+LANGUAGE: APIDOC
+CODE:
+```
+type ReverseProxy struct, ErrorHandler func(http.ResponseWriter, *http.Request, error)
+```
+
+----------------------------------------
+
+TITLE: Handle Transitive Dependency Removal with go get
+DESCRIPTION: Shows how `go get` automatically removes explicit dependencies that are no longer required after a primary module is downgraded. This example sets up a scenario with a `replace` directive to demonstrate the removal of a transitive dependency.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_changes.txt#_snippet_2
+
+LANGUAGE: Go
+CODE:
+```
+cp go.mod.usequote go.mod
+go get rsc.io/quote@v1.5.1
+stderr '^go: downgraded rsc.io/quote v1.5.2 => v1.5.1$'
+stderr '^go: removed usequote v0.0.0$'
+```
+
+----------------------------------------
+
+TITLE: Go encoding/json Package API Reference
+DESCRIPTION: API documentation for the `encoding/json` package, outlining methods and types for JSON encoding and decoding, including tokenization and error handling.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.5.txt#_snippet_17
+
+LANGUAGE: Go
+CODE:
+```
+func (*Decoder) More() bool
+```
+
+LANGUAGE: Go
+CODE:
+```
+func (*Decoder) Token() (Token, error)
+```
+
+LANGUAGE: Go
+CODE:
+```
+func (Delim) String() string
+```
+
+LANGUAGE: Go
+CODE:
+```
+type Delim int32
+```
+
+LANGUAGE: Go
+CODE:
+```
+type Token interface {}
+```
+
+LANGUAGE: Go
+CODE:
+```
+type UnmarshalTypeError struct {
+  Offset int64
+}
+```
+
+----------------------------------------
+
+TITLE: Go Get with Explicit Version and @patch
+DESCRIPTION: Demonstrates that `go get` resolves `@patch` against the version of a module selected at the start of the command, not after other explicit version changes. This can lead to conflicts if the explicitly requested module requires a different version of the patched dependency.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_patch.txt#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+! go get example.net/a@v0.2.0 example.net/b@patch
+stderr '^go: example.net/a@v0.2.0 requires example.net/b@v0.2.0, not example.net/b@patch \(v0.1.1\)$'
+cmp go.mod go.mod.orig
+```
+
+----------------------------------------
+
+TITLE: Go Get Module Upgrade Behavior Without Package Match
+DESCRIPTION: Shows that if a `go get` pattern matches no packages within a module, the module is not upgraded, even if its path is a prefix of the pattern. This example explicitly adds a `require` for `example.com/nest@v1.0.0` and then attempts to get a sub-package, verifying that the `nest` module remains at `v1.0.0`.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_patterns.txt#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+cp go.mod.orig go.mod
+go mod edit -require example.com/nest@v1.0.0
+go get example.com/nest/sub/y...
+grep 'example.com/nest/sub v1.0.0' go.mod
+grep 'example.com/nest v1.0.0' go.mod
+```
+
+----------------------------------------
+
+TITLE: Go pkg runtime/trace API Reference
+DESCRIPTION: Outlines the API for the `runtime/trace` package, including functions for creating and managing flight recorders, methods for controlling tracing, and definitions for `FlightRecorder` and `FlightRecorderConfig` types with their fields.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.25.txt#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+func NewFlightRecorder(FlightRecorderConfig) *FlightRecorder
+method (*FlightRecorder) Enabled() bool
+method (*FlightRecorder) Start() error
+method (*FlightRecorder) Stop()
+method (*FlightRecorder) WriteTo(io.Writer) (int64, error)
+type FlightRecorder struct
+type FlightRecorderConfig struct
+type FlightRecorderConfig struct, MaxBytes uint64
+type FlightRecorderConfig struct, MinAge time.Duration
+```
+
+----------------------------------------
+
+TITLE: Go encoding/json Package API Reference
+DESCRIPTION: API documentation for the `encoding/json` package, detailing the `Valid` function for JSON validation.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.9.txt#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package encoding/json:
+  Functions:
+    Valid([]uint8) bool
+```
+
+----------------------------------------
+
+TITLE: Go go/types Package API Reference
+DESCRIPTION: API documentation for the `go/types` package, including the `SizesFor` function and the `TypeName.IsAlias` method.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.9.txt#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package go/types:
+  Functions:
+    SizesFor(string, string) Sizes
+  Methods:
+    (*TypeName) IsAlias() bool
+```
+
+----------------------------------------
+
+TITLE: Go Get with -t -u: Updating Test Dependencies
+DESCRIPTION: The `-t -u` flags together instruct `go get` to update test dependencies of the named package. This example first sets `rsc.io/quote` to an older version (`v1.5.1`) and then demonstrates that `go get -t -u m/a` successfully updates it to the latest compatible version (`v1.5.2`).
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_test.txt#_snippet_3
+
+LANGUAGE: Shell
+CODE:
+```
+cp go.mod.empty go.mod
+go mod edit -require=rsc.io/quote@v1.5.1
+go get -t -u m/a
+grep 'rsc.io/quote v1.5.2$' go.mod
+```
+
+----------------------------------------
+
+TITLE: Go regexp/syntax Package API Reference
+DESCRIPTION: API documentation for the `regexp/syntax` package, detailing the `String` method for the `Op` type.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.11.txt#_snippet_21
+
+LANGUAGE: APIDOC
+CODE:
+```
+method (Op) String() string
+```
+
+----------------------------------------
+
+TITLE: Go net Package API Reference
+DESCRIPTION: API documentation for the Go `net` package, detailing its exported functions, methods, types, variables, and constants across various platforms where applicable.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_32
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net, var DefaultResolver *Resolver
+```
+
+----------------------------------------
+
+TITLE: Go go/ast.IndexListExpr.Pos Method
+DESCRIPTION: Documents the `Pos` method for the `go/ast.IndexListExpr` type. This method returns the position of the start of the expression.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.18.txt#_snippet_15
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg go/ast, method (*IndexListExpr) Pos() token.Pos
+```
+
+----------------------------------------
+
+TITLE: Example Go Source File with Dependency Import
+DESCRIPTION: A minimal Go source file (`a.go`) demonstrating the import of the `rsc.io/quote` package. This file would typically be part of the module whose dependencies are managed by `go get`.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_work.txt#_snippet_5
+
+LANGUAGE: go
+CODE:
+```
+package a
+
+import _ "rsc.io/quote"
+```
+
+----------------------------------------
+
+TITLE: Go Goroutine Creation Synchronization Example
+DESCRIPTION: This Go code snippet demonstrates the synchronization behavior of goroutine creation. The `go` statement that starts a new goroutine is synchronized before the start of the goroutine's execution, ensuring that operations performed before the `go` statement are visible to the new goroutine. In this example, the string 'a' is modified before `f()` is launched as a goroutine, guaranteeing that `f()` will print the updated value.
+SOURCE: https://github.com/golang/go/blob/master/doc/go_mem.html#_snippet_0
+
+LANGUAGE: Go
+CODE:
+```
+var a string
+
+func f() {
+	print(a)
+}
+
+func hello() {
+	a = "hello, world"
+	go f()
+}
+```
+
+----------------------------------------
+
+TITLE: Go `net/mail` Package API Reference
+DESCRIPTION: Provides API documentation for the Go `net/mail` package, detailing its functions, methods, types, and variables.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.5.txt#_snippet_53
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/mail:
+  method (*AddressParser) Parse(string) (*Address, error)
+  method (*AddressParser) ParseList(string) ([]*Address, error)
+  type AddressParser struct
+  type AddressParser struct, WordDecoder *mime.WordDecoder
+```
+
+----------------------------------------
+
+TITLE: Go `database/sql` Package API Reference
+DESCRIPTION: API documentation for the `database/sql` package in the Go standard library, detailing its methods, types, functions, and variables related to SQL database interaction.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_17
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, method (*Stmt) QueryContext(context.Context, ...interface{}) (*Rows, error)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, method (*Stmt) QueryRowContext(context.Context, ...interface{}) *Row
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, method (*Tx) ExecContext(context.Context, string, ...interface{}) (Result, error)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, method (*Tx) PrepareContext(context.Context, string) (*Stmt, error)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, method (*Tx) QueryContext(context.Context, string, ...interface{}) (*Rows, error)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, method (*Tx) QueryRowContext(context.Context, string, ...interface{}) *Row
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, method (*Tx) StmtContext(context.Context, *Stmt) *Stmt
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, type ColumnType struct
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, type IsolationLevel int
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, type NamedArg struct
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, type NamedArg struct, Name string
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, type NamedArg struct, Value interface{}
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, type TxOptions struct
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, type TxOptions struct, Isolation IsolationLevel
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql, type TxOptions struct, ReadOnly bool
+```
+
+----------------------------------------
+
+TITLE: Go net/url Package API Reference
+DESCRIPTION: API documentation for the Go `net/url` package, detailing its exported functions, methods, types, variables, and constants across various platforms where applicable.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_33
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/url, method (*URL) MarshalBinary() ([]uint8, error)
+pkg net/url, method (*URL) Port() string
+pkg net/url, method (*URL) UnmarshalBinary([]uint8) error
+```
+
+----------------------------------------
+
+TITLE: go get with wildcard from clean state
+DESCRIPTION: Explores the behavior of `go get` when a wildcard pattern (`/...`) is appended to the package path, starting from a clean `go.mod` state. In this scenario, the nested module is chosen.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_ambiguous_pkg.txt#_snippet_6
+
+LANGUAGE: Bash
+CODE:
+```
+cp go.mod.orig go.mod
+
+go get example.net/ambiguous/nested/pkg/...@v0.1.0
+go list -m all
+stdout '^example.net/ambiguous/nested v0.1.0$'
+! stdout '^example.net/ambiguous '
+```
+
+----------------------------------------
+
+TITLE: Go image/png Package API Reference
+DESCRIPTION: API documentation for the `image/png` package, detailing the `Encoder` struct, `EncoderBuffer` type, and `EncoderBufferPool` interface.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.9.txt#_snippet_12
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package image/png:
+  Types:
+    Encoder struct:
+      BufferPool EncoderBufferPool
+    EncoderBuffer struct
+    EncoderBufferPool interface:
+      Get() *EncoderBuffer
+      Put(*EncoderBuffer)
+```
+
+----------------------------------------
+
+TITLE: Go Module Definition
+DESCRIPTION: A standard `go.mod` file defining a module named 'example' and specifying the Go version 1.21. This file is essential for Go module-aware commands like `go get` to understand the project's dependencies and structure.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_insecure_redirect.txt#_snippet_2
+
+LANGUAGE: Go
+CODE:
+```
+module example
+go 1.21
+```
+
+----------------------------------------
+
+TITLE: Go context Package API Reference
+DESCRIPTION: API documentation for functions, types, and variables within the `context` package, used for managing request-scoped values, cancellation signals, and deadlines across API boundaries.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.7.txt#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg context:
+  func Background() Context
+  func TODO() Context
+  func WithCancel(Context) (Context, CancelFunc)
+  func WithDeadline(Context, time.Time) (Context, CancelFunc)
+  func WithTimeout(Context, time.Duration) (Context, CancelFunc)
+  func WithValue(Context, interface{}, interface{}) Context
+  type CancelFunc func()
+  type Context interface { Deadline, Done, Err, Value }
+  type Context interface, Deadline() (time.Time, bool)
+  type Context interface, Done() <-chan struct
+  type Context interface, Err() error
+  type Context interface, Value(interface{}) interface{}
+  var Canceled error
+  var DeadlineExceeded error
+```
+
+----------------------------------------
+
+TITLE: Define a Simple Go Package
+DESCRIPTION: Illustrates the minimal structure of a Go source file, defining a package named `example`. This is the fundamental starting point for any Go program or library, indicating its organizational unit.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/build_negative_p.txt#_snippet_1
+
+LANGUAGE: Go
+CODE:
+```
+package example
+```
+
+----------------------------------------
+
+TITLE: Go log/slog Package API Reference
+DESCRIPTION: Detailed API documentation for the `log/slog` package in Go, including functions, types, methods, and their signatures.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.21.txt#_snippet_16
+
+LANGUAGE: APIDOC
+CODE:
+```
+Package: log/slog
+
+Functions:
+  func Warn(string, ...interface{})
+  func With(...interface{}) *Logger
+
+Types:
+  type Attr struct:
+    Fields:
+      Key string
+      Value Value
+    Methods:
+      (Attr) Equal(Attr) bool
+      (Attr) String() string
+
+  type Handler interface:
+    Methods:
+      Enabled(context.Context, Level) bool
+      Handle(context.Context, Record) error
+      WithAttrs([]Attr) Handler
+      WithGroup(string) Handler
+
+  type HandlerOptions struct:
+    Fields:
+      AddSource bool
+      Level Leveler
+      ReplaceAttr func([]string, Attr) Attr
+
+  type JSONHandler struct:
+    Methods:
+      (*JSONHandler) Enabled(context.Context, Level) bool
+      (*JSONHandler) Handle(context.Context, Record) error
+      (*JSONHandler) WithAttrs([]Attr) Handler
+      (*JSONHandler) WithGroup(string) Handler
+
+  type Kind int:
+    Methods:
+      (Kind) String() string
+
+  type Level int:
+    Methods:
+      (Level) Level() Level
+      (Level) MarshalJSON() ([]uint8, error)
+      (Level) MarshalText() ([]uint8, error)
+      (Level) String() string
+      (*Level) UnmarshalJSON([]uint8) error
+      (*Level) UnmarshalText([]uint8) error
+
+  type Leveler interface:
+    Methods:
+      Level() Level
+
+  type LevelVar struct:
+    Methods:
+      (*LevelVar) Level() Level
+      (*LevelVar) MarshalText() ([]uint8, error)
+      (*LevelVar) Set(Level)
+      (*LevelVar) String() string
+      (*LevelVar) UnmarshalText([]uint8) error
+
+  type Logger struct:
+    Methods:
+      (*Logger) DebugContext(context.Context, string, ...interface{})
+      (*Logger) Debug(string, ...interface{})
+      (*Logger) Enabled(context.Context, Level) bool
+      (*Logger) ErrorContext(context.Context, string, ...interface{})
+      (*Logger) Error(string, ...interface{})
+      (*Logger) Handler() Handler
+      (*Logger) InfoContext(context.Context, string, ...interface{})
+      (*Logger) Info(string, ...interface{})
+      (*Logger) LogAttrs(context.Context, Level, string, ...Attr)
+      (*Logger) Log(context.Context, Level, string, ...interface{})
+      (*Logger) WarnContext(context.Context, string, ...interface{})
+      (*Logger) Warn(string, ...interface{})
+      (*Logger) WithGroup(string) *Logger
+      (*Logger) With(...interface{}) *Logger
+
+  type LogValuer interface:
+    Methods:
+      LogValue() Value
+
+  type Record struct:
+    Fields:
+      Level Level
+      Message string
+    Methods:
+      (*Record) AddAttrs(...Attr)
+      (*Record) Add(...interface{})
+      (Record) Attrs(func(Attr) bool)
+      (Record) Clone() Record
+      (Record) NumAttrs() int
+
+  type TextHandler struct:
+    Methods:
+      (*TextHandler) Enabled(context.Context, Level) bool
+      (*TextHandler) Handle(context.Context, Record) error
+      (*TextHandler) WithAttrs([]Attr) Handler
+      (*TextHandler) WithGroup(string) Handler
+
+  type Value struct:
+    Methods:
+      (Value) Any() interface{}
+      (Value) Bool() bool
+      (Value) Duration() time.Duration
+      (Value) Equal(Value) bool
+      (Value) Float64() float64
+      (Value) Group() []Attr
+      (Value) Int64() int64
+      (Value) Kind() Kind
+      (Value) LogValuer() LogValuer
+      (Value) Resolve() Value
+      (Value) String() string
+      (Value) Time() time.Time
+      (Value) Uint64() uint64
+```
+
+----------------------------------------
+
+TITLE: Go go/types Package API Reference
+DESCRIPTION: API documentation for the `go/types` package, detailing its constants, types, methods, and functions.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.6.txt#_snippet_11
+
+LANGUAGE: APIDOC
+CODE:
+```
+go/types Package:
+  Types:
+    ImportMode int
+    ImporterFrom interface:
+      Import(string) (*Package, error)
+      ImportFrom(string, string, ImportMode) (*Package, error)
+  Methods:
+    (*Package) SetName(string)
+```
+
+----------------------------------------
+
+TITLE: Go image Package API Reference
+DESCRIPTION: API documentation for the `image` package, detailing its constants, types, methods, and functions.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.6.txt#_snippet_13
+
+LANGUAGE: APIDOC
+CODE:
+```
+image Package:
+  Types:
+    NYCbCrA struct:
+      A []uint8
+      AStride int
+      embedded YCbCr
+  Methods:
+    (*NYCbCrA) AOffset(int, int) int
+    (*NYCbCrA) At(int, int) color.Color
+    (*NYCbCrA) Bounds() Rectangle
+    (*NYCbCrA) COffset(int, int) int
+    (*NYCbCrA) ColorModel() color.Model
+    (*NYCbCrA) NYCbCrAAt(int, int) color.NYCbCrA
+    (*NYCbCrA) Opaque() bool
+    (*NYCbCrA) SubImage(Rectangle) Image
+    (*NYCbCrA) YCbCrAt(int, int) color.YCbCr
+    (*NYCbCrA) YOffset(int, int) int
+  Functions:
+    NewNYCbCrA(Rectangle, YCbCrSubsampleRatio) *NYCbCrA
+```
+
+----------------------------------------
+
+TITLE: Go Module File After Downgrade
+DESCRIPTION: Presents the `go.mod` file's content following a `go get` operation that downgrades a module. This example shows the resulting dependency versions and indirect markings.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_changes.txt#_snippet_5
+
+LANGUAGE: Go Module
+CODE:
+```
+module m
+
+go 1.16
+
+require (
+	golang.org/x/text v0.0.0-20170915032832-14c0d48ead0c // indirect
+	rsc.io/quote v1.3.0 // indirect
+)
+```
+
+----------------------------------------
+
+TITLE: Initial `go.mod` File Configuration
+DESCRIPTION: This represents the starting `go.mod` file for the `example.com/a` module, defining its module path and Go language version.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_work.txt#_snippet_2
+
+LANGUAGE: go.mod
+CODE:
+```
+module example.com/a
+
+go 1.25
+```
+
+----------------------------------------
+
+TITLE: Define database/sql.DB Methods
+DESCRIPTION: Methods of the `DB` struct in `database/sql`, providing core functionalities for interacting with a database. These methods include starting transactions, executing statements, pinging the database, preparing statements, and executing queries with context support.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_14
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg database/sql
+method (*DB) BeginTx(context.Context, *TxOptions) (*Tx, error)
+method (*DB) ExecContext(context.Context, string, ...interface{}) (Result, error)
+method (*DB) PingContext(context.Context) error
+method (*DB) PrepareContext(context.Context, string) (*Stmt, error)
+method (*DB) QueryContext(context.Context, string, ...interface{}) (*Rows, error)
+method (*DB) QueryRowContext(context.Context, string, ...interface{}) *Row
+```
+
+----------------------------------------
+
+TITLE: Go `net/url` Package API Reference
+DESCRIPTION: API documentation for the `net/url` package in the Go standard library, detailing its methods, types, functions, and variables for URL parsing and manipulation.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.8.txt#_snippet_31
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/url, func PathEscape(string) string
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/url, func PathUnescape(string) (string, error)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+pkg net/url, method (*URL) Hostname() string
+```
+
+----------------------------------------
+
+TITLE: Installing Specific Retracted Go Module Version
+DESCRIPTION: This example demonstrates that 'go get' can install a specific version of a module, even if that version has been retracted. It also shows the warning issued for installing a retracted version.
+SOURCE: https://github.com/golang/go/blob/master/src/cmd/go/testdata/script/mod_get_retract.txt#_snippet_3
+
+LANGUAGE: Shell
+CODE:
+```
+cp go.mod.orig go.mod
+go get example.com/retract@v1.0.0-bad
+stderr '^go: warning: example.com/retract@v1.0.0-bad: retracted by module author: bad$'
+go list -m example.com/retract
+stdout '^example.com/retract v1.0.0-bad$'
+```
+
+----------------------------------------
+
+TITLE: Go go/constant Package API Reference
+DESCRIPTION: API documentation for the `go/constant` package, detailing its constants, types, methods, and functions.
+SOURCE: https://github.com/golang/go/blob/master/api/go1.6.txt#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+go/constant Package:
+  Types:
+    Value interface:
+      ExactString() string
+  Functions:
+    ToComplex(Value) Value
+    ToFloat(Value) Value
+    ToInt(Value) Value
+```

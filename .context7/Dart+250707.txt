@@ -1,0 +1,1705 @@
+TITLE: Generate Dart API Documentation
+DESCRIPTION: This snippet demonstrates the basic process of generating API documentation for a Dart package. It shows navigating into the package directory, fetching dependencies with `dart pub get`, and then running `dart doc .` to generate the documentation, along with an example of the successful output path.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/dart-doc.md#_snippet_0
+
+LANGUAGE: console
+CODE:
+```
+$ cd my_package
+$ dart pub get
+$ dart doc .
+Documenting my_package...
+...
+Success! Docs generated into /Users/me/projects/my_package/doc/api
+```
+
+----------------------------------------
+
+TITLE: Get Started with Dart Command-Line and Server Apps
+DESCRIPTION: This tutorial guides users on how to utilize the Dart SDK for developing command-line and server applications.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/server/index.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+Tutorial: Get Started
+  Focus: Developing command-line and server apps using the Dart SDK.
+```
+
+----------------------------------------
+
+TITLE: gRPC Quickstart Tutorial for Dart
+DESCRIPTION: A quickstart guide for Dart developers to run and modify a client-server example using the gRPC framework.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/server/index.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+Tutorial: gRPC Quickstart
+  Focus: Running and modifying a gRPC client-server example.
+```
+
+----------------------------------------
+
+TITLE: Serve Local Dart API Documentation with dhttpd
+DESCRIPTION: This snippet provides instructions for serving locally generated Dart API documentation using the `package:dhttpd`. It demonstrates how to globally activate `dhttpd` and then run it, specifying the path to the generated documentation directory, typically `doc/api`, to view it in a web browser.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/dart-doc.md#_snippet_3
+
+LANGUAGE: console
+CODE:
+```
+$ dart pub global activate dhttpd
+$ dart pub global run dhttpd --path doc/api
+```
+
+----------------------------------------
+
+TITLE: Example of a Dart Documentation Comment
+DESCRIPTION: This snippet illustrates the `///` syntax used for documentation comments in Dart. These comments are parsed by the `dart doc` tool to generate API documentation for functions, classes, and other library elements.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/pub/create-packages.md#_snippet_7
+
+LANGUAGE: Dart
+CODE:
+```
+/// The event handler responsible for updating the badge in the UI.
+void updateBadge() {
+  ...
+}
+```
+
+----------------------------------------
+
+TITLE: Use `///` Doc Comments for Public API Documentation in Dart
+DESCRIPTION: This example shows the correct way to use `///` doc comments for documenting members and types in Dart. These comments are parsed by `dart doc` to generate comprehensive documentation pages, making them essential for public APIs.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/effective-dart/documentation.md#_snippet_3
+
+LANGUAGE: Dart
+CODE:
+```
+/// The number of characters in this chunk when unsplit.
+int get length => ...
+```
+
+----------------------------------------
+
+TITLE: Exporting Public APIs in a Dart Package (shelf example)
+DESCRIPTION: This Dart code snippet from the `shelf` package demonstrates how a main library file (`lib/shelf.dart`) exports specific public APIs from its `lib/src` directory using the `export ... show ...` syntax. This approach helps control API exposure and provides an overview of the package's public interface.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/pub/create-packages.md#_snippet_1
+
+LANGUAGE: Dart
+CODE:
+```
+export 'src/cascade.dart' show Cascade;
+export 'src/handler.dart' show Handler;
+export 'src/hijack_exception.dart' show HijackException;
+export 'src/middleware.dart' show Middleware, createMiddleware;
+export 'src/middleware/add_chunked_encoding.dart' show addChunkedEncoding;
+export 'src/middleware/logger.dart' show logRequests;
+export 'src/middleware_extensions.dart' show MiddlewareExtensions;
+export 'src/pipeline.dart' show Pipeline;
+export 'src/request.dart' show Request;
+export 'src/response.dart' show Response;
+export 'src/server.dart' show Server;
+export 'src/server_handler.dart' show ServerHandler;
+```
+
+----------------------------------------
+
+TITLE: Including Code Samples in Dart Doc Comments
+DESCRIPTION: Recommendation to include code samples in Dart doc comments. Examples help users understand and learn APIs more easily by demonstrating usage.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/effective-dart/documentation.md#_snippet_15
+
+LANGUAGE: dart
+CODE:
+```
+/// The lesser of two numbers.
+///
+/// ```dart
+/// min(5, 3) == 3
+/// ```
+num min(num a, num b) => ...
+```
+
+----------------------------------------
+
+TITLE: Dart Core API Reference Documentation
+DESCRIPTION: Comprehensive API reference documentation for all `dart:*` libraries, providing details on their functionalities.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/server/index.md#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: Dart API
+  Content: API reference for all `dart:*` libraries.
+```
+
+----------------------------------------
+
+TITLE: Dart Async API Deprecations and Removals
+DESCRIPTION: Details the removal of the `DeferredLibrary` class from `dart:async`, advising the use of the `deferred as` import syntax for lazy loading.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/dart-3-migration.md#_snippet_14
+
+LANGUAGE: APIDOC
+CODE:
+```
+Removed/Deprecated APIs in dart:async:
+- DeferredLibrary class:
+  - Status: Removed.
+  - Replacement: Use `deferred as` import syntax for lazy loading.
+```
+
+----------------------------------------
+
+TITLE: Dart Core API Deprecations and Removals
+DESCRIPTION: Documents the removal of various deprecated classes, constructors, methods, and errors from the `dart:core` library, providing guidance on alternative approaches for null-safe code.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/dart-3-migration.md#_snippet_13
+
+LANGUAGE: APIDOC
+CODE:
+```
+Removed/Deprecated APIs in dart:core:
+- List constructor:
+  - Status: Removed, not null safe.
+  - Replacement: Use list literals (e.g., `[]` or `<int>[]`) or `List.filled`.
+- onError argument on int.parse, double.parse, num.parse:
+  - Status: Removed.
+  - Replacement: Use `tryParse` method.
+- proxy and Provisional annotations:
+  - Status: Removed, no effect in Dart 2.
+- Deprecated.expires getter:
+  - Status: Removed.
+  - Replacement: Use `Deprecated.message`.
+- CastError error:
+  - Status: Removed.
+  - Replacement: Use `TypeError`.
+- FallThroughError error:
+  - Status: Removed.
+  - Note: Fall-through is now a compile-time error in Dart 2.0.
+- NullThrownError error:
+  - Status: Removed.
+  - Note: Never thrown from null-safe code.
+- AbstractClassInstantiationError error:
+  - Status: Removed.
+  - Note: Instantiating abstract classes is a compile-time error in Dart 2.0.
+- CyclicInitializationError:
+  - Status: Removed.
+  - Note: Cyclic dependencies no longer detected at runtime in null-safe code; may result in StackOverflowError.
+- NoSuchMethodError default constructor:
+  - Status: Removed.
+  - Replacement: Use `NoSuchMethodError.withInvocation` named constructor.
+- BidirectionalIterator class:
+  - Status: Removed.
+  - Note: Existing bidirectional iterators still function.
+```
+
+----------------------------------------
+
+TITLE: Package Web: Lightweight Browser API Bindings
+DESCRIPTION: The recommended library for building web applications, providing lightweight browser API bindings built around JavaScript interoperability. It is designed to replace all older `dart:*` web libraries, and a migration guide is available for transitioning existing projects.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/libraries/index.md#_snippet_13
+
+LANGUAGE: APIDOC
+CODE:
+```
+Library: package:web
+Description: Lightweight browser API bindings built around JS interop.
+Notes: Replaces all dart:* web libraries. Read the migration guide.
+```
+
+----------------------------------------
+
+TITLE: API Documentation Output Directory to Ignore (Dart Doc)
+DESCRIPTION: Indicates the directory where `dart doc` generates API documentation. This directory's contents are typically generated and should not be committed to the source repository.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/pub/private-files.md#_snippet_1
+
+LANGUAGE: plaintext
+CODE:
+```
+doc/api/
+```
+
+----------------------------------------
+
+TITLE: Common File and Directory Operations API Reference
+DESCRIPTION: Overview of common functionalities available in Dart's `File` and `Directory` classes from `dart:io`, including creating, deleting, getting file length, and obtaining random access. For a full list of methods, refer to the official API documentation.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/libraries/dart-io.md#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+File and Directory classes:
+  - create(): Creates a file or directory.
+  - delete(): Deletes a file or directory.
+File class:
+  - length(): Gets the length of a file.
+  - open(): Gets random access to a file.
+```
+
+----------------------------------------
+
+TITLE: Example Dart Pub Get Execution Output
+DESCRIPTION: Demonstrates the typical console output when `dart pub get` successfully resolves and acquires project dependencies.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/pub/cmd/pub-get.md#_snippet_1
+
+LANGUAGE: console
+CODE:
+```
+$ dart pub get
+Resolving dependencies...
+Got dependencies!
+```
+
+----------------------------------------
+
+TITLE: Use Generated Dart Bindings for Java Method Call
+DESCRIPTION: Example of calling a static method (`sum`) from the generated Dart `Example` class, demonstrating how to seamlessly interact with the underlying Java API from Dart code.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/interop/java-interop.md#_snippet_4
+
+LANGUAGE: dart
+CODE:
+```
+// a and b are integer arguments
+print(Example.sum(a, b));
+```
+
+----------------------------------------
+
+TITLE: HTTP Package API Reference
+DESCRIPTION: Provides set of high-level functions and classes to simplify consuming HTTP resources.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+APIs:
+- delete()
+- get()
+- post()
+- read()
+```
+
+----------------------------------------
+
+TITLE: Avoid Single-Line Comments for Public API Documentation in Dart
+DESCRIPTION: This snippet illustrates an incorrect approach to documenting public APIs using `//` comments. Unlike `///` doc comments, `//` comments are not processed by `dart doc` for generating documentation, leading to undocumented public interfaces.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/effective-dart/documentation.md#_snippet_4
+
+LANGUAGE: Dart
+CODE:
+```
+// The number of characters in this chunk when unsplit.
+int get length => ...
+```
+
+----------------------------------------
+
+TITLE: Dart Doc Comments: Referencing In-Scope Identifiers
+DESCRIPTION: Explains how to use square brackets `[]` in Dart doc comments to create links to in-scope identifiers like variables, methods, or types. The `dart doc` tool uses these references to generate clickable API documentation links. Parentheses are optional for functions/constructors.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/effective-dart/documentation.md#_snippet_16
+
+LANGUAGE: Dart
+CODE:
+```
+/// Throws a [StateError] if ...
+///
+/// Similar to [anotherMethod()], but ...
+```
+
+LANGUAGE: Dart
+CODE:
+```
+/// Similar to [Duration.inDays], but handles fractional days.
+```
+
+LANGUAGE: Dart
+CODE:
+```
+/// To create a point, call [Point.new] or use [Point.polar] to ...
+```
+
+----------------------------------------
+
+TITLE: Dart Core Library API References
+DESCRIPTION: References to the official Dart API documentation for fundamental classes like String, StringBuffer, Pattern, RegExp, Match, and List, providing comprehensive details on their methods and functionalities.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/libraries/dart-core.md#_snippet_13
+
+LANGUAGE: APIDOC
+CODE:
+```
+API References:
+- String API
+- StringBuffer API
+- Pattern API
+- RegExp API
+- Match API
+- List API
+```
+
+----------------------------------------
+
+TITLE: Fetch and Display Dart Package Information Example
+DESCRIPTION: This comprehensive Dart example demonstrates how to retrieve data from a URL, decode it from JSON, and display it. It fetches mock information for the 'http' and 'path' packages from `dart.dev`, handles potential network or decoding errors using a custom `PackageRetrievalException`, and structures the parsed data into a `PackageInfo` object. The code includes functions for printing package details and a factory constructor for JSON deserialization.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tutorials/server/fetch-data.md#_snippet_13
+
+LANGUAGE: Dart
+CODE:
+```
+import 'dart:convert';
+
+import 'package:http/http.dart' as http;
+
+void main() async {
+  await printPackageInformation('http');
+  print('');
+  await printPackageInformation('path');
+}
+
+Future<void> printPackageInformation(String packageName) async {
+  final PackageInfo packageInfo;
+
+  try {
+    packageInfo = await getPackage(packageName);
+  } on PackageRetrievalException catch (e) {
+    print(e);
+    return;
+  }
+
+  print('Information about the $packageName package:');
+  print('Latest version: ${packageInfo.latestVersion}');
+  print('Description: ${packageInfo.description}');
+  print('Publisher: ${packageInfo.publisher}');
+
+  final repository = packageInfo.repository;
+  if (repository != null) {
+    print('Repository: $repository');
+  }
+}
+
+Future<PackageInfo> getPackage(String packageName) async {
+  final packageUrl = Uri.https('dart.dev', '/f/packages/$packageName.json');
+  final packageResponse = await http.get(packageUrl);
+
+  // If the request didn't succeed, throw an exception
+  if (packageResponse.statusCode != 200) {
+    throw PackageRetrievalException(
+      packageName: packageName,
+      statusCode: packageResponse.statusCode,
+    );
+  }
+
+  final packageJson = json.decode(packageResponse.body) as Map<String, dynamic>;
+
+  return PackageInfo.fromJson(packageJson);
+}
+
+class PackageInfo {
+  final String name;
+  final String latestVersion;
+  final String description;
+  final String publisher;
+  final Uri? repository;
+
+  PackageInfo({
+    required this.name,
+    required this.latestVersion,
+    required this.description,
+    required this.publisher,
+    this.repository,
+  });
+
+  factory PackageInfo.fromJson(Map<String, dynamic> json) {
+    final repository = json['repository'] as String?;
+
+    return PackageInfo(
+      name: json['name'] as String,
+      latestVersion: json['latestVersion'] as String,
+      description: json['description'] as String,
+      publisher: json['publisher'] as String,
+      repository: repository != null ? Uri.tryParse(repository) : null,
+    );
+  }
+}
+
+class PackageRetrievalException implements Exception {
+  final String packageName;
+  final int? statusCode;
+
+  PackageRetrievalException({required this.packageName, this.statusCode});
+
+  @override
+  String toString() {
+    final buf = StringBuffer();
+    buf.write('Failed to retrieve package:$packageName information');
+
+    if (statusCode != null) {
+      buf.write(' with a status code of $statusCode');
+    }
+
+    buf.write('!');
+    return buf.toString();
+  }
+
+}
+```
+
+----------------------------------------
+
+TITLE: Run Dart Analyzer on a Specific Example
+DESCRIPTION: This snippet demonstrates how to navigate into an example's directory, retrieve its dependencies, and then run the Dart analyzer to check for issues within that specific example.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/examples/README.md#_snippet_0
+
+LANGUAGE: terminal
+CODE:
+```
+$ cd examples/misc
+$ dart pub get
+$ dart analyze .
+```
+
+----------------------------------------
+
+TITLE: Dart standard I/O streams API documentation
+DESCRIPTION: API documentation for the standard input (`stdin`), output (`stdout`), and error (`stderr`) streams provided by the `dart:io` library, essential for console applications.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tutorials/server/cmdline.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+stdout: The standard output
+stderr: The standard error
+stdin: The standard input
+```
+
+----------------------------------------
+
+TITLE: Initialize HTTP Client and Construct Wikipedia API URL in Dart
+DESCRIPTION: This code block demonstrates how to initialize an `http.Client` instance and construct a `Uri` object within the `getWikipediaArticle` function. The `Uri` points to the Wikipedia REST API's page summary endpoint, dynamically incorporating the `articleTitle`.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/get-started/async.md#_snippet_4
+
+LANGUAGE: Dart
+CODE:
+```
+Future<String> getWikipediaArticle(String articleTitle) async {
+  final client = http.Client(); // Create an HTTP client
+  final url = Uri.https(
+    'en.wikipedia.org', // Wikipedia API domain
+    '/api/rest_v1/page/summary/$articleTitle', // API path for article summary
+  );
+  // ...
+}
+```
+
+----------------------------------------
+
+TITLE: Dart args package core classes API documentation
+DESCRIPTION: API documentation for the primary classes in the `args` package: `ArgParser` for defining argument rules and `ArgResults` for accessing parsed command-line arguments.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tutorials/server/cmdline.md#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+ArgParser: A command-line argument parser.
+ArgResults: The result of parsing command-line arguments using `ArgParser`.
+```
+
+----------------------------------------
+
+TITLE: Cronet HTTP Package API Reference
+DESCRIPTION: Provides access to the Android Cronet HTTP client using the same interface as package:http.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+APIs: (No specific APIs listed)
+```
+
+----------------------------------------
+
+TITLE: Write Library-Level Doc Comments in Dart
+DESCRIPTION: This example demonstrates how to add a doc comment at the library level in Dart. Placing a `///` doc comment before the `library` directive provides an introductory overview for the entire library, explaining its purpose, key concepts, and usage examples.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/effective-dart/documentation.md#_snippet_5
+
+LANGUAGE: Dart
+CODE:
+```
+/// A really great test library.
+@TestOn('browser')
+library;
+```
+
+----------------------------------------
+
+TITLE: YAML Package API Reference
+DESCRIPTION: Parses YAML markup.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_13
+
+LANGUAGE: APIDOC
+CODE:
+```
+APIs:
+- loadYaml()
+- loadYamlStream()
+```
+
+----------------------------------------
+
+TITLE: Dart: Example of missing type annotations in public API
+DESCRIPTION: This code snippet demonstrates a Dart function 'f' that lacks explicit return type and parameter type annotations, leading to a diagnostic from the Dart analyzer.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/diagnostics/type_annotate_public_apis.md#_snippet_0
+
+LANGUAGE: Dart
+CODE:
+```
+[!f!](x, y) => '';
+```
+
+----------------------------------------
+
+TITLE: Entrypoint Directory Definition
+DESCRIPTION: Defines a directory within a Dart package that can contain Dart entrypoints, listing common examples like `bin`, `example`, `test`, `tool`, `web`, and `lib` (for Flutter).
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/pub/glossary.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+Entrypoint directory:
+  Description: A directory inside your package that is allowed to contain Dart entrypoints.
+  Allowed directories:
+    - `benchmark`
+    - `bin`
+    - `example`
+    - `test`
+    - `tool`
+    - `web`
+    - `lib` (for Flutter apps)
+  Note: Any subdirectories of allowed directories (except `bin`) may also contain entrypoints.
+```
+
+----------------------------------------
+
+TITLE: Writing Dart HTTP Servers Tutorial
+DESCRIPTION: This tutorial focuses on developing HTTP servers in Dart, highlighting the usage of the `shelf` package.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/server/index.md#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+Tutorial: Write HTTP Servers
+  Key Topics:
+    - `shelf` package
+```
+
+----------------------------------------
+
+TITLE: Cupertino HTTP Package API Reference
+DESCRIPTION: Provides access to Apple's Foundation URL Loading System using the same interface as package:http.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+APIs: (No specific APIs listed)
+```
+
+----------------------------------------
+
+TITLE: Create New Dart Console Application
+DESCRIPTION: Command-line instruction to create a new Dart console application using the `dart create` tool. It generates a project structure with a main entry point, a library file, and a pubspec.yaml.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tutorials/server/get-started.md#_snippet_1
+
+LANGUAGE: console
+CODE:
+```
+$ dart create -t console cli
+```
+
+----------------------------------------
+
+TITLE: DartPad Online Tool Overview
+DESCRIPTION: DartPad is an online tool for beginners and experts to experiment with Dart language features and `dart:*` APIs. It has limitations regarding VM libraries and package support.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/server/index.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Tool: DartPad
+  Purpose: Online environment for trying Dart language features and dart:* APIs.
+  Limitations:
+    - Does not support VM libraries (e.g., `dart:io`)
+    - Limited support for external packages
+```
+
+----------------------------------------
+
+TITLE: JSON Serializable Package API Reference
+DESCRIPTION: Generates JSON manipulation code. To learn more, consult JSON Support.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+APIs:
+- @JsonSerializable
+```
+
+----------------------------------------
+
+TITLE: Dart Stream.listen Method API
+DESCRIPTION: API documentation for the `listen` method of a Dart `Stream`, detailing its parameters, their types, and the return value. This method is fundamental for subscribing to and reacting to stream events.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/coming-from/swift-to-dart.md#_snippet_93
+
+LANGUAGE: APIDOC
+CODE:
+```
+Stream.listen(
+  void onData(T event),
+  {Function? onError, void onDone()?, bool? cancelOnError}
+) -> StreamSubscription<T>
+
+Parameters:
+  onData: (required) A callback function invoked for each data event.
+  onError: (optional) A callback function invoked if the stream emits an error.
+  onDone: (optional) A callback function invoked when the stream completes.
+  cancelOnError: (optional) If true, the subscription is cancelled when the first error is emitted.
+
+Returns:
+  StreamSubscription<T>: An object that allows controlling the subscription (e.g., pausing, cancelling).
+```
+
+----------------------------------------
+
+TITLE: Logging Package API Reference
+DESCRIPTION: Adds message logging to your application.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+APIs:
+- LoggerHandler
+- Level
+- LogRecord
+```
+
+----------------------------------------
+
+TITLE: Perform a Dry Run for Dart Doc Generation
+DESCRIPTION: This example shows how to perform a dry run of the `dart doc` command. The `--dry-run` flag allows users to check for any issues, errors, or warnings in their package setup or documentation comments without actually generating and saving the documentation files.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/dart-doc.md#_snippet_2
+
+LANGUAGE: console
+CODE:
+```
+$ dart doc --dry-run .
+```
+
+----------------------------------------
+
+TITLE: Writing Dart Command-Line Applications Tutorial
+DESCRIPTION: This tutorial introduces fundamental Dart libraries and packages for command-line app development, specifically `dart:io` and the `args` package.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/server/index.md#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+Tutorial: Write Command-Line Apps
+  Key Topics:
+    - `dart:io` library
+    - `args` package
+```
+
+----------------------------------------
+
+TITLE: Dart SDK Core Library Documentation Links
+DESCRIPTION: This section provides a reference to the official Dart SDK core library documentation. It lists the direct links to the API reference for different Dart release channels, including stable, beta, dev, and main, allowing developers to access the relevant documentation based on their SDK version.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/dart-doc.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+| Branch   | Generated docs                              |
+|----------|---------------------------------------------|
+| `stable` | [api.dart.dev/stable]({{site.dart-api}})    |
+| `beta`   | [api.dart.dev/beta]({{site.dart-api}}/beta) |
+| `dev`    | [api.dart.dev/dev]({{site.dart-api}}/dev)   |
+| `main`   | [api.dart.dev/main]({{site.dart-api}}/main) |
+```
+
+----------------------------------------
+
+TITLE: Integrate Wikipedia API Call in Dart searchWikipedia
+DESCRIPTION: Finalizes the `searchWikipedia` function by integrating the `getWikipediaArticle` API call. It awaits the API response and prints the raw JSON content to the console, replacing placeholder print statements.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/get-started/async.md#_snippet_8
+
+LANGUAGE: Dart
+CODE:
+```
+// ... (beginning of searchWikipedia function, after determining articleTitle)
+
+void searchWikipedia(List<String>? arguments) async {
+  late String? articleTitle;
+  if (arguments == null || arguments.isEmpty) {
+    print('Please provide an article title.');
+    final inputFromStdin = stdin.readLineSync();
+    if (inputFromStdin == null || inputFromStdin.isEmpty) {
+      print('No article title provided. Exiting.');
+      return;
+    }
+    articleTitle = inputFromStdin;
+  } else {
+    articleTitle = arguments.join(' ');
+  }
+
+  print('Looking up articles about "$articleTitle". Please wait.');
+
+  // Call the API and await the result
+  var articleContent = await getWikipediaArticle(articleTitle);
+  print(articleContent); // Print the full article response (raw JSON for now)
+}
+```
+
+----------------------------------------
+
+TITLE: Dart Developer API Deprecations and Removals
+DESCRIPTION: Outlines the deprecation and removal of constants and classes within `dart:developer`, including `MAX_USER_TAGS` and various `Metrics` related classes.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/dart-3-migration.md#_snippet_15
+
+LANGUAGE: APIDOC
+CODE:
+```
+Removed/Deprecated APIs in dart:developer:
+- MAX_USER_TAGS constant:
+  - Status: Removed.
+  - Replacement: Use `maxUserTags`.
+- Metrics, Metric, Counter, and Gauge classes:
+  - Status: Removed, broken since Dart 2.0.
+```
+
+----------------------------------------
+
+TITLE: Example: Removing a Specific Dependency
+DESCRIPTION: Provides a concrete example of using `dart pub remove` to remove the 'http' package, explaining that this action automatically updates `pubspec.yaml` and runs `dart pub get`.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/pub/cmd/pub-remove.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+$ dart pub remove http
+```
+
+----------------------------------------
+
+TITLE: Dart Package Documentation Directory Structure
+DESCRIPTION: This snippet illustrates the standard location for package documentation. User-authored documentation is placed in the 'doc' directory, while API documentation generated by 'dart doc' is typically output to 'doc/api' and should not be source controlled.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/pub/package-layout.md#_snippet_19
+
+LANGUAGE: plaintext
+CODE:
+```
+enchilada/
+  doc/
+    api/
+    getting_started.md
+```
+
+----------------------------------------
+
+TITLE: Dart Hello World Program
+DESCRIPTION: A basic Dart program that prints 'Hello, World!' to the console. This snippet demonstrates the entry point of a Dart application using the `main` function and the `print` function for output.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tutorials/server/get-started.md#_snippet_0
+
+LANGUAGE: dart
+CODE:
+```
+void main() {
+  print('Hello, World!');
+}
+```
+
+----------------------------------------
+
+TITLE: General Dart Development Tools and Resources
+DESCRIPTION: This section points to a general tools page, including Dart plugins for IDEs, and suggests exploring server packages on pub.dev for more options.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/server/index.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: General Tools
+  Content: Links to useful tools (e.g., IDE plugins).
+  Additional Options: Search for #server packages on pub.dev.
+```
+
+----------------------------------------
+
+TITLE: Dart collection Package API Overview
+DESCRIPTION: Documentation for the Dart 'collection' package, which extends dart:collection with utility functions and classes for easier collection manipulation. It includes APIs like Equality, CanonicalizedMap, MapKeySet, MapValueSet, PriorityQueue, and QueueList.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_15
+
+LANGUAGE: APIDOC
+CODE:
+```
+collection package APIs:
+- Equality
+- CanonicalizedMap
+- MapKeySet
+- MapValueSet
+- PriorityQueue
+- QueueList
+```
+
+----------------------------------------
+
+TITLE: Archive Package API Reference
+DESCRIPTION: Encodes and decodes various archive and compression formats.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+APIs:
+- Archive
+- ArchiveFile
+- TarEncoder
+- TarDecoder
+- ZipEncoder
+- ZipDecoder
+```
+
+----------------------------------------
+
+TITLE: Dart Doc Comments: Using Markdown for Formatting
+DESCRIPTION: Explains that Dart doc comments support most Markdown formatting, which is processed by `dart doc`. It provides a comprehensive example demonstrating various Markdown features like emphasis, strong text, inline code, lists (ordered and unordered), nested lists, code blocks with language highlighting, and links.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/effective-dart/documentation.md#_snippet_19
+
+LANGUAGE: Dart
+CODE:
+```
+/// This is a paragraph of regular text.
+///
+/// This sentence has *two* _emphasized_ words (italics) and **two**
+/// __strong__ ones (bold).
+///
+/// A blank line creates a separate paragraph. It has some `inline code`
+/// delimited using backticks.
+///
+/// * Unordered lists.
+/// * Look like ASCII bullet lists.
+/// * You can also use `-` or `+`.
+///
+/// 1. Numbered lists.
+/// 2. Are, well, numbered.
+/// 1. But the values don't matter.
+///
+///     * You can nest lists too.
+///     * They must be indented at least 4 spaces.
+///     * (Well, 5 including the space after `///`.)
+///
+/// Code blocks are fenced in triple backticks:
+///
+/// ```dart
+/// this.code
+///     .will
+///     .retain(its, formatting);
+/// ```
+///
+/// The code language (for syntax highlighting) defaults to Dart. You can
+/// specify it by putting the name of the language after the opening backticks:
+///
+/// ```html
+/// <h1>HTML is magical!</h1>
+/// ```
+///
+/// Links can be:
+///
+/// * https://www.just-a-bare-url.com
+/// * [with the URL inline](https://google.com)
+/// * [or separated out][ref link]
+///
+/// [ref link]: https://google.com
+///
+/// # A Header
+///
+/// ## A subheader
+///
+/// ### A subsubheader
+///
+/// #### If you need this many levels of headers, you're doing it wrong
+```
+
+----------------------------------------
+
+TITLE: Define Page Metadata with YAML Front Matter
+DESCRIPTION: Example of YAML front matter used at the beginning of a documentation file to define page-specific metadata such as title and description.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/__wiki__/Documentation-guide.md#_snippet_3
+
+LANGUAGE: YAML
+CODE:
+```
+---
+title: Dart SDK Archive
+description: Download a specific version of the Dart SDK.
+---
+```
+
+----------------------------------------
+
+TITLE: Run Compiled Dart Native Executable
+DESCRIPTION: Command-line instruction to execute the AOT-compiled native binary of the Dart application. This demonstrates the fast startup and execution of the optimized machine code.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tutorials/server/get-started.md#_snippet_6
+
+LANGUAGE: console
+CODE:
+```
+$ time bin/cli.exe
+Hello world: 21!
+
+real	0m0.016s
+user	0m0.008s
+sys	0m0.006s
+```
+
+----------------------------------------
+
+TITLE: Example `pub get` Socket Error Message
+DESCRIPTION: This snippet shows the typical error message displayed when `pub get` fails to connect to `pub.dev` due to network or security issues, indicating a server unavailability and subsequent retry attempts.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/pub/troubleshoot.md#_snippet_5
+
+LANGUAGE: plaintext
+CODE:
+```
+Got socket error trying to find package ... at https://pub.dev.
+pub get failed (server unavailable) -- attempting retry 1 in 1 second...
+```
+
+----------------------------------------
+
+TITLE: Run Dart Tests for a Specific Example
+DESCRIPTION: This snippet shows how to execute tests for a given example. It covers running VM-based tests and browser-based tests using the Dart test runner after fetching dependencies.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/examples/README.md#_snippet_1
+
+LANGUAGE: terminal
+CODE:
+```
+$ cd examples/misc
+$ dart pub get
+$ dart test  # Run VM tests
+$ dart test -p chrome  # Run browser tests
+```
+
+----------------------------------------
+
+TITLE: Dart Doc Comment References Basic Syntax
+DESCRIPTION: Demonstrates the basic syntax for creating references to classes, parameters, and constructors within Dart documentation comments using square brackets. These references enable IDE features and API documentation linking.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/doc-comments/references.md#_snippet_0
+
+LANGUAGE: dart
+CODE:
+```
+/// Returns a [String].
+String f() => 'Hello';
+
+/// Wraps [object] with [Future.value].
+Future<T> g<T>(T object) => Future.value(object);
+```
+
+----------------------------------------
+
+TITLE: Documenting Getters and Setters in Dart
+DESCRIPTION: Guideline for documenting properties with both a getter and a setter in Dart. Only one of them should have a doc comment, as `dart doc` treats them as a single field and discards the setter's comment if both are present. Examples show good and bad practices.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/effective-dart/documentation.md#_snippet_13
+
+LANGUAGE: dart
+CODE:
+```
+/// The pH level of the water in the pool.
+///
+/// Ranges from 0-14, representing acidic to basic, with 7 being neutral.
+int get phLevel => ...
+set phLevel(int level) => ...
+```
+
+LANGUAGE: dart
+CODE:
+```
+/// The depth of the water in the pool, in meters.
+int get waterDepth => ...
+
+/// Updates the water depth to a total of [meters] in height.
+set waterDepth(int meters) => ...
+```
+
+----------------------------------------
+
+TITLE: Shelf Package API Reference
+DESCRIPTION: Provides web server middleware for Dart. Shelf makes it easy to create and compose web servers, and parts of web servers.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+APIs:
+- Cascade
+- Pipeline
+- Request
+- Response
+- Server
+```
+
+----------------------------------------
+
+TITLE: dart:io Library Detailed Documentation
+DESCRIPTION: Detailed documentation on the major features of the `dart:io` library, applicable for command-line scripts, servers, and non-web Flutter applications.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/server/index.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+Resource: `dart:io` Documentation
+  Content: Major features of the `dart:io` library.
+  Applicability:
+    - Command-line scripts
+    - Servers
+    - Non-web Flutter apps
+```
+
+----------------------------------------
+
+TITLE: Dart Analyzer Diagnostic: Unintended HTML in Doc Comment Example
+DESCRIPTION: Demonstrates the Dart analyzer diagnostic for angle bracketed text (<...>) in documentation comments, which is incorrectly interpreted as HTML. This example shows a List<int> type being flagged.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/diagnostics/unintended_html_in_doc_comment.md#_snippet_0
+
+LANGUAGE: dart
+CODE:
+```
+/// Converts a List[!<int>!] to a comma-separated String.
+String f(List<int> l) => '';
+```
+
+----------------------------------------
+
+TITLE: Characters Package API Reference
+DESCRIPTION: Manipulates strings for user-perceived characters (Unicode grapheme clusters).
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+APIs:
+- String.characters
+- Characters
+- CharacterRange
+```
+
+----------------------------------------
+
+TITLE: Dart Future: Example of Error Completion
+DESCRIPTION: This snippet shows how a `Future` can complete with an error by throwing an `Exception` within its asynchronous operation. It sets up a scenario where a simulated API call fails, demonstrating the error state of a future.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/libraries/async/async-await.md#_snippet_2
+
+LANGUAGE: Dart
+CODE:
+```
+Future<void> fetchUserOrder() {
+  // Imagine that this function is fetching user info but encounters a bug.
+  return Future.delayed(
+    const Duration(seconds: 2),
+    () => throw Exception('Logout failed: user ID is invalid'),
+  );
+}
+
+void main() {
+  fetchUserOrder();
+  print('Fetching user order...');
+}
+```
+
+----------------------------------------
+
+TITLE: Dart convert Package API Overview
+DESCRIPTION: Documentation for the Dart 'convert' package, which extends dart:convert with encoders and decoders for various data representations, including percent encoding. It includes APIs like HexDecoder and PercentDecoder.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_16
+
+LANGUAGE: APIDOC
+CODE:
+```
+convert package APIs:
+- HexDecoder
+- PercentDecoder
+```
+
+----------------------------------------
+
+TITLE: Dart Create Command-Line Arguments Reference
+DESCRIPTION: Comprehensive documentation of the `dart create` command's arguments and options. Includes details on the `--help`, `--template` (with available types like `console`, `package`, `server-shelf`, `web`), `--pub`, and `--force` flags, along with their descriptions and default behaviors.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/dart-create.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Create a new Dart project.
+
+Usage: dart create [arguments] <directory>
+-h, --help                       Print this usage information.
+-t, --template                   The project template to use.
+
+          [console] (default)    A command-line application.
+          [package]              A package containing shared Dart libraries.
+          [server-shelf]         A server app using `package:shelf`
+          [web]                  A web app that uses only core Dart libraries.
+
+    --[no-]pub                   Whether to run 'pub get' after the project has been created.
+                                 (defaults to on)
+    --force                      Force project generation, even if the target directory already exists.
+```
+
+----------------------------------------
+
+TITLE: Start Dart Non-Boolean Variable/Property Comments with Noun Phrases
+DESCRIPTION: Doc comments for non-boolean variables or properties should start with a noun phrase. This highlights what the property 'is' or represents, focusing on the result or state rather than the internal calculation for getters.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/effective-dart/documentation.md#_snippet_10
+
+LANGUAGE: Dart
+CODE:
+```
+/// The current day of the week, where `0` is Sunday.
+int weekday;
+
+/// The number of checked buttons on the page.
+int get checkedCount => ...
+```
+
+----------------------------------------
+
+TITLE: Run Dart Application from Command Line
+DESCRIPTION: Command-line instructions to navigate into the created Dart project directory and run the application using the Dart VM (`dart run`). This demonstrates executing the compiled Dart code.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tutorials/server/get-started.md#_snippet_2
+
+LANGUAGE: console
+CODE:
+```
+$ cd cli
+$ dart run
+Hello world: 42!
+```
+
+----------------------------------------
+
+TITLE: Using the @Deprecated Annotation in Dart
+DESCRIPTION: Demonstrates how to apply the built-in `@Deprecated` annotation to a method, indicating that it should no longer be used and suggesting an alternative. This helps guide users towards preferred APIs and maintain code clarity.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/language/metadata.md#_snippet_0
+
+LANGUAGE: Dart
+CODE:
+```
+class Television {
+  /// Use [turnOn] to turn the power on instead.
+  @Deprecated('Use turnOn instead')
+  void activate() {
+    turnOn();
+  }
+
+  /// Turns the TV's power on.
+  void turnOn() {
+    ...
+  }
+  // ···
+}
+```
+
+----------------------------------------
+
+TITLE: Dart: Example of library_private_types_in_public_api diagnostic
+DESCRIPTION: This code demonstrates how the `library_private_types_in_public_api` diagnostic is produced. The public function `f` uses a library-private type `_C` as a parameter, which is an invalid use of a private type in a public API.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/diagnostics/library_private_types_in_public_api.md#_snippet_0
+
+LANGUAGE: dart
+CODE:
+```
+void f([!_C!] c) {}
+
+class _C {}
+```
+
+----------------------------------------
+
+TITLE: Dart Pub Get Enforce Lockfile for Hash Validation
+DESCRIPTION: This example shows the output when `dart pub get --enforce-lockfile` is used. If a package's content hash does not match the one in `pubspec.lock`, this command will cause the resolution to fail with an error, rather than updating the lockfile or redownloading the package. This ensures strict adherence to the locked dependencies.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/pub/glossary.md#_snippet_1
+
+LANGUAGE: plaintext
+CODE:
+```
+$ dart pub get [!--enforce-lockfile!]
+Resolving dependencies...
+Cached version of foo-1.0.0 has wrong hash - redownloading.
+~ foo 1.0.0 (was 1.0.0)
+The existing content-hash from pubspec.lock doesn't match contents for:
+ * foo-1.0.0 from "pub.dev"
+
+This indicates one of:
+ * The content has changed on the server since you created the pubspec.lock.
+ * The pubspec.lock has been corrupted.
+
+For more information see:
+https://dart.dev/go/content-hashes
+[!Would change 1 dependency.!]
+[!Unable to satisfy `pubspec.yaml` using `pubspec.lock`.!]
+
+To update `pubspec.lock` run `dart pub get` without
+`--enforce-lockfile`.
+```
+
+----------------------------------------
+
+TITLE: Test Package API Reference
+DESCRIPTION: Standardizes writing and running tests in Dart.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_12
+
+LANGUAGE: APIDOC
+CODE:
+```
+APIs:
+- expect()
+- group()
+- test()
+```
+
+----------------------------------------
+
+TITLE: Compile Dart App to Native Executable
+DESCRIPTION: Command-line instruction to AOT (Ahead-of-Time) compile a Dart application into a native machine code executable using `dart compile exe`. This creates an optimized, standalone binary.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tutorials/server/get-started.md#_snippet_5
+
+LANGUAGE: console
+CODE:
+```
+$ dart compile exe bin/cli.dart
+```
+
+----------------------------------------
+
+TITLE: Documenting Libraries and Types with Noun Phrases in Dart
+DESCRIPTION: Guideline for documenting Dart classes and libraries. Doc comments should start with noun phrases and describe an instance of the type, establishing invariants and terminology. This helps simplify documentation for members.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/effective-dart/documentation.md#_snippet_14
+
+LANGUAGE: dart
+CODE:
+```
+/// A chunk of non-breaking output text terminated by a hard or soft newline.
+///
+/// ...
+class Chunk {
+   ...
+}
+```
+
+----------------------------------------
+
+TITLE: Implement Tabbed Content Sections
+DESCRIPTION: Example of a tabbed content block, allowing different content sections (e.g., for Android and iOS) to be displayed within a single area, switchable via tabs.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/__wiki__/Documentation-guide.md#_snippet_7
+
+LANGUAGE: Jekyll
+CODE:
+```
+{% tabs "device-type-tabs" %}
+
+{% tab "Android" %}
+
+Android content here.
+
+{% endtab %}
+
+{% tab "iOS" %}
+
+iOS content here.
+
+{% endtab %}
+
+{% endtabs %}
+```
+
+----------------------------------------
+
+TITLE: Run Analyzer and Tests for All Examples
+DESCRIPTION: This snippet provides the command to execute both the analyzer and tests across all examples in the project using a dedicated shell script. It's a convenient way to perform a full validation.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/examples/README.md#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+./tool/analyze-and-test-examples.sh
+```
+
+----------------------------------------
+
+TITLE: API Documentation for EmailAddress Class and isValidEmailAddress Function
+DESCRIPTION: Documents the `EmailAddress` class constructor and the `isValidEmailAddress` function, which are provided as foundational components for the exercise. These are essential for understanding the inputs and expected behaviors of the functions to be implemented.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/libraries/collections/iterables.md#_snippet_29
+
+LANGUAGE: APIDOC
+CODE:
+```
+EmailAddress:
+  EmailAddress(String address)
+    address: The email address string.
+isValidEmailAddress:
+  bool isValidEmailAddress(EmailAddress)
+    EmailAddress: The EmailAddress object to validate.
+```
+
+----------------------------------------
+
+TITLE: Dart `Platform` Class API Reference
+DESCRIPTION: The `Platform` class in `dart:io` provides static methods and properties to query information about the operating system, machine, and the currently running Dart application. This API documentation outlines its key members for environment and system details.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tutorials/server/cmdline.md#_snippet_24
+
+LANGUAGE: APIDOC
+CODE:
+```
+Platform Class:
+  Description: Provides information about the machine and operating system.
+  Properties:
+    environment:
+      Type: Map<String, String> (immutable)
+      Description: A copy of the environment variables.
+    numberOfProcessors:
+      Type: int
+      Description: The number of processors available to the current process.
+    script:
+      Type: Uri
+      Description: The URI of the script that launched the current Dart program.
+  Methods:
+    isMacOS():
+      Returns: bool
+      Description: True if the operating system is macOS.
+```
+
+----------------------------------------
+
+TITLE: Rerun Modified Dart Application
+DESCRIPTION: Command-line instruction to re-execute the Dart application after modifying its source code. This confirms the changes are reflected in the output when run with `dart run`.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tutorials/server/get-started.md#_snippet_4
+
+LANGUAGE: console
+CODE:
+```
+$ dart run
+Hello world: 21!
+```
+
+----------------------------------------
+
+TITLE: Dart:html - Removal of Deprecated registerElement Methods
+DESCRIPTION: The `registerElement` and `registerElement2` methods in `Document` and `HtmlDocument` from `dart:html` have been permanently removed in Dart 3. These methods were previously announced as deprecated. Code relying on these APIs will no longer compile.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/dart-3-migration.md#_snippet_16
+
+LANGUAGE: APIDOC
+CODE:
+```
+dart:html API Changes:
+  Document:
+    - registerElement(): Removed
+    - registerElement2(): Removed
+  HtmlDocument:
+    - registerElement(): Removed
+    - registerElement2(): Removed
+```
+
+----------------------------------------
+
+TITLE: Upgrading Dart Dependencies to Support Dart 3
+DESCRIPTION: These console commands are used to upgrade your project's dependencies if `pub get` encounters issues, aiming to find more recent versions that support Dart 3, followed by a re-analysis.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/dart-3-migration.md#_snippet_4
+
+LANGUAGE: Console
+CODE:
+```
+$ dart pub upgrade
+$ dart analyze      # This should pass without errors.
+```
+
+----------------------------------------
+
+TITLE: Example Pubspec YAML Configuration
+DESCRIPTION: A simple yet complete example of a `pubspec.yaml` file, showcasing common fields such as name, description, version, homepage, documentation, environment SDK constraints, and both production and development dependencies.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/pub/pubspec.md#_snippet_1
+
+LANGUAGE: YAML
+CODE:
+```
+name: newtify
+description: >-
+  Have you been turned into a newt?  Would you like to be?
+  This package can help. It has all of the
+  newt-transmogrification functionality you have been looking
+  for.
+version: 1.2.3
+homepage: https://example-pet-store.com/newtify
+documentation: https://example-pet-store.com/newtify/docs
+
+environment:
+  sdk: '^3.2.0'
+  
+dependencies:
+  efts: ^2.0.4
+  transmogrify: ^0.4.0
+  
+dev_dependencies:
+  test: '>=1.15.0 <2.0.0'
+```
+
+----------------------------------------
+
+TITLE: Error Example: Stray pubspec.yaml in Workspace Path
+DESCRIPTION: Demonstrates a scenario where `dart pub get` will report an error and fail to resolve due to a `pubspec.yaml` file that is not a workspace member but is located in a directory between the root and a workspace package.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/pub/workspaces.md#_snippet_5
+
+LANGUAGE: plaintext
+CODE:
+```
+/
+  pubspec.yaml                      # Root `workspace: ['foo/']`
+  packages/
+    pubspec.yaml                    # Not workspace member => error
+    foo/
+      pubspec.yaml                  # Workspace member
+```
+
+----------------------------------------
+
+TITLE: Dart Pub Get Error: Package Lacks Null Safety Support
+DESCRIPTION: This console output shows a common error message from `dart pub get` when a dependency does not support null safety, indicating that its SDK lower bound must be 2.12.0 or higher for null safety to be enabled.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/dart-3-migration.md#_snippet_6
+
+LANGUAGE: Console
+CODE:
+```
+$ dart pub get
+
+Because pkg1 doesn't support null safety, version solving failed.
+The lower bound of "sdk: '>=2.9.0 <3.0.0'" must be 2.12.0 or higher to enable null safety.
+```
+
+----------------------------------------
+
+TITLE: Dart dart:io and package:args Core APIs
+DESCRIPTION: This section provides a summary of key classes, properties, and functions from the `dart:io` library and `package:args` package, commonly used in Dart command-line applications. It includes helper classes for streams, file system entities, standard I/O streams, and command-line argument parsing.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tutorials/server/cmdline.md#_snippet_26
+
+LANGUAGE: APIDOC
+CODE:
+```
+dart:io Library:
+  IOSink: Helper class for objects that consume data from streams
+  File: Represents a file on the native file system
+  Directory: Represents a directory on the native file system
+  FileSystemEntity: Superclass for File and Directory
+  Platform: Provides information about the machine and operating system
+  stdout: The standard output stream
+  stderr: The standard error stream
+  stdin: The standard input stream
+  exitCode: Access and set the exit code
+  exit(): Sets the exit code and quits
+
+package:args Library:
+  ArgParser: Parses command-line arguments
+  ArgResults: Represents the parsed results of command-line arguments
+```
+
+----------------------------------------
+
+TITLE: Dart Map: Get All Keys and Values
+DESCRIPTION: This example shows how to retrieve all keys and all values from a Dart Map as unordered collections (Iterables). It demonstrates accessing the `keys` and `values` properties and performing basic assertions on the retrieved collections.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/libraries/dart-core.md#_snippet_24
+
+LANGUAGE: Dart
+CODE:
+```
+var hawaiianBeaches = {
+  'Oahu': ['Waikiki', 'Kailua', 'Waimanalo'],
+  'Big Island': ['Wailea Bay', 'Pololu Beach'],
+  'Kauai': ['Hanalei', 'Poipu']
+};
+
+// Get all the keys as an unordered collection
+// (an Iterable).
+var keys = hawaiianBeaches.keys;
+
+assert(keys.length == 3);
+assert(Set.from(keys).contains('Oahu'));
+
+// Get all the values as an unordered collection
+// (an Iterable of Lists).
+var values = hawaiianBeaches.values;
+assert(values.length == 3);
+assert(values.any((v) => v.contains('Waikiki')));
+```
+
+----------------------------------------
+
+TITLE: Example of main analysis options file with multiple nested includes
+DESCRIPTION: This example illustrates a main `analysis_options.yaml` file that includes multiple other options files, demonstrating how options are applied sequentially from included files and then overridden by local definitions.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/analysis.md#_snippet_18
+
+LANGUAGE: YAML
+CODE:
+```
+include:
+  - one.yaml
+  - three.yaml
+# ...
+```
+
+----------------------------------------
+
+TITLE: Start Dart Doc Comments with Concise Summary
+DESCRIPTION: Doc comments should begin with a brief, user-centric summary ending with a period. This provides immediate context and helps readers quickly grasp the purpose without needing to read the entire comment. Avoid overly long or detailed first sentences.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/effective-dart/documentation.md#_snippet_6
+
+LANGUAGE: Dart
+CODE:
+```
+/// Deletes the file at [path] from the file system.
+void delete(String path) {
+  ...
+}
+```
+
+LANGUAGE: Dart
+CODE:
+```
+/// Depending on the state of the file system and the user's permissions,
+/// certain operations may or may not be possible. If there is no file at
+/// [path] or it can't be accessed, this function throws either [IOError]
+/// or [PermissionError], respectively. Otherwise, this deletes the file.
+void delete(String path) {
+  ...
+}
+```
+
+----------------------------------------
+
+TITLE: Dart Collection Libraries (`dart:collection`, `package:collection`)
+DESCRIPTION: Documentation for `dart:collection` and `package:collection`, offering classes and utilities to supplement and extend collection support beyond `dart:core`.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/libraries/index.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+Classes and utilities that supplement the collection support in `dart:core`. `package:collection` provides further collection implementations and functions for working on and with collections.
+```
+
+----------------------------------------
+
+TITLE: Common DOM Events for Element in Dart
+DESCRIPTION: To see all the events for which you can register an event listener, look for "onEventType" properties in the API docs for [Element][] and its subclasses. Some common events include:
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/libraries/dart-html.md#_snippet_18
+
+LANGUAGE: APIDOC
+CODE:
+```
+Element:
+  Events (onEventType properties):
+    - change
+    - blur
+    - keyDown
+    - keyUp
+    - mouseDown
+    - mouseUp
+```
+
+----------------------------------------
+
+TITLE: Intl Package API Reference
+DESCRIPTION: Internationalization and localization facilities, with support for plurals and genders, date and number formatting and parsing, and bidirectional text.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/resources/useful-packages.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+APIs:
+- Bidi
+- DateFormat
+- MicroMoney
+- TextDirection
+```
+
+----------------------------------------
+
+TITLE: Example of a class with a private method in Dart
+DESCRIPTION: This snippet defines a simple Dart class 'A' with a private method '_privateMethod' and a function 'callPrivateMethod' that uses it. This sets up the context for demonstrating potential runtime errors when the 'base' modifier is not used.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/language/class-modifiers-for-apis.md#_snippet_1
+
+LANGUAGE: Dart
+CODE:
+```
+class A {
+  void _privateMethod() {
+    print('I inherited from A');
+  }
+}
+
+void callPrivateMethod(A a) {
+  a._privateMethod();
+}
+```
+
+----------------------------------------
+
+TITLE: Activate Dart Package from GitHub Repository Example
+DESCRIPTION: Provides examples of activating the `async_await` package from a GitHub repository, demonstrating equivalent commands using both long and short forms of the `--source git` option.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/pub/cmd/pub-global.md#_snippet_4
+
+LANGUAGE: console
+CODE:
+```
+$ dart pub global activate --source git https://github.com/dart-lang/async_await.git
+$ dart pub global activate -sgit https://github.com/dart-lang/async_await.git
+```
+
+----------------------------------------
+
+TITLE: Dart: Example of Synchronous Functions
+DESCRIPTION: Provides a complete example of synchronous Dart functions, `createOrderMessage()` and `fetchUserOrder()`, demonstrating their execution flow and the immediate return of a `Future` instance without waiting for its completion.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/libraries/async/async-await.md#_snippet_6
+
+LANGUAGE: Dart
+CODE:
+```
+String createOrderMessage() {
+  var order = fetchUserOrder();
+  return 'Your order is: $order';
+}
+
+Future<String> fetchUserOrder() =>
+    // Imagine that this function is
+    // more complex and slow.
+    Future.delayed(const Duration(seconds: 2), () => 'Large Latte');
+
+void main() {
+  print('Fetching user order...');
+  print(createOrderMessage());
+}
+```
+
+LANGUAGE: plaintext
+CODE:
+```
+Fetching user order...
+Your order is: Instance of 'Future<String>'
+```
+
+----------------------------------------
+
+TITLE: Dart: Example of camel_case_types diagnostic
+DESCRIPTION: This code snippet demonstrates how the Dart analyzer produces the 'camel_case_types' diagnostic when a class name does not start with an uppercase letter, violating the UpperCamelCase naming convention.
+SOURCE: https://github.com/dart-lang/site-www/blob/main/src/content/tools/diagnostics/camel_case_types.md#_snippet_0
+
+LANGUAGE: Dart
+CODE:
+```
+class [!c!] {}
+```
