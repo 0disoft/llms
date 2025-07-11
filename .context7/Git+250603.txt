@@ -1,0 +1,1659 @@
+TITLE: Create a New Git Commit (Shell)
+DESCRIPTION: This command creates a new commit using the current content of the Git index. Git will typically open an editor to prompt for a commit message.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_68
+
+LANGUAGE: Shell
+CODE:
+```
+$ git commit
+```
+
+----------------------------------------
+
+TITLE: Configuring Git User Identity Globally
+DESCRIPTION: Sets the global user name and email address for Git commits. This information is associated with your commits.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gittutorial.adoc#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+$ git config --global user.name "Your Name Comes Here"
+$ git config --global user.email you@yourdomain.example.com
+```
+
+----------------------------------------
+
+TITLE: Creating a New Commit on a Branch (Git)
+DESCRIPTION: This command sequence demonstrates the standard workflow for creating a new commit when HEAD refers to a named branch. It involves editing files, staging changes with `git add`, and then committing them with `git commit`, which updates the branch to point to the new commit.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-checkout.adoc#_snippet_16
+
+LANGUAGE: Git
+CODE:
+```
+$ edit; git add; git commit
+```
+
+----------------------------------------
+
+TITLE: Initializing a Git Project and Committing Changes (Shell)
+DESCRIPTION: This snippet demonstrates the basic steps to initialize a new Git repository, create and add a file, make an initial commit, modify the file, and make a second commit. It shows the output of the `git init`, `git add`, and `git commit` commands.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gittutorial-2.adoc#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+$ mkdir test-project
+$ cd test-project
+$ git init
+Initialized empty Git repository in .git/
+$ echo 'hello world' > file.txt
+$ git add .
+$ git commit -a -m "initial commit"
+[master (root-commit) 54196cc] initial commit
+ 1 file changed, 1 insertion(+)
+ create mode 100644 file.txt
+$ echo 'hello world!' >file.txt
+$ git commit -a -m "add emphasis"
+[master c4d59f3] add emphasis
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+----------------------------------------
+
+TITLE: Developing on a Git Topic Branch (Shell)
+DESCRIPTION: Illustrates the workflow for developing features on a dedicated topic branch. It covers creating a branch, making changes, restoring files, adding new files, checking differences, committing, amending commits, switching branches, merging, and viewing logs.
+SOURCE: https://github.com/git/git/blob/master/Documentation/giteveryday.adoc#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+$ git switch -c alsa-audio <1>
+$ edit/compile/test
+$ git restore curses/ux_audio_oss.c <2>
+$ git add curses/ux_audio_alsa.c <3>
+$ edit/compile/test
+$ git diff HEAD <4>
+$ git commit -a -s <5>
+$ edit/compile/test
+$ git diff HEAD^ <6>
+$ git commit -a --amend <7>
+$ git switch master <8>
+$ git merge alsa-audio <9>
+$ git log --since='3 days ago' <10>
+$ git log v2.43.. curses/ <11>
+```
+
+----------------------------------------
+
+TITLE: Participating in a Git Project Workflow (Shell)
+DESCRIPTION: Shows a typical workflow for contributing to a shared Git project. It includes cloning a repository, creating a local branch, making commits, generating patches, sending patches via email, updating the local master branch, viewing changes, pulling from specific remotes, resetting, and cleaning the repository.
+SOURCE: https://github.com/git/git/blob/master/Documentation/giteveryday.adoc#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+$ git clone git://git.kernel.org/pub/scm/.../torvalds/linux-2.6 my2.6
+$ cd my2.6
+$ git switch -c mine master <1>
+$ edit/compile/test; git commit -a -s <2>
+$ git format-patch master <3>
+$ git send-email --to="person <email@example.com>" 00*.patch <4>
+$ git switch master <5>
+$ git pull <6>
+$ git log -p ORIG_HEAD.. arch/i386 include/asm-i386 <7>
+$ git ls-remote --heads http://git.kernel.org/.../jgarzik/libata-dev.git <8>
+$ git pull git://git.kernel.org/pub/.../jgarzik/libata-dev.git ALL <9>
+$ git reset --hard ORIG_HEAD <10>
+$ git gc <11>
+```
+
+----------------------------------------
+
+TITLE: Specify Repository to Clone From - Git
+DESCRIPTION: The source repository to clone from, which can be local or remote. See the GIT URLS section for format details.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-clone.adoc#_snippet_19
+
+LANGUAGE: Git
+CODE:
+```
+_<repository>_
+```
+
+----------------------------------------
+
+TITLE: Update and Merge Remote Changes (Default Pull)
+DESCRIPTION: Fetches changes from the default remote and branch configured for the current branch (typically set up by `git clone`) and merges them into the current branch. The most common way to update.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_103
+
+LANGUAGE: shell
+CODE:
+```
+$ git pull
+```
+
+----------------------------------------
+
+TITLE: Staging and Committing Changes - Git - Shell
+DESCRIPTION: Stages changes from modified or new files (`git add`), removes files from the staging area and working directory (`git rm`), and then creates a new commit from the staged changes.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_220
+
+LANGUAGE: Shell
+CODE:
+```
+$ git add a.txt
+$ git add b.txt
+$ git rm c.txt
+$ git commit
+```
+
+----------------------------------------
+
+TITLE: Publishing branches/topics using git push
+DESCRIPTION: Shows the command to publish a local branch or topic to a specified remote repository, making it available for others to fetch.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitworkflows.adoc#_snippet_6
+
+LANGUAGE: Git
+CODE:
+```
+git push <remote> <branch>
+```
+
+----------------------------------------
+
+TITLE: Fetching and Merging Separately
+DESCRIPTION: These commands show the equivalent operations of `git pull origin next` performed as two distinct steps: first fetching updates from 'origin', and then explicitly merging the 'origin/next' remote-tracking branch into the current branch.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-pull.adoc#_snippet_7
+
+LANGUAGE: Shell
+CODE:
+```
+$ git fetch origin
+$ git merge origin/next
+```
+
+----------------------------------------
+
+TITLE: Initializing a Git Repository (Shell)
+DESCRIPTION: Demonstrates the basic steps to initialize a new Git repository in an existing codebase using shell commands. It involves changing to the project directory, running 'git init' to create the .git directory, adding all current files to the staging area, and making the initial commit.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-init.adoc#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+$ cd /path/to/my/codebase
+$ git init
+$ git add .
+$ git commit
+```
+
+----------------------------------------
+
+TITLE: Synopsis of git clone command in Shell
+DESCRIPTION: This snippet shows the full command-line syntax for the `git clone` command, including all available options and arguments. It illustrates how to specify the source repository and an optional destination directory.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-clone.adoc#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+git clone [--template=<template-directory>]
+	  [-l] [-s] [--no-hardlinks] [-q] [-n] [--bare] [--mirror]
+	  [-o <name>] [-b <name>] [-u <upload-pack>] [--reference <repository>]
+	  [--dissociate] [--separate-git-dir <git-dir>]
+	  [--depth <depth>] [--[no-]single-branch] [--[no-]tags]
+	  [--recurse-submodules[=<pathspec>]] [--[no-]shallow-submodules]
+	  [--[no-]remote-submodules] [--jobs <n>] [--sparse] [--[no-]reject-shallow]
+	  [--filter=<filter-spec>] [--also-filter-submodules]] [--] <repository>
+	  [<directory>]
+```
+
+----------------------------------------
+
+TITLE: Accessing Git Tutorial Documentation (Shell)
+DESCRIPTION: These commands provide access to the official Git tutorial documentation directly from the command line. `man gittutorial` uses the system's manual page viewer, while `git help tutorial` leverages Git's built-in help system.
+SOURCE: https://github.com/git/git/blob/master/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+man gittutorial
+```
+
+LANGUAGE: Shell
+CODE:
+```
+git help tutorial
+```
+
+----------------------------------------
+
+TITLE: Accessing Specific Git Command Documentation (Shell)
+DESCRIPTION: These commands allow users to view the documentation for any specific Git command. Replace `<commandname>` with the actual Git command (e.g., `commit`, `branch`). `man git-<commandname>` uses the system's manual page viewer, and `git help <commandname>` uses Git's built-in help system.
+SOURCE: https://github.com/git/git/blob/master/README.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+man git-<commandname>
+```
+
+LANGUAGE: Shell
+CODE:
+```
+git help <commandname>
+```
+
+----------------------------------------
+
+TITLE: Cloning a Git Repository (Shell)
+DESCRIPTION: Creates a local copy of a remote Git repository. The URL of the origin repository is stored in the `remote.origin.url` configuration variable.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcore-tutorial.adoc#_snippet_71
+
+LANGUAGE: Shell
+CODE:
+```
+git clone <repository_url>
+```
+
+----------------------------------------
+
+TITLE: Listing Local Git Branches
+DESCRIPTION: Shows the output of the `git branch` command, which lists the local branches in the repository. The asterisk indicates the currently active branch.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_3
+
+LANGUAGE: shell
+CODE:
+```
+$ git branch
+* master
+```
+
+----------------------------------------
+
+TITLE: Viewing Git Changes and Status (Shell)
+DESCRIPTION: These shell commands are used to inspect the state of your Git repository before committing. `git diff --cached` shows changes staged for commit, `git diff` shows changes in the working directory not yet staged, `git diff HEAD` shows all changes since the last commit, and `git status` provides a summary of the repository's state.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_71
+
+LANGUAGE: Shell
+CODE:
+```
+$ git diff --cached # difference between HEAD and the index; what
+		    # would be committed if you ran "commit" now.
+$ git diff	    # difference between the index file and your
+		    # working directory; changes that would not
+		    # be included if you ran "commit" now.
+$ git diff HEAD	    # difference between HEAD and working tree; what
+		    # would be committed if you ran "commit -a" now.
+$ git status	    # a brief per-file summary of the above.
+```
+
+----------------------------------------
+
+TITLE: Stage Changes in Git (Bash)
+DESCRIPTION: Shows the basic command to stage specific file changes from the working directory to the Git index.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitfaq.adoc#_snippet_8
+
+LANGUAGE: Bash
+CODE:
+```
+git add <file>
+```
+
+----------------------------------------
+
+TITLE: Committing Staged Changes
+DESCRIPTION: Permanently stores the current contents of the staging area (index) into the Git repository as a new commit. This command will open an editor to prompt for a commit message.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gittutorial.adoc#_snippet_5
+
+LANGUAGE: shell
+CODE:
+```
+$ git commit
+```
+
+----------------------------------------
+
+TITLE: Create a Git Repository from Existing Content (Shell)
+DESCRIPTION: This sequence of commands shows how to initialize a Git repository within an existing project directory. It includes extracting a tarball, initializing Git, adding all existing files to the staging area, and creating the initial commit.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_63
+
+LANGUAGE: Shell
+CODE:
+```
+$ tar xzvf project.tar.gz
+$ cd project
+$ git init
+$ git add . # include everything below ./ in the first commit:
+$ git commit
+```
+
+----------------------------------------
+
+TITLE: Cloning Existing Git Repositories
+DESCRIPTION: Demonstrates how to use the `git clone` command to download a copy of an existing Git repository from a remote URL. Examples are provided for cloning the Git project itself and the Linux kernel.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+# Git itself (approx. 40MB download):
+$ git clone git://git.kernel.org/pub/scm/git/git.git
+# the Linux kernel (approx. 640MB download):
+$ git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+```
+
+----------------------------------------
+
+TITLE: Switching Back to Master Branch in Git
+DESCRIPTION: Use `git switch master` to return to the main development branch after working on a separate feature or experimental branch.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcore-tutorial.adoc#_snippet_37
+
+LANGUAGE: Shell
+CODE:
+```
+git switch master
+```
+
+----------------------------------------
+
+TITLE: Basic Git Commit Workflow (Shell)
+DESCRIPTION: Demonstrates the standard Git workflow: editing files, removing files, staging changes with `git add` and `git rm`, and finally committing the staged changes using `git commit` without arguments.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-commit.adoc#_snippet_31
+
+LANGUAGE: Shell
+CODE:
+```
+$ edit hello.c
+$ git rm goodbye.c
+$ git add hello.c
+$ git commit
+```
+
+----------------------------------------
+
+TITLE: Basic Branch Management - Git - Shell
+DESCRIPTION: Provides basic commands for listing local branches, switching to an existing branch, creating a new branch based on the current HEAD, and deleting a local branch.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_211
+
+LANGUAGE: Shell
+CODE:
+```
+$ git branch
+$ git switch test
+$ git branch new
+$ git branch -d new
+```
+
+----------------------------------------
+
+TITLE: Switching Git Branch
+DESCRIPTION: Demonstrates how to switch to an existing Git branch using the `git switch` command.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_177
+
+LANGUAGE: Shell
+CODE:
+```
+$ git switch master
+```
+
+----------------------------------------
+
+TITLE: Initializing a New Git Repository (Bash)
+DESCRIPTION: This sequence of commands creates a new directory named 'git-tutorial', changes the current directory to it, and then initializes a new empty Git repository within that directory using the `git init` command. This sets up the necessary Git infrastructure, including the `.git` directory.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcore-tutorial.adoc#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+$ mkdir git-tutorial
+$ cd git-tutorial
+$ git init
+```
+
+----------------------------------------
+
+TITLE: Cloning a Shared Git Repository (Shell)
+DESCRIPTION: Clones a shared Git repository from a remote host using SSH and changes the current directory to the cloned project. This is the initial step for a committer to start working with the shared repository.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcvs-migration.adoc#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+$ git clone foo.com:/pub/repo.git/ my-project
+$ cd my-project
+```
+
+----------------------------------------
+
+TITLE: Check Repository Status with git status
+DESCRIPTION: Shows the output of the `git status` command, which provides a summary of the current state of the working directory and the index, listing staged, unstaged, and untracked changes.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gittutorial-2.adoc#_snippet_20
+
+LANGUAGE: bash
+CODE:
+```
+$ git status
+On branch master
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+
+	new file:   closing.txt
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+
+	modified:   file.txt
+
+```
+
+----------------------------------------
+
+TITLE: Creating Tracking Branches in Git
+DESCRIPTION: These commands create local branches ('test' and 'release') that track the 'origin/master' branch. This sets up the primary branches for managing changes.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_120
+
+LANGUAGE: bash
+CODE:
+```
+git branch --track test origin/master
+```
+
+LANGUAGE: bash
+CODE:
+```
+git branch --track release origin/master
+```
+
+----------------------------------------
+
+TITLE: Pattern: doc/frotz/
+DESCRIPTION: This pattern matches the directory named 'frotz' located directly inside a directory named 'doc'. The leading slash makes the pattern relative to the location of the .gitignore file. The trailing slash ensures it only matches a directory.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitignore.adoc#_snippet_0
+
+LANGUAGE: gitignore
+CODE:
+```
+doc/frotz/
+```
+
+----------------------------------------
+
+TITLE: Staging Files for Commit Git
+DESCRIPTION: Adds changes from the working tree to the staging area. This command is necessary to include new or modified files in the next commit. It is mentioned as a manual step when untracked files are hidden by configuration.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-status.adoc#_snippet_18
+
+LANGUAGE: Git
+CODE:
+```
+git add
+```
+
+----------------------------------------
+
+TITLE: Basic Branch Merge Example
+DESCRIPTION: This command demonstrates a fundamental use case of `git merge`, integrating changes from a specified `topic` branch into the current branch (e.g., `master`). It replays the `topic` branch's unique changes onto the current branch, culminating in a new merge commit that combines both histories.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-merge.adoc#_snippet_1
+
+LANGUAGE: Git CLI
+CODE:
+```
+git merge topic
+```
+
+----------------------------------------
+
+TITLE: Viewing Git Command Help (git help)
+DESCRIPTION: Shows how to access the help documentation for a specific Git command using the built-in `git help` command. This allows using a custom manual viewer.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+$ git help clone
+```
+
+----------------------------------------
+
+TITLE: Listing Commits using Git Log with Range and Filter Options (Bash)
+DESCRIPTION: Provides examples of using `git log` with different revision ranges (`..`, `...`), time filters (`--since`), path filters, and content filters (`-S`) to list specific sets of commits based on various criteria.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_31
+
+LANGUAGE: bash
+CODE:
+```
+$ git log v2.5..
+$ git log test..master
+$ git log master..test
+$ git log master...test
+$ git log --since="2 weeks ago"
+$ git log Makefile
+$ git log fs/
+$ git log -S'foo()'
+```
+
+----------------------------------------
+
+TITLE: Resolving and Staging Merge Conflicts (Shell)
+DESCRIPTION: Demonstrates the process of identifying unmerged files after a merge conflict using `git status`, manually editing the conflicting file to resolve the issues, and then staging the resolved file using `git add`.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-commit.adoc#_snippet_35
+
+LANGUAGE: Shell
+CODE:
+```
+$ git status | grep unmerged
+unmerged: hello.c
+$ edit hello.c
+$ git add hello.c
+```
+
+----------------------------------------
+
+TITLE: Configuring user.name in Git
+DESCRIPTION: Sets the default name used in the 'author' and 'committer' fields of commit objects. This can be overridden by author.name, committer.name, or the GIT_AUTHOR_NAME and GIT_COMMITTER_NAME environment variables.
+SOURCE: https://github.com/git/git/blob/master/Documentation/config/user.adoc#_snippet_0
+
+LANGUAGE: Git Configuration
+CODE:
+```
+user.name
+```
+
+----------------------------------------
+
+TITLE: Pushing Changes to a Remote Git Repository
+DESCRIPTION: Demonstrates how to push the 'master' branch from a local repository to a specified remote host and path. This synchronizes the remote repository with the local changes.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcore-tutorial.adoc#_snippet_63
+
+LANGUAGE: Shell
+CODE:
+```
+$ git push <public-host>:/path/to/my-git.git master
+```
+
+----------------------------------------
+
+TITLE: Synopsis of git push command
+DESCRIPTION: This snippet shows the general syntax and common options for the git push command. It includes options for specifying what to push (--all, --branches, --mirror, --tags), push behavior (--dry-run, --force, --delete, --prune), output verbosity (--quiet, --verbose), upstream tracking (--set-upstream), and repository/refspec arguments.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-push.adoc#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+'git push' [--all | --branches | --mirror | --tags] [--follow-tags] [--atomic] [-n | --dry-run] [--receive-pack=<git-receive-pack>]
+	   [--repo=<repository>] [-f | --force] [-d | --delete] [--prune] [-q | --quiet] [-v | --verbose]
+	   [-u | --set-upstream] [-o <string> | --push-option=<string>]
+	   [--[no-]signed|--signed=(true|false|if-asked)]
+	   [--force-with-lease[=<refname>[:<expect>]] [--force-if-includes]]
+	   [--no-verify] [<repository> [<refspec>...]]
+```
+
+----------------------------------------
+
+TITLE: Aborting a Rebase Operation (git rebase)
+DESCRIPTION: Terminates the current 'git rebase' operation and resets the branch and working directory to the state before the rebase began. This discards any changes made during the rebase process.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-rebase.adoc#_snippet_11
+
+LANGUAGE: bash
+CODE:
+```
+git rebase --abort
+```
+
+----------------------------------------
+
+TITLE: Show Working Tree Changes with git diff (Unstaged)
+DESCRIPTION: Demonstrates using `git diff` to view changes in the working directory that have not yet been staged (added to the index). It shows the difference between the working tree and the index.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gittutorial-2.adoc#_snippet_14
+
+LANGUAGE: bash
+CODE:
+```
+$ echo 'again?' >>file.txt
+$ git diff
+index 513feba..ba3da7b 100644
+--- a/file.txt
++++ b/file.txt
+@@ -1,2 +1,3 @@
+ hello world!
+ hello world, again
++again?
+```
+
+----------------------------------------
+
+TITLE: Staging All Changes in Current Directory
+DESCRIPTION: Adds a snapshot of all files in the current directory (including new and modified files) to the Git staging area (index).
+SOURCE: https://github.com/git/git/blob/master/Documentation/gittutorial.adoc#_snippet_4
+
+LANGUAGE: shell
+CODE:
+```
+$ git add .
+```
+
+----------------------------------------
+
+TITLE: Configure Git User Identity Globally (Shell)
+DESCRIPTION: These commands set the global user name and email address for Git using `git config --global`. This information is used in commit messages to identify the author.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_60
+
+LANGUAGE: Shell
+CODE:
+```
+$ git config --global user.name 'Your Name Comes Here'
+$ git config --global user.email 'you@yourdomain.example.com'
+```
+
+----------------------------------------
+
+TITLE: Updating Local Branches with Git Pull
+DESCRIPTION: These commands switch to the specified branch ('test' or 'release') and then pull the latest changes from its configured upstream (origin/master in this case).
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_121
+
+LANGUAGE: bash
+CODE:
+```
+git switch test && git pull
+```
+
+LANGUAGE: bash
+CODE:
+```
+git switch release && git pull
+```
+
+----------------------------------------
+
+TITLE: Using Commit References in Git Commands (Bash)
+DESCRIPTION: Illustrates how commit references (like tags, HEAD, or parent notations) can be used as arguments for various Git commands like `diff`, `branch`, and `reset`.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gittutorial.adoc#_snippet_34
+
+LANGUAGE: bash
+CODE:
+```
+$ git diff v2.5 HEAD
+$ git branch stable v2.5
+$ git reset --hard HEAD^
+```
+
+----------------------------------------
+
+TITLE: Listing Local Branches in Git
+DESCRIPTION: Execute `git branch` to display a list of all local branches in your repository. The currently active branch is indicated by an asterisk.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcore-tutorial.adoc#_snippet_34
+
+LANGUAGE: Shell
+CODE:
+```
+git branch
+```
+
+----------------------------------------
+
+TITLE: Checking Out a Branch or Commit in Git
+DESCRIPTION: Specifies the branch to checkout. If it's a valid branch name, that branch is checked out. If it refers to a valid commit, HEAD becomes 'detached'. Special syntax like `@{-N}` refers to the N-th last checked out branch/commit, and `-` is synonymous with `@{-1}`. It also supports `<rev-a>...<rev-b>` for merge bases.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-checkout.adoc#_snippet_13
+
+LANGUAGE: Git
+CODE:
+```
+git checkout <branch>
+```
+
+LANGUAGE: Git
+CODE:
+```
+git checkout @{-N}
+```
+
+LANGUAGE: Git
+CODE:
+```
+git checkout -
+```
+
+LANGUAGE: Git
+CODE:
+```
+git checkout <rev-a>...<rev-b>
+```
+
+----------------------------------------
+
+TITLE: Listing Git Branches (Local and Remote)
+DESCRIPTION: This form of the `git branch` command is used to list existing branches. By default, it lists local branches. Options like `-r` or `--remotes` list remote-tracking branches, and `-a` or `--all` lists both. Patterns can be used to filter the output. Options control output format, color, verbosity, and filtering by merge status or contained commits.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-branch.adoc#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+git branch [--color[=<when>] | --no-color] [--show-current]
+	   [-v [--abbrev=<n> | --no-abbrev]]
+	   [--column[=<options>] | --no-column] [--sort=<key>]
+	   [--merged [<commit>]] [--no-merged [<commit>]]
+	   [--contains [<commit>]] [--no-contains [<commit>]]
+	   [--points-at <object>] [--format=<format>]
+	   [(-r|--remotes) | (-a|--all)]
+	   [--list] [<pattern>...]
+```
+
+----------------------------------------
+
+TITLE: Stash-Based Interrupted Workflow (Git Stash)
+DESCRIPTION: Demonstrates a simpler approach to handling an urgent fix by using 'git stash' to save ongoing work, performing the fix on the current branch, and then using 'git stash pop' to restore the saved changes.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-stash.adoc#_snippet_33
+
+LANGUAGE: shell
+CODE:
+```
+# ... hack hack hack ...
+$ git stash
+$ edit emergency fix
+$ git commit -a -m "Fix in a hurry"
+$ git stash pop
+# ... continue hacking ...
+```
+
+----------------------------------------
+
+TITLE: Create and Switch to New Git Branch (Bash)
+DESCRIPTION: Creates a new branch named `<new>` starting from `<start-point>` and immediately switches to the newly created branch.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_11
+
+LANGUAGE: bash
+CODE:
+```
+git switch -c <new> <start-point>
+```
+
+----------------------------------------
+
+TITLE: Cloning a Git Repository - Bash
+DESCRIPTION: Creates a local copy (clone) of a remote Git repository located at the specified path ('/home/alice/project') into a new directory ('myrepo').
+SOURCE: https://github.com/git/git/blob/master/Documentation/gittutorial.adoc#_snippet_25
+
+LANGUAGE: bash
+CODE:
+```
+bob$ git clone /home/alice/project myrepo
+```
+
+----------------------------------------
+
+TITLE: Switch Git Branch (Bash)
+DESCRIPTION: Switches the current branch to `<branch>`, updating the working directory to match the version referenced by the branch.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_10
+
+LANGUAGE: bash
+CODE:
+```
+git switch <branch>
+```
+
+----------------------------------------
+
+TITLE: Pushing Local Commits to Shared Repository (Shell)
+DESCRIPTION: Pushes the commits from the local 'master' branch to the 'master' branch on the 'origin' remote. This updates the shared repository with the committer's changes.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcvs-migration.adoc#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+$ git push origin master
+```
+
+----------------------------------------
+
+TITLE: Rebase Git Branch and Handle Conflicts (Shell)
+DESCRIPTION: Illustrates the process of using `git rebase` to update a local branch (`mywork`) based on changes in an upstream branch (`origin`). It shows the initial branch setup and commits, the rebase command itself, and how to continue the rebase process after resolving conflicts by adding the changes and running `git rebase --continue`.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_137
+
+LANGUAGE: Shell
+CODE:
+```
+$ git switch -c mywork origin
+$ vi file.txt
+$ git commit
+$ vi otherfile.txt
+$ git commit
+```
+
+LANGUAGE: Shell
+CODE:
+```
+$ git switch mywork
+$ git rebase origin
+```
+
+LANGUAGE: Shell
+CODE:
+```
+$ git rebase --continue
+```
+
+----------------------------------------
+
+TITLE: Diffing Index vs. Working Tree with Git Diff (Shell)
+DESCRIPTION: Shows the difference between the Git index and the working tree. It is a common shorthand for `git diff-files -p`. The output format shows changes between two versions of a file.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcore-tutorial.adoc#_snippet_10
+
+LANGUAGE: shell
+CODE:
+```
+$ git diff
+diff --git a/hello b/hello
+index 557db03..263414f 100644
+--- a/hello
++++ b/hello
+@@ -1 +1,2 @@
+Hello World
++It's a new day for git
+```
+
+----------------------------------------
+
+TITLE: Merging a Branch into the Current Branch in Git
+DESCRIPTION: Execute `git merge <branchname>` to integrate changes from `<branchname>` into your current branch. The `-m` flag allows you to provide a commit message directly on the command line for the merge commit.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcore-tutorial.adoc#_snippet_40
+
+LANGUAGE: Shell
+CODE:
+```
+git merge -m "Merge work in mybranch" mybranch
+```
+
+----------------------------------------
+
+TITLE: Updating Local Repository with Git Pull (Shell)
+DESCRIPTION: Fetches changes from the 'origin' remote and merges them into the current branch. This command is equivalent to 'cvs update' and synchronizes the local repository with the shared repository.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcvs-migration.adoc#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+$ git pull origin
+```
+
+----------------------------------------
+
+TITLE: Pushing to Origin Remote in Git (Shell)
+DESCRIPTION: Shows how to push changes specifically to the 'origin' remote. Without further configuration, this pushes the current branch if it matches the upstream configuration.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-push.adoc#_snippet_9
+
+LANGUAGE: Shell
+CODE:
+```
+git push origin
+```
+
+----------------------------------------
+
+TITLE: Viewing Merge Conflict Markers in File
+DESCRIPTION: This snippet shows the standard conflict markers Git inserts into a file when a merge conflict occurs. It delineates the conflicting sections from the current branch (HEAD) and the branch being merged.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_77
+
+LANGUAGE: Text
+CODE:
+```
+<<<<<<< HEAD:file.txt
+Hello world
+=======
+Goodbye
+>>>>>>> 77976da35a11db4580b80ae27e8d65caf5208086:file.txt
+```
+
+----------------------------------------
+
+TITLE: Making Changes and Committing on Git Master
+DESCRIPTION: Demonstrates the sequence of commands to switch to the master branch, navigate directories, edit files, stage changes, and commit them with a signed-off-by line.
+SOURCE: https://github.com/git/git/blob/master/Documentation/howto/rebase-from-internal-branch.adoc#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+$ git checkout master
+$ cd Documentation; ed git.txt ...
+$ cd ..; git add Documentation/*.txt
+$ git commit -s
+```
+
+----------------------------------------
+
+TITLE: Resetting a Single File from the Index with git reset
+DESCRIPTION: This example shows how to remove a specific file from the Git index using `git reset -- <file>` after it has been added, allowing you to commit other changes and then re-add the file later if needed.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-reset.adoc#_snippet_8
+
+LANGUAGE: bash
+CODE:
+```
+$ git reset -- frotz.c
+$ git commit -m "Commit files in index"
+$ git add frotz.c
+```
+
+----------------------------------------
+
+TITLE: Cloning a Repository for Workflow Setup
+DESCRIPTION: This snippet shows the initial steps to set up a local workspace by cloning a remote Git repository (specifically, Linus Torvalds' Linux kernel tree) and changing into the newly created directory. This is the starting point for maintaining local branches.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_119
+
+LANGUAGE: Shell
+CODE:
+```
+$ git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git work
+$ cd work
+```
+
+----------------------------------------
+
+TITLE: Git Checkout: Switching Branches and Restoring Files (Shell)
+DESCRIPTION: This sequence demonstrates how to switch to the `master` branch, revert `Makefile` to an earlier revision, and restore a deleted `hello.c` from the index. It illustrates common `git checkout` uses for branch navigation and file recovery.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-checkout.adoc#_snippet_23
+
+LANGUAGE: Shell
+CODE:
+```
+$ git checkout master
+$ git checkout master~2 Makefile
+$ rm -f hello.c
+$ git checkout hello.c
+```
+
+----------------------------------------
+
+TITLE: Executing Basic Git Push (Shell)
+DESCRIPTION: Describes the default behavior of the 'git push' command when no remote or refspec is specified. It typically pushes to the current branch's configured remote.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-push.adoc#_snippet_7
+
+LANGUAGE: Shell
+CODE:
+```
+git push
+```
+
+----------------------------------------
+
+TITLE: Diff Working Tree vs Commit - Git - Bash
+DESCRIPTION: Shows changes in the working tree relative to a specified commit. Use `HEAD` to compare with the latest commit or a branch name to compare with the tip of another branch.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-diff.adoc#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+git diff [<options>] [--merge-base] <commit> [--] [<path>...]
+```
+
+----------------------------------------
+
+TITLE: Creating and Removing Temporary Git Worktree (Shell)
+DESCRIPTION: Illustrates the process of creating a temporary linked worktree for an emergency fix, navigating into it, performing a commit, and then removing the worktree to resume previous work.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-worktree.adoc#_snippet_8
+
+LANGUAGE: Shell
+CODE:
+```
+$ git worktree add -b emergency-fix ../temp master
+$ pushd ../temp
+# ... hack hack hack ...
+$ git commit -a -m 'emergency fix for boss'
+$ popd
+$ git worktree remove ../temp
+```
+
+----------------------------------------
+
+TITLE: Switching Branches with Git
+DESCRIPTION: Use the `git switch` command to change your current working branch to an existing one, such as 'master' or any other specified branch name.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcore-tutorial.adoc#_snippet_32
+
+LANGUAGE: Shell
+CODE:
+```
+git switch master
+```
+
+----------------------------------------
+
+TITLE: Updating Remote-Tracking Branches with Git Pull
+DESCRIPTION: These commands demonstrate the basic use of `git pull` to fetch updates from the configured remote (usually 'origin') and merge the default branch into the current branch. The first command uses the default remote, while the second explicitly specifies 'origin'.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-pull.adoc#_snippet_5
+
+LANGUAGE: Shell
+CODE:
+```
+$ git pull
+$ git pull origin
+```
+
+----------------------------------------
+
+TITLE: Pattern: **/foo
+DESCRIPTION: This pattern uses the '**' wildcard to match a file or directory named 'foo' located anywhere within the repository's working tree.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitignore.adoc#_snippet_2
+
+LANGUAGE: gitignore
+CODE:
+```
+**/foo
+```
+
+----------------------------------------
+
+TITLE: Show Git Stash with Diff Options (Git Shell)
+DESCRIPTION: The `git stash show` command can now accept options typically used with `git diff`, allowing users to customize the output format and content when inspecting stashed changes.
+SOURCE: https://github.com/git/git/blob/master/Documentation/RelNotes/2.30.0.adoc#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+git stash show <options>
+```
+
+----------------------------------------
+
+TITLE: Cloning a Repository - Git - Shell
+DESCRIPTION: Clones a remote Git repository to the local machine and changes the current directory into the newly created repository directory.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_210
+
+LANGUAGE: Shell
+CODE:
+```
+$ git clone git://example.com/pub/project.git
+$ cd project
+```
+
+----------------------------------------
+
+TITLE: Committing and Switching Branches - Bash
+DESCRIPTION: A sequence of commands to edit a file, commit all tracked changes in the current branch, and then switch back to the 'master' branch.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gittutorial.adoc#_snippet_17
+
+LANGUAGE: bash
+CODE:
+```
+(edit file)
+$ git commit -a
+$ git switch master
+```
+
+----------------------------------------
+
+TITLE: Pushing to Specific Remote in Git (Shell)
+DESCRIPTION: Explains how to push changes to a named remote repository. The placeholder '<remote>' should be replaced with the actual remote name, like 'origin'.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-push.adoc#_snippet_8
+
+LANGUAGE: Shell
+CODE:
+```
+git push <remote>
+```
+
+----------------------------------------
+
+TITLE: Resolving Merge Conflicts with Git Shell
+DESCRIPTION: These commands illustrate the process of resolving a merge conflict: first, stage the file after manually editing it to fix conflicts, then commit the changes to finalize the merge.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_78
+
+LANGUAGE: Git Shell
+CODE:
+```
+$ git add file.txt
+$ git commit
+```
+
+----------------------------------------
+
+TITLE: Bisecting Build Failures with Git
+DESCRIPTION: This snippet shows a simple command sequence to automatically bisect broken builds using 'git bisect run make'. It starts the bisect process between a known bad and good commit and then runs 'make' on each commit, using its exit status to determine if the build is broken.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-bisect-lk2009.adoc#_snippet_26
+
+LANGUAGE: Shell
+CODE:
+```
+$ git bisect start BAD GOOD
+$ git bisect run make
+```
+
+----------------------------------------
+
+TITLE: Checking Working Tree Changes with Git Diff
+DESCRIPTION: Demonstrates various git diff commands to check changes in the working tree. Includes comparing with the index, the last commit, and changes made during conflict resolution.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-diff.adoc#_snippet_9
+
+LANGUAGE: bash
+CODE:
+```
+$ git diff
+$ git diff --cached
+$ git diff HEAD
+$ git diff AUTO_MERGE
+```
+
+----------------------------------------
+
+TITLE: Configuring User Identity - Git - Shell
+DESCRIPTION: Configures the user's name and email address in the global Git configuration file (~/.gitconfig), which is used to identify the author of commits.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_219
+
+LANGUAGE: Shell
+CODE:
+```
+$ cat >>~/.gitconfig <<\EOF
+[user]
+	name = Your Name Comes Here
+	email = you@yourdomain.example.com
+EOF
+```
+
+----------------------------------------
+
+TITLE: Setting Upstream for a Git Branch
+DESCRIPTION: This command form sets the upstream branch for a local branch. The `<upstream>` argument specifies the remote-tracking branch to track. If `<branch-name>` is omitted, it defaults to the current branch. This configures `git pull` to merge from the specified upstream.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-branch.adoc#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+git branch (--set-upstream-to=<upstream>|-u <upstream>) [<branch-name>]
+```
+
+----------------------------------------
+
+TITLE: Git Commit Ancestor Notation Examples
+DESCRIPTION: Illustrates various notations for referencing commits relative to a given commit (A) based on an example commit graph. Shows how caret (^) and tilde (~) notations are used to denote parents and ancestors.
+SOURCE: https://github.com/git/git/blob/master/Documentation/revisions.adoc#_snippet_18
+
+LANGUAGE: git
+CODE:
+```
+A =      = A^0
+B = A^   = A^1     = A~1
+C =      = A^2
+D = A^^  = A^1^1   = A~2
+E = B^2  = A^^2
+F = B^3  = A^^3
+G = A^^^ = A^1^1^1 = A~3
+H = D^2  = B^^2    = A^^^2  = A~2^2
+I = F^   = B^3^    = A^^3^
+J = F^2  = B^3^2   = A^^3^2
+```
+
+----------------------------------------
+
+TITLE: Clone from upstream (basic)
+DESCRIPTION: Clones a repository from a remote URL, changes into the new directory, and runs 'make'.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-clone.adoc#_snippet_22
+
+LANGUAGE: bash
+CODE:
+```
+$ git clone git://git.kernel.org/pub/scm/.../linux.git my-linux
+$ cd my-linux
+$ make
+```
+
+----------------------------------------
+
+TITLE: Switch to Master Branch - Git
+DESCRIPTION: Change the current working branch to 'master'.
+SOURCE: https://github.com/git/git/blob/master/Documentation/howto/maintain-git.adoc#_snippet_15
+
+LANGUAGE: Shell
+CODE:
+```
+git checkout master
+```
+
+----------------------------------------
+
+TITLE: Configuring Git File Ignoring (.gitignore)
+DESCRIPTION: This snippet shows the syntax for a `.gitignore` file, used to specify intentionally untracked files that Git should ignore. Lines starting with '#' are comments. File names or patterns can be listed to ignore them, and lines starting with '!' can be used to negate a previous ignore pattern.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_72
+
+LANGUAGE: Git Ignore
+CODE:
+```
+# Lines starting with '#' are considered comments.
+# Ignore any file named foo.txt.
+foo.txt
+# Ignore (generated) html files,
+*.html
+# except foo.html which is maintained by hand.
+!foo.html
+```
+
+----------------------------------------
+
+TITLE: Basic Git Fetch from Origin (Bash)
+DESCRIPTION: This command updates all remote-tracking branches from the 'origin' remote. By default, it fetches branches from 'refs/heads/' on the remote to 'refs/remotes/origin/' locally.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-fetch.adoc#_snippet_6
+
+LANGUAGE: bash
+CODE:
+```
+git fetch origin
+```
+
+----------------------------------------
+
+TITLE: Git: Resolving Merge Conflicts After Checkout (Shell)
+DESCRIPTION: After a merge conflict during `git checkout -m`, this sequence demonstrates the standard resolution: manually editing the conflicted file (`frotz`) to resolve discrepancies, then using `git add frotz` to mark it as resolved and stage the changes.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-checkout.adoc#_snippet_30
+
+LANGUAGE: Shell
+CODE:
+```
+$ edit frotz
+$ git add frotz
+```
+
+----------------------------------------
+
+TITLE: Implement Git Per-Branch Access Control - Shell
+DESCRIPTION: This shell script implements per-branch access control for Git repositories. It checks the current user's username and group memberships against patterns defined in `$GIT_DIR/info/allowed-users` and `$GIT_DIR/info/allowed-groups` files to determine if a push operation is allowed for a specific branch or ref. It supports matching branch patterns and user/group patterns, including handling non-fast-forward pushes.
+SOURCE: https://github.com/git/git/blob/master/Documentation/howto/update-hook-example.adoc#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+# Implement per-branch controls based on username
+allowed_users_file=$GIT_DIR/info/allowed-users
+username=$(id -u -n)
+info "The user is: '$username'"
+
+if test -f "$allowed_users_file"
+then
+  rc=$(grep -Ev '^(#|$)' $allowed_users_file |
+    while read heads user_patterns
+    do
+      # does this rule apply to us?
+      head_pattern=${heads#+}
+      matchlen=$(expr "$1" : "${head_pattern#+}")
+      test "$matchlen" = ${#1} || continue
+
+      # if non-ff, $heads must be with the '+' prefix
+      test -n "$noff" &&
+      test "$head_pattern" = "$heads" && continue
+
+      info "Found matching head pattern: '$head_pattern'"
+      for user_pattern in $user_patterns; do
+        info "Checking user: '$username' against pattern: '$user_pattern'"
+        matchlen=$(expr "$username" : "$user_pattern")
+        if test "$matchlen" = "${#username}"
+        then
+          grant "Allowing user: '$username' with pattern: '$user_pattern'"
+        fi
+      done
+      deny "The user is not in the access list for this branch"
+    done
+  )
+  case "$rc" in
+    grant) grant >/dev/null "Granting access based on $allowed_users_file" ;;
+    deny)  deny  >/dev/null "Denying  access based on $allowed_users_file" ;;
+    *) ;;
+  esac
+fi
+
+allowed_groups_file=$GIT_DIR/info/allowed-groups
+groups=$(id -G -n)
+info "The user belongs to the following groups:"
+info "'$groups'"
+
+if test -f "$allowed_groups_file"
+then
+  rc=$(grep -Ev '^(#|$)' $allowed_groups_file |
+    while read heads group_patterns
+    do
+      # does this rule apply to us?
+      head_pattern=${heads#+}
+      matchlen=$(expr "$1" : "${head_pattern#+}")
+      test "$matchlen" = ${#1} || continue
+
+      # if non-ff, $heads must be with the '+' prefix
+      test -n "$noff" &&
+      test "$head_pattern" = "$heads" && continue
+
+      info "Found matching head pattern: '$head_pattern'"
+      for group_pattern in $group_patterns; do
+        for groupname in $groups; do
+          info "Checking group: '$groupname' against pattern: '$group_pattern'"
+          matchlen=$(expr "$groupname" : "$group_pattern")
+          if test "$matchlen" = "${#groupname}"
+          then
+            grant "Allowing group: '$groupname' with pattern: '$group_pattern'"
+          fi
+        done
+      done
+      deny "None of the user's groups are in the access list for this branch"
+    done
+  )
+  case "$rc" in
+    grant) grant >/dev/null "Granting access based on $allowed_groups_file" ;;
+    deny)  deny  >/dev/null "Denying  access based on $allowed_groups_file" ;;
+    *) ;;
+  esac
+fi
+
+deny >/dev/null "There are no more rules to check.  Denying access"
+```
+
+----------------------------------------
+
+TITLE: Adding a Git Remote
+DESCRIPTION: Adds a new remote repository named "example" with the specified URL to the local Git configuration. This command simplifies future interactions with the remote.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_153
+
+LANGUAGE: Shell
+CODE:
+```
+$ git remote add example git://example.com/proj.git
+```
+
+----------------------------------------
+
+TITLE: Performing a Git Pull
+DESCRIPTION: Demonstrates the basic usage of the 'git pull' command, which is a shortcut for fetching from a remote repository and then merging the fetched changes into the current branch. It takes the remote repository identifier as an argument.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcore-tutorial.adoc#_snippet_46
+
+LANGUAGE: Shell
+CODE:
+```
+$ git pull <remote-repository>
+```
+
+----------------------------------------
+
+TITLE: Deleting a remote branch (git)
+DESCRIPTION: Finds the ref matching 'experimental' on the 'origin' remote (e.g., 'refs/heads/experimental') and deletes it. The empty source ref (':') indicates deletion.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-push.adoc#_snippet_21
+
+LANGUAGE: git
+CODE:
+```
+git push origin :experimental
+```
+
+----------------------------------------
+
+TITLE: Add File Content to Git Index (Shell)
+DESCRIPTION: This command updates the Git index (staging area) with the current content of a specific file. It prepares the file to be included in the next commit.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_64
+
+LANGUAGE: Shell
+CODE:
+```
+$ git add path/to/file
+```
+
+----------------------------------------
+
+TITLE: Pushing Local Branch to Remote in Git (Bash)
+DESCRIPTION: Explains how to use `git push` with a refspec (`mybranch:theirbranch`) to update a remote branch (`theirbranch`) with commits from a local branch (`mybranch`).
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_226
+
+LANGUAGE: bash
+CODE:
+```
+$ git push ssh://example.com/project.git mybranch:theirbranch
+```
+
+----------------------------------------
+
+TITLE: Switching to a Specific Branch (master) - Git Shell
+DESCRIPTION: This command is used to switch the current working branch to the specified 'master' branch. It's a fundamental operation for navigating between different development lines.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-switch.adoc#_snippet_4
+
+LANGUAGE: Shell
+CODE:
+```
+$ git switch master
+```
+
+----------------------------------------
+
+TITLE: Switching to a Specific Branch (mytopic) - Git Shell
+DESCRIPTION: This command allows switching to a different existing branch, in this case, 'mytopic'. It's commonly used after working on a different branch to move to the correct one.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-switch.adoc#_snippet_5
+
+LANGUAGE: Shell
+CODE:
+```
+$ git switch mytopic
+```
+
+----------------------------------------
+
+TITLE: Pushing Local Branch to Remote (Same Name) in Git (Bash)
+DESCRIPTION: Shows a simplified `git push` command when the local branch and the target remote branch have the same name (`test`).
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_227
+
+LANGUAGE: bash
+CODE:
+```
+$ git push ssh://example.com/project.git test
+```
+
+----------------------------------------
+
+TITLE: Merging Upstream Changes into a Local Branch (Bash)
+DESCRIPTION: Shows how to switch to a local branch (`mybranch`) and merge recent changes from the `master` branch into it using `git merge`, including adding a merge commit message. This often results in a fast-forward merge if the local branch has no unique commits.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcore-tutorial.adoc#_snippet_43
+
+LANGUAGE: bash
+CODE:
+```
+$ git switch mybranch
+$ git merge -m "Merge upstream changes." master
+```
+
+----------------------------------------
+
+TITLE: Example workflow using git credential store
+DESCRIPTION: This example demonstrates the typical user experience when the `store` helper is configured. The user is prompted for credentials on the first push, and subsequent pushes to the same repository/host automatically use the stored credentials without prompting.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-credential-store.adoc#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+$ git config credential.helper store
+$ git push http://example.com/repo.git
+Username: <type your username>
+Password: <type your password>
+
+[several days later]
+$ git push http://example.com/repo.git
+[your credentials are used automatically]
+```
+
+----------------------------------------
+
+TITLE: Git Core and User Configuration (INI)
+DESCRIPTION: Demonstrates a basic Git configuration file snippet in INI format, showing how to set core repository options such as filemode and user identity details like name and email.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git.adoc#_snippet_3
+
+LANGUAGE: ini
+CODE:
+```
+; core variables
+[core]
+	; Don't trust file modes
+	filemode = false
+
+; user identity
+[user]
+	name = "Junio C Hamano"
+	email = "gitster@pobox.com"
+```
+
+----------------------------------------
+
+TITLE: Creating a New Git Branch
+DESCRIPTION: This command form creates a new branch named `<branch-name>`. By default, the new branch points to the current HEAD, but an optional `<start-point>` can be specified. The `--track` and `--no-track` options control whether the new branch is set up to track a remote branch. The `-f` option can be used to force creation if a branch with the same name already exists.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-branch.adoc#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+git branch [--track[=(direct|inherit)] | --no-track] [-f]
+	   [--recurse-submodules] <branch-name> [<start-point>]
+```
+
+----------------------------------------
+
+TITLE: Configuring author.email in Git
+DESCRIPTION: Overrides the default user.email specifically for the 'author' field of commit objects. This setting takes precedence over user.email but can be overridden by the GIT_AUTHOR_EMAIL environment variable.
+SOURCE: https://github.com/git/git/blob/master/Documentation/config/user.adoc#_snippet_3
+
+LANGUAGE: Git Configuration
+CODE:
+```
+author.email
+```
+
+----------------------------------------
+
+TITLE: Referring to Commits with git show (Bash)
+DESCRIPTION: Demonstrates different ways to reference a commit using `git show`, including using a partial hash, the HEAD reference, or a branch name.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gittutorial.adoc#_snippet_30
+
+LANGUAGE: bash
+CODE:
+```
+$ git show c82a22c39c
+$ git show HEAD
+$ git show experimental
+```
+
+----------------------------------------
+
+TITLE: Commit Changes with Git Commit (Bash)
+DESCRIPTION: This command creates a new commit containing the changes currently staged in the index. It typically opens an editor to allow you to write a commit message. Lines starting with '#' are ignored in the message.
+SOURCE: https://github.com/git/git/blob/master/Documentation/gitcore-tutorial.adoc#_snippet_16
+
+LANGUAGE: bash
+CODE:
+```
+$ git commit
+```
+
+----------------------------------------
+
+TITLE: Staging All Changes (Additions, Modifications, Deletions) using git add -A (Shell)
+DESCRIPTION: This command stages all changes in the working directory for the next commit. The `-A` option tells `git add` to stage additions, modifications, and deletions. This is useful after operations like replacing the working tree content with a new version, ensuring that all changes are recorded.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-rm.adoc#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+git add -A
+```
+
+----------------------------------------
+
+TITLE: Committing Resolved Git Merge
+DESCRIPTION: After staging all resolved files, the `git commit` command is used to finalize the merge operation by creating a new commit that incorporates the merged changes.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-merge.adoc#_snippet_14
+
+LANGUAGE: shell
+CODE:
+```
+git commit
+```
+
+----------------------------------------
+
+TITLE: Fetching and Rebasing with Git Pull (Shell)
+DESCRIPTION: Shows how to use 'git pull' with the '--rebase' option. This fetches changes and then reapplies local commits on top of the fetched branch, avoiding a merge commit.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-push.adoc#_snippet_13
+
+LANGUAGE: Shell
+CODE:
+```
+git pull --rebase
+```
+
+----------------------------------------
+
+TITLE: Typical integrator's Git day workflow
+DESCRIPTION: Illustrates a common daily workflow for a Git integrator, including checking status, identifying unmerged branches, applying patches received via email, rebasing topic branches, merging work, backporting fixes, creating signed tags, and pushing changes.
+SOURCE: https://github.com/git/git/blob/master/Documentation/giteveryday.adoc#_snippet_5
+
+LANGUAGE: bash
+CODE:
+```
+$ git status <1>
+$ git branch --no-merged master <2>
+$ mailx <3>
+& s 2 3 4 5 ./+to-apply
+& s 7 8 ./+hold-linus
+& q
+$ git switch -c topic/one master
+$ git am -3 -i -s ./+to-apply <4>
+$ compile/test
+$ git switch -c hold/linus && git am -3 -i -s ./+hold-linus <5>
+$ git switch topic/one && git rebase master <6>
+$ git switch -C seen next <7>
+$ git merge topic/one topic/two && git merge hold/linus <8>
+$ git switch maint
+$ git cherry-pick master~4 <9>
+$ compile/test
+$ git tag -s -m "GIT 0.99.9x" v0.99.9x <10>
+$ git fetch ko && for branch in master maint next seen <11>
+    do
+	git show-branch ko/$branch $branch <12>
+    done
+$ git push --follow-tags ko <13>
+```
+
+----------------------------------------
+
+TITLE: Creating Branches from Specific Points - Git - Shell
+DESCRIPTION: Demonstrates how to create a new branch based on a specific branch name, tag, commit reference (like HEAD^ or HEAD^^), or a relative commit reference (like test~10).
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_212
+
+LANGUAGE: Shell
+CODE:
+```
+$ git branch new test
+$ git branch new v2.6.15
+$ git branch new HEAD^
+$ git branch new HEAD^^
+$ git branch new test~10
+```
+
+----------------------------------------
+
+TITLE: Amending the Last Git Commit
+DESCRIPTION: Modify the most recent commit by incorporating current staged changes and optionally editing the commit message. This should only be used for commits that have not been made public.
+SOURCE: https://github.com/git/git/blob/master/Documentation/user-manual.adoc#_snippet_91
+
+LANGUAGE: shell
+CODE:
+```
+$ git commit --amend
+```
+
+----------------------------------------
+
+TITLE: Cloning the Git Repository - Shell
+DESCRIPTION: This snippet demonstrates how to clone the official Git repository from GitHub and navigate into the newly created directory. It's the initial step for setting up a local development environment to contribute to the Git project.
+SOURCE: https://github.com/git/git/blob/master/Documentation/MyFirstContribution.adoc#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+$ git clone https://github.com/git/git git
+$ cd git
+```
+
+----------------------------------------
+
+TITLE: Creating a new remote branch from local (git)
+DESCRIPTION: Creates a new branch named 'experimental' on the 'origin' remote by copying the content of the local 'master' branch. This explicit refspec form is needed when the local and remote names differ for creating new branches or tags.
+SOURCE: https://github.com/git/git/blob/master/Documentation/git-push.adoc#_snippet_20
+
+LANGUAGE: git
+CODE:
+```
+git push origin master:refs/heads/experimental
+```

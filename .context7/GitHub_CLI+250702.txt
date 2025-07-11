@@ -1,0 +1,1218 @@
+TITLE: Install GitHub CLI on NetBSD/pkgsrc using pkgin
+DESCRIPTION: Installs the GitHub CLI package on NetBSD and pkgsrc-supported platforms using the `pkgin` package manager.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_16
+
+LANGUAGE: bash
+CODE:
+```
+pkgin install gh
+```
+
+----------------------------------------
+
+TITLE: Verify Go Installation
+DESCRIPTION: Checks the installed Go version to ensure it meets the minimum requirement (1.24+). If Go is not installed, follow the official Go website instructions.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/source.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+$ go version
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on Debian, Ubuntu, or Raspberry Pi OS using apt
+DESCRIPTION: This script installs the GitHub CLI on Debian, Ubuntu, or Raspberry Pi OS. It first ensures `wget` is available, then sets up the official GitHub CLI APT repository by adding its GPG key and source list, and finally installs the `gh` package. Requires `sudo` privileges.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+(type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
+	&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+	&& out=$(mktemp) && wget -nv -O$out https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+	&& cat $out | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+	&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+	&& sudo mkdir -p -m 755 /etc/apt/sources.list.d \
+	&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+	&& sudo apt update \
+	&& sudo apt install gh -y
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on Fedora, CentOS, RHEL using DNF5
+DESCRIPTION: This set of commands installs the GitHub CLI using DNF5. It first installs DNF5 plugins, then adds the official GitHub CLI repository, and finally installs the `gh` package from that repository. Requires `sudo` privileges.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+# DNF5 installation commands
+sudo dnf install dnf5-plugins
+sudo dnf config-manager addrepo --from-repofile=https://cli.github.com/packages/rpm/gh-cli.repo
+sudo dnf install gh --repo gh-cli
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on Alpine Linux (stable)
+DESCRIPTION: Installs the `github-cli` package on Alpine Linux from the stable releases' community package repository using the `apk add` command.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_28
+
+LANGUAGE: bash
+CODE:
+```
+apk add github-cli
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on Arch Linux using pacman
+DESCRIPTION: This command installs the GitHub CLI package (`github-cli`) from the official Arch Linux `extra` repository using `pacman`. Requires `sudo` privileges.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_10
+
+LANGUAGE: bash
+CODE:
+```
+sudo pacman -S github-cli
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on Nix/NixOS
+DESCRIPTION: Installs the `gh` package on Nix/NixOS using the `nix-env -iA` command, sourcing it from the `nixpkgs` repository.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_24
+
+LANGUAGE: bash
+CODE:
+```
+nix-env -iA nixos.gh
+```
+
+----------------------------------------
+
+TITLE: Cross-compile for Raspberry Pi OS
+DESCRIPTION: Demonstrates how to cross-compile the 'gh' binary for a 32-bit Raspberry Pi OS (Linux ARMv7). This involves setting environment variables like GOOS, GOARCH, GOARM, and disabling CGO, with syntax variations for Unix-like systems and Windows.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/source.md#_snippet_5
+
+LANGUAGE: sh
+CODE:
+```
+# on a Unix-like system:
+$ GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=0 make clean bin/gh
+```
+
+LANGUAGE: pwsh
+CODE:
+```
+# on Windows, pass environment variables as arguments to the build script:
+> go run script\build.go clean bin\gh GOOS=linux GOARCH=arm GOARM=7 CGO_ENABLED=0
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on Solus Linux
+DESCRIPTION: Installs the `github-cli` package on Solus Linux using the `sudo eopkg install` command, leveraging the eopkg package manager.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_32
+
+LANGUAGE: bash
+CODE:
+```
+sudo eopkg install github-cli
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on openSUSE/SUSE Linux using zypper
+DESCRIPTION: This set of commands installs the GitHub CLI on openSUSE or SUSE Linux. It adds the official GitHub CLI RPM repository, refreshes the package metadata, and then installs the `gh` package. Requires `sudo` privileges.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_8
+
+LANGUAGE: bash
+CODE:
+```
+sudo zypper addrepo https://cli.github.com/packages/rpm/gh-cli.repo
+sudo zypper ref
+sudo zypper install gh
+```
+
+----------------------------------------
+
+TITLE: Build on Windows
+DESCRIPTION: Builds the 'bin\gh.exe' binary on Windows using the Go build script. Note that there is no dedicated 'install' step available for Windows.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/source.md#_snippet_3
+
+LANGUAGE: pwsh
+CODE:
+```
+> go run script\build.go
+```
+
+----------------------------------------
+
+TITLE: Upgrade GitHub CLI from Fedora/CentOS/RHEL community repository
+DESCRIPTION: This command upgrades the GitHub CLI package (`gh`) to its latest version from the default community repository on Fedora, CentOS, or Red Hat Enterprise Linux. Requires `sudo` privileges.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_5
+
+LANGUAGE: bash
+CODE:
+```
+sudo dnf update gh
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on Android via Termux
+DESCRIPTION: This command installs the GitHub CLI package (`gh`) within the Termux environment on Android 7+ devices. This method uses Termux's package manager, `pkg`.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_11
+
+LANGUAGE: bash
+CODE:
+```
+pkg install gh
+```
+
+----------------------------------------
+
+TITLE: Upgrade GitHub CLI on Amazon Linux 2 using yum
+DESCRIPTION: This command upgrades the GitHub CLI package (`gh`) to its latest version on Amazon Linux 2 using `yum`. Requires `sudo` privileges.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_7
+
+LANGUAGE: bash
+CODE:
+```
+sudo yum update gh
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on MidnightBSD via mports
+DESCRIPTION: This command sequence installs the GitHub CLI from the MidnightBSD mports collection. It navigates to the `devel/gh` mport directory and then builds and installs the package. Requires `sudo` or root privileges.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_14
+
+LANGUAGE: bash
+CODE:
+```
+cd /usr/mports/devel/gh/ && make install clean
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on Kiss Linux
+DESCRIPTION: Installs the `github-cli` package on Kiss Linux from the community repositories by first building (`kiss b`) and then installing (`kiss i`) the package.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_23
+
+LANGUAGE: bash
+CODE:
+```
+kiss b github-cli && kiss i github-cli
+```
+
+----------------------------------------
+
+TITLE: Reduce Go Binary Size
+DESCRIPTION: Provides a tip on how to reduce the size of the resulting Go binary by using the `GO_LDFLAGS` environment variable with the `-s -w` flags, which omit symbol tables used for debugging.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/source.md#_snippet_7
+
+LANGUAGE: sh
+CODE:
+```
+GO_LDFLAGS="-s -w"
+```
+
+----------------------------------------
+
+TITLE: Upgrade GitHub CLI on Flox
+DESCRIPTION: Upgrades the `toplevel` environment for Flox users, which includes the `gh` package, using the `flox upgrade` command.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_26
+
+LANGUAGE: bash
+CODE:
+```
+flox upgrade toplevel
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on OpenBSD
+DESCRIPTION: Installs the `github-cli` package on OpenBSD using the `pkg_add` command. This method is available in -current or releases starting from 7.0.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_18
+
+LANGUAGE: bash
+CODE:
+```
+pkg_add github-cli
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on Gentoo Linux
+DESCRIPTION: Installs the `github-cli` package on Gentoo Linux using the `emerge -av` command from the main portage tree.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_21
+
+LANGUAGE: bash
+CODE:
+```
+emerge -av github-cli
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on openSUSE Tumbleweed
+DESCRIPTION: Installs the `gh` package on openSUSE Tumbleweed using the `sudo zypper in` command from the official distribution repository.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_27
+
+LANGUAGE: bash
+CODE:
+```
+sudo zypper in gh
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on Funtoo Linux
+DESCRIPTION: Installs the `github-cli` package on Funtoo Linux using the `emerge -av` command, leveraging the autogenerated package located in the `dev-kit` repository.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_19
+
+LANGUAGE: bash
+CODE:
+```
+emerge -av github-cli
+```
+
+----------------------------------------
+
+TITLE: Upgrade GitHub CLI on Gentoo Linux
+DESCRIPTION: Upgrades the `github-cli` package on Gentoo Linux. This involves updating the portage tree with `emerge --sync` and then requesting an upgrade using `emerge -u`.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_22
+
+LANGUAGE: bash
+CODE:
+```
+emerge --sync
+emerge -u github-cli
+```
+
+----------------------------------------
+
+TITLE: Upgrade GitHub CLI on openSUSE/SUSE Linux using zypper
+DESCRIPTION: This set of commands upgrades the GitHub CLI package (`gh`) to its latest version on openSUSE or SUSE Linux. It refreshes the package metadata and then updates the package. Requires `sudo` privileges.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_9
+
+LANGUAGE: bash
+CODE:
+```
+sudo zypper ref
+sudo zypper update gh
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on FreeBSD via pkg(8)
+DESCRIPTION: This command installs the GitHub CLI package (`gh`) on FreeBSD using the `pkg(8)` package manager. Requires `sudo` or root privileges.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_13
+
+LANGUAGE: bash
+CODE:
+```
+pkg install gh
+```
+
+----------------------------------------
+
+TITLE: Parse and Compare Go Versions
+DESCRIPTION: Demonstrates how to parse version strings into `version.Version` objects and compare them using methods like `LessThan`. The library also provides `GreaterThan`, `Equal`, and a general `Compare` method.
+SOURCE: https://github.com/cli/cli/blob/trunk/third-party/github.com/hashicorp/go-version/README.md#_snippet_1
+
+LANGUAGE: go
+CODE:
+```
+v1, err := version.NewVersion("1.2")
+v2, err := version.NewVersion("1.5+metadata")
+
+// Comparison example. There is also GreaterThan, Equal, and just
+// a simple Compare that returns an int allowing easy >=, <=, etc.
+if v1.LessThan(v2) {
+    fmt.Printf("%s is less than %s", v1, v2)
+}
+```
+
+----------------------------------------
+
+TITLE: Build and Install on Unix-like Systems
+DESCRIPTION: Builds and installs the gh-cli application on Unix-like systems. By default, it installs to '/usr/local', which may require 'sudo' privileges. An alternative prefix can be specified for custom installation paths.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/source.md#_snippet_2
+
+LANGUAGE: sh
+CODE:
+```
+# installs to '/usr/local' by default; sudo may be required, or sudo -E for configured go environments
+$ make install
+
+# or, install to a different location
+$ make install prefix=/path/to/gh
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on NetBSD/pkgsrc from source
+DESCRIPTION: Compiles and installs the GitHub CLI from source on NetBSD and pkgsrc-supported platforms. This method requires navigating to the package directory and running `make package-install`.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_17
+
+LANGUAGE: bash
+CODE:
+```
+cd /usr/pkgsrc/net/gh && make package-install
+```
+
+----------------------------------------
+
+TITLE: Install go-version Library
+DESCRIPTION: This snippet shows how to install the go-version library using the standard Go package manager.
+SOURCE: https://github.com/cli/cli/blob/trunk/third-party/github.com/hashicorp/go-version/README.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+$ go get github.com/hashicorp/go-version
+```
+
+----------------------------------------
+
+TITLE: List Supported Go Architectures
+DESCRIPTION: Lists all supported combinations of GOOS (operating system) and GOARCH (architecture) that Go can target for cross-compilation.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/source.md#_snippet_6
+
+LANGUAGE: sh
+CODE:
+```
+go tool dist list
+```
+
+----------------------------------------
+
+TITLE: Clone CLI Repository
+DESCRIPTION: Clones the gh-cli repository from GitHub into a local directory named 'gh-cli' and then navigates into that directory.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/source.md#_snippet_1
+
+LANGUAGE: sh
+CODE:
+```
+$ git clone https://github.com/cli/cli.git gh-cli
+$ cd gh-cli
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on Flox
+DESCRIPTION: Installs the `gh` package for Flox users from the official community `nixpkgs` using the `flox install` command.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_25
+
+LANGUAGE: bash
+CODE:
+```
+flox install gh
+```
+
+----------------------------------------
+
+TITLE: Return multierror Conditionally with ErrorOrNil
+DESCRIPTION: This Go snippet demonstrates using the `ErrorOrNil()` method of `multierror.Error`. This method returns the aggregated error only if errors were accumulated; otherwise, it returns `nil`, ensuring that a function only indicates an error when one truly exists.
+SOURCE: https://github.com/cli/cli/blob/trunk/third-party/github.com/hashicorp/go-multierror/README.md#_snippet_7
+
+LANGUAGE: Go
+CODE:
+```
+var result *multierror.Error
+
+// ... accumulate errors here
+
+// Return the `error` only if errors were added to the multierror, otherwise
+// return nil since there are no errors.
+return result.ErrorOrNil()
+```
+
+----------------------------------------
+
+TITLE: GitHub Actions Workflow for Windows CLI Deployment
+DESCRIPTION: This comprehensive GitHub Actions workflow automates the entire process of building, signing, and packaging the GitHub CLI for Windows. It orchestrates steps for setting up the Go environment, installing GoReleaser, configuring Azure Code Signing, compiling release binaries, generating MSI installers using MSBuild, and digitally signing the final distribution artifacts.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/release-process-deep-dive.md#_snippet_7
+
+LANGUAGE: YAML
+CODE:
+```
+windows:
+    needs: validate-tag-name
+    runs-on: windows-latest
+    environment: ${{ inputs.environment }}
+    if: contains(inputs.platforms, 'windows')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - name: Install GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: "~1.17.1"
+          install-only: true
+      - name: Install Azure Code Signing Client
+        shell: pwsh
+        env:
+          ACS_DIR: ${{ runner.temp }}\acs
+          ACS_ZIP: ${{ runner.temp }}\acs.zip
+          CORRELATION_ID: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          METADATA_PATH: ${{ runner.temp }}\acs\metadata.json
+        run: |
+          # Download Azure Code Signing client containing the DLL needed for signtool in script/sign
+          Invoke-WebRequest -Uri https://www.nuget.org/api/v2/package/Azure.CodeSigning.Client/1.0.43 -OutFile $Env:ACS_ZIP -Verbose
+          Expand-Archive $Env:ACS_ZIP -Destination $Env:ACS_DIR -Force -Verbose
+
+          # Generate metadata file for signtool, used in signing box .exe and .msi
+          @{ 
+            CertificateProfileName = "GitHubInc"
+            CodeSigningAccountName = "GitHubInc"
+            CorrelationId = $Env:CORRELATION_ID
+            Endpoint =  "https://wus.codesigning.azure.net/"
+          } | ConvertTo-Json | Out-File -FilePath $Env:METADATA_PATH
+
+      # Azure Code Signing leverages the environment variables for secrets that complement the metadata.json
+      # file generated above (AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID)
+      # For more information, see https://learn.microsoft.com/en-us/dotnet/api/azure.identity.defaultazurecredential?view=azure-dotnet
+      - name: Build release binaries
+        shell: bash
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.SPN_GITHUB_CLI_SIGNING_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.SPN_GITHUB_CLI_SIGNING }}
+          AZURE_TENANT_ID: ${{ secrets.SPN_GITHUB_CLI_SIGNING_TENANT_ID }}
+          DLIB_PATH: ${{ runner.temp }}\acs\bin\x64\Azure.CodeSigning.Dlib.dll
+          METADATA_PATH: ${{ runner.temp }}\acs\metadata.json
+          TAG_NAME: ${{ inputs.tag_name }}
+        run: script/release --local "$TAG_NAME" --platform windows
+      - name: Set up MSBuild
+        id: setupmsbuild
+        uses: microsoft/setup-msbuild@v2.0.0
+      - name: Build MSI
+        shell: bash
+        env:
+          MSBUILD_PATH: ${{ steps.setupmsbuild.outputs.msbuildPath }}
+        run: |
+          for ZIP_FILE in dist/gh_*_windows_*.zip; do
+            MSI_NAME="$(basename "$ZIP_FILE" ".zip")"
+            MSI_VERSION="$(cut -d_ -f2 <<<"$MSI_NAME" | cut -d- -f1)"
+            case "$MSI_NAME" in
+            *_386 )
+              source_dir="$PWD/dist/windows_windows_386"
+              platform="x86"
+              ;;
+            *_amd64 )
+              source_dir="$PWD/dist/windows_windows_amd64_v1"
+              platform="x64"
+              ;;
+            *_arm64 )
+              source_dir="$PWD/dist/windows_windows_arm64"
+              platform="arm64"
+              ;;
+            * )
+              printf "unsupported architecture: %s\n" "$MSI_NAME" >&2
+              exit 1
+              ;;
+            esac
+            "${MSBUILD_PATH}\MSBuild.exe" ./build/windows/gh.wixproj -p:SourceDir="$source_dir" -p:OutputPath="$PWD/dist" -p:OutputName="$MSI_NAME" -p:ProductVersion="${MSI_VERSION#v}" -p:Platform="$platform"
+          done
+      - name: Sign .msi release binaries
+        if: inputs.environment == 'production'
+        shell: pwsh
+        env:
+          AZURE_CLIENT_ID: ${{ secrets.SPN_GITHUB_CLI_SIGNING_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ secrets.SPN_GITHUB_CLI_SIGNING }}
+          AZURE_TENANT_ID: ${{ secrets.SPN_GITHUB_CLI_SIGNING_TENANT_ID }}
+          DLIB_PATH: ${{ runner.temp }}\acs\bin\x64\Azure.CodeSigning.Dlib.dll
+          METADATA_PATH: ${{ runner.temp }}\acs\metadata.json
+        run: |
+          Get-ChildItem -Path .\dist -Filter *.msi | ForEach-Object {
+            .\script\sign.ps1 $_.FullName
+          }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            dist/*.zip
+            dist/*.msi
+```
+
+LANGUAGE: PowerShell
+CODE:
+```
+# Download Azure Code Signing client containing the DLL needed for signtool in script/sign
+Invoke-WebRequest -Uri https://www.nuget.org/api/v2/package/Azure.CodeSigning.Client/1.0.43 -OutFile $Env:ACS_ZIP -Verbose
+Expand-Archive $Env:ACS_ZIP -Destination $Env:ACS_DIR -Force -Verbose
+
+# Generate metadata file for signtool, used in signing box .exe and .msi
+@{ 
+  CertificateProfileName = "GitHubInc"
+  CodeSigningAccountName = "GitHubInc"
+  CorrelationId = $Env:CORRELATION_ID
+  Endpoint =  "https://wus.codesigning.azure.net/"
+} | ConvertTo-Json | Out-File -FilePath $Env:METADATA_PATH
+```
+
+LANGUAGE: Bash
+CODE:
+```
+for ZIP_FILE in dist/gh_*_windows_*.zip; do
+  MSI_NAME="$(basename "$ZIP_FILE" ".zip")"
+  MSI_VERSION="$(cut -d_ -f2 <<<"$MSI_NAME" | cut -d- -f1)"
+  case "$MSI_NAME" in
+  *_386 )
+    source_dir="$PWD/dist/windows_windows_386"
+    platform="x86"
+    ;;
+  *_amd64 )
+    source_dir="$PWD/dist/windows_windows_amd64_v1"
+    platform="x64"
+    ;;
+  *_arm64 )
+    source_dir="$PWD/dist/windows_windows_arm64"
+    platform="arm64"
+    ;;
+  * )
+    printf "unsupported architecture: %s\n" "$MSI_NAME" >&2
+    exit 1
+    ;;
+  esac
+  "${MSBUILD_PATH}\MSBuild.exe" ./build/windows/gh.wixproj -p:SourceDir="$source_dir" -p:OutputPath="$PWD/dist" -p:OutputName="$MSI_NAME" -p:ProductVersion="${MSI_VERSION#v}" -p:Platform="$platform"
+done
+```
+
+LANGUAGE: PowerShell
+CODE:
+```
+Get-ChildItem -Path .\dist -Filter *.msi | ForEach-Object {
+  .\script\sign.ps1 $_.FullName
+}
+```
+
+----------------------------------------
+
+TITLE: GitHub Actions Workflow: Build and Package CLI for Linux
+DESCRIPTION: This YAML workflow defines the steps to build and package the CLI application for Linux. It includes checking out the repository, setting up Go, installing GoReleaser, building release binaries, generating web manual pages, and uploading artifacts. The build process uses `script/release` and documentation generation uses `go run ./cmd/gen-docs`.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/release-process-deep-dive.md#_snippet_1
+
+LANGUAGE: yml
+CODE:
+```
+  linux:
+    needs: validate-tag-name
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    if: contains(inputs.platforms, 'linux')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: 'go.mod'
+      - name: Install GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: "~1.17.1"
+          install-only: true
+      - name: Build release binaries
+        env:
+          TAG_NAME: ${{ inputs.tag_name }}
+        run: script/release --local "$TAG_NAME" --platform linux
+      - name: Generate web manual pages
+        run: |
+          go run ./cmd/gen-docs --website --doc-path dist/manual
+          tar -czvf dist/manual.tar.gz -C dist -- manual
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            dist/*.tar.gz
+            dist/*.rpm
+            dist/*.deb
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI from Fedora/CentOS/RHEL community repository
+DESCRIPTION: This command installs the GitHub CLI package (`gh`) from the default community repository available on Fedora, CentOS, or Red Hat Enterprise Linux. This method might lag behind official releases. Requires `sudo` privileges.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_4
+
+LANGUAGE: bash
+CODE:
+```
+sudo dnf install gh
+```
+
+----------------------------------------
+
+TITLE: Check for Exact Error Value with errors.Is
+DESCRIPTION: This Go example shows how to use the standard library's `errors.Is` function to determine if a `multierror.Error` contains a specific sentinel error value, such as `os.ErrNotExist`, within its aggregated errors.
+SOURCE: https://github.com/cli/cli/blob/trunk/third-party/github.com/hashicorp/go-multierror/README.md#_snippet_6
+
+LANGUAGE: Go
+CODE:
+```
+// Assume err is a multierror value
+err := somefunc()
+if errors.Is(err, os.ErrNotExist) {
+	// err contains os.ErrNotExist
+}
+```
+
+----------------------------------------
+
+TITLE: GitHub Actions Workflow: CLI Release Automation
+DESCRIPTION: This YAML configuration defines the `release` job within a GitHub Actions workflow. It orchestrates the entire release process for the `cli/cli` project, including downloading and merging artifacts from previous build jobs, updating man pages and `index.html` on the documentation site, preparing release assets, installing packaging dependencies (rpm, reprepro), setting up GPG for signing, signing RPMs, attesting artifacts, running `createrepo` for RPMs, running `reprepro` for Debian packages, and finally creating the GitHub release with checksums and appropriate flags (prerelease, publish).
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/release-process-deep-dive.md#_snippet_13
+
+LANGUAGE: yaml
+CODE:
+```
+release:
+    runs-on: ubuntu-latest
+    needs: [linux, macos, windows]
+    environment: ${{ inputs.environment }}
+    if: inputs.release
+    steps:
+      - name: Checkout cli/cli
+        uses: actions/checkout@v4
+      - name: Merge built artifacts
+        uses: actions/download-artifact@v4
+      - name: Checkout documentation site
+        uses: actions/checkout@v4
+        with:
+          repository: github/cli.github.com
+          path: site
+          fetch-depth: 0
+          token: ${{ secrets.SITE_DEPLOY_PAT }}
+      - name: Update site man pages
+        env:
+          GIT_COMMITTER_NAME: cli automation
+          GIT_AUTHOR_NAME: cli automation
+          GIT_COMMITTER_EMAIL: noreply@github.com
+          GIT_AUTHOR_EMAIL: noreply@github.com
+          TAG_NAME: ${{ inputs.tag_name }}
+        run: |
+          git -C site rm 'manual/gh*.md' 2>/dev/null || true
+          tar -xzvf linux/manual.tar.gz -C site
+          git -C site add 'manual/gh*.md'
+          sed -i.bak -E "s/(assign version = )\".+\"/\1\"${TAG_NAME#v}\"/" site/index.html
+          rm -f site/index.html.bak
+          git -C site add index.html
+          git -C site diff --quiet --cached || git -C site commit -m "gh ${TAG_NAME#v}"
+      - name: Prepare release assets
+        env:
+          TAG_NAME: ${{ inputs.tag_name }}
+        run: |
+          shopt -s failglob
+          rm -rf dist
+          mkdir dist
+          mv -v {linux,macos,windows}/gh_* dist/
+      - name: Install packaging dependencies
+        run: sudo apt-get install -y rpm reprepro
+      - name: Set up GPG
+        if: inputs.environment == 'production'
+        env:
+          GPG_PUBKEY: ${{ secrets.GPG_PUBKEY }}
+          GPG_KEY: ${{ secrets.GPG_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEYGRIP: ${{ secrets.GPG_KEYGRIP }}
+        run: |
+          base64 -d <<<"$GPG_PUBKEY" | gpg --import --no-tty --batch --yes
+          base64 -d <<<"$GPG_KEY" | gpg --import --no-tty --batch --yes
+          echo "allow-preset-passphrase" > ~/.gnupg/gpg-agent.conf
+          gpg-connect-agent RELOADAGENT /bye
+          /usr/lib/gnupg2/gpg-preset-passphrase --preset "$GPG_KEYGRIP" <<<"$GPG_PASSPHRASE"
+      - name: Sign RPMs
+        if: inputs.environment == 'production'
+        run: |
+          cp script/rpmmacros ~/.rpmmacros
+          rpmsign --addsign dist/*.rpm
+      - name: Attest release artifacts
+        if: inputs.environment == 'production'
+        uses: actions/attest-build-provenance@520d128f165991a6c774bcb264f323e3d70747f4 # v2.2.0
+        with:
+          subject-path: "dist/gh_*"
+      - name: Run createrepo
+        env:
+          GPG_SIGN: ${{ inputs.environment == 'production' }}
+        run: |
+          mkdir -p site/packages/rpm
+          cp dist/*.rpm site/packages/rpm/
+          ./script/createrepo.sh
+          cp -r dist/repodata site/packages/rpm/
+          pushd site/packages/rpm
+          [ "$GPG_SIGN" = "false" ] || gpg --yes --detach-sign --armor repodata/repomd.xml
+          popd
+      - name: Run reprepro
+        env:
+          GPG_SIGN: ${{ inputs.environment == 'production' }}
+          # We are no longer adding to the distribution list.
+          # All apt distributions should use "stable" according to our install documentation.
+          # In the future we will remove legacy distributions listed here.
+          RELEASES: "cosmic eoan disco groovy focal stable oldstable testing sid unstable buster bullseye stretch jessie bionic trusty precise xenial hirsute impish kali-rolling"
+        run: |
+          mkdir -p upload
+          [ "$GPG_SIGN" = "true" ] || sed -i.bak '/^SignWith:/d' script/distributions
+          for release in $RELEASES; do
+            for file in dist/*.deb; do
+              reprepro --confdir="+b/script" includedeb "$release" "$file"
+            done
+          done
+          cp -a dists/ pool/ upload/
+          mkdir -p site/packages
+          cp -a upload/* site/packages/
+      - name: Create the release
+        env:
+          # In non-production environments, the assets will not have been signed
+          DO_PUBLISH: ${{ inputs.environment == 'production' }}
+          TAG_NAME: ${{ inputs.tag_name }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          shopt -s failglob
+          pushd dist
+          shasum -a 256 gh_* > checksums.txt
+          mv checksums.txt gh_${TAG_NAME#v}_checksums.txt
+          popd
+          release_args=(
+            "$TAG_NAME"
+            --title "GitHub CLI ${TAG_NAME#v}"
+            --target "$GITHUB_SHA"
+            --generate-notes
+          )
+          if [[ $TAG_NAME == *-* ]]; then
+            release_args+=( --prerelease )
+          fi
+          guard="echo"
+          [ "$DO_PUBLISH" = "false" ] || guard=""
+```
+
+----------------------------------------
+
+TITLE: Install GitHub CLI on Alpine Linux (edge)
+DESCRIPTION: Installs the latest `github-cli` version on Alpine Linux from the edge release's community repository. This involves adding the edge community repository to `/etc/apk/repositories` and then installing the package with the `@community` suffix.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/install_linux.md#_snippet_29
+
+LANGUAGE: bash
+CODE:
+```
+echo "@community http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories
+apk add github-cli@community
+```
+
+----------------------------------------
+
+TITLE: Access Individual Errors with Type Switch
+DESCRIPTION: This Go example illustrates how to use a type switch to check if a returned error is a `*multierror.Error` and, if so, access its underlying list of errors via the `merr.Errors` field for detailed inspection.
+SOURCE: https://github.com/cli/cli/blob/trunk/third-party/github.com/hashicorp/go-multierror/README.md#_snippet_4
+
+LANGUAGE: Go
+CODE:
+```
+if err := something(); err != nil {
+	if merr, ok := err.(*multierror.Error); ok {
+		// Use merr.Errors
+	}
+}
+```
+
+----------------------------------------
+
+TITLE: Switch Active Account and Verify Change
+DESCRIPTION: Demonstrates switching the active GitHub account using `gh auth switch`. After switching, `gh api /user | jq .login` is used again to confirm that the active token now corresponds to the newly switched account.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/multiple-accounts.md#_snippet_3
+
+LANGUAGE: Shell
+CODE:
+```
+➜ gh auth switch
+✓ Switched active account for github.com to wilmartin_microsoft
+
+➜ gh api /user | jq .login
+"wilmartin_microsoft"
+```
+
+----------------------------------------
+
+TITLE: Check CLI Authentication Status (Single Account)
+DESCRIPTION: Shows the current authentication status for GitHub CLI, including the logged-in account, active status, Git protocol, token, and scopes. This example demonstrates the output when only one account is logged in.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/multiple-accounts.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+➜ gh auth status
+github.com
+  ✓ Logged in to github.com account wilmartin_microsoft (keyring)
+  - Active account: true
+  - Git operations protocol: https
+  - Token: gho_************************************
+  - Token scopes: 'gist', 'read:org', 'repo', 'workflow'
+```
+
+----------------------------------------
+
+TITLE: Install and Upgrade GitHub CLI with Webi
+DESCRIPTION: Commands to install and upgrade the GitHub CLI using the Webi installer. The install command pipes the script from webi.sh to sh, while upgrade uses the 'webi' command.
+SOURCE: https://github.com/cli/cli/blob/trunk/README.md#_snippet_4
+
+LANGUAGE: Shell
+CODE:
+```
+curl -sS https://webi.sh/gh \| sh
+```
+
+LANGUAGE: Shell
+CODE:
+```
+webi gh@stable
+```
+
+----------------------------------------
+
+TITLE: Go Custom Error Type Implementation for errwrap Compatibility
+DESCRIPTION: Illustrates how to make a custom Go error type compatible with `errwrap`'s `Contains` and `ContainsType` functions. This is achieved by implementing the `Wrapper` interface, which requires defining a `WrappedErrors()` method that returns a slice of underlying wrapped errors.
+SOURCE: https://github.com/cli/cli/blob/trunk/third-party/github.com/hashicorp/errwrap/README.md#_snippet_1
+
+LANGUAGE: Go
+CODE:
+```
+type AppError {
+  Code ErrorCode
+  Err  error
+}
+
+func (e *AppError) WrappedErrors() []error {
+  return []error{e.Err}
+}
+```
+
+----------------------------------------
+
+TITLE: Retrieve Specific User Token for Automated Use
+DESCRIPTION: Shows how to retrieve a specific user's token using `gh auth token --user <username>`. The token is then used to make an API call, demonstrating its utility for automated scripts or solutions requiring a specific account's token without interactive switching.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/multiple-accounts.md#_snippet_4
+
+LANGUAGE: Shell
+CODE:
+```
+➜ GH_TOKEN=$(gh auth token --user williammartin) gh api /user | jq .login
+"williammartin"
+```
+
+----------------------------------------
+
+TITLE: Log Out of a Specific Account with Multiple Choices
+DESCRIPTION: Illustrates the `gh auth logout` command when multiple accounts are logged in for a host. It prompts the user to select which account to log out of and automatically switches the active account if other accounts remain.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/multiple-accounts.md#_snippet_5
+
+LANGUAGE: Shell
+CODE:
+```
+➜ gh auth logout
+? What account do you want to log out of? wilmartin_microsoft (github.com)
+✓ Logged out of github.com account wilmartin_microsoft
+✓ Switched active account for github.com to williammartin
+```
+
+----------------------------------------
+
+TITLE: Install and Upgrade GitHub CLI with Scoop on Windows
+DESCRIPTION: Commands to install and upgrade the GitHub CLI using the Scoop package manager on Windows.
+SOURCE: https://github.com/cli/cli/blob/trunk/README.md#_snippet_7
+
+LANGUAGE: Shell
+CODE:
+```
+scoop install gh
+```
+
+LANGUAGE: Shell
+CODE:
+```
+scoop update gh
+```
+
+----------------------------------------
+
+TITLE: Building and Executing GitHub CLI Binary Example
+DESCRIPTION: Demonstrates the typical workflow for compiling the `gh` executable from source and then running a sample command. This sequence highlights the use of `go run` for the build process and the execution of the resulting binary with specific arguments, illustrating the operational flow.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/project-layout.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+go run script/build.go
+bin/gh issue list --limit 5
+```
+
+----------------------------------------
+
+TITLE: CLI Command Variable Naming Conventions
+DESCRIPTION: Specifies that multi-word variables in command line syntax should use dash-case (all lowercase, words separated by hyphens).
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/command-line-syntax.md#_snippet_5
+
+LANGUAGE: Shell
+CODE:
+```
+gh pr checkout <issue-number>
+```
+
+----------------------------------------
+
+TITLE: Documenting Optional Arguments in CLI Commands
+DESCRIPTION: Details the use of square brackets ([ ]) for optional arguments. Mutually exclusive optional arguments are separated by vertical bars (|) within these brackets.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/command-line-syntax.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+gh pr checkout [--web]
+```
+
+LANGUAGE: Shell
+CODE:
+```
+gh pr view [<number> | <url>]
+```
+
+----------------------------------------
+
+TITLE: Install and Upgrade GitHub CLI with WinGet on Windows
+DESCRIPTION: Commands to install and upgrade the GitHub CLI using the WinGet package manager on Windows. Note that a new terminal window is required for changes to take effect.
+SOURCE: https://github.com/cli/cli/blob/trunk/README.md#_snippet_6
+
+LANGUAGE: Shell
+CODE:
+```
+winget install --id GitHub.cli
+```
+
+LANGUAGE: Shell
+CODE:
+```
+winget upgrade --id GitHub.cli
+```
+
+----------------------------------------
+
+TITLE: GitHub CLI Command Source File Naming Convention
+DESCRIPTION: Illustrates the standard directory and file naming convention for implementing `gh` commands and subcommands within the GitHub CLI project. This structure ensures that the main implementation and embedded help text for a command are consistently located.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/project-layout.md#_snippet_0
+
+LANGUAGE: Text
+CODE:
+```
+pkg/cmd/<command>/<subcommand>/<subcommand>.go
+```
+
+----------------------------------------
+
+TITLE: Documenting Placeholder Values in CLI Commands
+DESCRIPTION: Describes the use of angled brackets (< >) to indicate values that users must replace, ensuring no other expressions are included within them.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/command-line-syntax.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+gh pr view <issue-number>
+```
+
+----------------------------------------
+
+TITLE: Combined CLI Argument Documentation Examples
+DESCRIPTION: Provides additional examples demonstrating combinations of optional, required, and mutually exclusive arguments with placeholders and literals.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/command-line-syntax.md#_snippet_6
+
+LANGUAGE: Shell
+CODE:
+```
+command sub-command [<arg>]
+```
+
+LANGUAGE: Shell
+CODE:
+```
+command sub-command {<path> | <string> | literal}
+```
+
+LANGUAGE: Shell
+CODE:
+```
+command sub-command [<path> | <string>]
+```
+
+----------------------------------------
+
+TITLE: Install and Upgrade GitHub CLI with Conda
+DESCRIPTION: Commands to install and upgrade the GitHub CLI using Conda, specifying the 'conda-forge' channel. Applicable across macOS, Linux, and Windows.
+SOURCE: https://github.com/cli/cli/blob/trunk/README.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+conda install gh --channel conda-forge
+```
+
+LANGUAGE: Shell
+CODE:
+```
+conda update gh --channel conda-forge
+```
+
+----------------------------------------
+
+TITLE: New GitHub CLI Command Constructor Signature
+DESCRIPTION: Defines the expected Go function signature for the constructor of a new GitHub CLI command. This method is crucial for initializing the command, accepting a `cmdutil.Factory` for dependency injection, and returning a `cobra.Command` object for integration into the CLI's command tree.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/project-layout.md#_snippet_2
+
+LANGUAGE: Go
+CODE:
+```
+func NewCmdBoom(f *cmdutil.Factory) *cobra.Command
+```
+
+----------------------------------------
+
+TITLE: Add GitHub CLI to Codespaces Devcontainer
+DESCRIPTION: JSON configuration snippet to add the GitHub CLI as a feature to a Codespaces devcontainer file, enabling its use within the development environment.
+SOURCE: https://github.com/cli/cli/blob/trunk/README.md#_snippet_9
+
+LANGUAGE: JSON
+CODE:
+```
+"features": {
+  "ghcr.io/devcontainers/features/github-cli:1": {}
+}
+```
+
+----------------------------------------
+
+TITLE: Install and Upgrade GitHub CLI with Flox on macOS
+DESCRIPTION: Commands to install and upgrade the GitHub CLI using Flox on macOS. The upgrade command updates the entire toplevel environment.
+SOURCE: https://github.com/cli/cli/blob/trunk/README.md#_snippet_5
+
+LANGUAGE: Shell
+CODE:
+```
+flox install gh
+```
+
+LANGUAGE: Shell
+CODE:
+```
+flox upgrade toplevel
+```
+
+----------------------------------------
+
+TITLE: Install and Upgrade GitHub CLI with MacPorts on macOS
+DESCRIPTION: Commands to install and upgrade the GitHub CLI using MacPorts on macOS, including a self-update command for MacPorts.
+SOURCE: https://github.com/cli/cli/blob/trunk/README.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+sudo port install gh
+```
+
+LANGUAGE: Shell
+CODE:
+```
+sudo port selfupdate && sudo port upgrade gh
+```
+
+----------------------------------------
+
+TITLE: Verify CLI Installation
+DESCRIPTION: Checks the installed gh-cli version to confirm successful installation or build. The command varies slightly between Unix-like systems and Windows.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/source.md#_snippet_4
+
+LANGUAGE: sh
+CODE:
+```
+gh version
+```
+
+LANGUAGE: pwsh
+CODE:
+```
+bin\gh version
+```
+
+----------------------------------------
+
+TITLE: Update GitHub CLI Dependency Licenses using Make
+DESCRIPTION: This shell command executes the `make licenses` target, which is responsible for updating all third-party license information for GitHub CLI across different platforms. It typically involves generating markdown documentation and copying necessary license files for redistribution.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/license-compliance.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+make licenses
+```
+
+----------------------------------------
+
+TITLE: Verify GitHub CLI Binary with Sigstore Cosign
+DESCRIPTION: Illustrates how to verify a downloaded GitHub CLI release using Sigstore's `cosign` tool. This method requires downloading the attestation separately and uses `cosign verify-blob-attestation` with specific parameters for the OIDC issuer and certificate identity to confirm the binary's authenticity.
+SOURCE: https://github.com/cli/cli/blob/trunk/README.md#_snippet_11
+
+LANGUAGE: shell
+CODE:
+```
+$ cosign verify-blob-attestation --bundle cli-cli-attestation-3120304.sigstore.json \
+      --new-bundle-format \
+      --certificate-oidc-issuer="https://token.actions.githubusercontent.com" \
+      --certificate-identity="https://github.com/cli/cli/.github/workflows/deployment.yml@refs/heads/trunk" \
+      gh_2.62.0_macOS_arm64.zip
+Verified OK
+```
+
+----------------------------------------
+
+TITLE: Define Repository Permissions in devcontainer.json for Codespaces
+DESCRIPTION: This JSON configuration snippet, placed within `devcontainer.json`, defines custom repository permissions for a GitHub Codespace. It specifies that the `my_org/my_repo` repository should have 'write' access for issues. These permissions are evaluated during codespace creation and require a new codespace to be created for changes to take effect.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/codespaces.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "customizations": {
+    "codespaces": {
+      "repositories": {
+        "my_org/my_repo": {
+          "permissions": {
+            "issues": "write"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Locally Check GitHub CLI License Compliance Status
+DESCRIPTION: This shell command runs `make licenses-check` to verify if the current third-party license information for GitHub CLI is up to date. This check mirrors the CI workflow and helps ensure compliance before committing changes. If the check fails, an update is required.
+SOURCE: https://github.com/cli/cli/blob/trunk/docs/license-compliance.md#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+make licenses-check
+```

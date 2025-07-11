@@ -1,0 +1,1384 @@
+TITLE: Map VS Code API registerReferenceProvider to LSP References
+DESCRIPTION: Maps the VS Code API `languages.registerReferenceProvider` for finding all references to a symbol to the Language Server Protocol method `textDocument/references` which finds all references to a symbol.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/language-extensions/programmatic-language-features.md#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+VS Code API: registerReferenceProvider
+  Reference: /api/references/vscode-api#languages.registerReferenceProvider
+LSP Method: References
+  Reference: https://microsoft.github.io/language-server-protocol/specification#textDocument_references
+```
+
+----------------------------------------
+
+TITLE: Generate Python Project Requirements File
+DESCRIPTION: Command to generate a `requirements.txt` file, which lists all packages installed in the current virtual environment. This file is crucial for dependency management, allowing the exact environment to be recreated elsewhere.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/python-tutorial.md#_snippet_11
+
+LANGUAGE: powershell
+CODE:
+```
+pip freeze > requirements.txt
+```
+
+----------------------------------------
+
+TITLE: VS Code API Reference: DecorationOptions
+DESCRIPTION: Reference to the VS Code API or contribution point related to Editor Decorator functionality. This entry provides a link to the official documentation for detailed information on options for text editor decorations.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/overview.md#_snippet_24
+
+LANGUAGE: APIDOC
+CODE:
+```
+DecorationOptions
+```
+
+----------------------------------------
+
+TITLE: VS Code Authentication Session Management API
+DESCRIPTION: This API allows extensions to manage user authentication sessions. `vscode.authentication.getSession` is used to retrieve a session, with `createIfNone: true` prompting for account selection. The session preference is now workspace-aware, meaning different workspaces can use different accounts. The `ClearSessionPreference` flag can be used to reset this preference for a given workspace.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/release-notes/v1_78.md#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+vscode.authentication.getSession(options: { createIfNone?: boolean, clearSessionPreference?: boolean }): Promise<AuthenticationSession>
+  createIfNone: If true, prompts the user to select an account if no session exists.
+  clearSessionPreference: If true, clears the remembered session preference for the current workspace.
+
+Behavior:
+  - Session preference is remembered per-workspace.
+  - Preference is extension-specific.
+```
+
+----------------------------------------
+
+TITLE: Import Flask render_template Function
+DESCRIPTION: This Python snippet shows how to import the `render_template` function from the Flask library. This function is essential for loading and rendering Jinja templates, allowing your Flask application to serve dynamic HTML content.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/tutorial-flask.md#_snippet_18
+
+LANGUAGE: python
+CODE:
+```
+from flask import render_template
+```
+
+----------------------------------------
+
+TITLE: Initialize Flask Application Instance in __init__.py
+DESCRIPTION: This Python code initializes the core Flask application instance. It creates a `Flask` object, which is the central application object used to register blueprints, configure the app, and handle requests.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/tutorial-flask.md#_snippet_31
+
+LANGUAGE: Python
+CODE:
+```
+import flask
+app = flask.Flask(__name__)
+```
+
+----------------------------------------
+
+TITLE: Send Language Model Request and Handle Errors in VS Code Extension (TypeScript)
+DESCRIPTION: This example illustrates how to select a specific language model and then send a request to it using `model.sendRequest`. It includes robust error handling, specifically demonstrating how to catch and differentiate `vscode.LanguageModelError` instances to address issues like model non-existence, lack of user consent, or quota limits.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/ai/language-model.md#_snippet_3
+
+LANGUAGE: typescript
+CODE:
+```
+try {
+    const [model] = await vscode.lm.selectChatModels({ vendor: 'copilot', family: 'gpt-4o' });
+    const request = model.sendRequest(craftedPrompt, {}, token);
+} catch (err) {
+    // Making the chat request might fail because
+    // - model does not exist
+    // - user consent not given
+    // - quota limits were exceeded
+    if (err instanceof vscode.LanguageModelError) {
+        console.log(err.message, err.code, err.cause);
+        if (err.cause instanceof Error && err.cause.message.includes('off_topic')) {
+            stream.markdown(vscode.l10n.t('I\'m sorry, I can only explain computer science concepts.'));
+        }
+    } else {
+        // add other error handling logic
+        throw err;
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Configure VS Code Debugger for Flask
+DESCRIPTION: This JSON configuration defines a 'Python Debugger: Flask' launch configuration within VS Code's `launch.json` file. It specifies `debugpy` as the debugger type, sets the `module` to `flask`, and configures environment variables like `FLASK_APP` (defaulting to `app.py`) and `FLASK_DEBUG`. It also includes `args` to run Flask without the built-in debugger and reloader.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/tutorial-flask.md#_snippet_11
+
+LANGUAGE: json
+CODE:
+```
+{
+    "name": "Python Debugger: Flask",
+    "type": "debugpy",
+    "request": "launch",
+    "module": "flask",
+    "env": {
+        "FLASK_APP": "app.py",
+        "FLASK_DEBUG": "1"
+    },
+    "args": [
+        "run",
+        "--no-debugger",
+        "--no-reload"
+    ],
+    "jinja": true
+}
+```
+
+----------------------------------------
+
+TITLE: Chat Participant Disambiguation Properties
+DESCRIPTION: This section details the properties used within the `disambiguation` array for configuring chat participant detection. It explains `category`, `description`, and `examples`, which help define how user prompts are routed to the participant.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/ai/chat.md#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+DisambiguationProperty:
+  category: string
+    description: The detection category. If the participant serves different purposes, you can have a category for each.
+    examples: ["cat", "workspace_questions", "web_questions"]
+  description: string
+    description: A detailed description of the kinds of questions that are suitable for this participant.
+    examples: ["The user wants to learn a specific computer science topic in an informal way.", "The user just wants to relax and see the cat play."]
+  examples: string[]
+    description: A list of representative example questions.
+    examples: ["Teach me C++ pointers using metaphors", "Explain to me what is a linked list in a simple way", "Can you show me a cat playing with a laser pointer?"]
+```
+
+----------------------------------------
+
+TITLE: VS Code Attach Configuration for Node.js Debugging (Process ID)
+DESCRIPTION: This launch configuration enables attaching the VS Code debugger to a specific Node.js process by providing its process ID. This is useful when the debug port is unknown or not used.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/nodejs/nodejs-debugging.md#_snippet_14
+
+LANGUAGE: json
+CODE:
+```
+{
+    "name": "Attach to Process",
+    "type": "node",
+    "request": "attach",
+    "processId": "53426"
+}
+```
+
+----------------------------------------
+
+TITLE: Open VS Code project via URL
+DESCRIPTION: Opens a VS Code project folder using a `vscode://` URL. This allows navigating directly to a project directory from external applications or the command line.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/configure/command-line.md#_snippet_9
+
+LANGUAGE: bash
+CODE:
+```
+vscode://file/{full path to project}/
+
+vscode://file/c:/myProject/
+```
+
+----------------------------------------
+
+TITLE: Default VS Code tasks.json for C++ Build with g++.exe
+DESCRIPTION: This snippet illustrates the initial `tasks.json` configuration generated by the VS Code C++ extension. It defines a build task for active C++ files using `g++.exe`, specifying arguments for compilation, output naming, and problem matching, and sets it as the default build task.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/cpp/config-mingw.md#_snippet_4
+
+LANGUAGE: json
+CODE:
+```
+{
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "C/C++: g++.exe build active file",
+            "command": "C:\\msys64\\ucrt64\\bin\\g++.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "Task generated by Debugger."
+        }
+    ],
+    "version": "2.0.0"
+}
+```
+
+----------------------------------------
+
+TITLE: Configure VS Code Extension Commands and Menus (JSON)
+DESCRIPTION: This JSON configuration snippet for `package.json` defines a new command `code-tutor.annotate` with a title and an icon. It then adds this command to the `editor/title` menu group, making it accessible as a button in the VS Code editor's title bar for easy toggling of annotations.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/ai/language-model-tutorial.md#_snippet_15
+
+LANGUAGE: json
+CODE:
+```
+"contributes": {
+  "commands": [
+    {
+      "command": "code-tutor.annotate",
+      "title": "Toggle Tutor Annotations",
+      "icon": "$(comment)"
+    }
+  ],
+  "menus": {
+    "editor/title": [
+      {
+        "command": "code-tutor.annotate",
+        "group": "navigation"
+      }
+    ]
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Registering a Hover Provider with VS Code API
+DESCRIPTION: This TypeScript snippet demonstrates how to register a HoverProvider using the `vscode.languages.registerHoverProvider` API to provide custom hover content for JavaScript files. When activated, VS Code queries all registered HoverProviders for JavaScript and displays the result in a Hover widget.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/language-extensions/programmatic-language-features.md#_snippet_0
+
+LANGUAGE: typescript
+CODE:
+```
+vscode.languages.registerHoverProvider('javascript', {
+  provideHover(document, position, token) {
+    return {
+      contents: ['Hover Content']
+    };
+  }
+});
+```
+
+----------------------------------------
+
+TITLE: Update Conditional Check for Item Existence with Redis
+DESCRIPTION: Modifies the conditional check for an item's existence from checking dictionary keys to verifying if the Redis `hget` result (`item_id_str`) is not `None`. This aligns the logic with Redis's return values for non-existent keys.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/tutorial-fastapi.md#_snippet_13
+
+LANGUAGE: Python
+CODE:
+```
+if item_id_str is not None:
+```
+
+----------------------------------------
+
+TITLE: Configure Custom Instructions for GitHub Copilot in VS Code Settings
+DESCRIPTION: This JSON snippet demonstrates how to define custom instructions for GitHub Copilot's code generation feature within the `settings.json` file. Instructions can be provided directly as text or imported from external Markdown files, allowing for modular and version-controlled instruction sets.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/copilot/copilot-customization.md#_snippet_4
+
+LANGUAGE: json
+CODE:
+```
+  "github.copilot.chat.codeGeneration.instructions": [
+    {
+      "text": "Always add a comment: 'Generated by Copilot'."
+    },
+    {
+      "text": "In TypeScript always use underscore for private field names."
+    },
+    {
+      "file": "general.instructions.md" // import instructions from file `general.instructions.md`
+    },
+    {
+      "file": "db.instructions.md" // import instructions from file `db.instructions.md`
+    }
+  ],
+```
+
+----------------------------------------
+
+TITLE: VS Code Python Debugger: Standard Launch Configurations
+DESCRIPTION: This configuration defines two standard launch options for Python debugging in VS Code. One uses the integrated terminal, and the other uses an external terminal, both launching the currently active file.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/debugging.md#_snippet_15
+
+LANGUAGE: json
+CODE:
+```
+{
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File (Integrated Terminal)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Python Debugger: Current File (External Terminal)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "externalTerminal"
+        }
+    ]
+}
+```
+
+----------------------------------------
+
+TITLE: Enable Context Retention for VS Code Webview Panel
+DESCRIPTION: Use the `retainContextWhenHidden` option when creating a webview panel to keep its content and scripts running in the background even when the panel is not visible. This is suitable for webviews with complex UI or state that is costly to re-initialize, but be mindful of memory overhead.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/webview.md#_snippet_29
+
+LANGUAGE: ts
+CODE:
+```
+import * as vscode from 'vscode';
+
+export function activate(context: vscode.ExtensionContext) {
+  context.subscriptions.push(
+    vscode.commands.registerCommand('catCoding.start', () => {
+      const panel = vscode.window.createWebviewPanel(
+        'catCoding',
+        'Cat Coding',
+        vscode.ViewColumn.One,
+        {
+          enableScripts: true,
+          retainContextWhenHidden: true
+        }
+      );
+      panel.webview.html = getWebviewContent();
+    })
+  );
+}
+
+function getWebviewContent() {
+  return "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Cat Coding</title>\n</head>\n<body>\n    <img src=\"https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif\" width=\"300\" />\n    <h1 id=\"lines-of-code-counter\">0</h1>\n\n    <script>\n        const counter = document.getElementById('lines-of-code-counter');\n\n        let count = 0;\n        setInterval(() => {\n            counter.textContent = count++;\n        }, 100);\n    </script>\n</body>\n</html>";
+}
+```
+
+----------------------------------------
+
+TITLE: Install and Scaffold VS Code Extension Project Globally
+DESCRIPTION: These commands install Yeoman and the VS Code Extension Generator globally using npm, then run Yeoman to scaffold a new extension project. This is useful for repeated use.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/get-started/your-first-extension.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+npm install --global yo generator-code
+
+yo code
+```
+
+----------------------------------------
+
+TITLE: Write Text Data to Disk using VS Code FS API
+DESCRIPTION: This snippet demonstrates how to convert a string into a `UInt8Array` using Node.js `Buffer.from` and then write it to a file using VS Code's `workspace.fs.writeFile` API. This is the recommended approach for saving text-based data to disk in a VS Code extension.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/custom-editors.md#_snippet_7
+
+LANGUAGE: ts
+CODE:
+```
+const writeData = Buffer.from("my text data", 'utf8');
+vscode.workspace.fs.writeFile(fileUri, writeData);
+```
+
+----------------------------------------
+
+TITLE: VS Code General Editor Widget Color Tokens
+DESCRIPTION: Defines customizable color tokens for general editor widgets in VS Code, such as Find/Replace dialogs. These tokens cover the foreground, background, border, and resize border colors, allowing for comprehensive theme customization.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/references/theme-color.md#_snippet_77
+
+LANGUAGE: APIDOC
+CODE:
+```
+editorWidget.foreground: Foreground color of editor widgets, such as find/replace.
+editorWidget.background: Background color of editor widgets, such as Find/Replace.
+editorWidget.border: Border color of the editor widget unless the widget does not contain a border or defines its own border color.
+editorWidget.resizeBorder: Border color of the resize bar of editor widgets. The color is only used if the widget chooses to have a resize border and if the color is not overridden by a widget.
+```
+
+----------------------------------------
+
+TITLE: Registering a VS Code Task Provider
+DESCRIPTION: This snippet demonstrates how to register a task provider using `vscode.tasks.registerTaskProvider`. It includes implementations for `provideTasks` to asynchronously fetch all available tasks and `resolveTask` for efficient retrieval of individual tasks, which can improve performance for specific task lookups.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/task-provider.md#_snippet_1
+
+LANGUAGE: TypeScript
+CODE:
+```
+import * as vscode from 'vscode';
+
+let rakePromise: Thenable<vscode.Task[]> | undefined = undefined;
+const taskProvider = vscode.tasks.registerTaskProvider('rake', {
+  provideTasks: () => {
+    if (!rakePromise) {
+      rakePromise = getRakeTasks();
+    }
+    return rakePromise;
+  },
+  resolveTask(_task: vscode.Task): vscode.Task | undefined {
+		const task = _task.definition.task;
+		// A Rake task consists of a task and an optional file as specified in RakeTaskDefinition
+		// Make sure that this looks like a Rake task by checking that there is a task.
+		if (task) {
+			// resolveTask requires that the same definition object be used.
+			const definition: RakeTaskDefinition = <any>_task.definition;
+			return new vscode.Task(definition, _task.scope ?? vscode.TaskScope.Workspace, definition.task, 'rake', new vscode.ShellExecution(`rake ${definition.task}`));
+		}
+		return undefined;  }
+});
+```
+
+----------------------------------------
+
+TITLE: Register Chat Participant in VS Code Extension package.json
+DESCRIPTION: This JSON configuration snippet demonstrates how to register a chat participant within the `contributes.chatParticipants` section of a VS Code extension's `package.json` file. It specifies unique identifiers, display names, a description, and whether the participant should remain sticky in the chat input field.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/ai/chat.md#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+"contributes": {
+        "chatParticipants": [
+            {
+                "id": "chat-sample.my-participant",
+                "name": "my-participant",
+                "fullName": "My Participant",
+                "description": "What can I teach you?",
+                "isSticky": true
+            }
+        ]
+}
+```
+
+----------------------------------------
+
+TITLE: Scaffold VS Code Extension Project with Yeoman
+DESCRIPTION: This command uses `npx` to run `yo code` (Yeoman's VS Code Extension Generator) to scaffold a new TypeScript or JavaScript extension project. It sets up the basic file structure and dependencies for VS Code extension development.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/ai/language-model-tutorial.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npx --package yo --package generator-code -- yo code
+```
+
+----------------------------------------
+
+TITLE: Activate VS Code Extension on Specific Language File Open (onLanguage)
+DESCRIPTION: This snippet demonstrates how to activate a VS Code extension when a file associated with a specific language, such as Python, is opened. The `onLanguage` event takes a language identifier value.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/references/activation-events.md#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+"activationEvents": [
+    "onLanguage:python"
+]
+```
+
+----------------------------------------
+
+TITLE: Tag VS Code Extension with Snippets Category
+DESCRIPTION: This `package.json` snippet shows how to categorize an extension as 'Snippets'. This helps users discover the extension in the marketplace and indicates its primary function.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/language-extensions/snippet-guide.md#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+{
+  "categories": ["Snippets"]
+}
+```
+
+----------------------------------------
+
+TITLE: Write a basic JavaScript function
+DESCRIPTION: This snippet demonstrates creating a simple JavaScript function `sayHello` and calling it. It highlights VS Code's IntelliSense for code completion and syntax highlighting, and serves as an example for using Code Actions to refactor string concatenation into a template literal.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/getstarted/getting-started.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+function sayHello(name) {
+    console.log('Hello, ' + name);
+}
+
+sayHello('VS Code');
+```
+
+----------------------------------------
+
+TITLE: VS Code API: Register Webview Panel Serializer
+DESCRIPTION: Reference to the `window.registerWebviewPanelSerializer` method for registering a serializer to restore webview panels in Visual Studio Code.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/webview.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+window.registerWebviewPanelSerializer
+```
+
+----------------------------------------
+
+TITLE: Set Current Working Directory (cwd)
+DESCRIPTION: Specifies the current working directory for the debugger, serving as the base for relative paths in code. Defaults to ${workspaceFolder}. The setting impacts how relative file paths are resolved.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/debugging.md#_snippet_24
+
+LANGUAGE: json
+CODE:
+```
+"cwd": "${workspaceFolder}/py_code"
+```
+
+----------------------------------------
+
+TITLE: VS Code Launch Configuration for Server Ready Action
+DESCRIPTION: Example VS Code launch configuration (`launch.json`) demonstrating the `serverReadyAction` property. This feature automates opening a URI when a server program is ready, using a regex pattern to extract the port and formatting a URI. It can open the URI externally or debug with Chrome.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/release-notes/v1_32.md#_snippet_5
+
+LANGUAGE: json
+CODE:
+```
+{
+  "type": "node",
+  "request": "launch",
+  "name": "Launch Program",
+  "program": "${workspaceFolder}/app.js",
+
+  "serverReadyAction": {
+    "pattern": "listening on port ([0-9]+)",
+    "uriFormat": "http://localhost:%s",
+    "action": "openExternally"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Node.js Debugger Launch Configuration Attributes Reference
+DESCRIPTION: This section provides a comprehensive list of attributes available for configuring Node.js debugging sessions in VS Code's `launch.json` file. Attributes are categorized based on whether they apply to 'launch' configurations, 'attach' configurations, or both.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/nodejs/nodejs-debugging.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Launch Configuration Attributes:
+  Common Attributes (type 'launch' and 'attach'):
+    "outFiles": array of glob patterns for locating generated JavaScript files.
+    "resolveSourceMapLocations": array of glob patterns for locations where source maps should be parsed.
+    "timeout": when restarting a session, give up after this number of milliseconds.
+    "stopOnEntry": break immediately when the program launches.
+    "localRoot": VS Code's root directory for remote debugging.
+    "remoteRoot": Node's root directory for remote debugging.
+    "smartStep": try to automatically step over code that doesn't map to source files.
+    "skipFiles": automatically skip files covered by these glob patterns.
+    "trace": enable diagnostic output.
+
+  Launch-only Attributes (request type 'launch'):
+    "program": an absolute path to the Node.js program to debug.
+    "args": arguments passed to the program to debug (array of strings).
+    "cwd": launch the program to debug in this directory.
+    "runtimeExecutable": absolute path to the runtime executable to be used (default is 'node').
+    "runtimeArgs": optional arguments passed to the runtime executable.
+    "runtimeVersion": selects a specific Node.js version when using nvm/nvs.
+    "env": optional environment variables (list of string key/value pairs).
+    "envFile": optional path to a file containing environment variable definitions.
+    "console": the console to launch the program ('internalConsole', 'integratedTerminal', 'externalTerminal').
+    "outputCapture": if set to 'std', output from process stdout/stderr will be shown in the Debug Console.
+
+  Attach-only Attributes (request type 'attach'):
+    "restart": restart the connection on termination.
+    "port": debug port to use.
+    "address": TCP/IP address of the debug port.
+    "processId": the debugger tries to attach to this process after having sent a USR1 signal. Debug port is determined automatically.
+```
+
+----------------------------------------
+
+TITLE: npm Debug Script Definition in package.json
+DESCRIPTION: Defines a 'debug' script within the `scripts` section of a `package.json` file. This script executes `node myProgram.js` and can be referenced by VS Code launch configurations.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/nodejs/nodejs-debugging.md#_snippet_5
+
+LANGUAGE: JSON
+CODE:
+```
+  "scripts": {
+    "debug": "node myProgram.js"
+  },
+```
+
+----------------------------------------
+
+TITLE: Configure Node.js Debugging Port in Docker Compose
+DESCRIPTION: This YAML snippet demonstrates how to configure a Node.js service within `docker-compose.debug.yml` to enable remote debugging. It exposes port 9229 for debugging and sets the `command` to start the Node.js application with the `--inspect` flag, allowing a debugger to attach.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/containers/docker-compose.md#_snippet_1
+
+LANGUAGE: yaml
+CODE:
+```
+version: '3.4'
+
+services:
+  node-hello:
+    image: node-hello
+    build: .
+    environment:
+      NODE_ENV: development
+    ports:
+      - 3000
+      - 9229:9229
+    command: node --inspect=0.0.0.0:9229 ./bin/www
+```
+
+----------------------------------------
+
+TITLE: Configure Custom Debugger Path for .NET in launch.json
+DESCRIPTION: This JSON snippet demonstrates how to specify a custom path for the `vsdbg` debugger within the `launch.json` configuration for .NET debugging. This is useful if `vsdbg` is located at a non-default path in the target container.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/containers/docker-compose.md#_snippet_5
+
+LANGUAGE: json
+CODE:
+```
+{
+    "netCore": {
+        "debuggerPath": "/remote_debugger/vsdbg"
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: VS Code Python Debugger: Launch Specific Startup File with Arguments
+DESCRIPTION: This configuration demonstrates how to set up a debug launch configuration to always run a specific Python startup file (e.g., `startup.py`) with predefined command-line arguments, useful for consistent project debugging.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/debugging.md#_snippet_16
+
+LANGUAGE: json
+CODE:
+```
+ {
+     "name": "Python Debugger: startup.py",
+     "type": "debugpy",
+     "request": "launch",
+     "program": "${workspaceFolder}/startup.py",
+     "args" : ["--port", "1593"]
+ },
+```
+
+----------------------------------------
+
+TITLE: VS Code Browser Debugging Launch Configuration Attributes (Launch Request)
+DESCRIPTION: Attributes specific to launch configurations with request type `launch`, used for automatically opening a browser with your application. These control the URL to open, the browser executable, and any additional runtime arguments.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/nodejs/browser-debugging.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+launch.json Attributes (request type 'launch'):
+  url: string
+    Description: The URL to automatically open when the browser is launched.
+  runtimeExecutable: string
+    Description: Either an absolute path to the browser executable to use, or the version of the browser to use.
+    Valid versions: 'stable' (default), 'canary', 'beta', 'dev'.
+  runtimeArgs: string[]
+    Description: Optional arguments passed when launching the browser.
+```
+
+----------------------------------------
+
+TITLE: Launch a web application for debugging in VS Code
+DESCRIPTION: This launch.json configuration starts a new browser instance (Edge by default, or Chrome if 'msedge' is replaced with 'chrome') and navigates to a specified URL (e.g., a local development server) in debug mode. It's the standard way to debug web applications.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/nodejs/browser-debugging.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "msedge",
+      "request": "launch",
+      "name": "Launch my cool app",
+      "url": "http://localhost:8000"
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Attach VS Code debugger to a running browser instance
+DESCRIPTION: This launch.json configuration enables VS Code to attach to an already running browser instance that was previously launched with remote debugging enabled (e.g., using the command line). It connects to the specified port to establish the debugging connection.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/nodejs/browser-debugging.md#_snippet_3
+
+LANGUAGE: json
+CODE:
+```
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "msedge",
+      "request": "attach",
+      "name": "Attach to browser",
+      "port": 9222
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Display debug-step-out Codicon Icon
+DESCRIPTION: HTML snippet to render the `debug-step-out` Codicon icon, used to step out of the current function during debugging.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/references/icons-in-labels.md#_snippet_108
+
+LANGUAGE: HTML
+CODE:
+```
+<i class="codicon codicon-debug-step-out"></i>
+```
+
+----------------------------------------
+
+TITLE: Control Problem Decorations Visibility in VS Code
+DESCRIPTION: Configures the visibility of problem decorations throughout the VS Code workbench and editor, excluding the dedicated Problems view. Disabling this setting will also disable related outline and decoration UI elements.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/release-notes/v1_85.md#_snippet_22
+
+LANGUAGE: JSON
+CODE:
+```
+"problems.visibility": "off"
+```
+
+----------------------------------------
+
+TITLE: Launch Node.js and Wait for Debugger (`--inspect-brk`)
+DESCRIPTION: This bash command starts a Node.js application and pauses its execution on the first line until a debugger successfully attaches, which is useful for debugging startup issues.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/nodejs/nodejs-debugging.md#_snippet_12
+
+LANGUAGE: bash
+CODE:
+```
+node --inspect-brk program.js
+```
+
+----------------------------------------
+
+TITLE: Run Flask Application from Terminal
+DESCRIPTION: These shell commands illustrate how to set the `FLASK_APP` environment variable and then run the Flask application from the command line, outside of the VS Code debugger. It provides specific commands for Linux/macOS and Windows (PowerShell and Command Prompt) to ensure cross-platform compatibility.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/tutorial-flask.md#_snippet_34
+
+LANGUAGE: Shell
+CODE:
+```
+# On Linux and macOS
+export FLASK_APP=webapp
+# On Windows (PowerShell)
+$env:FLASK_APP=webapp
+# On Windows (Command Prompt)
+set FLASK_APP=webapp
+
+# Navigate into the app folder and run
+cd hello_app
+python -m flask run
+```
+
+----------------------------------------
+
+TITLE: VS Code tasks.json with Integrated GCC Problem Matcher
+DESCRIPTION: A complete `tasks.json` file demonstrating how to embed a custom problem matcher within a VS Code build task. This setup enables VS Code to automatically parse and display problems from GCC compiler output, enhancing the development workflow.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/debugtest/tasks.md#_snippet_28
+
+LANGUAGE: json
+CODE:
+```
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "gcc",
+            "args": ["-Wall", "helloWorld.c", "-o", "helloWorld"],
+            "problemMatcher": {
+                "owner": "cpp",
+                "fileLocation": ["relative", "${workspaceFolder}"],
+                "source": "gcc",
+                "pattern": {
+                    "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3,
+                    "severity": 4,
+                    "message": 5
+                }
+            }
+        }
+    ]
+}
+```
+
+----------------------------------------
+
+TITLE: Start Express.js Application Server
+DESCRIPTION: This command initiates the Express.js application server. It typically executes a script defined in the 'package.json' file (e.g., 'node ./bin/www' or 'node app.js') to start the web server, making the application accessible, by default, on port 3000.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/remote/ssh-tutorial.md#_snippet_7
+
+LANGUAGE: bash
+CODE:
+```
+npm start
+```
+
+----------------------------------------
+
+TITLE: Run Node.js with Nodemon and Inspect
+DESCRIPTION: This command line instruction demonstrates how to start a Node.js application (`server.js`) using `nodemon`. The `--inspect` flag is crucial as it enables the Node.js debugger, making the running process discoverable and attachable by debugging tools like VS Code.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/nodejs/nodejs-debugging.md#_snippet_23
+
+LANGUAGE: bash
+CODE:
+```
+nodemon --inspect server.js
+```
+
+----------------------------------------
+
+TITLE: Register Chat Participant in package.json
+DESCRIPTION: This JSON snippet defines a new chat participant within the `contributes` section of the `package.json` file. It specifies the participant's unique ID, full display name, short name for chat commands, a descriptive placeholder, and sets it as 'sticky' for persistent interaction.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/ai/chat-tutorial.md#_snippet_2
+
+LANGUAGE: json
+CODE:
+```
+"contributes":{
+    "chatParticipants": [
+    {
+        "id": "chat-tutorial.code-tutor",
+        "fullName": "Code Tutor",
+        "name": "tutor",
+        "description": "What can I teach you?",
+        "isSticky": true
+    }
+    ]
+}
+```
+
+----------------------------------------
+
+TITLE: Implement VS Code Chat Request Processing Logic
+DESCRIPTION: This snippet provides the complete implementation for the `vscode.ChatRequestHandler`. It initializes the chat prompt, adds the user's message, sends the request to the language model, and then streams the model's response back to the user as markdown.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/ai/chat-tutorial.md#_snippet_5
+
+LANGUAGE: TypeScript
+CODE:
+```
+// define a chat handler
+const handler: vscode.ChatRequestHandler = async (request: vscode.ChatRequest, context: vscode.ChatContext, stream: vscode.ChatResponseStream, token: vscode.CancellationToken) => {
+
+    // initialize the prompt
+    let prompt = BASE_PROMPT;
+
+    // initialize the messages array with the prompt
+    const messages = [
+        vscode.LanguageModelChatMessage.User(prompt),
+    ];
+
+    // add in the user's message
+    messages.push(vscode.LanguageModelChatMessage.User(request.prompt));
+
+    // send the request
+    const chatResponse = await request.model.sendRequest(messages, {}, token);
+
+    // stream the response
+    for await (const fragment of chatResponse.text) {
+        stream.markdown(fragment);
+    }
+
+    return;
+};
+```
+
+----------------------------------------
+
+TITLE: Create SSH Tunnel for Remote Debugging
+DESCRIPTION: This command establishes a secure SSH tunnel from the local machine to the remote computer. It forwards a local port to a destination port on the remote `localhost`, enabling secure communication for debugging purposes.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/debugging.md#_snippet_10
+
+LANGUAGE: bash
+CODE:
+```
+ssh -2 -L 5678:localhost:5678 -i identityfile user@1.2.3.4
+```
+
+----------------------------------------
+
+TITLE: Launch Node.js via Nodemon from VS Code
+DESCRIPTION: This configuration allows VS Code to directly launch a Node.js application using `nodemon` as the runtime executable. It specifies the program to run and directs console output to the integrated terminal, offering a convenient way to manage and debug `nodemon`-controlled processes entirely within the VS Code environment.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/nodejs/nodejs-debugging.md#_snippet_25
+
+LANGUAGE: json
+CODE:
+```
+{
+    "name": "Launch server.js via nodemon",
+    "type": "node",
+    "request": "launch",
+    "runtimeExecutable": "nodemon",
+    "program": "${workspaceFolder}/server.js",
+    "console": "integratedTerminal",
+    "internalConsoleOptions": "neverOpen"
+}
+```
+
+----------------------------------------
+
+TITLE: VS Code Extension package.json Configuration Properties
+DESCRIPTION: Defines the various configuration properties available for a VS Code extension's `package.json` file, detailing their types and purposes. This includes properties for dependencies, extension bundling, runtime environment preferences, and publishing metadata.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/references/extension-manifest.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+package.json Properties:
+  devDependencies:
+    Type: object
+    Description: Any development Node.js dependencies your extension needs. Exactly the same as npm's `devDependencies`.
+  extensionPack:
+    Type: array
+    Description: An array with the ids of extensions that can be installed together. The id of an extension is always `${publisher}.${name}`. For example: `vscode.csharp`.
+  extensionDependencies:
+    Type: array
+    Description: An array with the ids of extensions that this extension depends on. The id of an extension is always `${publisher}.${name}`. For example: `vscode.csharp`.
+  extensionKind:
+    Type: array
+    Description: An array that indicates where the extension should run in remote configurations. Values are `ui` (run locally), `workspace` (run on remote machine) or both, with the order setting the preference. For example: `[ui, workspace]` indicates the extension can run in either location but prefers to run on the local machine. See here for more details.
+  scripts:
+    Type: object
+    Description: Exactly the same as npm's `scripts` but with extra VS Code specific fields such as `vscode:prepublish` or `vscode:uninstall`.
+  icon:
+    Type: string
+    Description: The path to the icon of at least 128x128 pixels (256x256 for Retina screens).
+  pricing:
+    Type: string
+    Description: The pricing information for the extension. Allowed values: `Free`, `Trial`. Default: `Free`. See here for more details.
+  capabilities:
+    Type: object
+    Description: An object describing the extension's capabilities in limited workspaces: `untrustedWorkspaces`, `virtualWorkspaces`.
+```
+
+----------------------------------------
+
+TITLE: onDebugDynamicConfigurations Activation Event
+DESCRIPTION: This activation event is emitted just before the `provideDebugConfigurations` method of the `DebugConfigurationProvider` is called to provide dynamic debug configurations when the user asks for them, such as through the UI via the "Select and Start Debugging" command. The presence of this activation event is used as a signal that the extension contributes dynamic debug configurations.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/references/activation-events.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+Event: onDebugDynamicConfigurations
+Description: Emitted just before `provideDebugConfigurations` for dynamic debug configurations.
+Trigger: User asks for dynamic debug configurations (e.g., via "Select and Start Debugging" UI command).
+Signal: Indicates the extension contributes dynamic debug configurations.
+```
+
+----------------------------------------
+
+TITLE: Map Item Name to ID using Redis HSET
+DESCRIPTION: Adds a new Redis `hset` operation to create a mapping from an item's name to its unique ID. This allows for efficient lookups of item IDs based on their names, which is crucial for checking if an item already exists.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/tutorial-fastapi.md#_snippet_18
+
+LANGUAGE: python
+CODE:
+```
+redis_client.hset("item_name_to_id", item_name, item_id)
+```
+
+----------------------------------------
+
+TITLE: Define Flask Routes and View Functions in views.py
+DESCRIPTION: This Python code defines various URL routes and their corresponding view functions for a Flask application. It includes routes for a home page, about page, contact page, a dynamic 'hello' page with an optional name parameter, and an API endpoint to serve a static JSON file. It utilizes Flask's `render_template` for rendering HTML and `app.send_static_file` for serving static content.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/tutorial-flask.md#_snippet_30
+
+LANGUAGE: Python
+CODE:
+```
+from flask import Flask
+from flask import render_template
+from datetime import datetime
+from . import app
+
+@app.route("/")
+def home():
+    return render_template("home.html")
+
+@app.route("/about/")
+def about():
+    return render_template("about.html")
+
+@app.route("/contact/")
+def contact():
+    return render_template("contact.html")
+
+@app.route("/hello/")
+@app.route("/hello/<name>")
+def hello_there(name = None):
+    return render_template(
+        "hello_there.html",
+        name=name,
+        date=datetime.now()
+    )
+
+@app.route("/api/data")
+def get_data():
+    return app.send_static_file("data.json")
+```
+
+----------------------------------------
+
+TITLE: Embed Debugpy Listener in Python Source Code
+DESCRIPTION: These Python lines integrate `debugpy` directly into the application's source code. They configure `debugpy` to listen for incoming debugger connections on a specified IP address and port, and then pause execution until a debugger attaches, facilitating remote debugging.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/debugging.md#_snippet_12
+
+LANGUAGE: python
+CODE:
+```
+import debugpy
+
+# Allow other computers to attach to debugpy at this IP address and port.
+debugpy.listen(('1.2.3.4', 5678))
+
+# Pause the program until a remote debugger is attached
+debugpy.wait_for_client()
+```
+
+----------------------------------------
+
+TITLE: Declare Extension Does Not Support Virtual Workspaces
+DESCRIPTION: This `package.json` configuration informs VS Code that the extension is incompatible with virtual workspaces. When a virtual workspace is active, VS Code will deactivate the extension or run it with limited functionality, displaying a message to the user explaining the restriction.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/virtual-workspaces.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "capabilities": {
+    "virtualWorkspaces": {
+      "supported": false,
+      "description": "Debugging is not possible in virtual workspaces."
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Initialize Python Debugging Configuration (launch.json) for VS Code
+DESCRIPTION: This configuration file (`launch.json`) is automatically generated by the Python Debugger extension in VS Code. It defines how the debugger should launch a Python file, specifying the Python interpreter path and the program to execute. Users can modify this file to add arguments or custom configurations for their debugging sessions.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/python/debugging.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}
+```
+
+----------------------------------------
+
+TITLE: Install Packages with Sudo in Dev Container (apt-get)
+DESCRIPTION: This example shows how to install packages using `apt-get` with `sudo` when `sudo` is installed and configured in the dev container. It updates the package list and then installs the desired package.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/devcontainers/create-dev-container.md#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+# If sudo is installed and configured
+sudo apt-get update
+sudo apt-get install <package>
+```
+
+----------------------------------------
+
+TITLE: Define Editor Line Highlight Background Color
+DESCRIPTION: Sets the background color for the line where the cursor is currently positioned, providing visual emphasis.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/references/theme-color.md#_snippet_25
+
+LANGUAGE: APIDOC
+CODE:
+```
+editor.lineHighlightBackground: Background color for the highlight of line at the cursor position.
+```
+
+----------------------------------------
+
+TITLE: Configure Code Completion in VS Code Extensions
+DESCRIPTION: This snippet demonstrates how to enable and configure code completion features in VS Code. It includes the Language Server Protocol (LSP) configuration to announce completion capabilities and trigger characters, as well as a TypeScript example for direct implementation using `vscode.CompletionItemProvider`.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/language-extensions/programmatic-language-features.md#_snippet_14
+
+LANGUAGE: json
+CODE:
+```
+{
+    ...
+    "capabilities" : {
+        "completionProvider" : {
+            "resolveProvider": "true",
+            "triggerCharacters": [ '.' ]
+        }
+        ...
+    }
+}
+```
+
+LANGUAGE: typescript
+CODE:
+```
+class GoCompletionItemProvider implements vscode.CompletionItemProvider {
+    public provideCompletionItems(
+        document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken):
+        Thenable<vscode.CompletionItem[]> {
+    ...
+    }
+}
+
+export function activate(ctx: vscode.ExtensionContext): void {
+    ...
+    ctx.subscriptions.push(getDisposable());
+    ctx.subscriptions.push(
+        vscode.languages.registerCompletionItemProvider(
+            GO_MODE, new GoCompletionItemProvider(), '.', '\"'));
+    ...
+}
+```
+
+----------------------------------------
+
+TITLE: Stream Markdown and Progress in VS Code Chat Response
+DESCRIPTION: Demonstrates how to stream responses back to the user in a VS Code chat extension. This example shows using `stream.progress()` to provide status updates and `stream.markdown()` to send formatted code blocks or other Markdown content to the chat view.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/ai/chat.md#_snippet_5
+
+LANGUAGE: typescript
+CODE:
+```
+stream.progress('Picking the right topic to teach...');
+stream.markdown(````typescript
+const myStack = new Stack();
+myStack.push(1); // pushing a number on the stack (or let's say, adding a fish to the stack)
+myStack.push(2); // adding another fish (number 2)
+console.log(myStack.pop()); // eating the top fish, will output: 2
+````
+```
+
+----------------------------------------
+
+TITLE: Generate JavaScript class structure with Copilot code completion
+DESCRIPTION: Demonstrates how GitHub Copilot automatically provides real-time code suggestions (ghost text) for class definitions as you type. Users can accept these AI-powered completions by pressing the Tab key to efficiently generate boilerplate code.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/copilot/getting-started.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+class Calculator
+```
+
+----------------------------------------
+
+TITLE: VS Code Extension Contribution Point: contributes.views
+DESCRIPTION: Describes the 'contributes.views' contribution point in package.json for registering custom Tree Views in Visual Studio Code. It specifies the required 'id' and 'name' for the view and lists available locations where the view can be contributed.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/extension-guides/tree-view.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+contributes.views:
+  <location>: array of objects
+    - id: string (required) - Unique identifier for the view.
+    - name: string (required) - Display name for the view.
+  Available Locations:
+    - explorer: Explorer view in the Side Bar
+    - debug: Run and Debug view in the Side Bar
+    - scm: Source Control view in the Side Bar
+    - test: Test explorer view in the Side Bar
+    - Custom View Containers: (Refer to #view-container for more details)
+```
+
+----------------------------------------
+
+TITLE: Contribute a new command to VS Code extension
+DESCRIPTION: This JSON snippet illustrates how to contribute a new command, 'extension.sayHello', to a VS Code extension. It defines the command's title, category, and specifies light and dark icons, making it discoverable in the Command Palette and other menus.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/api/references/contribution-points.md#_snippet_4
+
+LANGUAGE: json
+CODE:
+```
+{
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.sayHello",
+        "title": "Hello World",
+        "category": "Hello",
+        "icon": {
+          "light": "path/to/light/icon.svg",
+          "dark": "path/to/dark/icon.svg"
+        }
+      }
+    ]
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Install TypeScript Compiler Globally using npm
+DESCRIPTION: This command installs the TypeScript compiler (`tsc`) globally on your system using npm, the Node.js Package Manager. This allows you to compile TypeScript files from any directory.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/typescript/typescript-tutorial.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm install -g typescript
+```
+
+----------------------------------------
+
+TITLE: Access and Manage Python Environments via VS Code API
+DESCRIPTION: This section details the finalized API for Python extensions to interact with user's Python environments. Extensions can use this API to access the currently selected environment path used by the Python extension to run scripts, or update the path to their preferred one.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/release-notes/v1_77.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+PythonExtensionEnvironmentAPI:
+  // Provides programmatic access to Python environments managed by the VS Code Python extension.
+  // This API allows extensions to query and modify the currently selected Python environment path.
+
+  Methods:
+    getSelectedEnvironmentPath(): string
+      // Retrieves the file system path of the Python environment currently selected by the Python extension.
+      // Returns: The absolute path to the selected Python environment.
+
+    updateSelectedEnvironmentPath(newPath: string): void
+      // Sets the Python environment path that the Python extension should use for running scripts.
+      // Parameters:
+      //   newPath: string - The absolute file system path to the new Python environment.
+      // Returns: void
+      // Throws: Error if the path is invalid or cannot be set.
+```
+
+----------------------------------------
+
+TITLE: VS Code Debug: Suppressing 'Open launch.json' Button in Error Dialogs
+DESCRIPTION: This snippet explains a change in how VS Code handles error messages from debug adapters. Previously, VS Code would always add an 'Open launch.json' button to modal error dialogs. Now, this button is no longer added if the `url` property of the DAP `Message` (within an `ErrorResponse`) uses the 'command' scheme, allowing extensions to provide custom error handling links without redundancy.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/release-notes/v1_60.md#_snippet_22
+
+LANGUAGE: APIDOC
+CODE:
+```
+DAP Message Type:
+  Message:
+    url: string
+      Description: An optional URL where additional information about the message can be found (e.g., 'command:myExtension.fixError').
+    urlLabel: string
+      Description: A label for the URL, presented to the user as a UI button.
+
+DAP ErrorResponse:
+  message: Message
+
+VS Code Behavior:
+  - If `ErrorResponse.message.url` uses the 'command' scheme (e.g., `command:myExtension.fixError`), the 'Open launch.json' button is suppressed in the modal dialog.
+```
+
+----------------------------------------
+
+TITLE: Configure remoteRoot for Node.js Container Debugging in VS Code
+DESCRIPTION: This JSON configuration snippet demonstrates how to set the `remoteRoot` property within a Visual Studio Code debug launch configuration for Docker. It specifies the absolute path to the application's source files inside the container, allowing the debugger to correctly map breakpoints and source files when the application is not in the default `/usr/src/app` location.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/docs/containers/debug-node.md#_snippet_7
+
+LANGUAGE: json
+CODE:
+```
+{
+    "configurations": [
+        {
+            "name": "Containers: Node.js Launch",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "platform": "node",
+            "node": {
+                "remoteRoot": "/usr/my-custom-location"
+            }
+        }
+    ]
+}
+```
+
+----------------------------------------
+
+TITLE: VS Code Debugger Launch Configuration Updates
+DESCRIPTION: The top-level `debugServer` attribute in `launch.json` has been deprecated and will be removed. Debug server configuration must now be specified per individual launch configuration within the `configurations` array, providing more granular control for multi-configuration debugging setups.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/release-notes/v1_8.md#_snippet_14
+
+LANGUAGE: APIDOC
+CODE:
+```
+launch.json (deprecated):
+  debugServer: number
+
+launch.json (current):
+  configurations: [
+    {
+      debugServer: number
+    }
+  ]
+```
+
+----------------------------------------
+
+TITLE: Node.js Express 'Hello World' Server Example
+DESCRIPTION: A basic Node.js Express application that sets up a 'Hello World' handler for the root URL and listens on port 3000. This server is used as an example for VS Code's `serverReadyAction` feature, which can automatically open the URI.
+SOURCE: https://github.com/microsoft/vscode-docs/blob/main/release-notes/v1_32.md#_snippet_4
+
+LANGUAGE: javascript
+CODE:
+```
+var express = require('express');
+var app = express();
+
+app.get('/', function (req, res) {
+  res.send('Hello World!')
+});
+
+app.listen(3000, function () {
+  console.log('Example app listening on port 3000!')
+});
+```
