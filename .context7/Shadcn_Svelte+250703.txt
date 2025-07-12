@@ -1,0 +1,1357 @@
+TITLE: Initialize shadcn-svelte Project with CLI
+DESCRIPTION: The `init` command initializes a new shadcn-svelte project by installing dependencies, adding the `cn` utility, and creating CSS variables. It prompts the user for configuration details like base color, CSS file path, and import aliases.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/cli.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+shadcn-svelte@latest init
+```
+
+LANGUAGE: txt
+CODE:
+```
+Which base color would you like to use? › Slate
+Where is your global CSS file? (this file will be overwritten) › src/app.css
+Configure the import alias for lib: › $lib
+Configure the import alias for components: › $lib/components
+Configure the import alias for utils: › $lib/utils
+Configure the import alias for hooks: › $lib/hooks
+Configure the import alias for ui: › $lib/components/ui
+```
+
+LANGUAGE: txt
+CODE:
+```
+Usage: shadcn-svelte init [options]
+
+initialize your project and install dependencies
+
+Options:
+  -c, --cwd <path>           the working directory (default: the current directory)
+  -o, --overwrite            overwrite existing files (default: false)
+  --no-deps                  disable adding & installing dependencies
+  --base-color <name>        the base color for the components (choices: "slate", "gray", "zinc", "neutral", "stone")
+  --css <path>               path to the global CSS file
+  --components-alias <path>  import alias for components
+  --lib-alias <path>         import alias for lib
+  --utils-alias <path>       import alias for utils
+  --hooks-alias <path>       import alias for hooks
+  --ui-alias <path>          import alias for ui
+  --proxy <proxy>            fetch items from registry using a proxy
+  -h, --help                 display help for command
+```
+
+----------------------------------------
+
+TITLE: Add Components with shadcn-svelte CLI
+DESCRIPTION: The `add` command allows users to select and add specific components and their dependencies to their project. It presents a list of available components for selection.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/cli.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+shadcn-svelte@latest add [component]
+```
+
+LANGUAGE: txt
+CODE:
+```
+Which components would you like to add? › Space to select. Return to submit.
+
+◯  accordion
+◯  alert
+◯  alert-dialog
+◯  aspect-ratio
+◯  avatar
+◯  badge
+◯  button
+◯  card
+◯  checkbox
+◯  collapsible
+```
+
+LANGUAGE: txt
+CODE:
+```
+Usage: shadcn-svelte add [options] [components...]
+
+add components to your project
+
+Arguments:
+  components         the components to add or a url to the component
+
+Options:
+  -c, --cwd <path>   the working directory (default: the current directory)
+  --no-deps          skips adding & installing package dependencies
+  -a, --all          install all components to your project (default: false)
+  -y, --yes          skip confirmation prompt (default: false)
+  -o, --overwrite    overwrite existing files (default: false)
+  --proxy <proxy>    fetch components from registry using a proxy
+  -h, --help         display help for command
+```
+
+----------------------------------------
+
+TITLE: Build shadcn-svelte Registry JSON Files
+DESCRIPTION: The `registry build` command generates registry JSON files from a `registry.json` input file. These generated files are placed in the `static/r` directory, facilitating component discovery and usage.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/cli.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+shadcn-svelte@latest registry build [registry.json]
+```
+
+LANGUAGE: txt
+CODE:
+```
+Usage: shadcn-svelte registry build [options] [registry]
+
+build components for a shadcn-svelte registry
+
+Arguments:
+  registry             path to registry.json file (default: ./registry.json)
+
+Options:
+  -c, --cwd <path>     the working directory (default: the current directory)
+  -o, --output <path>  destination directory for json files (default: ./static/r)
+  -h, --help           display help for command
+```
+
+----------------------------------------
+
+TITLE: Configure Proxy for shadcn-svelte CLI Requests
+DESCRIPTION: This section explains how to use a proxy for outgoing requests made by the `shadcn-svelte` CLI when fetching from the registry. It notes that the underlying request library respects `HTTP_PROXY` or `http_proxy` environment variables.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/cli.md#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+HTTP_PROXY="<proxy-url>" npx shadcn-svelte@latest init
+```
+
+----------------------------------------
+
+TITLE: Install Accordion Component using CLI
+DESCRIPTION: Installs the Accordion component using the shadcn-svelte CLI, which automatically adds necessary files and dependencies to your project.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/accordion.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npx shadcn-svelte add accordion
+```
+
+----------------------------------------
+
+TITLE: Manually Install bits-ui for Accordion
+DESCRIPTION: Installs the core `bits-ui` library, a prerequisite for the Accordion component, when opting for a manual setup process.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/accordion.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+npm install bits-ui
+```
+
+----------------------------------------
+
+TITLE: Basic Usage of Svelte Accordion Component
+DESCRIPTION: Demonstrates how to import and use the Accordion component in a Svelte application, creating a single-item accordion with a trigger and content section.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/accordion.md#_snippet_2
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import * as Accordion from "$lib/components/ui/accordion/index.js";
+</script>
+
+<Accordion.Root type="single">
+  <Accordion.Item value="item-1">
+    <Accordion.Trigger>Is it accessible?</Accordion.Trigger>
+    <Accordion.Content>
+      Yes. It adheres to the WAI-ARIA design pattern.
+    </Accordion.Content>
+  </Accordion.Item>
+</Accordion.Root>
+```
+
+----------------------------------------
+
+TITLE: Install Alert Dialog Component via CLI
+DESCRIPTION: Installs the Alert Dialog component using the shadcn-svelte CLI, automatically adding necessary files and dependencies to your project.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/alert-dialog.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npx shadcn-svelte add alert-dialog
+```
+
+----------------------------------------
+
+TITLE: Manually Install bits-ui Dependency
+DESCRIPTION: Installs the `bits-ui` library as a development dependency, which is a prerequisite for manually integrating the Alert Dialog component.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/alert-dialog.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+npm install bits-ui -D
+```
+
+----------------------------------------
+
+TITLE: Basic Alert Dialog Usage in Svelte
+DESCRIPTION: Demonstrates how to import and use the Alert Dialog component in a Svelte application, showcasing its structure with root, trigger, content, header, footer, title, description, cancel, and action elements.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/alert-dialog.md#_snippet_2
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
+</script>
+
+<AlertDialog.Root>
+  <AlertDialog.Trigger>Open</AlertDialog.Trigger>
+  <AlertDialog.Content>
+    <AlertDialog.Header>
+      <AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
+      <AlertDialog.Description>
+        This action cannot be undone. This will permanently delete your account
+        and remove your data from our servers.
+      </AlertDialog.Description>
+    </AlertDialog.Header>
+    <AlertDialog.Footer>
+      <AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+      <AlertDialog.Action>Continue</AlertDialog.Action>
+    </AlertDialog.Footer>
+  </AlertDialog.Content>
+</AlertDialog.Root>
+```
+
+----------------------------------------
+
+TITLE: Install Alert Component via shadcn-svelte CLI
+DESCRIPTION: Instructions to add the Alert component to your Svelte project using the shadcn-svelte command-line interface.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/alert.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npx shadcn-svelte add alert
+```
+
+----------------------------------------
+
+TITLE: Basic Usage of Svelte Alert Component
+DESCRIPTION: Demonstrates how to import and use the Alert component in a Svelte application, including its Root, Title, and Description sub-components for displaying user attention messages.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/alert.md#_snippet_1
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import * as Alert from "$lib/components/ui/alert/index.js";
+</script>
+
+<Alert.Root>
+  <Alert.Title>Heads up!</Alert.Title>
+  <Alert.Description>
+    You can add components to your app using the cli.
+  </Alert.Description>
+</Alert.Root>
+```
+
+----------------------------------------
+
+TITLE: Install AspectRatio Component
+DESCRIPTION: Instructions for adding the AspectRatio component to your Svelte project using either a CLI command or manual dependency installation.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/aspect-ratio.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npx shadcn-svelte add aspect-ratio
+```
+
+LANGUAGE: shell
+CODE:
+```
+npm install bits-ui -D
+```
+
+----------------------------------------
+
+TITLE: Basic Usage of AspectRatio Component
+DESCRIPTION: Demonstrates how to import and use the AspectRatio component to wrap content, setting a desired ratio for display.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/aspect-ratio.md#_snippet_1
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { AspectRatio } from "$lib/components/ui/aspect-ratio/index.js";
+</script>
+
+<div class="w-[450px]">
+  <AspectRatio ratio={16 / 9} class="bg-muted">
+    <img src="..." alt="..." class="rounded-md object-cover" />
+  </AspectRatio>
+</div>
+```
+
+----------------------------------------
+
+TITLE: Install Avatar Component via CLI
+DESCRIPTION: Installs the Avatar component using the shadcn-svelte CLI, adding necessary files and configurations to your project.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/avatar.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npx shadcn-svelte add avatar
+```
+
+----------------------------------------
+
+TITLE: Install bits-ui Dependency Manually
+DESCRIPTION: Installs the core bits-ui library as a development dependency, which is a prerequisite for the Avatar component.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/avatar.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+npm install bits-ui -D
+```
+
+----------------------------------------
+
+TITLE: Basic Svelte Avatar Component Usage
+DESCRIPTION: Demonstrates how to import the Avatar component and use its Root, Image, and Fallback parts to display an image with a text fallback when the image is unavailable.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/avatar.md#_snippet_2
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import * as Avatar from "$lib/components/ui/avatar/index.js";
+</script>
+
+<Avatar.Root>
+  <Avatar.Image src="https://github.com/shadcn.png" alt="@shadcn" />
+  <Avatar.Fallback>CN</Avatar.Fallback>
+</Avatar.Root>
+```
+
+----------------------------------------
+
+TITLE: Install Svelte Badge Component via CLI
+DESCRIPTION: Instructions for adding the Badge component to your Svelte project using the project's command-line interface, typically `npx shadcn-svelte add badge`.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/badge.md#_snippet_0
+
+LANGUAGE: cli
+CODE:
+```
+npx shadcn-svelte add badge
+```
+
+----------------------------------------
+
+TITLE: Manually Install Svelte Badge Component
+DESCRIPTION: Instructions for manually adding the Badge component by copying its source files into your project, as an alternative to CLI installation.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/badge.md#_snippet_1
+
+LANGUAGE: text
+CODE:
+```
+Copy and paste the component source files linked at the top of this page into your project.
+```
+
+----------------------------------------
+
+TITLE: Basic Usage of Svelte Badge Component
+DESCRIPTION: Demonstrates how to import and render the `Badge` component in a Svelte application, applying a basic outline variant.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/badge.md#_snippet_2
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Badge } from "$lib/components/ui/badge/index.js";
+</script>
+
+<Badge variant="outline">Badge</Badge>
+```
+
+----------------------------------------
+
+TITLE: Create a Link Styled as a Badge in Svelte
+DESCRIPTION: Illustrates how to use the `badgeVariants` helper function to style a standard HTML `<a>` element to visually appear as a badge, suitable for navigation links.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/badge.md#_snippet_3
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { badgeVariants } from "$lib/components/ui/badge/index.js";
+</script>
+
+<a href="/dashboard" class={badgeVariants({ variant: "outline" })}>Badge</a>
+```
+
+----------------------------------------
+
+TITLE: Install Breadcrumb Component via CLI
+DESCRIPTION: Installs the Breadcrumb UI component using the shadcn-svelte CLI, adding necessary files and dependencies to your project.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/breadcrumb.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npx shadcn-svelte add breadcrumb
+```
+
+----------------------------------------
+
+TITLE: Basic Svelte Breadcrumb Usage
+DESCRIPTION: Demonstrates the fundamental structure and usage of the Breadcrumb component in a Svelte application, including Root, List, Item, Link, and Separator elements to create a hierarchical navigation path.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/breadcrumb.md#_snippet_1
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import * as Breadcrumb from "$lib/components/ui/breadcrumb/index.js";
+</script>
+
+<Breadcrumb.Root>
+  <Breadcrumb.List>
+    <Breadcrumb.Item>
+      <Breadcrumb.Link href="/">Home</Breadcrumb.Link>
+    </Breadcrumb.Item>
+    <Breadcrumb.Separator />
+    <Breadcrumb.Item>
+      <Breadcrumb.Link href="/components">Components</Breadcrumb.Link>
+    </Breadcrumb.Item>
+    <Breadcrumb.Separator />
+    <Breadcrumb.Item>
+      <Breadcrumb.Page>Breadcrumb</Breadcrumb.Page>
+    </Breadcrumb.Item>
+  </Breadcrumb.List>
+</Breadcrumb.Root>
+```
+
+----------------------------------------
+
+TITLE: Install Svelte Button Component via CLI
+DESCRIPTION: Installs the Svelte button component using the `shadcn-svelte` command-line interface tool, which adds the component files to your project.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/button.md#_snippet_0
+
+LANGUAGE: CLI
+CODE:
+```
+npx shadcn-svelte add button
+```
+
+----------------------------------------
+
+TITLE: Manual Installation of Svelte Button Dependencies
+DESCRIPTION: Manually installs the `bits-ui` dependency required by the Svelte button component. After installation, copy the component source files into your project from the provided links.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/button.md#_snippet_1
+
+LANGUAGE: CLI
+CODE:
+```
+npm install bits-ui -D
+# Or using pnpm:
+pnpm install bits-ui -D
+# Or using yarn:
+yarn add bits-ui -D
+```
+
+----------------------------------------
+
+TITLE: Basic Svelte Button Usage
+DESCRIPTION: Imports the `Button` component from the UI library and renders a basic button with an 'outline' variant. This demonstrates the fundamental way to use the component.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/button.md#_snippet_2
+
+LANGUAGE: Svelte
+CODE:
+```
+<script lang="ts">
+  import { Button } from "$lib/components/ui/button/index.js";
+</script>
+
+<Button variant="outline">Button</Button>
+```
+
+----------------------------------------
+
+TITLE: Svelte Button as a Link using href Prop
+DESCRIPTION: Converts the `<Button>` component into an anchor (`<a>`) element by simply passing an `href` prop. This allows the button to function as a navigation link while maintaining its button appearance.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/button.md#_snippet_3
+
+LANGUAGE: Svelte
+CODE:
+```
+<script lang="ts">
+  import { Button } from "$lib/components/ui/button/index.js";
+</script>
+
+<Button href="/dashboard">Dashboard</Button>
+```
+
+----------------------------------------
+
+TITLE: Svelte Link Styled as Button using buttonVariants Helper
+DESCRIPTION: Applies button styling to a standard anchor (`<a>`) element using the `buttonVariants` helper function. This is an alternative method to create a link that visually resembles a button without using the `<Button>` component directly.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/button.md#_snippet_4
+
+LANGUAGE: Svelte
+CODE:
+```
+<script lang="ts">
+  import { buttonVariants } from "$lib/components/ui/button";
+</script>
+
+<a href="/dashboard" class={buttonVariants({ variant: "outline" })}>
+  Dashboard
+</a>
+```
+
+----------------------------------------
+
+TITLE: Install Calendar Component via shadcn-svelte CLI
+DESCRIPTION: Installs the Calendar component into your project using the shadcn-svelte command-line interface tool. This command adds the necessary files and configurations for the component.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/calendar.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+npx shadcn-svelte add calendar
+```
+
+----------------------------------------
+
+TITLE: Manually Install Calendar Component Dependencies (npm)
+DESCRIPTION: Installs the core dependencies for the Calendar component, `bits-ui` and `@internationalized/date`, as development dependencies using npm. This step is required for manual setup of the component.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/calendar.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+npm install bits-ui @internationalized/date -D
+```
+
+----------------------------------------
+
+TITLE: Upgrade Calendar Component via shadcn-svelte CLI
+DESCRIPTION: Upgrades the existing Calendar component to its latest version using the shadcn-svelte CLI. Users will be prompted to overwrite existing files, requiring manual merging of any custom changes made to the component.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/calendar.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+npx shadcn-svelte add calendar
+```
+
+----------------------------------------
+
+TITLE: Install Calendar Blocks After Upgrade via shadcn-svelte CLI
+DESCRIPTION: Adds the latest version of specific calendar blocks (e.g., `calendar-02`) using the shadcn-svelte CLI. This is typically done after upgrading the main Calendar component to ensure all new block variations are available.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/calendar.md#_snippet_3
+
+LANGUAGE: Shell
+CODE:
+```
+npx shadcn-svelte add calendar-02
+```
+
+----------------------------------------
+
+TITLE: Install Card Component using CLI
+DESCRIPTION: Installs the Card component using the project's command-line interface tool, typically adding it to the project's dependencies and files.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/card.md#_snippet_0
+
+LANGUAGE: cli
+CODE:
+```
+npx shadcn-svelte add card
+```
+
+----------------------------------------
+
+TITLE: Manually Install Card Component
+DESCRIPTION: Provides instructions for manually installing the Card component by copying its source files directly into the project.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/card.md#_snippet_1
+
+LANGUAGE: text
+CODE:
+```
+Copy and paste the component source files linked at the top of this page into your project.
+```
+
+----------------------------------------
+
+TITLE: Basic Usage of Svelte Card Component
+DESCRIPTION: Demonstrates the basic structure and usage of the Svelte Card component, including its root, header, title, description, content, and footer elements.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/card.md#_snippet_2
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import * as Card from "$lib/components/ui/card/index.js";
+</script>
+
+<Card.Root>
+  <Card.Header>
+    <Card.Title>Card Title</Card.Title>
+    <Card.Description>Card Description</Card.Description>
+  </Card.Header>
+  <Card.Content>
+    <p>Card Content</p>
+  </Card.Content>
+  <Card.Footer>
+    <p>Card Footer</p>
+  </Card.Footer>
+</Card.Root>
+```
+
+----------------------------------------
+
+TITLE: Install Carousel Component via CLI
+DESCRIPTION: Installs the Carousel component using the shadcn-svelte CLI, which automates the setup process by adding the necessary files to your project.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/carousel.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npx shadcn-svelte add carousel
+```
+
+----------------------------------------
+
+TITLE: Install Embla Carousel Svelte Dependency
+DESCRIPTION: Installs the `embla-carousel-svelte` library as a development dependency. This library provides the core carousel functionality that the shadcn-svelte Carousel component is built upon.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/carousel.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+pnpm install embla-carousel-svelte -D
+```
+
+----------------------------------------
+
+TITLE: Basic Carousel Usage in Svelte
+DESCRIPTION: Demonstrates the fundamental structure of the Carousel component, including importing the components and arranging the `Carousel.Root`, `Carousel.Content`, `Carousel.Item`, `Carousel.Previous`, and `Carousel.Next` elements to create a functional carousel.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/carousel.md#_snippet_2
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import * as Carousel from "$lib/components/ui/carousel/index.js";
+</script>
+
+<Carousel.Root>
+  <Carousel.Content>
+    <Carousel.Item>...</Carousel.Item>
+    <Carousel.Item>...</Carousel.Item>
+    <Carousel.Item>...</Carousel.Item>
+  </Carousel.Content>
+  <Carousel.Previous />
+  <Carousel.Next />
+</Carousel.Root>
+```
+
+----------------------------------------
+
+TITLE: Set Carousel Item Size with Tailwind CSS Basis
+DESCRIPTION: Illustrates how to control the width of carousel items using the `basis-1/3` Tailwind CSS utility class. This example sets each item to occupy 33% of the carousel's total width, ensuring a fixed layout.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/carousel.md#_snippet_3
+
+LANGUAGE: svelte
+CODE:
+```
+<!-- 33% of the carousel width. -->
+<Carousel.Root>
+  <Carousel.Content>
+    <Carousel.Item class="basis-1/3">...</Carousel.Item>
+    <Carousel.Item class="basis-1/3">...</Carousel.Item>
+    <Carousel.Item class="basis-1/3">...</Carousel.Item>
+  </Carousel.Content>
+</Carousel.Root>
+```
+
+----------------------------------------
+
+TITLE: Set Responsive Carousel Item Sizes
+DESCRIPTION: Shows how to apply responsive sizing to carousel items using Tailwind CSS classes like `md:basis-1/2` and `lg:basis-1/3`. This allows items to adapt their width based on different screen sizes, providing a flexible layout.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/carousel.md#_snippet_4
+
+LANGUAGE: svelte
+CODE:
+```
+<!-- 50% on small screens and 33% on larger screens. -->
+<Carousel.Root>
+  <Carousel.Content>
+    <Carousel.Item class="md:basis-1/2 lg:basis-1/3">...</Carousel.Item>
+    <Carousel.Item class="md:basis-1/2 lg:basis-1/3">...</Carousel.Item>
+    <Carousel.Item class="md:basis-1/2 lg:basis-1/3">...</Carousel.Item>
+  </Carousel.Content>
+</Carousel.Root>
+```
+
+----------------------------------------
+
+TITLE: Apply Fixed Spacing Between Carousel Items
+DESCRIPTION: Demonstrates how to create consistent spacing between carousel items using a combination of negative left margin (`-ml-4`) on the `Carousel.Content` wrapper and left padding (`pl-4`) on individual `Carousel.Item` elements.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/carousel.md#_snippet_5
+
+LANGUAGE: svelte
+CODE:
+```
+<Carousel.Root>
+  <Carousel.Content class="-ml-4">
+    <Carousel.Item class="pl-4">...</Carousel.Item>
+    <Carousel.Item class="pl-4">...</Carousel.Item>
+    <Carousel.Item class="pl-4">...</Carousel.Item>
+  </Carousel.Content>
+</Carousel.Root>
+```
+
+----------------------------------------
+
+TITLE: Apply Responsive Spacing Between Carousel Items
+DESCRIPTION: Illustrates how to implement responsive spacing between carousel items using Tailwind CSS classes. This example adjusts margins and padding based on screen size (e.g., `-ml-2 md:-ml-4`), ensuring optimal spacing across devices.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/carousel.md#_snippet_6
+
+LANGUAGE: svelte
+CODE:
+```
+<Carousel.Root>
+  <Carousel.Content class="-ml-2 md:-ml-4">
+    <Carousel.Item class="pl-2 md:pl-4">...</Carousel.Item>
+    <Carousel.Item class="pl-2 md:pl-4">...</Carousel.Item>
+    <Carousel.Item class="pl-2 md:pl-4">...</Carousel.Item>
+  </Carousel.Content>
+</Carousel.Root>
+```
+
+----------------------------------------
+
+TITLE: Set Carousel Orientation
+DESCRIPTION: Explains how to change the carousel's scrolling direction using the `orientation` prop. This allows the carousel to display items either `vertical`ly or `horizontal`ly, adapting to different layout needs.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/carousel.md#_snippet_7
+
+LANGUAGE: svelte
+CODE:
+```
+<Carousel.Root orientation="vertical | horizontal">
+  <Carousel.Content>
+    <Carousel.Item>...</Carousel.Item>
+    <Carousel.Item>...</Carousel.Item>
+    <Carousel.Item>...</Carousel.Item>
+  </Carousel.Content>
+</Carousel.Root>
+```
+
+----------------------------------------
+
+TITLE: Configure Carousel Options
+DESCRIPTION: Shows how to pass configuration options to the underlying Embla Carousel instance using the `opts` prop. This enables customization of behavior such as item alignment (`align`) and looping (`loop`). Refer to the Embla Carousel documentation for a full list of available options.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/carousel.md#_snippet_8
+
+LANGUAGE: svelte
+CODE:
+```
+<Carousel.Root
+  opts={{
+    align: "start",
+    loop: true,
+  }}
+>
+  <Carousel.Content>
+    <Carousel.Item>...</Carousel.Item>
+    <Carousel.Item>...</Carousel.Item>
+    <Carousel.Item>...</Carousel.Item>
+  </Carousel.Content>
+</Carousel.Root>
+```
+
+----------------------------------------
+
+TITLE: Accessing and Using Carousel API in Svelte
+DESCRIPTION: Demonstrates how to obtain the Carousel API instance using the `setApi` prop, enabling reactive tracking of the current slide and total count. It also shows how to subscribe to the 'select' event to update UI state based on carousel changes.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/carousel.md#_snippet_9
+
+LANGUAGE: Svelte
+CODE:
+```
+<script lang="ts">
+  import { type CarouselAPI } from "$lib/components/ui/carousel/context.js";
+  import * as Carousel from "$lib/components/ui/carousel/index.js";
+
+  let api = $state<CarouselAPI>();
+  let current = $state(0);
+  const count = $derived(api ? api.scrollSnapList().length : 0);
+
+  $effect(() => {
+    if (api) {
+      current = api.selectedScrollSnap() + 1;
+      api.on("select", () => {
+        current = api!.selectedScrollSnap() + 1;
+      });
+    }
+  });
+</script>
+
+<Carousel.Root setApi={(emblaApi) => (api = emblaApi)}>
+  <Carousel.Content>
+    <Carousel.Item>...</Carousel.Item>
+    <Carousel.Item>...</Carousel.Item>
+    <Carousel.Item>...</Carousel.Item>
+  </Carousel.Content>
+</Carousel.Root>
+```
+
+----------------------------------------
+
+TITLE: Handling Carousel Events with API Instance in Svelte
+DESCRIPTION: Illustrates how to listen for specific carousel events, such as 'select', by using the `on` method of the obtained API instance. This allows for custom actions to be performed when an event occurs, enabling dynamic responses to user interaction or carousel state changes.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/carousel.md#_snippet_10
+
+LANGUAGE: Svelte
+CODE:
+```
+<script lang="ts">
+  import { type CarouselAPI } from "$lib/components/ui/carousel/context.js";
+  import * as Carousel from "$lib/components/ui/carousel/index.js";
+
+  let api = $state<CarouselAPI>();
+
+  $effect(() => {
+    if (api) {
+      api.on("select", () => {
+        // do something
+      });
+    }
+  });
+</script>
+
+<Carousel.Root setApi={(emblaApi) => (api = emblaApi)}>
+  <Carousel.Content>
+    <Carousel.Item>...</Carousel.Item>
+    <Carousel.Item>...</Carousel.Item>
+    <Carousel.Item>...</Carousel.Item>
+  </Carousel.Content>
+</Carousel.Root>
+```
+
+----------------------------------------
+
+TITLE: Integrating Plugins with Carousel in Svelte
+DESCRIPTION: Explains how to add external plugins, like Embla Carousel Autoplay, to the carousel component using the `plugins` prop. This allows extending carousel functionality with pre-built features, such as automatic slide transitions, by configuring them directly on the root component.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/carousel.md#_snippet_11
+
+LANGUAGE: Svelte
+CODE:
+```
+<script lang="ts">
+  import Autoplay from "embla-carousel-autoplay";
+  import * as Carousel from "$lib/components/ui/carousel/index.js";
+</script>
+
+<Carousel.Root
+  plugins={[
+    Autoplay({
+      delay: 2000,
+    }),
+  ]}
+>
+  <!-- ... -->
+</Carousel.Root>
+```
+
+----------------------------------------
+
+TITLE: Composing Charts with LayerChart in Svelte
+DESCRIPTION: This snippet demonstrates the basic structure for composing charts using LayerChart components within a Svelte application. It shows how to use `Chart.Container` as a wrapper and integrate LayerChart components like `BarChart`, along with custom components such as `Chart.Tooltip` via Svelte snippets.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_0
+
+LANGUAGE: Svelte
+CODE:
+```
+<script lang="ts">
+  import * as Chart from "$lib/components/ui/chart/index.js";
+  import { BarChart } from "layerchart";
+
+  const data = [
+    // ...
+  ];
+</script>
+
+<Chart.Container>
+  <BarChart {data} x="date" y="value">
+    {#snippet tooltip()}
+      <Chart.Tooltip />
+    {/snippet}
+  </BarChart>
+</Chart.Container>
+```
+
+----------------------------------------
+
+TITLE: Defining CSS Chart Color Variables for Shadcn Svelte
+DESCRIPTION: This CSS snippet provides the necessary color variables for charts, supporting both light and dark themes. These variables ensure consistent styling across different chart components and integrate with the overall application theme.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_1
+
+LANGUAGE: CSS
+CODE:
+```
+:root {
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+}
+
+.dark {
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+}
+
+@theme inline {
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+}
+```
+
+----------------------------------------
+
+TITLE: Defining Sample Chart Data in Svelte
+DESCRIPTION: This Svelte script defines an array of objects representing sample chart data, including monthly desktop and mobile user counts. The documentation notes that data can be in any shape and mapped to the chart using the `dataKey` prop.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_2
+
+LANGUAGE: Svelte
+CODE:
+```
+<script lang="ts">
+  const chartData = [
+    { month: "January", desktop: 186, mobile: 80 },
+    { month: "February", desktop: 305, mobile: 200 },
+    { month: "March", desktop: 237, mobile: 120 },
+    { month: "April", desktop: 73, mobile: 190 },
+    { month: "May", desktop: 209, mobile: 130 },
+    { month: "June", desktop: 214, mobile: 140 }
+  ];
+</script>
+```
+
+----------------------------------------
+
+TITLE: Define Chart Configuration in Svelte
+DESCRIPTION: This snippet defines the `chartConfig` object, which holds human-readable strings, labels, icons, and color tokens for theming a chart. It uses TypeScript for type safety with `Chart.ChartConfig`.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_3
+
+LANGUAGE: Svelte
+CODE:
+```
+<script lang="ts">
+  import * as Chart from "$lib/components/ui/chart/index.js";
+
+  const chartConfig = {
+    desktop: {
+      label: "Desktop",
+      color: "#2563eb"
+    },
+    mobile: {
+      label: "Mobile",
+      color: "#60a5fa"
+    }
+  } satisfies Chart.ChartConfig;
+</script>
+```
+
+----------------------------------------
+
+TITLE: Build Bar Chart with Custom X-Axis Formatting in Svelte
+DESCRIPTION: This snippet demonstrates building a `BarChart` using `LayerChart` components within a `Chart.Container`. It configures the chart with data, scales, and series, and specifically applies a custom formatter to the x-axis to shorten month names to their first three letters.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_4
+
+LANGUAGE: Svelte
+CODE:
+```
+<Chart.Container config={chartConfig} class="min-h-[200px] w-full">
+  <BarChart
+    data={chartData}
+    xScale={scaleBand().padding(0.25)}
+    x="month"
+    axis="x"
+    tooltip={false}
+    seriesLayout="group"
+    series={[
+      {
+        key: "desktop",
+        label: chartConfig.desktop.label,
+        color: chartConfig.desktop.color
+      },
+      {
+        key: "mobile",
+        label: chartConfig.mobile.label,
+        color: chartConfig.mobile.color
+      }
+    ]}
+    props={{
+      xAxis: {
+        format: (d) => d.slice(0, 3)
+      }
+    }}
+  />
+</Chart.Container>
+```
+
+----------------------------------------
+
+TITLE: Add Tooltip to Bar Chart in Svelte
+DESCRIPTION: This snippet modifies the existing `BarChart` to include a tooltip. It replaces the `tooltip={false}` prop with a `{#snippet tooltip()}` block containing the `Chart.Tooltip` component, enabling interactive tooltips on the chart.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_5
+
+LANGUAGE: Svelte
+CODE:
+```
+<Chart.Container config={chartConfig} class="min-h-[200px] w-full">
+  <BarChart
+    data={chartData}
+    xScale={scaleBand().padding(0.25)}
+    x="month"
+    axis="x"
+    seriesLayout="group"
+    series={[
+      {
+        key: "desktop",
+        label: chartConfig.desktop.label,
+        color: chartConfig.desktop.color
+      },
+      {
+        key: "mobile",
+        label: chartConfig.mobile.label,
+        color: chartConfig.mobile.color
+      }
+    ]}
+    props={{
+      xAxis: {
+        format: (d) => d.slice(0, 3)
+      }
+    }}
+  >
+    {#snippet tooltip()}
+      <Chart.Tooltip />
+    {/snippet}
+  </BarChart>
+</Chart.Container>
+```
+
+----------------------------------------
+
+TITLE: Add Legend to Bar Chart in Svelte
+DESCRIPTION: This snippet adds a legend to the `BarChart` by setting the `legend` prop to `true`. This enables a visual legend for the chart series, enhancing readability.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_6
+
+LANGUAGE: Svelte
+CODE:
+```
+<Chart.Container config={chartConfig} class="min-h-[200px] w-full">
+  <BarChart
+    data={chartData}
+    xScale={scaleBand().padding(0.25)}
+    x="month"
+    axis="x"
+    seriesLayout="group"
+    legend
+    series={[
+      {
+        key: "desktop",
+        label: chartConfig.desktop.label,
+        color: chartConfig.desktop.color
+      },
+      {
+        key: "mobile",
+        label: chartConfig.mobile.label,
+        color: chartConfig.mobile.color
+      }
+    ]}
+    props={{
+      xAxis: {
+        format: (d) => d.slice(0, 3)
+      }
+    }}
+  >
+    {#snippet tooltip()}
+      <Chart.Tooltip />
+    {/snippet}
+  </BarChart>
+</Chart.Container>
+```
+
+----------------------------------------
+
+TITLE: Define Chart Configuration with Icons and Colors (Svelte)
+DESCRIPTION: This Svelte script defines the `chartConfig` object, which specifies labels, icons, and colors for different chart elements. It supports direct color values or theme objects with light/dark keys, allowing for flexible and decoupled chart configuration.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_7
+
+LANGUAGE: Svelte
+CODE:
+```
+<script lang="ts">
+  import MonitorIcon from "@lucide/svelte/icons/monitor";
+  import * as Chart from "$lib/components/ui/chart/index.js";
+
+  const chartConfig = {
+    desktop: {
+      label: "Desktop",
+      icon: MonitorIcon,
+      // A color like 'hsl(220, 98%, 61%)' or 'var(--color-name)'
+      color: "#2563eb",
+      // OR a theme object with 'light' and 'dark' keys
+      theme: {
+        light: "#2563eb",
+        dark: "#dc2626",
+      },
+    },
+  } satisfies Chart.ChartConfig;
+</script>
+```
+
+----------------------------------------
+
+TITLE: Define CSS Variables for Chart Theming (CSS)
+DESCRIPTION: This CSS snippet demonstrates how to define custom color variables for chart theming within `:root` and `.dark` selectors. This approach is recommended for consistent theming across light and dark modes, allowing charts to automatically adapt to the application's theme.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_8
+
+LANGUAGE: CSS
+CODE:
+```
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  /* ... */
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  /* ... */
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+}
+```
+
+----------------------------------------
+
+TITLE: Reference CSS Variables in Chart Configuration (Svelte)
+DESCRIPTION: This Svelte script demonstrates how to integrate the previously defined CSS variables into the `chartConfig`. By referencing `--chart-1` and `--chart-2`, the chart's colors will dynamically update based on the CSS theme, ensuring consistency across the application.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_9
+
+LANGUAGE: Svelte
+CODE:
+```
+<script lang="ts">
+  const chartConfig = {
+    desktop: {
+      label: "Desktop",
+      color: "var(--chart-1)",
+    },
+    mobile: {
+      label: "Mobile",
+      color: "var(--chart-2)",
+    },
+  } satisfies Chart.ChartConfig;
+</script>
+```
+
+----------------------------------------
+
+TITLE: Define Colors Directly in Chart Configuration (Svelte)
+DESCRIPTION: As an alternative to CSS variables, this Svelte snippet shows how to define colors directly within the `chartConfig` using specific color formats like hex, hsl, or oklch. This method offers flexibility when color tokens are not managed via CSS variables.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_10
+
+LANGUAGE: Svelte
+CODE:
+```
+<script lang="ts">
+  const chartConfig = {
+    desktop: {
+      label: "Desktop",
+      color: "#2563eb",
+    },
+  } satisfies Chart.ChartConfig;
+</script>
+```
+
+----------------------------------------
+
+TITLE: Apply Theme Colors to Chart Components (Svelte)
+DESCRIPTION: This Svelte example illustrates how to apply a theme color, defined in `chartConfig` or CSS variables, directly to a chart component. By referencing `var(--color-desktop)` in the `fill` prop, the component's color will dynamically match the configured theme.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_11
+
+LANGUAGE: Svelte
+CODE:
+```
+<Bar fill="var(--color-desktop)" />
+```
+
+----------------------------------------
+
+TITLE: Apply Theme Colors in Chart Data (TypeScript)
+DESCRIPTION: This TypeScript snippet demonstrates how to embed theme colors directly within chart data objects. By including `color: "var(--color-chrome)"`, the data points can dynamically reference and utilize the colors defined in the chart configuration or CSS variables.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_12
+
+LANGUAGE: TypeScript
+CODE:
+```
+const chartData = [
+  { browser: "chrome", visitors: 275, color: "var(--color-chrome)" },
+  { browser: "safari", visitors: 200, color: "var(--color-safari)" },
+];
+```
+
+----------------------------------------
+
+TITLE: Apply Theme Colors with Tailwind CSS (Svelte)
+DESCRIPTION: This Svelte example shows how to integrate chart theme colors with Tailwind CSS classes. By using a custom class format like `fill-(--color-desktop)`, developers can apply dynamically configured chart colors directly through Tailwind utilities.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_13
+
+LANGUAGE: Svelte
+CODE:
+```
+<Label class="fill-(--color-desktop)" />
+```
+
+----------------------------------------
+
+TITLE: Chart.Tooltip Component Props (APIDOC)
+DESCRIPTION: This API documentation outlines the available props for the `<Chart.Tooltip>` component, allowing for extensive customization of chart tooltips. It details properties such as `labelKey`, `nameKey`, `indicator` style, and options to hide elements or provide custom formatters.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_14
+
+LANGUAGE: APIDOC
+CODE:
+```
+Chart.Tooltip Props:
+  labelKey: string
+    Description: The config or data key to use for the label.
+  nameKey: string
+    Description: The config or data key to use for the name.
+  indicator: 'dot' | 'line' | 'dashed'
+    Description: The indicator style for the tooltip.
+  hideLabel: boolean
+    Description: Whether to hide the label.
+  hideIndicator: boolean
+    Description: Whether to hide the indicator.
+  label: string
+    Description: A custom label for the tooltip.
+  labelFormatter: function
+    Description: A function to format the label.
+  formatter: Snippet
+    Description: A snippet to provide flexible rendering of the tooltip.
+```
+
+----------------------------------------
+
+TITLE: Customizing Tooltip Labels and Names in Svelte Charts
+DESCRIPTION: This Svelte component demonstrates how to use `labelKey` and `nameKey` props on the `Chart.Tooltip` component to specify custom data keys for displaying tooltip labels and names. The `labelKey` prop maps to the 'visitors' field for the main label, while `nameKey` maps to the 'browser' field for individual item names, allowing for dynamic tooltip content based on chart data.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/chart.md#_snippet_15
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  const chartData = [
+    { browser: "chrome", visitors: 187, color: "var(--color-chrome)" },
+    { browser: "safari", visitors: 200, color: "var(--color-safari)" }
+  ];
+
+  const chartConfig = {
+    visitors: {
+      label: "Total Visitors"
+    },
+    chrome: {
+      label: "Chrome",
+      color: "var(--chart-1)"
+    },
+    safari: {
+      label: "Safari",
+      color: "var(--chart-2)"
+    }
+  } satisfies ChartConfig;
+</script>
+
+<Chart.Tooltip labelKey="visitors" nameKey="browser" />
+```
+
+----------------------------------------
+
+TITLE: Install Checkbox Component via CLI
+DESCRIPTION: Installs the Checkbox component using the shadcn-svelte CLI, which automates setup and dependency management.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/checkbox.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npx shadcn-svelte add checkbox
+```
+
+----------------------------------------
+
+TITLE: Install bits-ui Dependency Manually
+DESCRIPTION: Installs the core bits-ui library as a development dependency, which is required for the Checkbox component when installed manually.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/checkbox.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+npm install bits-ui -D
+```
+
+----------------------------------------
+
+TITLE: Basic Checkbox Component Usage in Svelte
+DESCRIPTION: Demonstrates how to import and render the Checkbox component in a Svelte application, providing a basic interactive toggle.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/checkbox.md#_snippet_2
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Checkbox } from "$lib/components/ui/checkbox/index.js";
+</script>
+
+<Checkbox />
+```
+
+----------------------------------------
+
+TITLE: Install Collapsible Component via shadcn-svelte CLI
+DESCRIPTION: Installs the Collapsible component and its dependencies using the shadcn-svelte CLI, simplifying the setup process.
+SOURCE: https://github.com/huntabyte/shadcn-svelte/blob/main/docs/content/components/collapsible.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npx shadcn-svelte add collapsible
+```

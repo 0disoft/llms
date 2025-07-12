@@ -1,0 +1,2042 @@
+TITLE: Tailwind CSS Getting Started Guide
+DESCRIPTION: API documentation for initial setup and configuration topics in Tailwind CSS, including installation, editor setup, compatibility, and upgrade procedures.
+SOURCE: https://tailwindcss.com/docs/installation
+
+LANGUAGE: APIDOC
+CODE:
+```
+Installation
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Editor setup
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Compatibility
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Upgrade guide
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Getting Started Documentation
+DESCRIPTION: Documentation links for initial setup, editor configuration, compatibility, and upgrade guides for Tailwind CSS.
+SOURCE: https://tailwindcss.com/docs/transition-duration
+
+LANGUAGE: APIDOC
+CODE:
+```
+Installation: /docs/installation
+Editor setup: /docs/editor-setup
+Compatibility: /docs/compatibility
+Upgrade guide: /docs/upgrade-guide
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Getting Started Documentation
+DESCRIPTION: References for initial setup and configuration of Tailwind CSS projects, including installation, editor setup, compatibility, and upgrade guides.
+SOURCE: https://tailwindcss.com/docs/mask-type
+
+LANGUAGE: APIDOC
+CODE:
+```
+Installation: /docs/installation
+Editor setup: /docs/editor-setup
+Compatibility: /docs/compatibility
+Upgrade guide: /docs/upgrade-guide
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Getting Started Guides
+DESCRIPTION: Reference for initial setup and configuration topics in Tailwind CSS.
+SOURCE: https://tailwindcss.com/docs/filter-drop-shadow
+
+LANGUAGE: APIDOC
+CODE:
+```
+Installation: Guide to installing Tailwind CSS. (Link: /docs/installation)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Editor setup: Configuration for editor tooling with Tailwind CSS. (Link: /docs/editor-setup)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Compatibility: Information on browser and framework compatibility. (Link: /docs/compatibility)
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Upgrade guide: Instructions for upgrading Tailwind CSS versions. (Link: /docs/upgrade-guide)
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Getting Started Topics
+DESCRIPTION: Overview of initial setup and configuration topics for Tailwind CSS, including installation, editor setup, compatibility, and upgrade guides.
+SOURCE: https://tailwindcss.com/docs/upgrade-guide
+
+LANGUAGE: APIDOC
+CODE:
+```
+Getting started:
+  - Installation
+  - Editor setup
+  - Compatibility
+  - Upgrade guide
+```
+
+----------------------------------------
+
+TITLE: Getting Started with Tailwind CSS
+DESCRIPTION: Lists documentation topics related to setting up and beginning with Tailwind CSS.
+SOURCE: https://tailwindcss.com/docs/background-attachment
+
+LANGUAGE: APIDOC
+CODE:
+```
+Installation
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Editor setup
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Compatibility
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Upgrade guide
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Getting Started Concepts
+DESCRIPTION: Documentation topics related to setting up and beginning with Tailwind CSS. This includes guides for installation, editor configuration, compatibility, and upgrading existing projects.
+SOURCE: https://tailwindcss.com/docs/perspective
+
+LANGUAGE: APIDOC
+CODE:
+```
+Installation
+Editor setup
+Compatibility
+Upgrade guide
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Getting Started Documentation
+DESCRIPTION: References to documentation for initial setup and compatibility with Tailwind CSS.
+SOURCE: https://tailwindcss.com/docs/object-fit
+
+LANGUAGE: APIDOC
+CODE:
+```
+Getting started:
+  Installation: /docs/installation
+  Editor setup: /docs/editor-setup
+  Compatibility: /docs/compatibility
+  Upgrade guide: /docs/upgrade-guide
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Getting Started Documentation
+DESCRIPTION: References for initial setup and configuration of Tailwind CSS projects, including installation, editor integration, compatibility, and upgrade procedures.
+SOURCE: https://tailwindcss.com/docs/mask-composite
+
+LANGUAGE: APIDOC
+CODE:
+```
+Installation
+Editor setup
+Compatibility
+Upgrade guide
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Getting Started Documentation
+DESCRIPTION: Details on how to begin using Tailwind CSS, including installation, editor configuration, compatibility, and upgrade procedures.
+SOURCE: https://tailwindcss.com/docs/transition-property
+
+LANGUAGE: APIDOC
+CODE:
+```
+Getting started:
+  - Installation
+  - Editor setup
+  - Compatibility
+  - Upgrade guide
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Getting Started & Core Concepts Reference
+DESCRIPTION: Reference for initial setup, editor configuration, compatibility, upgrade guidance, and fundamental styling principles in Tailwind CSS, including utility classes, states, responsive design, dark mode, and custom styles.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/sveltekit
+
+LANGUAGE: APIDOC
+CODE:
+```
+Getting started:
+  Installation
+  Editor setup
+  Compatibility
+  Upgrade guide
+Core concepts:
+  Styling with utility classes
+  Hover, focus, and other states
+  Responsive design
+  Dark mode
+  Theme variables
+  Colors
+  Adding custom styles
+  Detecting classes in source files
+  Functions and directives
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Utility Class and Documentation Reference
+DESCRIPTION: This reference outlines the main sections of the Tailwind CSS documentation, including getting started guides, core concepts, and a categorized list of utility classes available for various CSS properties like layout, flexbox, typography, and borders.
+SOURCE: https://tailwindcss.com/docs/transform
+
+LANGUAGE: APIDOC
+CODE:
+```
+Getting started:
+  - Installation
+  - Editor setup
+  - Compatibility
+  - Upgrade guide
+Core concepts:
+  - Styling with utility classes
+  - Hover, focus, and other states
+  - Responsive design
+  - Dark mode
+  - Theme variables
+  - Colors
+  - Adding custom styles
+  - Detecting classes in source files
+  - Functions and directives
+Base styles:
+  - Preflight
+Layout:
+  - aspect-ratio
+  - columns
+  - break-after
+  - break-before
+  - break-inside
+  - box-decoration-break
+  - box-sizing
+  - display
+  - float
+  - clear
+  - isolation
+  - object-fit
+  - object-position
+  - overflow
+  - overscroll-behavior
+  - position
+  - top / right / bottom / left
+  - visibility
+  - z-index
+Flexbox & Grid:
+  - flex-basis
+  - flex-direction
+  - flex-wrap
+  - flex
+  - flex-grow
+  - flex-shrink
+  - order
+  - grid-template-columns
+  - grid-column
+  - grid-template-rows
+  - grid-row
+  - grid-auto-flow
+  - grid-auto-columns
+  - grid-auto-rows
+  - gap
+  - justify-content
+  - justify-items
+  - justify-self
+  - align-content
+  - align-items
+  - align-self
+  - place-content
+  - place-items
+  - place-self
+Spacing:
+  - padding
+  - margin
+Sizing:
+  - width
+  - min-width
+  - max-width
+  - height
+  - min-height
+  - max-height
+Typography:
+  - font-family
+  - font-size
+  - font-smoothing
+  - font-style
+  - font-weight
+  - font-stretch
+  - font-variant-numeric
+  - letter-spacing
+  - line-clamp
+  - line-height
+  - list-style-image
+  - list-style-position
+  - list-style-type
+  - text-align
+  - color
+  - text-decoration-line
+  - text-decoration-color
+  - text-decoration-style
+  - text-decoration-thickness
+  - text-underline-offset
+  - text-transform
+  - text-overflow
+  - text-wrap
+  - text-indent
+  - vertical-align
+  - white-space
+  - word-break
+  - overflow-wrap
+  - hyphens
+  - content
+Backgrounds:
+  - background-attachment
+  - background-clip
+  - background-color
+  - background-image
+  - background-origin
+  - background-position
+  - background-repeat
+  - background-size
+Borders:
+  - border-radius
+  - border-width
+  - border-color
+  - border-style
+  - outline-width
+  - outline-color
+  - outline-style
+  - outline-offset
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS: Upgrade guide
+DESCRIPTION: Reference documentation for the Tailwind CSS `Upgrade guide` concept.
+SOURCE: https://tailwindcss.com/docs/color-scheme
+
+LANGUAGE: APIDOC
+CODE:
+```
+Upgrade guide
+```
+
+----------------------------------------
+
+TITLE: HTML Examples for Tailwind CSS `align-content` Utility
+DESCRIPTION: Demonstrates various `align-content` utility classes in HTML, showing how to position rows within a grid container. Each example illustrates a different alignment option: start, center, end, and space-between.
+SOURCE: https://tailwindcss.com/docs/align-content
+
+LANGUAGE: HTML
+CODE:
+```
+<div class="grid h-56 grid-cols-3 content-start gap-4 ...">  <div>01</div>  <div>02</div>  <div>03</div>  <div>04</div>  <div>05</div></div>
+```
+
+LANGUAGE: HTML
+CODE:
+```
+<div class="grid h-56 grid-cols-3 content-center gap-4 ...">  <div>01</div>  <div>02</div>  <div>03</div>  <div>04</div>  <div>05</div></div>
+```
+
+LANGUAGE: HTML
+CODE:
+```
+<div class="grid h-56 grid-cols-3 content-end gap-4 ...">  <div>01</div>  <div>02</div>  <div>03</div>  <div>04</div>  <div>05</div></div>
+```
+
+LANGUAGE: HTML
+CODE:
+```
+<div class="grid h-56 grid-cols-3 content-between gap-4 ...">  <div>01</div>  <div>02</div>  <div>03</div>  <div>04</div>  <div>05</div></div>
+```
+
+----------------------------------------
+
+TITLE: Create a new Vite project
+DESCRIPTION: Initializes a new Vite project using npm, then navigates into the project directory.
+SOURCE: https://tailwindcss.com/docs/installation/using-vite
+
+LANGUAGE: Terminal
+CODE:
+```
+npm create vite@latest my-project
+cd my-project
+```
+
+----------------------------------------
+
+TITLE: Start the development build process
+DESCRIPTION: Runs the development server or build process as configured in the `package.json` file, typically using `npm run dev`.
+SOURCE: https://tailwindcss.com/docs/installation/using-vite
+
+LANGUAGE: Terminal
+CODE:
+```
+npm run dev
+```
+
+----------------------------------------
+
+TITLE: Start the Qwik project development server
+DESCRIPTION: Initiates the development server for the Qwik project, allowing real-time preview and development with Tailwind CSS.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/qwik
+
+LANGUAGE: bash
+CODE:
+```
+npm run dev
+```
+
+----------------------------------------
+
+TITLE: Start Angular Development Server
+DESCRIPTION: Command to start the Angular development server, which compiles the application and serves it locally, enabling live reloading for efficient development.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/angular
+
+LANGUAGE: bash
+CODE:
+```
+ng serve
+```
+
+----------------------------------------
+
+TITLE: Start Vite development server
+DESCRIPTION: Initiates the development server for your Vite project. This command compiles your application, including Tailwind CSS styles, and serves it locally for development and testing.
+SOURCE: https://tailwindcss.com/docs/index
+
+LANGUAGE: Terminal
+CODE:
+```
+npm run dev
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Installation Methods Overview
+DESCRIPTION: Overview of various methods to install and integrate Tailwind CSS into a project, including popular build tools and direct CDN usage.
+SOURCE: https://tailwindcss.com/docs/installation/tailwind-cli
+
+LANGUAGE: APIDOC
+CODE:
+```
+Using Vite
+Using PostCSS
+Tailwind CLI
+Framework Guides
+Play CDN
+```
+
+----------------------------------------
+
+TITLE: Start Development Build Process
+DESCRIPTION: Initiates the development build process using npm, which compiles assets and serves the application. This command watches for file changes and rebuilds automatically.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/laravel/vite
+
+LANGUAGE: Shell
+CODE:
+```
+npm run dev
+```
+
+----------------------------------------
+
+TITLE: Start Meteor development server
+DESCRIPTION: Initiates the Meteor build process and starts the development server, allowing you to run and test your Meteor application with Tailwind CSS.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/meteor
+
+LANGUAGE: bash
+CODE:
+```
+npm run start
+```
+
+----------------------------------------
+
+TITLE: Start Next.js Development Server
+DESCRIPTION: This command initiates the Next.js development server, which compiles your application and provides live reloading, allowing you to view changes as you develop.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/nextjs
+
+LANGUAGE: Terminal
+CODE:
+```
+npm run dev
+```
+
+----------------------------------------
+
+TITLE: Install Tailwind CSS and Vite plugin via npm
+DESCRIPTION: Installs the `tailwindcss` core library and the `@tailwindcss/vite` plugin as development dependencies.
+SOURCE: https://tailwindcss.com/docs/installation/using-vite
+
+LANGUAGE: Terminal
+CODE:
+```
+npm install tailwindcss @tailwindcss/vite
+```
+
+----------------------------------------
+
+TITLE: Create a new Vite project
+DESCRIPTION: This command initializes a new Vite project in a directory named 'my-project' and then navigates into that directory, preparing for further setup and development.
+SOURCE: https://tailwindcss.com/docs/index
+
+LANGUAGE: Terminal
+CODE:
+```
+npm create vite@latest my-project
+cd my-project
+```
+
+----------------------------------------
+
+TITLE: Start Development Server
+DESCRIPTION: Initiates the development server for the project using `npm run dev`. This command compiles the application, including Tailwind CSS, and serves it locally for development and testing.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/react-router
+
+LANGUAGE: Shell
+CODE:
+```
+npm run dev
+```
+
+----------------------------------------
+
+TITLE: Start the Gatsby development server
+DESCRIPTION: This command initiates the Gatsby development server, which compiles the project, watches for changes, and serves the application locally, allowing for live preview and development.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/gatsby
+
+LANGUAGE: Shell
+CODE:
+```
+gatsby develop
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS `place-items-start` Grid Example
+DESCRIPTION: Demonstrates how to use the `place-items-start` utility class to align grid items to the start of their grid areas on both axes in a Tailwind CSS grid layout.
+SOURCE: https://tailwindcss.com/docs/place-items
+
+LANGUAGE: HTML
+CODE:
+```
+<div class="grid grid-cols-3 place-items-start gap-4 ...">  <div>01</div>  <div>02</div>  <div>03</div>  <div>04</div>  <div>05</div>  <div>06</div></div>
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS grid-row Utility Classes API Reference
+DESCRIPTION: Provides a detailed API reference for Tailwind CSS `grid-row` utilities, mapping each class to its corresponding CSS property and value for controlling grid row placement and spanning.
+SOURCE: https://tailwindcss.com/docs/grid-row
+
+LANGUAGE: APIDOC
+CODE:
+```
+Class: Styles
+row-span-<number>: grid-row: span <number> / span <number>;
+row-span-full: grid-row: 1 / -1;
+row-span-(<custom-property>): grid-row: span var(<custom-property>) / span var(<custom-property>);
+row-span-[<value>]: grid-row: span <value> / span <value>;
+row-start-<number>: grid-row-start: <number>;
+-row-start-<number>: grid-row-start: calc(<number> * -1);
+row-start-auto: grid-row-start: auto;
+row-start-(<custom-property>): grid-row-start: var(<custom-property>);
+row-start-[<value>]: grid-row-start: <value>;
+row-end-<number>: grid-row-end: <number>;
+-row-end-<number>: grid-row-end: calc(<number> * -1);
+row-end-auto: grid-row-end: auto;
+row-end-(<custom-property>): grid-row-end: var(<custom-property>);
+row-end-[<value>]: grid-row-end: <value>;
+row-auto: grid-row: auto;
+row-<number>: grid-row: <number>;
+-row-<number>: grid-row: calc(<number> * -1);
+row-(<custom-property>): grid-row: var(<custom-property>);
+row-[<value>]: grid-row: <value>;
+```
+
+----------------------------------------
+
+TITLE: Start SolidJS Development Server
+DESCRIPTION: This command initiates the development server for the SolidJS project. It compiles the application and serves it, allowing developers to view changes in real-time during development.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/solidjs
+
+LANGUAGE: Terminal
+CODE:
+```
+npm run dev
+```
+
+----------------------------------------
+
+TITLE: Configure Tailwind CSS Vite plugin
+DESCRIPTION: Adds the `@tailwindcss/vite` plugin to the Vite configuration file (`vite.config.ts`) to enable Tailwind CSS processing.
+SOURCE: https://tailwindcss.com/docs/installation/using-vite
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Base Styles API
+DESCRIPTION: Reference for Tailwind CSS utility classes related to base styles, including the Preflight reset.
+SOURCE: https://tailwindcss.com/docs/functions-and-directives
+
+LANGUAGE: APIDOC
+CODE:
+```
+Preflight
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Spacing Utility Classes
+DESCRIPTION: API documentation for Tailwind CSS utility classes that control the padding and margin of elements, providing fine-grained control over spacing.
+SOURCE: https://tailwindcss.com/docs/mask-composite
+
+LANGUAGE: APIDOC
+CODE:
+```
+padding
+margin
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Sizing Utility Classes
+DESCRIPTION: API documentation for Tailwind CSS utility classes that manage the width and height of elements, including minimum and maximum constraints.
+SOURCE: https://tailwindcss.com/docs/mask-composite
+
+LANGUAGE: APIDOC
+CODE:
+```
+width
+min-width
+max-width
+height
+min-height
+max-height
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Core Concepts
+DESCRIPTION: Lists documentation topics covering fundamental concepts and principles of Tailwind CSS.
+SOURCE: https://tailwindcss.com/docs/background-attachment
+
+LANGUAGE: APIDOC
+CODE:
+```
+Styling with utility classes
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Hover, focus, and other states
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Responsive design
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Dark mode
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Theme variables
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Colors
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Adding custom styles
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Detecting classes in source files
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Functions and directives
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Interactivity Utilities Reference
+DESCRIPTION: Provides a reference for Tailwind CSS utility classes that manage user interaction and element behavior, such as cursor styles, resizing, and scroll snapping.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/laravel/vite
+
+LANGUAGE: APIDOC
+CODE:
+```
+accent-color
+appearance
+caret-color
+color-scheme
+cursor
+field-sizing
+pointer-events
+resize
+scroll-behavior
+scroll-margin
+scroll-padding
+scroll-snap-align
+scroll-snap-stop
+scroll-snap-type
+touch-action
+user-select
+will-change
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Core Concepts Documentation
+DESCRIPTION: References to documentation explaining fundamental concepts of Tailwind CSS, including utility classes, states, responsive design, and custom styles.
+SOURCE: https://tailwindcss.com/docs/object-fit
+
+LANGUAGE: APIDOC
+CODE:
+```
+Core concepts:
+  Styling with utility classes: /docs/styling-with-utility-classes
+  Hover, focus, and other states: /docs/hover-focus-and-other-states
+  Responsive design: /docs/responsive-design
+  Dark mode: /docs/dark-mode
+  Theme variables: /docs/theme
+  Colors: /docs/colors
+  Adding custom styles: /docs/adding-custom-styles
+  Detecting classes in source files: /docs/detecting-classes-in-source-files
+  Functions and directives: /docs/functions-and-directives
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS: Installation
+DESCRIPTION: Reference documentation for the Tailwind CSS `Installation` concept.
+SOURCE: https://tailwindcss.com/docs/color-scheme
+
+LANGUAGE: APIDOC
+CODE:
+```
+Installation
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Core Concepts
+DESCRIPTION: API documentation for fundamental concepts in Tailwind CSS, such as styling with utility classes, handling states, responsive design, dark mode, theme variables, colors, custom styles, class detection, functions, and directives.
+SOURCE: https://tailwindcss.com/docs/installation
+
+LANGUAGE: APIDOC
+CODE:
+```
+Styling with utility classes
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Hover, focus, and other states
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Responsive design
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Dark mode
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Theme variables
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Colors
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Adding custom styles
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Detecting classes in source files
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Functions and directives
+```
+
+----------------------------------------
+
+TITLE: Start Development Build Process for Tailwind CSS
+DESCRIPTION: This command initiates the development build process, typically configured in `package.json`, to compile and process your project's assets, including Tailwind CSS styles.
+SOURCE: https://tailwindcss.com/docs/installation/using-postcss
+
+LANGUAGE: Shell
+CODE:
+```
+npm run dev
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS: Editor setup
+DESCRIPTION: Reference documentation for the Tailwind CSS `Editor setup` concept.
+SOURCE: https://tailwindcss.com/docs/color-scheme
+
+LANGUAGE: APIDOC
+CODE:
+```
+Editor setup
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Base Styles Documentation
+DESCRIPTION: References to documentation for Tailwind CSS base styles, specifically Preflight.
+SOURCE: https://tailwindcss.com/docs/object-fit
+
+LANGUAGE: APIDOC
+CODE:
+```
+Base styles:
+  Preflight: /docs/preflight
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Base Styles
+DESCRIPTION: API documentation for Tailwind CSS base styles, specifically Preflight, which normalizes browser styles.
+SOURCE: https://tailwindcss.com/docs/installation
+
+LANGUAGE: APIDOC
+CODE:
+```
+Preflight
+```
+
+----------------------------------------
+
+TITLE: Example: Justify Grid Items to Start (Tailwind CSS)
+DESCRIPTION: Demonstrates the usage of the `justify-items-start` utility class in Tailwind CSS to align grid items against the beginning of their inline axis within a grid container.
+SOURCE: https://tailwindcss.com/docs/justify-items
+
+LANGUAGE: HTML
+CODE:
+```
+<div class="grid justify-items-start ...">  <div>01</div>  <div>02</div>  <div>03</div>  <div>04</div>  <div>05</div>  <div>06</div></div>
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Spacing Utilities
+DESCRIPTION: API documentation for Tailwind CSS utility classes that control spacing, including padding and margin.
+SOURCE: https://tailwindcss.com/docs/installation
+
+LANGUAGE: APIDOC
+CODE:
+```
+padding
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+margin
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS v4.1 Utility Class and Concept API Reference
+DESCRIPTION: A structured API reference detailing all documented utility classes and fundamental concepts available in Tailwind CSS v4.1. This includes categories such as layout, flexbox, spacing, typography, backgrounds, and borders, along with core setup and usage concepts.
+SOURCE: https://tailwindcss.com/docs/filter-saturate
+
+LANGUAGE: APIDOC
+CODE:
+```
+Tailwind CSS v4.1 Documentation Index:
+
+Getting started:
+  - Installation
+  - Editor setup
+  - Compatibility
+  - Upgrade guide
+
+Core concepts:
+  - Styling with utility classes
+  - Hover, focus, and other states
+  - Responsive design
+  - Dark mode
+  - Theme variables
+  - Colors
+  - Adding custom styles
+  - Detecting classes in source files
+  - Functions and directives
+
+Base styles:
+  - Preflight
+
+Layout:
+  - aspect-ratio
+  - columns
+  - break-after
+  - break-before
+  - break-inside
+  - box-decoration-break
+  - box-sizing
+  - display
+  - float
+  - clear
+  - isolation
+  - object-fit
+  - object-position
+  - overflow
+  - overscroll-behavior
+  - position
+  - top / right / bottom / left
+  - visibility
+  - z-index
+
+Flexbox & Grid:
+  - flex-basis
+  - flex-direction
+  - flex-wrap
+  - flex
+  - flex-grow
+  - flex-shrink
+  - order
+  - grid-template-columns
+  - grid-column
+  - grid-template-rows
+  - grid-row
+  - grid-auto-flow
+  - grid-auto-columns
+  - grid-auto-rows
+  - gap
+  - justify-content
+  - justify-items
+  - justify-self
+  - align-content
+  - align-items
+  - align-self
+  - place-content
+  - place-items
+  - place-self
+
+Spacing:
+  - padding
+  - margin
+
+Sizing:
+  - width
+  - min-width
+  - max-width
+  - height
+  - min-height
+  - max-height
+
+Typography:
+  - font-family
+  - font-size
+  - font-smoothing
+  - font-style
+  - font-weight
+  - font-stretch
+  - font-variant-numeric
+  - letter-spacing
+  - line-clamp
+  - line-height
+  - list-style-image
+  - list-style-position
+  - list-style-type
+  - text-align
+  - color
+  - text-decoration-line
+  - text-decoration-color
+  - text-decoration-style
+  - text-decoration-thickness
+  - text-underline-offset
+  - text-transform
+  - text-overflow
+  - text-wrap
+  - text-indent
+  - vertical-align
+  - white-space
+  - word-break
+  - overflow-wrap
+  - hyphens
+  - content
+
+Backgrounds:
+  - background-attachment
+  - background-clip
+  - background-color
+  - background-image
+  - background-origin
+  - background-position
+  - background-repeat
+  - background-size
+
+Borders:
+  - border-radius
+  - border-width
+  - border-color
+  - border-style
+  - outline-width
+  - outline-color
+  - outline-style
+  - outline-offset
+```
+
+----------------------------------------
+
+TITLE: Import Tailwind CSS into main CSS file
+DESCRIPTION: Adds an `@import` rule to the main CSS file to include Tailwind CSS styles.
+SOURCE: https://tailwindcss.com/docs/installation/using-vite
+
+LANGUAGE: CSS
+CODE:
+```
+@import "tailwindcss";
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Base Styles
+DESCRIPTION: Lists documentation topics related to Tailwind CSS base styles, including Preflight.
+SOURCE: https://tailwindcss.com/docs/background-attachment
+
+LANGUAGE: APIDOC
+CODE:
+```
+Preflight
+```
+
+----------------------------------------
+
+TITLE: Create a new Gatsby project
+DESCRIPTION: This command initializes a new Gatsby project using the Gatsby CLI, setting up the basic directory structure and dependencies. It's the first step to start a new Gatsby application.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/gatsby
+
+LANGUAGE: Shell
+CODE:
+```
+gatsby new my-project
+cd my-project
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Flexbox and Grid Utilities
+DESCRIPTION: API documentation for Tailwind CSS utility classes related to Flexbox and Grid layouts, covering flex properties, grid properties, auto-flow, auto-columns, auto-rows, gaps, and alignment.
+SOURCE: https://tailwindcss.com/docs/installation
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex-basis
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex-direction
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex-wrap
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex-grow
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex-shrink
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+order
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-template-columns
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-column
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-template-rows
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-row
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-auto-flow
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-auto-columns
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-auto-rows
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+gap
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+justify-content
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+justify-items
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+justify-self
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+align-content
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+align-items
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+align-self
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+place-content
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+place-items
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+place-self
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Spacing Utilities API
+DESCRIPTION: Reference for Tailwind CSS utility classes for controlling the spacing of elements, including padding and margin properties.
+SOURCE: https://tailwindcss.com/docs/functions-and-directives
+
+LANGUAGE: APIDOC
+CODE:
+```
+padding
+margin
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Typography Utilities Documentation
+DESCRIPTION: References to documentation for Tailwind CSS utility classes for styling text and fonts.
+SOURCE: https://tailwindcss.com/docs/object-fit
+
+LANGUAGE: APIDOC
+CODE:
+```
+Typography:
+  font-family: /docs/font-family
+  font-size: /docs/font-size
+  font-smoothing: /docs/font-smoothing
+  font-style: /docs/font-style
+  font-weight: /docs/font-weight
+  font-stretch: /docs/font-stretch
+  font-variant-numeric: /docs/font-variant-numeric
+  letter-spacing: /docs/letter-spacing
+  line-clamp: /docs/line-clamp
+  line-height: /docs/line-height
+  list-style-image: /docs/list-style-image
+  list-style-position: /docs/list-style-position
+  list-style-type: /docs/list-style-type
+  text-align: /docs/text-align
+  color: /docs/color
+  text-decoration-line: /docs/text-decoration-line
+  text-decoration-color: /docs/text-decoration-color
+  text-decoration-style: /docs/text-decoration-style
+  text-decoration-thickness: /docs/text-decoration-thickness
+  text-underline-offset: /docs/text-underline-offset
+  text-transform: /docs/text-transform
+  text-overflow: /docs/text-overflow
+  text-wrap: /docs/text-wrap
+  text-indent: /docs/text-indent
+  vertical-align: /docs/vertical-align
+  white-space: /docs/white-space
+  word-break: /docs/word-break
+  overflow-wrap: /docs/overflow-wrap
+  hyphens: /docs/hyphens
+  content: /docs/content
+```
+
+----------------------------------------
+
+TITLE: Example of Using Tailwind CSS Classes in HTML
+DESCRIPTION: HTML snippet demonstrating how to apply Tailwind CSS utility classes to an element, such as 'text-3xl', 'font-bold', and 'underline', to quickly style text without writing custom CSS.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/angular
+
+LANGUAGE: html
+CODE:
+```
+<h1 class="text-3xl font-bold underline">  Hello world!</h1>
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS `bg-cover` Example for Background Image
+DESCRIPTION: Demonstrates how to use the `bg-cover` utility class in Tailwind CSS to scale a background image to fill its container, potentially cropping the image to ensure full coverage.
+SOURCE: https://tailwindcss.com/docs/background-size
+
+LANGUAGE: HTML
+CODE:
+```
+<div class="bg-[url(/img/mountains.jpg)] bg-cover bg-center"></div>
+```
+
+----------------------------------------
+
+TITLE: Install Tailwind CSS and Vite plugin
+DESCRIPTION: Installs the core Tailwind CSS package and the official `@tailwindcss/vite` plugin using npm. These packages are essential for integrating Tailwind CSS into a Vite-based project.
+SOURCE: https://tailwindcss.com/docs/index
+
+LANGUAGE: Terminal
+CODE:
+```
+npm install tailwindcss @tailwindcss/vite
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS: Preflight
+DESCRIPTION: Reference documentation for the Tailwind CSS `Preflight` utility or concept.
+SOURCE: https://tailwindcss.com/docs/color-scheme
+
+LANGUAGE: APIDOC
+CODE:
+```
+Preflight
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Flexbox and Grid Utility Classes
+DESCRIPTION: API documentation for Tailwind CSS utility classes used for creating flexible and grid-based layouts, covering flex container properties, item properties, grid templates, and alignment.
+SOURCE: https://tailwindcss.com/docs/mask-composite
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex-basis
+flex-direction
+flex-wrap
+flex
+flex-grow
+flex-shrink
+order
+grid-template-columns
+grid-column
+grid-template-rows
+grid-row
+grid-auto-flow
+grid-auto-columns
+grid-auto-rows
+gap
+justify-content
+justify-items
+justify-self
+align-content
+align-items
+align-self
+place-content
+place-items
+place-self
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Effects Utilities
+DESCRIPTION: This section lists the core effect-related utility classes available in Tailwind CSS. These utilities allow for easy application of visual effects like shadows, opacity, and blend modes to elements.
+SOURCE: https://tailwindcss.com/docs/installation/play-cdn
+
+LANGUAGE: APIDOC
+CODE:
+```
+Effects:
+  - box-shadow
+  - text-shadow
+  - opacity
+  - mix-blend-mode
+  - background-blend-mode
+  - mask-clip
+  - mask-composite
+  - mask-image
+  - mask-mode
+  - mask-origin
+  - mask-position
+  - mask-repeat
+  - mask-size
+  - mask-type
+```
+
+----------------------------------------
+
+TITLE: Apply Responsive Tailwind CSS background-clip Utilities
+DESCRIPTION: Shows how to apply `background-clip` utilities responsively using Tailwind CSS breakpoint variants. The example demonstrates switching from `bg-clip-border` to `bg-clip-padding` at medium screen sizes and above, adapting the background clipping behavior based on viewport width.
+SOURCE: https://tailwindcss.com/docs/background-clip
+
+LANGUAGE: HTML
+CODE:
+```
+<div class="bg-clip-border md:bg-clip-padding ...">  <!-- ... --></div>
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Background Utilities Documentation
+DESCRIPTION: References to documentation for Tailwind CSS utility classes for styling element backgrounds.
+SOURCE: https://tailwindcss.com/docs/object-fit
+
+LANGUAGE: APIDOC
+CODE:
+```
+Backgrounds:
+  background-attachment: /docs/background-attachment
+  background-clip: /docs/background-clip
+  background-color: /docs/background-color
+  background-image: /docs/background-image
+  background-origin: /docs/background-origin
+  background-position: /docs/background-position
+  background-repeat: /docs/background-repeat
+  background-size: /docs/background-size
+```
+
+----------------------------------------
+
+TITLE: Start Asset Build Process
+DESCRIPTION: Initiates the asset build process using npm, typically with `npm run watch` for development. This command compiles your assets, including Tailwind CSS, and often provides live reloading for convenience during development.
+SOURCE: https://tailwindcss.com/docs/installation/framework-guides/symfony
+
+LANGUAGE: Shell
+CODE:
+```
+npm run watch
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Flexbox & Grid Utilities
+DESCRIPTION: Lists documentation topics for Tailwind CSS utility classes related to Flexbox and Grid layouts.
+SOURCE: https://tailwindcss.com/docs/background-attachment
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex-basis
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex-direction
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex-wrap
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex-grow
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+flex-shrink
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+order
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-template-columns
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-column
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-template-rows
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-row
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-auto-flow
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-auto-columns
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+grid-auto-rows
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+gap
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+justify-content
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+justify-items
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+undefined
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Skew Transform Utility API Reference
+DESCRIPTION: Detailed API documentation for Tailwind CSS `skew` utilities, providing a mapping of utility classes to their corresponding CSS `transform` properties for skewing elements along the X and Y axes, including support for custom values and properties.
+SOURCE: https://tailwindcss.com/docs/skew
+
+LANGUAGE: APIDOC
+CODE:
+```
+Class | Styles
+--- | ---
+`skew-<number>` | `transform: skewX(<number>deg) skewY(<number>deg);`
+`-skew-<number>` | `transform: skewX(-<number>deg) skewY(-<number>deg);`
+`skew-(<custom-property>)` | `transform: skewX(var(<custom-property>)) skewY(var(<custom-property>));`
+`skew-[<value>]` | `transform: skewX(<value>) skewY(<value>);`
+`skew-x-<number>` | `transform: skewX(<number>deg));`
+`-skew-x-<number>` | `transform: skewX(-<number>deg));`
+`skew-x-(<custom-property>)` | `transform: skewX(var(<custom-property>));`
+`skew-x-[<value>]` | `transform: skewX(<value>));`
+`skew-y-<number>` | `transform: skewY(<number>deg);`
+`-skew-y-<number>` | `transform: skewY(-<number>deg);`
+`skew-y-(<custom-property>)` | `transform: skewY(var(<custom-property>));`
+`skew-y-[<value>]` | `transform: skewY(<value>);`
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Utility Class and Concept Reference
+DESCRIPTION: A structured reference of all documented Tailwind CSS utility classes and core concepts, organized by category for easy navigation and understanding of the framework's capabilities.
+SOURCE: https://tailwindcss.com/docs/flex-grow
+
+LANGUAGE: APIDOC
+CODE:
+```
+Getting started:
+  Installation
+  Editor setup
+  Compatibility
+  Upgrade guide
+
+Core concepts:
+  Styling with utility classes
+  Hover, focus, and other states
+  Responsive design
+  Dark mode
+  Theme variables
+  Colors
+  Adding custom styles
+  Detecting classes in source files
+  Functions and directives
+
+Base styles:
+  Preflight
+
+Layout:
+  aspect-ratio
+  columns
+  break-after
+  break-before
+  break-inside
+  box-decoration-break
+  box-sizing
+  display
+  float
+  clear
+  isolation
+  object-fit
+  object-position
+  overflow
+  overscroll-behavior
+  position
+  top / right / bottom / left
+  visibility
+  z-index
+
+Flexbox & Grid:
+  flex-basis
+  flex-direction
+  flex-wrap
+  flex
+  flex-grow
+  flex-shrink
+  order
+  grid-template-columns
+  grid-column
+  grid-template-rows
+  grid-row
+  grid-auto-flow
+  grid-auto-columns
+  grid-auto-rows
+  gap
+  justify-content
+  justify-items
+  justify-self
+  align-content
+  align-items
+  align-self
+  place-content
+  place-items
+  place-self
+
+Spacing:
+  padding
+  margin
+
+Sizing:
+  width
+  min-width
+  max-width
+  height
+  min-height
+  max-height
+
+Typography:
+  font-family
+  font-size
+  font-smoothing
+  font-style
+  font-weight
+  font-stretch
+  font-variant-numeric
+  letter-spacing
+  line-clamp
+  line-height
+  list-style-image
+  list-style-position
+  list-style-type
+  text-align
+  color
+  text-decoration-line
+  text-decoration-color
+  text-decoration-style
+  text-decoration-thickness
+  text-underline-offset
+  text-transform
+  text-overflow
+  text-wrap
+  text-indent
+  vertical-align
+  white-space
+  word-break
+  overflow-wrap
+  hyphens
+  content
+
+Backgrounds:
+  background-attachment
+  background-clip
+  background-color
+  background-image
+  background-origin
+  background-position
+  background-repeat
+  background-size
+
+Borders:
+  border-radius
+  border-width
+  border-color
+  border-style
+  outline-width
+  outline-color
+  outline-style
+  outline-offset
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Flexbox and Grid Utilities Documentation
+DESCRIPTION: References to documentation for Tailwind CSS utility classes used for Flexbox and Grid layouts.
+SOURCE: https://tailwindcss.com/docs/object-fit
+
+LANGUAGE: APIDOC
+CODE:
+```
+Flexbox & Grid:
+  flex-basis: /docs/flex-basis
+  flex-direction: /docs/flex-direction
+  flex-wrap: /docs/flex-wrap
+  flex: /docs/flex
+  flex-grow: /docs/flex-grow
+  flex-shrink: /docs/flex-shrink
+  order: /docs/order
+  grid-template-columns: /docs/grid-template-columns
+  grid-column: /docs/grid-column
+  grid-template-rows: /docs/grid-template-rows
+  grid-row: /docs/grid-row
+  grid-auto-flow: /docs/grid-auto-flow
+  grid-auto-columns: /docs/grid-auto-columns
+  grid-auto-rows: /docs/grid-auto-rows
+  gap: /docs/gap
+  justify-content: /docs/justify-content
+  justify-items: /docs/justify-items
+  justify-self: /docs/justify-self
+  align-content: /docs/align-content
+  align-items: /docs/align-items
+  align-self: /docs/align-self
+  place-content: /docs/place-content
+  place-items: /docs/place-items
+  place-self: /docs/place-self
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Sizing Utilities API
+DESCRIPTION: Reference for Tailwind CSS utility classes for setting the dimensions of elements, covering width, height, and their minimum/maximum variants.
+SOURCE: https://tailwindcss.com/docs/functions-and-directives
+
+LANGUAGE: APIDOC
+CODE:
+```
+width
+min-width
+max-width
+height
+min-height
+max-height
+```
+
+----------------------------------------
+
+TITLE: Configure Tailwind CSS Vite plugin
+DESCRIPTION: Adds the `@tailwindcss/vite` plugin to your Vite configuration file (`vite.config.ts`). This step enables Tailwind CSS processing during the build, allowing Vite to compile your Tailwind classes.
+SOURCE: https://tailwindcss.com/docs/index
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { defineConfig } from 'vite'
+import tailwindcss from '@tailwindcss/vite'
+
+export default defineConfig({
+  plugins: [
+    tailwindcss(),
+  ],
+})
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS: Styling with utility classes
+DESCRIPTION: Reference documentation for the Tailwind CSS `Styling with utility classes` concept.
+SOURCE: https://tailwindcss.com/docs/color-scheme
+
+LANGUAGE: APIDOC
+CODE:
+```
+Styling with utility classes
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Transitions & Animation Documentation
+DESCRIPTION: Documentation links for Tailwind CSS utilities related to transitions and animations.
+SOURCE: https://tailwindcss.com/docs/transition-duration
+
+LANGUAGE: APIDOC
+CODE:
+```
+Transitions & Animation
+transition-duration
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Interactivity Utilities
+DESCRIPTION: This section details Tailwind CSS utilities for managing user interactivity. These classes provide control over elements' appearance and behavior in response to user input, including accent colors, cursor styles, resizing, and scroll snapping.
+SOURCE: https://tailwindcss.com/docs/installation/play-cdn
+
+LANGUAGE: APIDOC
+CODE:
+```
+Interactivity:
+  - accent-color
+  - appearance
+  - caret-color
+  - color-scheme
+  - cursor
+  - field-sizing
+  - pointer-events
+  - resize
+  - scroll-behavior
+  - scroll-margin
+  - scroll-padding
+  - scroll-snap-align
+  - scroll-snap-stop
+  - scroll-snap-type
+  - touch-action
+  - user-select
+  - will-change
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS: Functions and directives
+DESCRIPTION: Reference documentation for the Tailwind CSS `Functions and directives` concept.
+SOURCE: https://tailwindcss.com/docs/color-scheme
+
+LANGUAGE: APIDOC
+CODE:
+```
+Functions and directives
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Transform Utilities
+DESCRIPTION: This section lists the transform-related utility classes in Tailwind CSS. These utilities allow for easy application of 2D and 3D transformations such as rotation, scaling, skewing, and translation to elements.
+SOURCE: https://tailwindcss.com/docs/installation/play-cdn
+
+LANGUAGE: APIDOC
+CODE:
+```
+Transforms:
+  - backface-visibility
+  - perspective
+  - perspective-origin
+  - rotate
+  - scale
+  - skew
+  - transform
+  - transform-origin
+  - transform-style
+  - translate
+```
+
+----------------------------------------
+
+TITLE: Import Tailwind CSS into main CSS file
+DESCRIPTION: Adds an `@import` rule to your main CSS file (e.g., `src/index.css` or `src/main.css`). This directive instructs the build process to include Tailwind's base, components, and utilities styles.
+SOURCE: https://tailwindcss.com/docs/index
+
+LANGUAGE: CSS
+CODE:
+```
+@import "tailwindcss";
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Spacing Utilities Documentation
+DESCRIPTION: References to documentation for Tailwind CSS utility classes controlling padding and margin.
+SOURCE: https://tailwindcss.com/docs/object-fit
+
+LANGUAGE: APIDOC
+CODE:
+```
+Spacing:
+  padding: /docs/padding
+  margin: /docs/margin
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS `bg-auto` Example for Default Background Size
+DESCRIPTION: Shows how to use the `bg-auto` utility class in Tailwind CSS to display a background image at its original, default size, without any scaling.
+SOURCE: https://tailwindcss.com/docs/background-size
+
+LANGUAGE: HTML
+CODE:
+```
+<div class="bg-[url(/img/mountains.jpg)] bg-auto bg-center bg-no-repeat"></div>
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Typography Utilities API
+DESCRIPTION: Reference for Tailwind CSS utility classes for styling text and fonts, including properties for font family, size, weight, line height, text alignment, and decoration.
+SOURCE: https://tailwindcss.com/docs/functions-and-directives
+
+LANGUAGE: APIDOC
+CODE:
+```
+font-family
+font-size
+font-smoothing
+font-style
+font-weight
+font-stretch
+font-variant-numeric
+letter-spacing
+line-clamp
+line-height
+list-style-image
+list-style-position
+list-style-type
+text-align
+color
+text-decoration-line
+text-decoration-color
+text-decoration-style
+text-decoration-thickness
+text-underline-offset
+text-transform
+text-overflow
+text-wrap
+text-indent
+vertical-align
+white-space
+word-break
+overflow-wrap
+hyphens
+content
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Backgrounds Utilities API
+DESCRIPTION: Reference for Tailwind CSS utility classes for styling element backgrounds, covering properties like background attachment, color, image, position, and size.
+SOURCE: https://tailwindcss.com/docs/functions-and-directives
+
+LANGUAGE: APIDOC
+CODE:
+```
+background-attachment
+background-clip
+background-color
+background-image
+background-origin
+background-position
+background-repeat
+background-size
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Accessibility Utilities
+DESCRIPTION: This section lists the Tailwind CSS utility for accessibility adjustments. It specifically includes the `forced-color-adjust` property, which helps manage how user agents handle forced colors in high-contrast modes.
+SOURCE: https://tailwindcss.com/docs/installation/play-cdn
+
+LANGUAGE: APIDOC
+CODE:
+```
+Accessibility:
+  - forced-color-adjust
+```
+
+----------------------------------------
+
+TITLE: Tailwind CSS Border Utilities Documentation
+DESCRIPTION: References to documentation for Tailwind CSS utility classes for styling borders and outlines.
+SOURCE: https://tailwindcss.com/docs/object-fit
+
+LANGUAGE: APIDOC
+CODE:
+```
+Borders:
+  border-radius: /docs/border-radius
+  border-width: /docs/border-width
+  border-color: /docs/border-color
+  border-style: /docs/border-style
+  outline-width: /docs/outline-width
+  outline-color: /docs/outline-color
+  outline-style: /docs/outline-style
+  outline-offset: /docs/outline-offset
+```
