@@ -1,0 +1,1792 @@
+TITLE: Create New Nx Workspace with Interactive Prompts
+DESCRIPTION: This command initializes a new Nx workspace and guides the user through interactive prompts to select the desired preset and application name. It's useful when you're unsure about the exact configuration needed.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/packages/react-native/react-native-plugin.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+npx create-nx-workspace your-workspace-name
+```
+
+----------------------------------------
+
+TITLE: Nx CLI: General usage for running a target
+DESCRIPTION: Shows the general syntax for running a target for a project using the Nx CLI, including optional project, target, and configuration parameters.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/cli/run.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+nx run [project][:target][:configuration] [_..]
+```
+
+----------------------------------------
+
+TITLE: Create a new Nx workspace with TypeScript preset
+DESCRIPTION: This command initializes a new Nx workspace named 'tsmono' with a basic TypeScript setup. It generates an NPM workspaces setup, including `nx.json` for caching and task pipelines, and `@nx/js` for managing TypeScript packages.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2025-01-29-new-nx-experience.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+npx create-nx-workspace tsmono --preset=ts
+```
+
+----------------------------------------
+
+TITLE: Bitbucket Pipelines Configuration for Nx Distributed Task Execution
+DESCRIPTION: This YAML configuration sets up distributed task execution on Bitbucket Pipelines for an Nx project. It defines a `node:20` image, full clone depth, and two types of steps: an `agent` step and a `CI` step. The `CI` step initiates an Nx Cloud distributed run, records `nx format:check`, and runs affected targets (`lint`, `test`, `build`, `e2e-ci`) in parallel. The `agent` steps set up the repository and then wait for Nx Cloud to assign them tasks. The `pull-requests` pipeline runs the `CI` job in parallel with three `agent` jobs. The main job signals Nx Cloud to stop agents after its commands are complete. It's important to note that both the agents and the `--parallel` flag contribute to task parallelization, but in different ways: agents distribute tasks across multiple machines, while the `--parallel` flag allows a single agent to run multiple tasks concurrently. For example, with this setup, there will be 3 agents, and each agent will attempt to run 2 tasks at once.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/nx-cloud/enterprise/dte/bitbucket-dte.md#_snippet_0
+
+LANGUAGE: yaml
+CODE:
+```
+image: node:20
+
+clone:
+  depth: full
+
+definitions:
+  steps:
+    - step: &agent
+        name: Agent
+        script:
+          - export NX_BRANCH=$BITBUCKET_PR_ID
+
+          - npm ci
+          - npx nx-cloud start-agent
+
+pipelines:
+  pull-requests:
+    '**':
+      - parallel:
+          - step:
+              name: CI
+              script:
+                - export NX_BRANCH=$BITBUCKET_PR_ID
+
+                - npm ci
+                - npx nx-cloud start-ci-run --distribute-on="manual" --stop-agents-after="e2e-ci"
+                - npx nx-cloud record -- nx format:check
+                - npx nx affected --target=lint,test,build,e2e-ci --parallel=2
+          - step: *agent
+          - step: *agent
+          - step: *agent
+```
+
+----------------------------------------
+
+TITLE: Create a New Nx Workspace
+DESCRIPTION: Initializes a new Nx integrated workspace named 'myorg'. This command guides the user through selecting the workspace type, preset, and caching options to establish the foundational project structure.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2023-01-10-setting-up-module-federation-with-server-side-rendering-for-angular.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npx create-nx-workspace@latest myorg
+```
+
+----------------------------------------
+
+TITLE: Create Nx Workspace CLI Command Usage
+DESCRIPTION: Shows the basic command line usage for `create-nx-workspace`, including options for direct invocation or using package managers like npx, yarn, or pnpx.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/cli/create-nx-workspace.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+create-nx-workspace [name] [options]
+```
+
+----------------------------------------
+
+TITLE: Nx CLI: Run Build Target with Production Configuration
+DESCRIPTION: Example of running the 'build' target for 'myapp' with the 'production' configuration.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/packages/nx/documents/run.md#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+nx run myapp:build:production
+```
+
+----------------------------------------
+
+TITLE: Examples of Nx Generate for Various Project Types
+DESCRIPTION: Illustrates how to use the `nx generate` command to create different types of applications and libraries, including Angular, React, Web Components, and Node.js, by specifying the appropriate collection and generator.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/cli/generate.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+nx generate @nx/angular:app apps/myapp
+```
+
+LANGUAGE: shell
+CODE:
+```
+nx generate @nx/react:app apps/myapp
+```
+
+LANGUAGE: shell
+CODE:
+```
+nx generate @nx/web:app apps/myapp
+```
+
+LANGUAGE: shell
+CODE:
+```
+nx generate @nx/node:app apps/myapp
+```
+
+LANGUAGE: shell
+CODE:
+```
+nx generate @nx/angular:library libs/mylibrary
+```
+
+LANGUAGE: shell
+CODE:
+```
+nx generate @nx/react:library libs/mylibrary
+```
+
+LANGUAGE: shell
+CODE:
+```
+nx generate @nx/node:library libs/mylibrary
+```
+
+----------------------------------------
+
+TITLE: Create Nx React Monorepo Workspace
+DESCRIPTION: This command initializes a new React monorepo using `create-nx-workspace`, interactively guiding the user through setting up the initial application name (`react-store`), choosing `vite` as the bundler, `vitest` for unit tests, `playwright` for E2E tests, `css` for styling, and enabling ESLint and Prettier. It also configures GitHub Actions for CI.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/tutorials/react-monorepo.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npx create-nx-workspace@latest react-monorepo --preset=react-monorepo
+
+NX   Let's create a new workspace [https://nx.dev/getting-started/intro]
+
+✔ Application name · react-store
+✔ Which bundler would you like to use? · vite
+✔ Which unit test runner would you like to use? · vitest
+✔ Test runner to use for end to end (E2E) tests · playwright
+✔ Default stylesheet format · css
+✔ Would you like to use ESLint? · Yes
+✔ Would you like to use Prettier for code formatting? · Yes
+✔ Which CI provider would you like to use? · github
+```
+
+----------------------------------------
+
+TITLE: Nx CLI: Run Command General Usage
+DESCRIPTION: General syntax for the `nx run` command, showing how to specify project, target, and configuration parameters.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/packages/nx/documents/run.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+nx run [project][:target][:configuration] [_..]
+```
+
+----------------------------------------
+
+TITLE: Nx Workspace Creation CLI Command Usage
+DESCRIPTION: This snippet illustrates the basic command-line syntax for creating a new Nx workspace. It shows the command structure including optional arguments for the workspace name and additional options. Users can invoke this command directly after a global installation or via package managers like npx, yarn, or pnpx.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/packages/nx/documents/create-nx-workspace.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+create-nx-workspace [name] [options]
+```
+
+----------------------------------------
+
+TITLE: Create a New Nx Workspace
+DESCRIPTION: This command initializes a new Nx workspace, setting up the necessary project structure and configuration for a monorepo. It's the starting point for building applications with Nx.
+SOURCE: https://github.com/nrwl/nx/blob/master/README.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npx create-nx-workspace
+```
+
+----------------------------------------
+
+TITLE: Install Nx Globally
+DESCRIPTION: Installs the Nx command-line interface globally on your system, either via Homebrew for Mac/Linux or npm for any OS with Node.js.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/tutorials/gradle.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+brew install nx
+```
+
+LANGUAGE: shell
+CODE:
+```
+npm install --global nx
+```
+
+----------------------------------------
+
+TITLE: Run Nx Tasks on Affected Projects
+DESCRIPTION: Command to execute a specified task (e.g., 'test', 'build', 'lint') only on projects identified by Nx as affected by recent changes. This command leverages Git and the project graph to optimize CI performance.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/using-nx/affected.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+nx affected -t <task>
+```
+
+----------------------------------------
+
+TITLE: Install Nx globally using various package managers
+DESCRIPTION: Instructions to install the Nx command-line interface globally on different operating systems using npm, Homebrew, Chocolatey, or apt. This allows you to run Nx commands directly from your terminal.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/getting-started/quick-start.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npm add --global nx
+```
+
+LANGUAGE: shell
+CODE:
+```
+brew install nx
+```
+
+LANGUAGE: shell
+CODE:
+```
+choco install nx
+```
+
+LANGUAGE: shell
+CODE:
+```
+sudo add-apt-repository ppa:nrwl/nx
+sudo apt update
+sudo apt install nx
+```
+
+----------------------------------------
+
+TITLE: Visualize Project Dependencies with Nx Graph
+DESCRIPTION: This command generates an interactive visualization of the project dependencies and relationships within the Nx workspace, helping developers understand the monorepo structure and identify connections between projects.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2024-04-19-manage-your-gradle.md#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+# macos/linux
+./nx graph
+```
+
+LANGUAGE: shell
+CODE:
+```
+# windows
+nx.bat graph
+```
+
+----------------------------------------
+
+TITLE: Automate Workspace Migration to Inferred Targets with infer-targets Generator
+DESCRIPTION: The new `infer-targets` generator simplifies the migration of an entire Nx workspace to inferred tasks. It automatically detects and runs all available `convert-to-inferred` generators. Users can also specify a particular project for conversion using the `--project` option.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2024-09-20-nx-19-8.md#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+nx generate infer-targets
+```
+
+----------------------------------------
+
+TITLE: Install Nx JS Plugin
+DESCRIPTION: Command to add the @nx/js plugin to an existing Nx workspace, ensuring version compatibility with the main Nx package.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/packages/js/js-plugin.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+nx add @nx/js
+```
+
+----------------------------------------
+
+TITLE: Run Nx tasks with caching
+DESCRIPTION: Demonstrates how Nx automatically caches task results, showing immediate completion and cache hits for 'test', 'lint', and 'e2e' targets across multiple projects. This significantly speeds up re-runs of unchanged tasks.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/tutorials/angular-monorepo.md#_snippet_29
+
+LANGUAGE: shell
+CODE:
+```
+npx nx run-many -t test lint e2e
+✔  nx run e2e:lint  [existing outputs match the cache, left as is]
+✔  nx run angular-store:lint  [existing outputs match the cache, left as is]
+✔  nx run angular-store:test  [existing outputs match the cache, left as is]
+✔  nx run e2e:e2e  [existing outputs match the cache, left as is]
+
+——————————————————————————————————————————————————————
+
+NX   Successfully ran targets test, lint, e2e for 5 projects (54ms)
+
+Nx read the output from the cache instead of running the command for 10 out of 10 tasks.
+```
+
+----------------------------------------
+
+TITLE: Initialize Nx Project with `nx init`
+DESCRIPTION: This command provides the easiest way to start using Nx by automatically setting up the necessary configurations and files in your repository. It's an automated alternative to the manual steps outlined in this guide.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/migration/manual.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npx nx@latest init
+```
+
+----------------------------------------
+
+TITLE: Run a Single Nx Task
+DESCRIPTION: Command to execute a specific task (e.g., 'test') for a single project (e.g., 'header') within an Nx monorepo, demonstrating the basic syntax for task execution.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/features/run-tasks.md#_snippet_3
+
+LANGUAGE: shell
+CODE:
+```
+npx nx test header
+```
+
+----------------------------------------
+
+TITLE: Run nx init command
+DESCRIPTION: Demonstrates the basic usage of the `nx init` command to initialize Nx in a workspace. This command installs Nx and sets up the `nx.json` configuration file.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/packages/nx/documents/init.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+nx init
+```
+
+----------------------------------------
+
+TITLE: Start Nx React Frontend Application
+DESCRIPTION: This command launches the React frontend application developed within the Nx workspace. It makes the application accessible in a web browser, typically at `http://localhost:4200`, allowing you to view your work.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2025-02-21-using-apollo-graphql-with-react-in-an-nx-workspace.md#_snippet_35
+
+LANGUAGE: shell
+CODE:
+```
+npx nx serve frontend
+```
+
+----------------------------------------
+
+TITLE: Configure Nx Module Boundaries with allSourceTags
+DESCRIPTION: This JSON snippet illustrates how to define dependency constraints within the `@nx/enforce-module-boundaries` rule in an ESLint configuration. It demonstrates using `sourceTag` for single tag matching and `allSourceTags` for applying constraints when multiple tags are present on a project, such as restricting 'admin' and 'ui' components to only depend on 'util' libraries and banning specific external imports.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/recipes/tag-multiple-dimensions.md#_snippet_2
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  // ... more ESLint config here
+
+  // @nx/enforce-module-boundaries should already exist at the top-level of your config
+  "@nx/enforce-module-boundaries": [
+    "error",
+    {
+      "allow": [],
+      // update depConstraints based on your tags
+      "depConstraints": [
+        {
+          // this constraint applies to all "admin" projects
+          "sourceTag": "scope:admin",
+          "onlyDependOnLibsWithTags": ["scope:shared", "scope:admin"]
+        },
+        {
+          "sourceTag": "type:ui",
+          "onlyDependOnLibsWithTags": ["type:ui", "type:util"]
+        },
+        {
+          // we don't want our admin ui components to depend on anything except utilities,
+          // and we also want to ban router imports
+          "allSourceTags": ["scope:admin", "type:ui"],
+          "onlyDependOnLibsWithTags": ["type:util"],
+          "bannedExternalImports": ["*router*"]
+        }
+      ]
+    }
+  ]
+
+  // ... more ESLint config here
+}
+```
+
+----------------------------------------
+
+TITLE: Create Nx Workspace with TypeScript Preset
+DESCRIPTION: Initialize a new Nx workspace, pre-configuring it with the TypeScript preset and @nx/js plugin. This setup leverages TypeScript Project References and package manager workspaces for a modernized monorepo structure.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/packages/js/js-plugin.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+npx create-nx-workspace my-org --preset=ts
+```
+
+LANGUAGE: shell
+CODE:
+```
+yarn create nx-workspace my-org --preset=ts
+```
+
+----------------------------------------
+
+TITLE: Initialize Nx in an Existing Workspace
+DESCRIPTION: This shell command adds Nx to an existing workspace. Nx will detect the underlying workspace configuration, ask a couple of questions, and install itself into the workspace. This command is typically run after setting up a basic workspace structure, such as an NPM workspace with a `package.json` file.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/getting-started/start-new-project.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+nx init
+```
+
+----------------------------------------
+
+TITLE: Creating a new Nx workspace
+DESCRIPTION: Initializes a new Nx workspace with the 'apps' preset. This command sets up the basic project structure for a monorepo.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/concepts/module-federation/faster-builds.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+# Replace acme with desired scope
+npx create-nx-workspace acme --preset=apps
+cd acme
+```
+
+----------------------------------------
+
+TITLE: Nx CLI: Basic generate command usage
+DESCRIPTION: Shows the fundamental syntax for invoking a generator using the `nx generate` command, requiring specification of both the collection and the generator.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/cli/generate.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+nx generate <collection:generator>
+```
+
+----------------------------------------
+
+TITLE: Minimal Nx project.json with Project Crystal
+DESCRIPTION: An example of a `project.json` file in an Nx workspace utilizing Project Crystal. Notice the absence of explicit targets, as they are now inferred by the configured Nx plugins, reducing configuration overhead.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2024-02-05-nx-18-project-crystal.md#_snippet_2
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "reactapp",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/reactapp/src",
+  "projectType": "application",
+  "targets": {},
+  "tags": []
+}
+```
+
+----------------------------------------
+
+TITLE: Run Nx Target for Project
+DESCRIPTION: Run a target for a project
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/reference/commands.md#_snippet_16
+
+LANGUAGE: shell
+CODE:
+```
+nx run my-app:build
+nx build my-app
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+Command: nx run
+Description: Run a target for a project.
+Usage:
+  nx run <project>:<target> [options]
+  nx <target> <project> [options]
+```
+
+----------------------------------------
+
+TITLE: Run Development Server for Angular Application
+DESCRIPTION: Starts the development server for a specified Angular application within the Nx workspace. This command enables live reloading and local testing during development.
+SOURCE: https://github.com/nrwl/nx/blob/master/nx-dev/tutorial/src/content/tutorial/3-angular-monorepo/2a-smart-monorepo/2-use-preset/_solution/angular-monorepo/README.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+npx nx serve angular-store
+```
+
+----------------------------------------
+
+TITLE: GitHub Actions CI Workflow for Nx Affected Tasks
+DESCRIPTION: This YAML configuration defines a GitHub Actions CI workflow (`ci.yml`) for an Nx workspace. It sets up the environment, installs dependencies, and uses `nx affected` to run `lint`, `test`, `build`, and `e2e-ci` tasks only on projects affected by a pull request. This optimizes CI execution time by avoiding unnecessary task runs.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/nx-cloud/tutorial/github-actions.md#_snippet_5
+
+LANGUAGE: yaml
+CODE:
+```
+name: CI
+# ...
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      # This enables task distribution via Nx Cloud
+      # Run this command as early as possible, before dependencies are installed
+      # Learn more at https://nx.dev/ci/reference/nx-cloud-cli#npx-nxcloud-startcirun
+      # Connect your workspace by running "nx connect" and uncomment this line to enable task distribution
+      # - run: pnpm dlx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e-ci"
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - run: pnpm install --frozen-lockfile
+      - uses: nrwl/nx-set-shas@v4
+
+      # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
+      # - run: pnpm exec nx-cloud record -- echo Hello World
+      # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
+      - run: pnpm exec nx affected -t lint test build e2e-ci
+```
+
+----------------------------------------
+
+TITLE: Run Nx Tasks on Affected Projects
+DESCRIPTION: Provides the general syntax for running tasks only on projects affected by recent changes, using `npx nx affected:<target>`.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2023-01-12-react-vite-and-typescript-get-started-in-under-2-minutes.md#_snippet_21
+
+LANGUAGE: shell
+CODE:
+```
+npx nx affected:<target>
+```
+
+----------------------------------------
+
+TITLE: Run Tests Based on Specific File Changes
+DESCRIPTION: Identifies and runs the 'test' target for projects affected by modifications to a specific file, such as `libs/mylib/src/index.ts`.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/cli/affected.md#_snippet_4
+
+LANGUAGE: shell
+CODE:
+```
+nx affected -t test --files=libs/mylib/src/index.ts
+```
+
+----------------------------------------
+
+TITLE: Update Nx Workspace to Latest Version
+DESCRIPTION: Update all Nx workspace dependencies and the core Nx framework to their latest available versions, preparing the workspace for new features and improvements.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2022-12-22-nx-15-4-vite-4-support-a-new-nx-watch-command-and-more.md#_snippet_7
+
+LANGUAGE: shell
+CODE:
+```
+npx nx migrate latest
+```
+
+----------------------------------------
+
+TITLE: Configure Nx Affected with Base and Head Commits for CI
+DESCRIPTION: Demonstrates how to use `nx affected` with explicit `base` and `head` commits, which is crucial for accurately determining affected projects in CI pipelines. Examples show usage for pull request branches and re-running tasks based on the last commit on the main branch.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/using-nx/affected.md#_snippet_3
+
+LANGUAGE: shell
+CODE:
+```
+nx affected -t build --base=origin/main --head=$PR_BRANCH_NAME # where PR_BRANCH_NAME is defined by your CI system
+nx affected -t build --base=origin/main~1 --head=origin/main # rerun what is affected by the last commit in main
+```
+
+----------------------------------------
+
+TITLE: Create New Angular Monorepo with Nx CLI
+DESCRIPTION: This command initializes a new Nx workspace configured for an Angular monorepo. It prompts for application details like name, bundler, stylesheet format, SSR, E2E test runner, and CI provider, then generates the initial project structure.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/tutorials/angular-monorepo.md#_snippet_0
+
+LANGUAGE: CLI
+CODE:
+```
+npx create-nx-workspace@latest angular-monorepo --preset=angular-monorepo
+
+NX   Let's create a new workspace [https://nx.dev/getting-started/intro]
+
+✔ Application name · angular-store
+✔ Which bundler would you like to use? · esbuild
+✔ Default stylesheet format · css
+✔ Do you want to enable Server-Side Rendering (SSR) and Static Site Generation (SSG/Prerendering)? · No
+✔ Test runner to use for end to end (E2E) tests · cypress
+✔ Which CI provider would you like to use? · github
+```
+
+----------------------------------------
+
+TITLE: Update Nx Workspace and Run Migrations
+DESCRIPTION: These commands update an Nx workspace to the latest version, including dependencies, and then execute any necessary code migrations. This ensures the workspace is compatible with the new Nx version.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2023-03-08-nx-15-8-rust-hasher-nx-console-for-intellij-deno-node-and-storybook.md#_snippet_5
+
+LANGUAGE: shell
+CODE:
+```
+npx nx migrate latest
+```
+
+LANGUAGE: shell
+CODE:
+```
+npx nx migrate --run-migrations
+```
+
+----------------------------------------
+
+TITLE: Visualize Nx Project Architecture with `nx graph`
+DESCRIPTION: Demonstrates how to use the `npx nx graph` command to visualize the dependency graph of an Nx workspace, helping to understand the code structure and architecture.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2023-01-12-react-vite-and-typescript-get-started-in-under-2-minutes.md#_snippet_17
+
+LANGUAGE: shell
+CODE:
+```
+npx nx graph
+```
+
+----------------------------------------
+
+TITLE: GitHub Actions CI Workflow for Nx
+DESCRIPTION: This YAML configuration defines a GitHub Actions workflow for an Nx workspace. It triggers on pushes to the 'main' branch and pull requests, checks out the repository with full history, sets up Node.js v20, installs npm dependencies, uses `nrwl/nx-set-shas` to determine the base commit for affected commands, and then executes Nx commands to format check and run affected lint, test, build, and e2e-ci targets.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/monorepo-ci-github-actions.md#_snippet_0
+
+LANGUAGE: yaml
+CODE:
+```
+name: CI
+on:
+  push:
+    branches:
+      # Change this if your primary branch is not main
+      - main
+  pull_request:
+
+# Needed for nx-set-shas when run on the main branch
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          filter: tree:0
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+      # This line enables distribution
+      # The "--stop-agents-after" is optional, but allows idle agents to shut down once the "e2e-ci" targets have been requested
+      # - run: npx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e-ci"
+      - run: npm ci
+
+      - uses: nrwl/nx-set-shas@v4
+
+      - run: npx nx-cloud record -- nx format:check
+      - run: npx nx affected -t lint test build e2e-ci
+```
+
+----------------------------------------
+
+TITLE: Running Nx Tests and Identifying Affected Projects
+DESCRIPTION: These commands demonstrate how to run tests for specific applications, multiple projects, or all projects in an Nx workspace. The "nx affected" command intelligently determines the minimal set of projects impacted by code changes, optimizing retesting efforts.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/concepts/mental-model.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+nx test app1
+```
+
+LANGUAGE: shell
+CODE:
+```
+nx run-many -t test -p app1 lib
+```
+
+LANGUAGE: shell
+CODE:
+```
+nx run-many -t test
+```
+
+LANGUAGE: shell
+CODE:
+```
+nx affected -t test
+```
+
+LANGUAGE: shell
+CODE:
+```
+nx run-many -t test -p app1 app2 lib
+```
+
+----------------------------------------
+
+TITLE: Create a New Nx Workspace
+DESCRIPTION: Initializes a new Nx workspace named 'acme' using the 'apps' preset. This command sets up the foundational structure for your monorepo, skipping optional CI provider and remote caching configurations for a quick start.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/guides/remix.md#_snippet_0
+
+LANGUAGE: command-line
+CODE:
+```
+npx create-nx-workspace@latest acme --preset=apps
+
+NX   Let's create a new workspace [https://nx.dev/getting-started/intro]
+
+✔ Which CI provider would you like to use? · skip
+✔ Would you like remote caching to make your build faster? · skip
+```
+
+----------------------------------------
+
+TITLE: Create New Nx Workspace with React Native Preset
+DESCRIPTION: This command initializes a new Nx workspace specifically configured for React Native development. It uses the latest version of `create-nx-workspace` and automatically sets up a React Native application within the new workspace.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/packages/react-native/documents/overview.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npx create-nx-workspace@latest your-workspace-name --preset=react-native --appName=your-app-name
+```
+
+----------------------------------------
+
+TITLE: Execute Nx Repair Command
+DESCRIPTION: Demonstrates the basic usage of the `nx repair` command to fix unsupported Nx configurations. This command runs all migrations from the `nx` package.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/packages/nx/documents/repair.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+nx repair
+```
+
+----------------------------------------
+
+TITLE: Nx GitHub Actions CI Workflow YAML Configuration
+DESCRIPTION: This YAML configuration defines a GitHub Actions CI pipeline for an Nx project. It automatically runs lint, test, build, and e2e tasks on projects affected by changes. The snippet also shows how to enable task distribution with Nx Cloud for improved performance.
+SOURCE: https://github.com/nrwl/nx/blob/master/nx-dev/tutorial/src/content/tutorial/2-react-monorepo/3r-fast-ci/3-create-ci-workflow/content.md#_snippet_1
+
+LANGUAGE: yml
+CODE:
+```
+name: CI
+# ...
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # This enables task distribution via Nx Cloud
+      # Run this command as early as possible, before dependencies are installed
+      # Learn more at https://nx.dev/ci/reference/nx-cloud-cli#npx-nxcloud-startcirun
+      # Uncomment this line to enable task distribution
+      # - run: npx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e-ci"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      - uses: nrwl/nx-set-shas@v4
+      # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
+      # When you enable task distribution, run the e2e-ci task instead of e2e
+      - run: npx nx affected -t lint test build e2e
+```
+
+----------------------------------------
+
+TITLE: Create New Nx Workspace with Angular Rspack Application
+DESCRIPTION: Commands to initialize a new Nx workspace, pre-configured with an Angular Rspack application. Users can choose between Client-Side Rendering (CSR) or Server-Side Rendering (SSR) during the interactive setup process. The command prompts for stack, bundler, and other project details.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/guides/angular-rspack/getting-started.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npx create-nx-workspace myorg
+
+NX   Let's create a new workspace [[https://nx.dev/getting-started/intro](https://nx.dev/getting-started/intro)]
+
+✔ Which stack do you want to use? · angular
+✔ Integrated monorepo, or standalone project? · integrated
+✔ Application name · myorg
+✔ Which bundler would you like to use? · rspack
+✔ Default stylesheet format · css
+✔ Do you want to enable Server-Side Rendering (SSR)? · No
+✔ Which unit test runner would you like to use? · vitest
+✔ Test runner to use for end to end (E2E) tests · playwright
+
+NX   Creating your v20.8.0 workspace.
+```
+
+LANGUAGE: bash
+CODE:
+```
+npx create-nx-workspace myorg
+
+NX   Let's create a new workspace [[https://nx.dev/getting-started/intro](https://nx.dev/getting-started/intro)]
+
+✔ Which stack do you want to use? · angular
+✔ Integrated monorepo, or standalone project? · integrated
+✔ Application name · myorg
+✔ Which bundler would you like to use? · rspack
+✔ Default stylesheet format · css
+✔ Do you want to enable Server-Side Rendering (SSR)? · Yes
+✔ Which unit test runner would you like to use? · vitest
+✔ Test runner to use for end to end (E2E) tests · playwright
+
+NX   Creating your v20.8.0 workspace.
+```
+
+----------------------------------------
+
+TITLE: Install Nx Globally
+DESCRIPTION: Commands to install Nx globally using various package managers on different operating systems.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/packages/gradle/documents/overview.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npm add --global nx@latest
+```
+
+LANGUAGE: shell
+CODE:
+```
+brew install nx
+```
+
+LANGUAGE: shell
+CODE:
+```
+choco install nx
+```
+
+LANGUAGE: shell
+CODE:
+```
+sudo add-apt-repository ppa:nrwl/nx
+sudo apt update
+sudo apt install nx
+```
+
+----------------------------------------
+
+TITLE: Generate Code with Nx
+DESCRIPTION: Runs a generator that creates and/or modifies files based on a generator from a plugin.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/reference/commands.md#_snippet_4
+
+LANGUAGE: shell
+CODE:
+```
+nx generate @nx/react:component libs/my-lib/src/lib/my-component
+```
+
+----------------------------------------
+
+TITLE: Define Nx Task Inputs and Named Inputs in nx.json
+DESCRIPTION: This configuration defines reusable sets of input files using 'namedInputs' at the workspace level and specifies which inputs a 'build' target depends on. Inputs determine when a task needs to be re-run, ensuring cache invalidation only occurs when relevant files or external dependencies change.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/reference/project-configuration.md#_snippet_6
+
+LANGUAGE: json
+CODE:
+```
+{
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*"],
+    "production": ["default", "!{projectRoot}/**/*.spec.tsx"]
+  },
+  "targets": {
+    "build": {
+      "inputs": [
+        "production",
+        { "externalDependencies": ["vite"] }
+      ]
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Include Dependent Task Outputs as Inputs for Caching
+DESCRIPTION: This snippet demonstrates how to configure a task to consider the outputs of its dependent tasks as inputs for caching. The `dependentTasksOutputFiles` property specifies a pattern (e.g., `**/*.d.ts`) for files to include. Setting `transitive: true` extends this to include outputs from all tasks in the dependency pipeline, ensuring comprehensive caching based on upstream changes.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/reference/inputs.md#_snippet_6
+
+LANGUAGE: jsonc
+CODE:
+```
+"inputs": [
+  { "dependentTasksOutputFiles": "**/*.d.ts" },
+  { "dependentTasksOutputFiles": "**/*.d.ts", "transitive": true }
+]
+```
+
+----------------------------------------
+
+TITLE: Registering Nx Vite Plugin in nx.json
+DESCRIPTION: This JSON snippet illustrates the configuration for the `@nx/vite` plugin within the `nx.json` file. It defines the plugin entry and its default target names for common operations like building, serving, previewing, testing, and serving static assets. Users can modify these `targetName` options to customize the commands used to run these tasks, for example, changing 'serve' to 'dev'.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/recipes/running-tasks/convert-to-inferred.md#_snippet_7
+
+LANGUAGE: json
+CODE:
+```
+{
+  "plugin": "@nx/vite/plugin",
+  "options": {
+    "buildTargetName": "build",
+    "serveTargetName": "serve",
+    "previewTargetName": "preview",
+    "testTargetName": "test",
+    "serveStaticTargetName": "serve-static"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Run all Nx tasks of a given type
+DESCRIPTION: Execute all tasks with a specified target name, like 'typecheck', across multiple projects in an Nx workspace. This is useful for running a common task across your entire codebase.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/tutorials/typescript-packages.md#_snippet_9
+
+LANGUAGE: shell
+CODE:
+```
+npx nx run-many -t typecheck
+```
+
+----------------------------------------
+
+TITLE: Add Nx to an Existing Monorepo Workspace
+DESCRIPTION: Use this command to initialize Nx in your existing monorepo workspace. It will prompt you with configuration questions, including whether to install Project Crystal plugins, which are optional for Nx Release functionality. For NPM workspaces, use 'npx nx@latest init'.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2024-02-09-versioning-and-releasing-packages.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+pnpm dlx nx@latest init
+```
+
+----------------------------------------
+
+TITLE: Nx CLI: Run build target for a project
+DESCRIPTION: Example of running the 'build' target for the 'myapp' project using the Nx CLI.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/cli/run.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+nx run myapp:build
+```
+
+----------------------------------------
+
+TITLE: Nx CLI: Run Build Target for Project
+DESCRIPTION: Example of running the 'build' target for a specific project named 'myapp'.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/packages/nx/documents/run.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+nx run myapp:build
+```
+
+----------------------------------------
+
+TITLE: Configure TypeScript Project References for Dependent Project
+DESCRIPTION: This JSON snippet demonstrates how to configure the `tsconfig.json` file for a project (`is-odd`) that depends on another project (`is-even`) within a monorepo. The `references` field is crucial for TypeScript to understand the dependency relationship, allowing for more efficient type checking and incremental builds.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2025-01-27-project-references.md#_snippet_6
+
+LANGUAGE: json
+CODE:
+```
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "references": [{ "path": "../is-even" }]
+}
+```
+
+----------------------------------------
+
+TITLE: Migrate CRA Project to Nx + React + Vite
+DESCRIPTION: Run this command within an existing Create React App (CRA) project to automatically migrate it to an Nx + React + Vite-based setup. This command streamlines the transition, and an option `--vite=false` can be passed to retain a Webpack-based setup if Vite is not desired immediately.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2023-01-12-react-vite-and-typescript-get-started-in-under-2-minutes.md#_snippet_24
+
+LANGUAGE: shell
+CODE:
+```
+npx nx init
+```
+
+----------------------------------------
+
+TITLE: Create a new Nx workspace for React
+DESCRIPTION: Initializes a new Nx workspace named 'myorg' using the latest `create-nx-workspace` package. This command starts a setup wizard that guides you through creating your application, typically choosing 'React' and an application name (e.g., 'happynrwl'). The 'myorg' scope is used for importing libraries within the workspace, as shown in the TypeScript example.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2022-03-29-the-react-cli-you-always-wanted-but-didnt-know-about.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npx create-nx-workspace@latest myorg
+```
+
+LANGUAGE: typescript
+CODE:
+```
+import { someFunc } from '@myorg/somelib';
+```
+
+----------------------------------------
+
+TITLE: React Application with Dynamic Imports for Code-Splitting
+DESCRIPTION: This TypeScript React example illustrates how to implement route-based code-splitting using `React.lazy` and dynamic `import()` with `react-router`. It signals to bundlers like Vite to create separate JavaScript chunks for each route's component, which are then loaded on demand when the corresponding route is activated.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2025-01-09-who-gave-js-a-build-step.md#_snippet_1
+
+LANGUAGE: tsx
+CODE:
+```
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router';
+
+const Bar = React.lazy(() => import('./bar'));
+const Foo = React.lazy(() => import('./foo'));
+
+function App() {
+  return (
+    <Router>
+      <nav>
+        <Link to="/">Foo</Link>
+        <Link to="/bar">Bar</Link>
+      </nav>
+      <Routes>
+        <Route path="/" element={<Foo />} />
+        <Route path="/bar" element={<Bar />} />
+      </Routes>
+    </Router>
+  );
+}
+
+export default App;
+```
+
+----------------------------------------
+
+TITLE: Define basic targets in project.json
+DESCRIPTION: This snippet illustrates the fundamental structure of a `project.json` file, specifically focusing on the `targets` property where various project tasks such as build, serve, lint, and test are declared.
+SOURCE: https://github.com/nrwl/nx/blob/master/nx-dev/tutorial/src/content/tutorial/3-angular-monorepo/2a-smart-monorepo/4-define-tasks/content.mdx#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "angular-store",
+  ...
+  "targets": {
+    "build": { ... },
+    "serve": { ... },
+    "extract-i18n": { ... },
+    "lint": { ... },
+    "test": { ... },
+    "serve-static": { ... }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Assigning Tags to Shared UI Library in Nx
+DESCRIPTION: This JSON snippet illustrates how to assign `type:ui` and `scope:shared` tags to the `nx` configuration within the `package.json` file for the `shared-ui` library. The `scope:shared` tag indicates its intended use across the entire workspace.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/tutorials/react-monorepo.md#_snippet_39
+
+LANGUAGE: json
+CODE:
+```
+{
+  ...
+  "nx": {
+    "tags": ["type:ui", "scope:shared"]
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Run Custom Target for Affected Projects
+DESCRIPTION: Executes a user-defined target (e.g., `custom-target`) across all projects identified as affected by recent changes.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/packages/nx/documents/affected.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+nx affected -t custom-target
+```
+
+----------------------------------------
+
+TITLE: Update Nx Workspace to Latest Version
+DESCRIPTION: Use this command to update your Nx workspace's dependencies and codebase to the most recent stable release. This is the first step in the update process.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2022-05-02-nx-v14-is-out-here-is-all-you-need-to-know.md#_snippet_9
+
+LANGUAGE: shell
+CODE:
+```
+npx nx migrate latest
+```
+
+----------------------------------------
+
+TITLE: Detailed Configuration for a 'serve' Target in Nx project.json
+DESCRIPTION: This snippet provides a detailed example of a 'serve' target configuration in `project.json`. It shows how to specify an executor, define default and environment-specific configurations (development/production), and pass options like `buildTarget` and `hmr`.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/tutorials/angular-monorepo.md#_snippet_4
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "angular-store",
+  "...": "",
+  "targets": {
+    "serve": {
+      "executor": "@angular/build:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "angular-store:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "angular-store:build:development",
+          "hmr": true
+        },
+        "production": {
+          "buildTarget": "angular-store:build:production",
+          "hmr": false
+        }
+      }
+     },
+     "...": ""
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Creating a new Nx Workspace
+DESCRIPTION: This command initializes a new Nx workspace named 'myorg'. It prompts the user to select a stack, monorepo type (integrated in this case), and CI provider, then proceeds to install dependencies and set up Nx Cloud and CI workflows.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2024-09-12-next-gen-module-federation-deployments.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npx create-nx-workspace myorg
+```
+
+----------------------------------------
+
+TITLE: Install Nx Globally
+DESCRIPTION: Instructions for globally installing the Nx CLI using various package managers on different operating systems.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/packages/gradle/gradle-plugin.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+npm add --global nx@latest
+```
+
+LANGUAGE: Shell
+CODE:
+```
+brew install nx
+```
+
+LANGUAGE: Shell
+CODE:
+```
+choco install nx
+```
+
+LANGUAGE: Shell
+CODE:
+```
+sudo add-apt-repository ppa:nrwl/nx
+sudo apt update
+sudo apt install nx
+```
+
+----------------------------------------
+
+TITLE: Update Nx Workspace Dependencies
+DESCRIPTION: This command updates the Nx workspace dependencies, configuration, and code to the latest version. It leverages Nx's automatic migration capabilities to handle potential breaking changes.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2023-10-20-nx-17-release.md#_snippet_10
+
+LANGUAGE: shell
+CODE:
+```
+npx nx migrate latest
+```
+
+----------------------------------------
+
+TITLE: Example Nx Project Graph with Affected Projects
+DESCRIPTION: A JSON representation of an Nx workspace's project graph, illustrating how changes in 'lib10' affect 'lib4', 'lib5', and 'app2'. This graph helps visualize the dependencies and the scope of affected projects.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/using-nx/affected.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "projects": [
+    {
+      "type": "app",
+      "name": "app1",
+      "data": {}
+    },
+    {
+      "type": "app",
+      "name": "app2",
+      "data": {}
+    },
+    {
+      "type": "lib",
+      "name": "lib1",
+      "data": {}
+    },
+    {
+      "type": "lib",
+      "name": "lib2",
+      "data": {}
+    },
+    {
+      "type": "lib",
+      "name": "lib3",
+      "data": {}
+    },
+    {
+      "type": "lib",
+      "name": "lib4",
+      "data": {}
+    },
+    {
+      "type": "lib",
+      "name": "lib5",
+      "data": {}
+    },
+    {
+      "type": "lib",
+      "name": "lib6",
+      "data": {}
+    },
+    {
+      "type": "lib",
+      "name": "lib7",
+      "data": {}
+    },
+    {
+      "type": "lib",
+      "name": "lib8",
+      "data": {}
+    },
+    {
+      "type": "lib",
+      "name": "lib9",
+      "data": {}
+    },
+    {
+      "type": "lib",
+      "name": "lib10",
+      "data": {}
+    },
+    {
+      "type": "lib",
+      "name": "lib11",
+      "data": {}
+    },
+    {
+      "type": "lib",
+      "name": "lib12",
+      "data": {}
+    }
+  ],
+  "groupByFolder": false,
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": "libs"
+  },
+  "dependencies": {
+    "app1": [
+      {
+        "target": "lib1",
+        "source": "app1",
+        "type": "direct"
+      },
+      {
+        "target": "lib2",
+        "source": "app1",
+        "type": "direct"
+      }
+    ],
+    "app2": [
+      {
+        "target": "lib4",
+        "source": "app2",
+        "type": "direct"
+      },
+      {
+        "target": "lib5",
+        "source": "app2",
+        "type": "direct"
+      },
+      {
+        "target": "lib6",
+        "source": "app2",
+        "type": "direct"
+      }
+    ],
+    "lib1": [
+      {
+        "target": "lib7",
+        "source": "lib1",
+        "type": "direct"
+      },
+      {
+        "target": "lib8",
+        "source": "lib1",
+        "type": "direct"
+      }
+    ],
+    "lib2": [
+      {
+        "target": "lib3",
+        "source": "lib2",
+        "type": "direct"
+      }
+    ],
+    "lib3": [
+      {
+        "target": "lib8",
+        "source": "lib3",
+        "type": "direct"
+      }
+    ],
+    "lib4": [
+      {
+        "target": "lib3",
+        "source": "lib4",
+        "type": "direct"
+      },
+      {
+        "target": "lib9",
+        "source": "lib4",
+        "type": "direct"
+      },
+      {
+        "target": "lib10",
+        "source": "lib4",
+        "type": "direct"
+      }
+    ],
+    "lib5": [
+      {
+        "target": "lib10",
+        "source": "lib5",
+        "type": "direct"
+      },
+      {
+        "target": "lib11",
+        "source": "lib5",
+        "type": "direct"
+      },
+      {
+        "target": "lib12",
+        "source": "lib5",
+        "type": "direct"
+      }
+    ],
+    "lib6": [
+      {
+        "target": "lib12",
+        "source": "lib6",
+        "type": "direct"
+      }
+    ],
+    "lib7": [],
+    "lib8": [],
+    "lib9": [],
+    "lib10": [],
+    "lib11": [],
+    "lib12": []
+  },
+  "affectedProjectIds": ["lib10", "lib4", "lib5", "app2"]
+}
+```
+
+----------------------------------------
+
+TITLE: Interactively Migrate Nx Workspace to Latest Version
+DESCRIPTION: This command initiates an interactive migration process for an Nx workspace, allowing users to selectively upgrade dependencies, including Nx itself and other frameworks like Angular, to their latest versions. It provides control over the migration scope.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2025-01-06-nx-update-20-3.md#_snippet_10
+
+LANGUAGE: shell
+CODE:
+```
+nx migrate latest --interactive
+```
+
+----------------------------------------
+
+TITLE: Generate New JavaScript/TypeScript Library with Nx
+DESCRIPTION: Creates a new JavaScript or TypeScript library within the Nx workspace. This command uses the `@nx/js:lib` generator to scaffold a new project at the specified path, ready for development.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/packages/js/documents/overview.md#_snippet_7
+
+LANGUAGE: shell
+CODE:
+```
+nx g @nx/js:lib libs/my-lib
+```
+
+----------------------------------------
+
+TITLE: Advanced Nx Project Configuration with Orchestration, Execution, and Caching Settings
+DESCRIPTION: This example illustrates more complete Nx project configuration files, showcasing how to define targets with advanced settings. It covers orchestration settings like 'inputs', 'outputs', and 'dependsOn', execution settings using 'command' or 'executor', and caching settings via 'namedInputs' for fine-grained control over task behavior.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/reference/project-configuration.md#_snippet_3
+
+LANGUAGE: jsonc
+CODE:
+```
+{
+  "name": "mylib",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc -p tsconfig.lib.json", // the actual command here is arbitrary
+    "ignored": "exit 1"
+  },
+  "nx": {
+    "namedInputs": {
+      "default": ["{projectRoot}/**/*"],
+      "production": ["!{projectRoot}/**/*.spec.tsx"]
+    },
+    "targets": {
+      "build": {
+        "inputs": ["production", "^production"],
+        "outputs": ["{workspaceRoot}/dist/libs/mylib"],
+        "dependsOn": ["^build"]
+      },
+      "test": {
+        "inputs": ["default", "^production"],
+        "outputs": [],
+        "dependsOn": ["build"]
+      }
+    },
+    "includedScripts": ["test", "build"] // If you want to limit the scripts Nx sees, you can specify a list here.
+  }
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "root": "libs/mylib/",
+  "sourceRoot": "libs/mylib/src",
+  "projectType": "library",
+  "tags": ["scope:myteam"],
+  "implicitDependencies": ["anotherlib"],
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*"],
+    "production": ["!{projectRoot}/**/*.spec.tsx"]
+  },
+  "targets": {
+    "test": {
+      "inputs": ["default", "^production"],
+      "outputs": [],
+      "dependsOn": ["build"],
+      "executor": "@nx/jest:jest",
+      "options": {}
+    },
+    "build": {
+      "inputs": ["production", "^production"],
+      "outputs": ["{workspaceRoot}/dist/libs/mylib"],
+      "dependsOn": ["^build"],
+      "executor": "@nx/js:tsc",
+      "options": {}
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Configure Nx Project Targets in project.json
+DESCRIPTION: Shows the `project.json` file, which defines various targets (build, serve, lint, test, serve-static) for an Nx-managed Angular application. It highlights how Nx leverages Angular Devkit builders and adds its own to fill in gaps like Jest/Vitest support.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2025-03-18-architecting-angular-applications.md#_snippet_2
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "myshop",
+  "sourceRoot": "./src",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/myshop",
+        "index": "./src/index.html",
+        "main": "./src/main.ts",
+        ...
+      },
+      "configurations": {...},
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      ...
+    },
+    ...
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "options": {
+        "lintFilePatterns": ["./src"]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectName}"],
+      "options": {
+        "jestConfig": "jest.config.ts"
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "myshop:build",
+        "port": 4200,
+        "spa": true
+      }
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Define and Run Root-Level Tasks in Nx
+DESCRIPTION: Explains how to define tasks that apply to the entire codebase rather than a single project, leveraging Nx for caching. It provides examples for defining these tasks in `package.json` (with and without `nx exec`) and `project.json`, along with the command to invoke them.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/features/run-tasks.md#_snippet_10
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "myorg",
+  "scripts": {
+    "docs": "node ./generateDocsSite.js"
+  },
+  "nx": {}
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "myorg",
+  "scripts": {
+    "docs": "nx exec -- node ./generateDocsSite.js"
+  },
+  "nx": {}
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "myorg",
+  ...
+  "targets": {
+    "docs": {
+      "command": "node ./generateDocsSite.js"
+    }
+  }
+}
+```
+
+LANGUAGE: shell
+CODE:
+```
+npx nx docs
+```
+
+----------------------------------------
+
+TITLE: Run Multiple Nx Tasks in Parallel
+DESCRIPTION: Execute multiple Nx tasks like `test`, `lint`, and `build` concurrently across projects using the `npx nx run-many` command. This command streamlines the execution of various targets in a single operation.
+SOURCE: https://github.com/nrwl/nx/blob/master/nx-dev/tutorial/src/content/tutorial/3-angular-monorepo/2a-smart-monorepo/9-run-many/content.mdx#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+npx nx run-many -t test lint build
+```
+
+----------------------------------------
+
+TITLE: Nx CLI Argument: --preset
+DESCRIPTION: Customizes the initial content of your workspace. Allows selection from a predefined list of presets like 'apps', 'npm', 'ts', 'web-components', 'angular-monorepo', 'react-monorepo', 'next', 'nest', 'express', 'react-native', etc. Users can also create custom presets.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/generated/packages/nx/documents/create-nx-workspace.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+--preset:
+  Type: string
+  Description: Customizes the initial content of your workspace.
+  Default Presets: ["apps", "npm", "ts", "web-components", "angular-monorepo", "angular-standalone", "react-monorepo", "react-standalone", "vue-monorepo", "vue-standalone", "nuxt", "nuxt-standalone", "next", "nextjs-standalone", "react-native", "expo", "nest", "express", "react", "vue", "angular", "node-standalone", "node-monorepo", "ts-standalone"]
+  See: https://nx.dev/extending-nx/recipes/create-preset
+```
+
+----------------------------------------
+
+TITLE: Run Tests on Affected Nx Projects
+DESCRIPTION: Gives a concrete example of using Nx's affected commands to run tests specifically for projects that have been impacted by recent code changes, optimizing CI pipelines.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/blog/2023-01-12-react-vite-and-typescript-get-started-in-under-2-minutes.md#_snippet_22
+
+LANGUAGE: shell
+CODE:
+```
+npx nx affected:test
+```
+
+----------------------------------------
+
+TITLE: Create a new Nx library
+DESCRIPTION: Generates a new Nx library in the default `libs` directory. This command is used to scaffold a new project within the Nx workspace.
+SOURCE: https://github.com/nrwl/nx/blob/master/packages/next/docs/library-examples.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+nx g lib libs/my-lib
+```
+
+----------------------------------------
+
+TITLE: Configure Caching for Nx Targets
+DESCRIPTION: Configure caching for Nx targets by setting `"cache": true` in `targetDefaults` within `nx.json`. This enables Nx to cache task results, which is also a prerequisite for distributed task execution. Disabling caching prevents distributed execution for that target and its dependents.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/reference/nx-json.md#_snippet_12
+
+LANGUAGE: json
+CODE:
+```
+{
+  "targetDefaults": {
+    "test": {
+      "cache": true
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Configure Bitbucket Pipelines for Nx Affected Commands
+DESCRIPTION: This Bitbucket Pipelines configuration defines CI workflows for pull requests and the main branch. It uses Nx affected commands to build, test, lint, and run e2e-ci targets only for changed applications, leveraging Nx Cloud for distributed execution. It also includes `npm ci` for dependency installation and `nx format:check`.
+SOURCE: https://github.com/nrwl/nx/blob/master/docs/shared/monorepo-ci-bitbucket-pipelines.md#_snippet_0
+
+LANGUAGE: yaml
+CODE:
+```
+image: node:20
+
+clone:
+  depth: full
+
+pipelines:
+  pull-requests:
+    '**':
+      - step:
+          name: 'Build and test affected apps on Pull Requests'
+          script:
+            # This line enables distribution
+            # The "--stop-agents-after" is optional, but allows idle agents to shut down once the "e2e-ci" targets have been requested
+            - npx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e-ci"
+            - npm ci
+
+            - npx nx-cloud record -- nx format:check
+            - npx nx affected -t lint test build e2e-ci --base=origin/main
+
+  branches:
+    main:
+      - step:
+          name: "Build and test affected apps on 'main' branch changes"
+          script:
+            - export NX_BRANCH=$BITBUCKET_BRANCH
+            # This line enables distribution
+            # The "--stop-agents-after" is optional, but allows idle agents to shut down once the "e2e-ci" targets have been requested
+            # - npx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e-ci"
+            - npm ci
+
+            - npx nx-cloud record -- nx format:check
+            - npx nx affected -t lint test build e2e-ci --base=HEAD~1
+```
