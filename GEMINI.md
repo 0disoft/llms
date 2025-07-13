@@ -68,19 +68,6 @@
 
 ---
 
-## 구현해야 할 API 명세 (필요 없으면 생략 가능)
-
-* (이전 답변에서 정리된 내용을 포함하되, 각 엔드포인트별 응답 형식(성공/에러), 상태 코드, 요청/응답 예시를 포함하면 더욱 명확합니다.)
-* 엔드포인트 그룹: 인증 및 사용자 관리 (Auth & User Management)
-  * POST /api/auth/register: 회원 가입
-    * 요청: `application/json` `{ "email": "string", "password": "string", "username": "string" }`
-    * 응답 (성공 201): `{ "message": "User registered successfully", "userId": "uuid" }`
-    * 응답 (에러 400): `{ "error": "Invalid input", "details": { "email": "Invalid email format" } }`
-  * ... (나머지 API 엔드포인트도 이와 유사한 상세 형식으로 작성)
-* 에러 응답 표준: (모든 에러 응답은 일관된 JSON 형식으로 제공, 예: `{ "code": "ERROR_CODE", "message": "Error description", "details": {} }`)
-
----
-
 ## 코딩 규칙 및 스타일
 
 * 변수/함수명: 명확하고 의미를 쉽게 유추할 수 있는 이름을 사용합니다. (예: `getData` 대신 `fetchUserProfileData`)
