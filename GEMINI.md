@@ -36,7 +36,7 @@
 * 데이터베이스: [선택된 데이터베이스/BaaS]
   * ORM/데이터베이스 클라이언트: [선택된 ORM/클라이언트, 예: Prisma]
 * 배포 전략 및 플랫폼: [선택된 배포 플랫폼]
-  * CI/CD 파이프라인: (예: Vercel/Netlify 내장 CI/CD, GitHub Actions)
+  * CI/CD 파이프라인: (예: Vercel/Netlify 내장 CI/CD, GitHub Actions, Dagger)
 * 지역화 (l10n) 전략: [선택된 지역화 방식]
   * 관련 라이브러리/서비스: (예: react-i18next, next-i18n, Transifex)
 * API 클라이언트 (테스트 및 문서화): [선택된 API 클라이언트, 예: Bruno]
@@ -100,7 +100,7 @@ LLM의 학습 데이터 한계(Knowledge Cutoff)를 극복하고, 프로젝트�
 
 * 위치: LLM과 관련된 모든 문서는 `/.gemini/` 폴더 아래에 중앙화하여 관리합니다.
 
-### 1. 프레임워크 최신 정보 (`/.gemini/.changelogs/` 및 `/.gemini/.context7/`)
+### 프레임워크 최신 정보 (`/.gemini/.changelogs/` 및 `/.gemini/.context7/`)
 
 * 목적: LLM의 지식 격차를 해소하고, 최신 프레임워크 정보를 효과적으로 활용하기 위해 두 가지 유형의 문서를 관리합니다.
   * `/.gemini/.changelogs/`: 주요 프레임워크의 분기별(예: 25년 상반기, 하반기) 최신 업데이트 중, 반드시 알아야 할 핵심 변경 사항이나 주요 기능 추가 내용을 요약하여 저장합니다.
@@ -108,3 +108,14 @@ LLM의 학습 데이터 한계(Knowledge Cutoff)를 극복하고, 프로젝트�
 * LLM 활용 가이드:
   * 프레임워크의 최신 버전과 관련된 작업을 수행할 때는 먼저 `/.gemini/.changelogs/` 폴더를 확인하여 중요한 변경 사항(breaking changes 등)을 코드에 반영하십시오.
   * 특정 기능의 기본적인 사용법이나 예제가 필요할 때는 `/.gemini/.context7/` 폴더의 문서를 우선적으로 참조하여 빠르게 정보를 얻고, 더 상세한 내용이 필요할 경우에 `Context7` MCP를 활용하십시오.
+
+---
+
+## LLM과의 협업
+
+* LLM이 문제 해결을 완료하고 사용자로부터 긍정적인 응답을 받으면, `.gemini/.commitmsg.txt` 파일에 Gitmoji 형식의 영어 커밋 메시지를 작성합니다.
+* LLM이 작업을 완료하고 사용자로부터 긍정적인 응답을 받으면, `.gemini/tasks/` 폴더에 상세 작업 기록을 Markdown 파일로 작성합니다. 폴더명과 파일명은 영어로 작성해야 합니다. 상세 형식은 `.gemini/tasks/task_record_example.md` 파일을 참조하십시오.
+* LLM의 일반적인 답변은 한국어로 합니다.
+* 코드 주석은 한국어로 작성합니다.
+* 오류 로그는 한국어로 작성합니다.
+* 홈페이지에 표시되는 메시지는 페이지의 기본 언어 설정 및 다국어 지원 여부에 따라 적절한 언어(예: 영어 또는 한국어)로 작성합니다.
