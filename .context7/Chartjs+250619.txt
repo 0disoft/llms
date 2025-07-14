@@ -1,0 +1,1369 @@
+TITLE: Integrate Chart.js using Script Tag
+DESCRIPTION: Demonstrates how to include Chart.js directly in an HTML page using a script tag and initialize a chart instance.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/getting-started/integration.md#_snippet_0
+
+LANGUAGE: html
+CODE:
+```
+<script src="path/to/chartjs/dist/chart.umd.min.js"></script>
+<script>
+    const myChart = new Chart(ctx, {...});
+</script>
+```
+
+----------------------------------------
+
+TITLE: Registering Chart.js Components for Tree-Shaking
+DESCRIPTION: When using Chart.js 3 as an npm module, specific components like controllers, elements, and scales must be explicitly imported and registered to leverage tree-shaking benefits. This example demonstrates the process of importing and registering essential components for a line chart, followed by the instantiation of a new Chart object with basic configuration.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/migration/v3-migration.md#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+import { Chart, LineController, LineElement, PointElement, LinearScale, Title } from "chart.js";
+
+Chart.register(LineController, LineElement, PointElement, LinearScale, Title);
+
+const chart = new Chart(ctx, {
+    type: 'line',
+    // data: ...
+    options: {
+        plugins: {
+            title: {
+                display: true,
+                text: 'Chart Title'
+            }
+        },
+        scales: {
+            x: {
+                type: 'linear'
+            },
+            y: {
+                type: 'linear'
+            }
+        }
+    }
+});
+```
+
+----------------------------------------
+
+TITLE: Create Basic Chart.js Bar Chart in HTML
+DESCRIPTION: Demonstrates creating a simple bar chart using Chart.js. Includes the necessary HTML canvas element, CDN script inclusion, and JavaScript configuration to render the chart on a webpage.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/getting-started/index.md#_snippet_0
+
+LANGUAGE: html
+CODE:
+```
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('myChart');
+
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+      datasets: [{
+        label: '# of Votes',
+        data: [12, 19, 3, 5, 2, 3],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
+```
+
+----------------------------------------
+
+TITLE: Chart.js Vertical Bar Chart with Dynamic Data Actions
+DESCRIPTION: This JavaScript code defines a complete Chart.js vertical bar chart. It includes the initial data setup, chart configuration options (responsive, legend, title), and an array of actions that allow users to dynamically randomize data, add/remove datasets, and add/remove data points from the chart. This demonstrates interactive chart management.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/samples/bar/vertical.md#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+// <block:actions:2>
+const actions = [
+  {
+    name: 'Randomize',
+    handler(chart) {
+      chart.data.datasets.forEach(dataset => {
+        dataset.data = Utils.numbers({count: chart.data.labels.length, min: -100, max: 100});
+      });
+      chart.update();
+    }
+  },
+  {
+    name: 'Add Dataset',
+    handler(chart) {
+      const data = chart.data;
+      const dsColor = Utils.namedColor(chart.data.datasets.length);
+      const newDataset = {
+        label: 'Dataset ' + (data.datasets.length + 1),
+        backgroundColor: Utils.transparentize(dsColor, 0.5),
+        borderColor: dsColor,
+        borderWidth: 1,
+        data: Utils.numbers({count: data.labels.length, min: -100, max: 100}),
+      };
+      chart.data.datasets.push(newDataset);
+      chart.update();
+    }
+  },
+  {
+    name: 'Add Data',
+    handler(chart) {
+      const data = chart.data;
+      if (data.datasets.length > 0) {
+        data.labels = Utils.months({count: data.labels.length + 1});
+
+        for (let index = 0; index < data.datasets.length; ++index) {
+          data.datasets[index].data.push(Utils.rand(-100, 100));
+        }
+
+        chart.update();
+      }
+    }
+  },
+  {
+    name: 'Remove Dataset',
+    handler(chart) {
+      chart.data.datasets.pop();
+      chart.update();
+    }
+  },
+  {
+    name: 'Remove Data',
+    handler(chart) {
+      chart.data.labels.splice(-1, 1); // remove the label first
+
+      chart.data.datasets.forEach(dataset => {
+        dataset.data.pop();
+      });
+
+      chart.update();
+    }
+  }
+];
+// </block:actions>
+
+// <block:setup:1>
+const DATA_COUNT = 7;
+const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
+
+const labels = Utils.months({count: 7});
+const data = {
+  labels: labels,
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: Utils.numbers(NUMBER_CFG),
+      borderColor: Utils.CHART_COLORS.red,
+      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
+    },
+    {
+      label: 'Dataset 2',
+      data: Utils.numbers(NUMBER_CFG),
+      borderColor: Utils.CHART_COLORS.blue,
+      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),
+    }
+  ]
+};
+// </block:setup>
+
+// <block:config:0>
+const config = {
+  type: 'bar',
+  data: data,
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Bar Chart'
+      }
+    }
+  },
+};
+// </block:config>
+
+module.exports = {
+  actions: actions,
+  config: config,
+};
+```
+
+----------------------------------------
+
+TITLE: Create and Manipulate Chart.js Line Chart with Actions
+DESCRIPTION: This JavaScript code demonstrates how to set up a Chart.js line chart, including data initialization, configuration options, and interactive actions. It provides functions to randomize data, add/remove datasets, and add/remove data points dynamically, showcasing common chart manipulation techniques.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/samples/line/line.md#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+// <block:actions:2>
+const actions = [
+  {
+    name: 'Randomize',
+    handler(chart) {
+      chart.data.datasets.forEach(dataset => {
+        dataset.data = Utils.numbers({count: chart.data.labels.length, min: -100, max: 100});
+      });
+      chart.update();
+    }
+  },
+  {
+    name: 'Add Dataset',
+    handler(chart) {
+      const data = chart.data;
+      const dsColor = Utils.namedColor(chart.data.datasets.length);
+      const newDataset = {
+        label: 'Dataset ' + (data.datasets.length + 1),
+        backgroundColor: Utils.transparentize(dsColor, 0.5),
+        borderColor: dsColor,
+        data: Utils.numbers({count: data.labels.length, min: -100, max: 100}),
+      };
+      chart.data.datasets.push(newDataset);
+      chart.update();
+    }
+  },
+  {
+    name: 'Add Data',
+    handler(chart) {
+      const data = chart.data;
+      if (data.datasets.length > 0) {
+        data.labels = Utils.months({count: data.labels.length + 1});
+
+        for (let index = 0; index < data.datasets.length; ++index) {
+          data.datasets[index].data.push(Utils.rand(-100, 100));
+        }
+
+        chart.update();
+      }
+    }
+  },
+  {
+    name: 'Remove Dataset',
+    handler(chart) {
+      chart.data.datasets.pop();
+      chart.update();
+    }
+  },
+  {
+    name: 'Remove Data',
+    handler(chart) {
+      chart.data.labels.splice(-1, 1); // remove the label first
+
+      chart.data.datasets.forEach(dataset => {
+        dataset.data.pop();
+      });
+
+      chart.update();
+    }
+  }
+];
+// </block:actions>
+
+// <block:setup:1>
+const DATA_COUNT = 7;
+const NUMBER_CFG = {count: DATA_COUNT, min: -100, max: 100};
+
+const labels = Utils.months({count: 7});
+const data = {
+  labels: labels,
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: Utils.numbers(NUMBER_CFG),
+      borderColor: Utils.CHART_COLORS.red,
+      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.red, 0.5),
+    },
+    {
+      label: 'Dataset 2',
+      data: Utils.numbers(NUMBER_CFG),
+      borderColor: Utils.CHART_COLORS.blue,
+      backgroundColor: Utils.transparentize(Utils.CHART_COLORS.blue, 0.5),
+    }
+  ]
+};
+// </block:setup>
+
+// <block:config:0>
+const config = {
+  type: 'line',
+  data: data,
+  options: {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top',
+      },
+      title: {
+        display: true,
+        text: 'Chart.js Line Chart'
+      }
+    }
+  },
+};
+// </block:config>
+
+module.exports = {
+  actions: actions,
+  config: config,
+};
+```
+
+----------------------------------------
+
+TITLE: Install Chart.js using npm
+DESCRIPTION: This command installs the Chart.js library using npm, the Node.js package manager. It's the recommended way to include Chart.js in a modern JavaScript project, allowing for easy dependency management and integration into build workflows.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/getting-started/installation.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+npm install chart.js
+```
+
+----------------------------------------
+
+TITLE: Define Chart.js Configuration Object Structure
+DESCRIPTION: Illustrates the basic structure of a Chart.js configuration object, including `type`, `data`, `options`, and `plugins` properties. The `type` property determines the chart's main type, which can be overridden by individual datasets for mixed charts.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/configuration/index.md#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+const config = {
+  type: 'line',
+  data: {},
+  options: {},
+  plugins: []
+}
+```
+
+----------------------------------------
+
+TITLE: Create and Render a Basic Bar Chart in Chart.js
+DESCRIPTION: This JavaScript snippet demonstrates how to initialize a Chart.js bar chart. It imports the `Chart` class, defines sample data, and instantiates a new chart by targeting a canvas element and providing chart type, labels, and dataset values. The `chart.js/auto` import simplifies component loading but prevents tree-shaking.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/getting-started/usage.md#_snippet_2
+
+LANGUAGE: javascript
+CODE:
+```
+import Chart from 'chart.js/auto'
+
+(async function() {
+  const data = [
+    { year: 2010, count: 10 },
+    { year: 2011, count: 20 },
+    { year: 2012, count: 15 },
+    { year: 2013, count: 25 },
+    { year: 2014, count: 22 },
+    { year: 2015, count: 30 },
+    { year: 2016, count: 28 },
+  ];
+
+  new Chart(
+    document.getElementById('acquisitions'),
+    {
+      type: 'bar',
+      data: {
+        labels: data.map(row => row.year),
+        datasets: [
+          {
+            label: 'Acquisitions by year',
+            data: data.map(row => row.count)
+          }
+        ]
+      }
+    }
+  );
+})();
+```
+
+----------------------------------------
+
+TITLE: Chart.js Tooltip Callback Functions Reference
+DESCRIPTION: Comprehensive reference for tooltip callback functions available under `options.plugins.tooltip.callbacks` and `data.datasets[].tooltip.callbacks`. These functions allow customization of tooltip text and appearance. `this` context within callbacks is the tooltip object. Returning `undefined` uses default behavior, while an empty string removes the element. Some callbacks can be overridden per dataset.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/configuration/tooltip.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+Tooltip Callbacks:
+  Namespace: options.plugins.tooltip.callbacks
+  Namespace: data.datasets[].tooltip.callbacks (for dataset overrides)
+
+  Callbacks:
+    beforeTitle(items: TooltipItem[]): string | string[] | undefined
+      Description: Returns text to render before the title.
+    title(items: TooltipItem[]): string | string[] | undefined
+      Description: Returns text to render as the title of the tooltip.
+    afterTitle(items: TooltipItem[]): string | string[] | undefined
+      Description: Returns text to render after the title.
+    beforeBody(items: TooltipItem[]): string | string[] | undefined
+      Description: Returns text to render before the body section.
+    beforeLabel(item: TooltipItem): string | string[] | undefined (Dataset override: Yes)
+      Description: Returns text to render before an individual label. Called for each item.
+    label(item: TooltipItem): string | string[] | undefined (Dataset override: Yes)
+      Description: Returns text to render for an individual item in the tooltip.
+    labelColor(item: TooltipItem): object | undefined (Dataset override: Yes)
+      Description: Returns the colors to render for the tooltip item.
+    labelTextColor(item: TooltipItem): Color | undefined (Dataset override: Yes)
+      Description: Returns the colors for the text of the label for the tooltip item.
+    labelPointStyle(item: TooltipItem): object | undefined (Dataset override: Yes)
+      Description: Returns the point style to use instead of color boxes if usePointStyle is true (object with values `pointStyle` and `rotation`). Default implementation uses the point style from the dataset points.
+    afterLabel(item: TooltipItem): string | string[] | undefined (Dataset override: Yes)
+      Description: Returns text to render after an individual label.
+    afterBody(items: TooltipItem[]): string | string[] | undefined
+      Description: Returns text to render after the body section.
+    beforeFooter(items: TooltipItem[]): string | string[] | undefined
+      Description: Returns text to render before the footer section.
+    footer(items: TooltipItem[]): string | string[] | undefined
+      Description: Returns text to render as the footer of the tooltip.
+    afterFooter(items: TooltipItem[]): string | string[] | undefined
+      Description: Text to render after the footer section.
+```
+
+----------------------------------------
+
+TITLE: Chart.js Legend Configuration Options
+DESCRIPTION: Defines the global and instance-specific configuration options for the chart legend in Chart.js. These options control visibility, position, alignment, size, and interactive callbacks for the legend.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/configuration/legend.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Namespace: options.plugins.legend
+Global options: Chart.defaults.plugins.legend
+Overrides for doughnut, pie, polar area charts: Chart.overrides[type].plugins.legend
+
+Properties:
+  display: boolean = true
+    Description: Is the legend shown?
+  position: string = 'top'
+    Description: Position of the legend. Options: 'top', 'left', 'bottom', 'right', 'chartArea'.
+  align: string = 'center'
+    Description: Alignment of the legend. Options: 'start', 'center', 'end'.
+  maxHeight: number
+    Description: Maximum height of the legend, in pixels.
+  maxWidth: number
+    Description: Maximum width of the legend, in pixels.
+  fullSize: boolean = true
+    Description: Marks that this box should take the full width/height of the canvas (moving other boxes). This is unlikely to need to be changed in day-to-day use.
+  onClick: function
+    Description: A callback that is called when a click event is registered on a label item. Arguments: [event, legendItem, legend].
+  onHover: function
+    Description: A callback that is called when a 'mousemove' event is registered on top of a label item. Arguments: [event, legendItem, legend].
+  onLeave: function
+    Description: A callback that is called when a 'mousemove' event is registered outside of a previously hovered label item. Arguments: [event, legendItem, legend].
+  reverse: boolean = false
+    Description: Legend will show datasets in reverse order.
+  labels: object
+    Description: See the Legend Label Configuration section.
+  rtl: boolean
+    Description: true for rendering the legends from right to left.
+  textDirection: string = canvas' default
+    Description: This will force the text direction 'rtl' or 'ltr' on the canvas for rendering the legend, regardless of the css specified on the canvas.
+  title: object
+    Description: See the Legend Title Configuration section.
+```
+
+----------------------------------------
+
+TITLE: Include Chart.js Library via CDN in HTML
+DESCRIPTION: Shows how to include the Chart.js library in an HTML page using a Content Delivery Network (CDN). This makes the Chart.js API available for use in subsequent scripts on the page.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/getting-started/index.md#_snippet_2
+
+LANGUAGE: html
+CODE:
+```
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+```
+
+----------------------------------------
+
+TITLE: Chart.js Dataset Data as Array of Objects
+DESCRIPTION: Illustrates defining dataset data as an array of objects, where each object specifies `x` and `y` coordinates. This format supports various data types for `x` including numbers, date strings, and category strings. It is also the internal format for parsed data, and parsing can be disabled.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/general/data-structures.md#_snippet_2
+
+LANGUAGE: javascript
+CODE:
+```
+const cfg = {
+  type: 'line',
+  data: {
+    datasets: [{
+      data: [{x: 10, y: 20}, {x: 15, y: null}, {x: 20, y: 10}]
+    }]
+  }
+}
+```
+
+LANGUAGE: javascript
+CODE:
+```
+const cfg = {
+  type: 'line',
+  data: {
+    datasets: [{
+      data: [{x: '2016-12-25', y: 20}, {x: '2016-12-26', y: 10}]
+    }]
+  }
+}
+```
+
+LANGUAGE: javascript
+CODE:
+```
+const cfg = {
+  type: 'bar',
+  data: {
+    datasets: [{
+      data: [{x: 'Sales', y: 20}, {x: 'Revenue', y: 10}]
+    }]
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Chart.js Configuration Options for Responsiveness
+DESCRIPTION: Details the configuration options available in Chart.js to enable and control chart responsiveness, including aspect ratio maintenance, resize callbacks, and resize delay.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/configuration/responsive.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Namespace: options
+
+responsive: boolean (Default: true)
+  Description: Resizes the chart canvas when its container does.
+
+maintainAspectRatio: boolean (Default: true)
+  Description: Maintain the original canvas aspect ratio (width / height) when resizing.
+
+aspectRatio: number (Default: 1 or 2)
+  Description: Canvas aspect ratio (i.e. width / height, a value of 1 representing a square canvas). Ignored if height is explicitly defined. Default varies by chart type (Radial charts: 1, others: 2).
+
+onResize: function (Default: null)
+  Description: Called when a resize occurs. Arguments: chart instance, new size.
+
+resizeDelay: number (Default: 0)
+  Description: Delay the resize update by the given amount of milliseconds. Debounces the update of elements.
+```
+
+----------------------------------------
+
+TITLE: Chart.js Tooltip Configuration Options Reference
+DESCRIPTION: Detailed reference for all configurable properties within the `options.plugins.tooltip` namespace in Chart.js. This includes settings for enabling/disabling tooltips, external callbacks, interaction modes, styling (colors, fonts, padding, borders), and display of color boxes. Note that `titleFont`, `bodyFont`, and `footerFont` options require a function returning a font object for overrides.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/configuration/tooltip.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Namespace: options.plugins.tooltip
+Global options: Chart.defaults.plugins.tooltip
+
+Properties:
+  enabled: boolean (Default: true) - Are on-canvas tooltips enabled?
+  external: function (Default: null) - See external tooltip section.
+  mode: string (Default: interaction.mode) - Sets which elements appear in the tooltip.
+  intersect: boolean (Default: interaction.intersect) - If true, the tooltip mode applies only when the mouse position intersects with an element. If false, the mode will be applied at all times.
+  position: string (Default: 'average') - The mode for positioning the tooltip.
+  callbacks: object - See the callbacks section.
+  itemSort: function - Sort tooltip items.
+  filter: function - Filter tooltip items.
+  backgroundColor: Color (Default: 'rgba(0, 0, 0, 0.8)') - Background color of the tooltip.
+  titleColor: Color (Default: '#fff') - Color of title text.
+  titleFont: Font (Default: {weight: 'bold'}) - See Fonts.
+  titleAlign: string (Default: 'left') - Horizontal alignment of the title text lines.
+  titleSpacing: number (Default: 2) - Spacing to add to top and bottom of each title line.
+  titleMarginBottom: number (Default: 6) - Margin to add on bottom of title section.
+  bodyColor: Color (Default: '#fff') - Color of body text.
+  bodyFont: Font (Default: {}) - See Fonts.
+  bodyAlign: string (Default: 'left') - Horizontal alignment of the body text lines.
+  bodySpacing: number (Default: 2) - Spacing to add to top and bottom of each tooltip item.
+  footerColor: Color (Default: '#fff') - Color of footer text.
+  footerFont: Font (Default: {weight: 'bold'}) - See Fonts.
+  footerAlign: string (Default: 'left') - Horizontal alignment of the footer text lines.
+  footerSpacing: number (Default: 2) - Spacing to add to top and bottom of each footer line.
+  footerMarginTop: number (Default: 6) - Margin to add before drawing the footer.
+  padding: Padding (Default: 6) - Padding inside the tooltip.
+  caretPadding: number (Default: 2) - Extra distance to move the end of the tooltip arrow away from the tooltip point.
+  caretSize: number (Default: 5) - Size, in px, of the tooltip arrow.
+  cornerRadius: number|object (Default: 6) - Radius of tooltip corner curves.
+  multiKeyBackground: Color (Default: '#fff') - Color to draw behind the colored boxes when multiple items are in the tooltip.
+  displayColors: boolean (Default: true) - If true, color boxes are shown in the tooltip.
+  boxWidth: number (Default: bodyFont.size) - Width of the color box if displayColors is true.
+  boxHeight: number (Default: bodyFont.size) - Height of the color box if displayColors is true.
+  boxPadding: number (Default: 1) - Padding between the color box and the text.
+  usePointStyle: boolean (Default: false) - Use the corresponding point style (from dataset options) instead of color boxes, ex: star, triangle etc. (size is based on the minimum value between boxWidth and boxHeight).
+  borderColor: Color (Default: 'rgba(0, 0, 0, 0)') - Color of the border.
+  borderWidth: number (Default: 0) - Size of the border.
+  rtl: boolean - true for rendering the tooltip from right to left.
+  textDirection: string (Default: canvas' default) - This will force the text direction 'rtl' or 'ltr' on the canvas for rendering the tooltips, regardless of the css specified on the canvas
+  xAlign: string (Default: undefined) - Position of the tooltip caret in the X direction.
+  yAlign: string (Default: undefined) - Position of the tooltip caret in the Y direction.
+```
+
+----------------------------------------
+
+TITLE: Chart.js Option Resolution Hierarchy
+DESCRIPTION: Describes the order in which Chart.js resolves options at different levels (chart, dataset, element, scale, plugin), from most specific to most general. This hierarchy determines which option value takes precedence when multiple sources define the same option.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/general/options.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Option Resolution Hierarchy:
+  Chart level options:
+    - options
+    - overrides[`config.type`]
+    - defaults
+  Dataset level options:
+    (dataset.type defaults to config.type, if not specified)
+    - dataset
+    - options.datasets[`dataset.type`]
+    - options
+    - overrides[`config.type`].datasets[`dataset.type`]
+    - defaults.datasets[`dataset.type`]
+    - defaults
+  Dataset animation options:
+    - dataset.animation
+    - options.datasets[`dataset.type`].animation
+    - options.animation
+    - overrides[`config.type`].datasets[`dataset.type`].animation
+    - defaults.datasets[`dataset.type`].animation
+    - defaults.animation
+  Dataset element level options:
+    (Each scope looks up `elementType` prefix first, then without the prefix. E.g., `radius` for `point` element is looked up using `pointRadius` and if that does not hit, then `radius`.)
+    - dataset
+    - options.datasets[`dataset.type`]
+    - options.datasets[`dataset.type`].elements[`elementType`]
+    - options.elements[`elementType`]
+    - options
+    - overrides[`config.type`].datasets[`dataset.type`]
+    - overrides[`config.type`].datasets[`dataset.type`].elements[`elementType`]
+    - defaults.datasets[`dataset.type`]
+    - defaults.datasets[`dataset.type`].elements[`elementType`]
+    - defaults.elements[`elementType`]
+    - defaults
+  Scale options:
+    - options.scales
+    - overrides[`config.type`].scales
+    - defaults.scales
+    - defaults.scale
+  Plugin options:
+    (A plugin can provide `additionalOptionScopes` array of paths to additionally look for its options in. For root scope, use empty string: `''`. Most core plugins also take options from root scope.)
+    - options.plugins[`plugin.id`]
+    - (options.[`...plugin.additionalOptionScopes`])
+    - overrides[`config.type`].plugins[`plugin.id`]
+    - defaults.plugins[`plugin.id`]
+    - (defaults.[`...plugin.additionalOptionScopes`])
+```
+
+----------------------------------------
+
+TITLE: Quick Start Integration with Bundlers (Webpack, Rollup)
+DESCRIPTION: Shows a quick way to import Chart.js in bundler environments by importing the 'auto' package, which includes all features without explicit registration.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/getting-started/integration.md#_snippet_1
+
+LANGUAGE: javascript
+CODE:
+```
+import Chart from 'chart.js/auto';
+```
+
+----------------------------------------
+
+TITLE: Define Basic HTML Structure for Chart.js Canvas
+DESCRIPTION: This HTML file provides the minimal markup required for a Chart.js application, featuring a `canvas` tag with a unique ID (`acquisitions`) where the chart will be rendered. The `div` container controls the chart's responsive width, and a module script (`acquisitions.js`) is linked to handle chart initialization.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/getting-started/usage.md#_snippet_1
+
+LANGUAGE: html
+CODE:
+```
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Chart.js example</title>
+  </head>
+  <body>
+    <!-- <div style="width: 500px;"><canvas id="dimensions"></canvas></div><br/> -->
+    <div style="width: 800px;"><canvas id="acquisitions"></canvas></div>
+
+    <!-- <script type="module" src="dimensions.js"></script> -->
+    <script type="module" src="acquisitions.js"></script>
+  </body>
+</html>
+```
+
+----------------------------------------
+
+TITLE: Configure Chart.js for Custom HTML Tooltips
+DESCRIPTION: This JavaScript code snippet demonstrates how to configure a Chart.js instance to use an external HTML tooltip. It disables the default on-canvas tooltip and provides a function to the `external` option. This function is responsible for creating, updating, positioning, and styling a custom HTML `div` element to serve as the tooltip, dynamically populating it with data from the chart's tooltip model.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/configuration/tooltip.md#_snippet_11
+
+LANGUAGE: javascript
+CODE:
+```
+const myPieChart = new Chart(ctx, {
+    type: 'pie',
+    data: data,
+    options: {
+        plugins: {
+            tooltip: {
+                // Disable the on-canvas tooltip
+                enabled: false,
+
+                external: function(context) {
+                    // Tooltip Element
+                    let tooltipEl = document.getElementById('chartjs-tooltip');
+
+                    // Create element on first render
+                    if (!tooltipEl) {
+                        tooltipEl = document.createElement('div');
+                        tooltipEl.id = 'chartjs-tooltip';
+                        tooltipEl.innerHTML = '<table></table>';
+                        document.body.appendChild(tooltipEl);
+                    }
+
+                    // Hide if no tooltip
+                    const tooltipModel = context.tooltip;
+                    if (tooltipModel.opacity === 0) {
+                        tooltipEl.style.opacity = 0;
+                        return;
+                    }
+
+                    // Set caret Position
+                    tooltipEl.classList.remove('above', 'below', 'no-transform');
+                    if (tooltipModel.yAlign) {
+                        tooltipEl.classList.add(tooltipModel.yAlign);
+                    } else {
+                        tooltipEl.classList.add('no-transform');
+                    }
+
+                    function getBody(bodyItem) {
+                        return bodyItem.lines;
+                    }
+
+                    // Set Text
+                    if (tooltipModel.body) {
+                        const titleLines = tooltipModel.title || [];
+                        const bodyLines = tooltipModel.body.map(getBody);
+
+                        let innerHtml = '<thead>';
+
+                        titleLines.forEach(function(title) {
+                            innerHtml += '<tr><th>' + title + '</th></tr>';
+                        });
+                        innerHtml += '</thead><tbody>';
+
+                        bodyLines.forEach(function(body, i) {
+                            const colors = tooltipModel.labelColors[i];
+                            let style = 'background:' + colors.backgroundColor;
+                            style += '; border-color:' + colors.borderColor;
+                            style += '; border-width: 2px';
+                            const span = '<span style="' + style + '">' + body + '</span>';
+                            innerHtml += '<tr><td>' + span + '</td></tr>';
+                        });
+                        innerHtml += '</tbody>';
+
+                        let tableRoot = tooltipEl.querySelector('table');
+                        tableRoot.innerHTML = innerHtml;
+                    }
+
+                    const position = context.chart.canvas.getBoundingClientRect();
+                    const bodyFont = Chart.helpers.toFont(tooltipModel.options.bodyFont);
+
+                    // Display, position, and set styles for font
+                    tooltipEl.style.opacity = 1;
+                    tooltipEl.style.position = 'absolute';
+                    tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+                    tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+                    tooltipEl.style.font = bodyFont.string;
+                    tooltipEl.style.padding = tooltipModel.padding + 'px ' + tooltipModel.padding + 'px';
+                    tooltipEl.style.pointerEvents = 'none';
+                }
+            }
+        }
+    }
+});
+```
+
+----------------------------------------
+
+TITLE: Integrate Cube.js Data into Chart.js Application
+DESCRIPTION: This snippet demonstrates how to import the `getAquisitionsByYear` function from the `api.js` file and use it to asynchronously fetch real-world data. The fetched data then replaces a hardcoded `data` variable, enabling the Chart.js application to display dynamic information.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/getting-started/usage.md#_snippet_5
+
+LANGUAGE: javascript
+CODE:
+```
+import { getAquisitionsByYear } from './api'
+
+// ...
+
+const data = await getAquisitionsByYear();
+```
+
+----------------------------------------
+
+TITLE: Embed Chart.js Canvas and Script in HTML
+DESCRIPTION: This HTML snippet sets up a canvas element for Chart.js to render a chart and includes a module script to load the chart's JavaScript logic. It defines a fixed width for the chart container.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/getting-started/usage.md#_snippet_6
+
+LANGUAGE: html
+CODE:
+```
+<div style="width: 500px;"><canvas id="dimensions"></canvas></div><br/>
+
+<script type="module" src="dimensions.js"></script>
+```
+
+----------------------------------------
+
+TITLE: HTML Canvas with Fallback Content
+DESCRIPTION: Shows how to provide a text alternative for a canvas element using fallback content placed within the opening and closing canvas tags, which is rendered if the browser doesn't support canvas or for screen readers.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/general/accessibility.md#_snippet_1
+
+LANGUAGE: html
+CODE:
+```
+<canvas id="okCanvas2" width="400" height="100">
+    <p>Hello Fallback World</p>
+</canvas>
+```
+
+----------------------------------------
+
+TITLE: Create Chart.js Instance
+DESCRIPTION: An example demonstrating how to create a new Chart.js instance using a canvas context and configuration object.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/developers/api.md#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+const myLineChart = new Chart(ctx, config);
+```
+
+----------------------------------------
+
+TITLE: Add or Remove Data in Chart.js
+DESCRIPTION: This snippet provides JavaScript functions to dynamically add new data points and labels to a Chart.js chart or remove existing ones. It iterates through all datasets to ensure consistency and then calls chart.update() to reflect changes.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/developers/updates.md#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+function addData(chart, label, newData) {
+    chart.data.labels.push(label);
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.push(newData);
+    });
+    chart.update();
+}
+
+function removeData(chart) {
+    chart.data.labels.pop();
+    chart.data.datasets.forEach((dataset) => {
+        dataset.data.pop();
+    });
+    chart.update();
+}
+```
+
+----------------------------------------
+
+TITLE: Configuring Plugin Options in Chart.js
+DESCRIPTION: Explains how plugin-specific options are nested under `options.plugins` using the plugin's unique ID, demonstrating how different plugins can have their own configurations.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/developers/plugins.md#_snippet_3
+
+LANGUAGE: javascript
+CODE:
+```
+const chart = new Chart(ctx, {
+    options: {
+        foo: { ... },           // chart 'foo' option
+        plugins: {
+            p1: {
+                foo: { ... },   // p1 plugin 'foo' option
+                bar: { ... }
+            },
+            p2: {
+                foo: { ... },   // p2 plugin 'foo' option
+                bla: { ... }
+            }
+        }
+    }
+});
+```
+
+----------------------------------------
+
+TITLE: Configure Chart.js Dataset Parsing with JavaScript
+DESCRIPTION: This JavaScript example demonstrates how to configure data parsing for Chart.js datasets when the raw data is an array of objects. It uses the 'parsing' option with 'yAxisKey' to specify which property of the data objects should be used for the Y-axis value, allowing multiple datasets to share the same data source but visualize different metrics.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/general/data-structures.md#_snippet_6
+
+LANGUAGE: javascript
+CODE:
+```
+const data = [{x: 'Jan', net: 100, cogs: 50, gm: 50}, {x: 'Feb', net: 120, cogs: 55, gm: 75}];
+const cfg = {
+  type: 'bar',
+  data: {
+    labels: ['Jan', 'Feb'],
+    datasets: [{
+      label: 'Net sales',
+      data: data,
+      parsing: {
+        yAxisKey: 'net'
+      }
+    }, {
+      label: 'Cost of goods sold',
+      data: data,
+      parsing: {
+        yAxisKey: 'cogs'
+      }
+    }, {
+      label: 'Gross margin',
+      data: data,
+      parsing: {
+        yAxisKey: 'gm'
+      }
+    }]
+  }
+};
+```
+
+----------------------------------------
+
+TITLE: Chart.js Scale API Changes
+DESCRIPTION: Details changes to the Scale API, including the replacement of getLabelForIndex with getLabelForValue and the updated getPixelForValue signature, which now requires only one parameter (milliseconds for TimeScale).
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/migration/v3-migration.md#_snippet_21
+
+LANGUAGE: APIDOC
+CODE:
+```
+Scale.getLabelForIndex was replaced by scale.getLabelForValue
+Scale.getPixelForValue now only requires one parameter. For the TimeScale that parameter must be millis since the epoch. As a performance optimization, it may take an optional second parameter, giving the index of the data point.
+```
+
+----------------------------------------
+
+TITLE: Chart.js Scale Configuration Migration (v2 to v3)
+DESCRIPTION: This snippet illustrates the significant changes in scale configuration from Chart.js v2 to v3. In v2, scales were defined within `xAxes` and `yAxes` arrays, while v3 introduces individual scales keyed by their IDs, simplifying the structure and updating tick property handling.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/migration/v3-migration.md#_snippet_3
+
+LANGUAGE: javascript
+CODE:
+```
+options: {
+  scales: {
+    xAxes: [{
+      id: 'x',
+      type: 'time',
+      display: true,
+      title: {
+        display: true,
+        text: 'Date'
+      },
+      ticks: {
+        major: {
+          enabled: true
+        },
+        font: function(context) {
+          if (context.tick && context.tick.major) {
+            return {
+              weight: 'bold',
+              color: '#FF0000'
+            };
+          }
+        }
+      }
+    }],
+    yAxes: [{
+      id: 'y',
+      display: true,
+      title: {
+        display: true,
+        text: 'value'
+      }
+    }]
+  }
+}
+```
+
+LANGUAGE: javascript
+CODE:
+```
+options: {
+  scales: {
+    x: {
+      type: 'time',
+      display: true,
+      title: {
+        display: true,
+        text: 'Date'
+      },
+      ticks: {
+        major: {
+          enabled: true
+        },
+        color: (context) => context.tick && context.tick.major && '#FF0000',
+        font: function(context) {
+          if (context.tick && context.tick.major) {
+            return {
+              weight: 'bold'
+            };
+          }
+        }
+      }
+    },
+    y: {
+      display: true,
+      title: {
+        display: true,
+        text: 'value'
+      }
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Create Basic Chart.js Bubble Chart with API Data
+DESCRIPTION: This JavaScript code initializes a Chart.js bubble chart. It asynchronously fetches dimension data from an API, then maps it to the chart's dataset, using `width`, `height`, and `count` for the `x`, `y`, and `r` (radius) properties respectively.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/getting-started/usage.md#_snippet_7
+
+LANGUAGE: jsx
+CODE:
+```
+import Chart from 'chart.js/auto'
+import { getDimensions } from './api'
+
+(async function() {
+  const data = await getDimensions();
+
+  new Chart(
+    document.getElementById('dimensions'),
+    {
+      type: 'bubble',
+      data: {
+        labels: data.map(x => x.year),
+        datasets: [
+          {
+            label: 'Dimensions',
+            data: data.map(row => ({
+              x: row.width,
+              y: row.height,
+              r: row.count
+            }))
+          }
+        ]
+      }
+    }
+  );
+})();
+```
+
+----------------------------------------
+
+TITLE: Chart.js Event Configuration Options (options.events, onHover, onClick)
+DESCRIPTION: Describes the core event configuration options within the `options` namespace. These properties define which browser events the chart should listen to and provide callback functions for hover and click interactions over the chart area.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/configuration/interactions.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+Namespace: options
+Properties:
+  events: string[] (Default: ['mousemove', 'mouseout', 'click', 'touchstart', 'touchmove']) - The 'events' option defines the browser events that the chart should listen to for. Each of these events trigger hover and are passed to plugins.
+  onHover: function (Default: null) - Called when any of the events fire over chartArea. Passed the event, an array of active elements (bars, points, etc), and the chart.
+  onClick: function (Default: null) - Called if the event is of type 'mouseup', 'click' or 'contextmenu' over chartArea. Passed the event, an array of active elements, and the chart.
+```
+
+----------------------------------------
+
+TITLE: Initialize Chart.js in Web Worker from Main Thread (JavaScript)
+DESCRIPTION: This snippet demonstrates how to transfer control of an HTML canvas to an OffscreenCanvas and then post it to a web worker. This allows Chart.js rendering to occur on a separate thread, freeing up the main thread for other tasks. The OffscreenCanvas and chart configuration are sent to the worker.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/general/performance.md#_snippet_2
+
+LANGUAGE: javascript
+CODE:
+```
+const config = {};
+const canvas = new HTMLCanvasElement();
+const offscreenCanvas = canvas.transferControlToOffscreen();
+
+const worker = new Worker('worker.js');
+worker.postMessage({canvas: offscreenCanvas, config}, [offscreenCanvas]);
+```
+
+----------------------------------------
+
+TITLE: Chart.js Bar Chart with Dynamic Color
+DESCRIPTION: This JavaScript code demonstrates how to create a Chart.js bar chart where the background and border colors of each bar are dynamically determined by its Y-axis value. It includes functions for generating random data, defining chart actions (like randomizing data), and configuring the chart options with a custom `colorize` function. The `colorize` function applies different colors based on value ranges (e.g., red for < -50, orange for < 0, blue for < 50, green for >= 50) and adjusts transparency.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/samples/scriptable/bar.md#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+// <block:setup:2>
+const DATA_COUNT = 16;
+Utils.srand(110);
+
+const actions = [
+  {
+    name: 'Randomize',
+    handler(chart) {
+      chart.data.datasets.forEach(dataset => {
+        dataset.data = generateData();
+      });
+      chart.update();
+    }
+  },
+];
+// </block:setup>
+
+// <block:data:1>
+function generateData() {
+  return Utils.numbers({
+    count: DATA_COUNT,
+    min: -100,
+    max: 100
+  });
+}
+
+const data = {
+  labels: Utils.months({count: DATA_COUNT}),
+  datasets: [{
+    data: generateData(),
+  }]
+};
+// </block:data>
+
+// <block:options:0>
+function colorize(opaque) {
+  return (ctx) => {
+    const v = ctx.parsed.y;
+    const c = v < -50 ? '#D60000'
+      : v < 0 ? '#F46300'
+      : v < 50 ? '#0358B6'
+      : '#44DE28';
+
+    return opaque ? c : Utils.transparentize(c, 1 - Math.abs(v / 150));
+  };
+}
+
+const config = {
+  type: 'bar',
+  data: data,
+  options: {
+    plugins: {
+      legend: false,
+    },
+    elements: {
+      bar: {
+        backgroundColor: colorize(false),
+        borderColor: colorize(true),
+        borderWidth: 2
+      }
+    }
+  }
+};
+// </block:options>
+
+module.exports = {
+  actions,
+  config,
+};
+```
+
+----------------------------------------
+
+TITLE: Chart.js Scriptable Option Example
+DESCRIPTION: Demonstrates how to use a function for Chart.js options, allowing dynamic value assignment based on data context. The function receives a `context` object with contextual information and a `resolver` to access other options. It's crucial to validate the `context` argument within the scriptable function.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/general/options.md#_snippet_1
+
+LANGUAGE: javascript
+CODE:
+```
+color: function(context) {
+    const index = context.dataIndex;
+    const value = context.dataset.data[index];
+    return value < 0 ? 'red' :  // draw negative values in red
+        index % 2 ? 'blue' :    // else, alternate values in blue and green
+        'green';
+},
+borderColor: function(context, options) {
+    const color = options.color; // resolve the value of another scriptable option: 'red', 'blue' or 'green'
+    return Chart.helpers.color(color).lighten(0.2);
+}
+```
+
+----------------------------------------
+
+TITLE: Chart.js Specific Configuration Changes and Renames
+DESCRIPTION: This section outlines specific breaking changes to Chart.js configuration options, including property renames, relocations, and changes in how values are interpreted (e.g., units, types). It covers elements, animation, scales, and plugin options.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/migration/v3-migration.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+elements.rectangle is now elements.bar
+hover.animationDuration is now configured in animation.active.duration
+responsiveAnimationDuration is now configured in animation.resize.duration
+Polar area elements.arc.angle is now configured in degrees instead of radians.
+Polar area startAngle option is now consistent with Radar, 0 is at top and value is in degrees. Default is changed from -½π to 0.
+Doughnut rotation option is now in degrees and 0 is at top. Default is changed from -½π to 0.
+Doughnut circumference option is now in degrees. Default is changed from 2π to 360.
+Doughnut cutoutPercentage was renamed to cutout and accepts pixels as number and percent as string ending with %.
+scale option was removed in favor of options.scales.r (or any other scale id, with axis: 'r')
+scales.[x/y]Axes arrays were removed. Scales are now configured directly to options.scales object with the object key being the scale Id.
+scales.[x/y]Axes.barPercentage was moved to dataset option barPercentage
+scales.[x/y]Axes.barThickness was moved to dataset option barThickness
+scales.[x/y]Axes.categoryPercentage was moved to dataset option categoryPercentage
+scales.[x/y]Axes.maxBarThickness was moved to dataset option maxBarThickness
+scales.[x/y]Axes.minBarLength was moved to dataset option minBarLength
+scales.[x/y]Axes.scaleLabel was renamed to scales[id].title
+scales.[x/y]Axes.scaleLabel.labelString was renamed to scales[id].title.text
+scales.[x/y]Axes.ticks.beginAtZero was renamed to scales[id].beginAtZero
+scales.[x/y]Axes.ticks.max was renamed to scales[id].max
+scales.[x/y]Axes.ticks.min was renamed to scales[id].min
+scales.[x/y]Axes.ticks.reverse was renamed to scales[id].reverse
+scales.[x/y]Axes.ticks.suggestedMax was renamed to scales[id].suggestedMax
+scales.[x/y]Axes.ticks.suggestedMin was renamed to scales[id].suggestedMin
+scales.[x/y]Axes.ticks.unitStepSize was removed. Use scales[id].ticks.stepSize
+scales.[x/y]Axes.ticks.userCallback was renamed to scales[id].ticks.callback
+scales.[x/y]Axes.time.format was renamed to scales[id].time.parser
+scales.[x/y]Axes.time.max was renamed to scales[id].max
+scales.[x/y]Axes.time.min was renamed to scales[id].min
+scales.[x/y]Axes.zeroLine* options of axes were removed. Use scriptable scale options instead.
+The dataset option steppedLine was removed. Use stepped
+The chart option showLines was renamed to showLine to match the dataset option.
+The chart option startAngle was moved to radial scale options.
+To override the platform class used in a chart instance, pass platform: PlatformClass in the config object. Note that the class should be passed, not an instance of the class.
+aspectRatio defaults to 1 for doughnut, pie, polarArea, and radar charts
+TimeScale does not read t from object data by default anymore. The default property is x or y, depending on the orientation. See [data structures](../general/data-structures.md) for details on how to change the default.
+tooltips namespace was renamed to tooltip to match the plugin name
+legend, title and tooltip namespaces were moved from options to options.plugins.
+tooltips.custom was renamed to plugins.tooltip.external
+```
+
+----------------------------------------
+
+TITLE: Define HTML Canvas for Chart.js Rendering
+DESCRIPTION: Provides the HTML canvas element necessary for Chart.js to render a chart. Wrapping the canvas in a container is recommended for better responsiveness and layout control.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/getting-started/index.md#_snippet_1
+
+LANGUAGE: html
+CODE:
+```
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+```
+
+----------------------------------------
+
+TITLE: Implement Doughnut Chart Empty State Plugin in Chart.js
+DESCRIPTION: This JavaScript snippet provides a complete example for creating a custom plugin in Chart.js that renders an empty state for a Doughnut chart. When the chart's datasets are empty, the plugin draws a customizable circle. The code includes the initial data setup, the plugin logic, and the chart configuration to integrate the plugin.
+SOURCE: https://github.com/chartjs/chart.js/blob/master/docs/samples/plugins/doughnut-empty-state.md#_snippet_0
+
+LANGUAGE: js
+CODE:
+```
+// <block:data:2>
+const data = {
+  labels: [],
+  datasets: [
+    {
+      label: 'Dataset 1',
+      data: []
+    }
+  ]
+};
+// </block:data>
+
+// <block:plugin:1>
+const plugin = {
+  id: 'emptyDoughnut',
+  afterDraw(chart, args, options) {
+    const {datasets} = chart.data;
+    const {color, width, radiusDecrease} = options;
+    let hasData = false;
+
+    for (let i = 0; i < datasets.length; i += 1) {
+      const dataset = datasets[i];
+      hasData |= dataset.data.length > 0;
+    }
+
+    if (!hasData) {
+      const {chartArea: {left, top, right, bottom}, ctx} = chart;
+      const centerX = (left + right) / 2;
+      const centerY = (top + bottom) / 2;
+      const r = Math.min(right - left, bottom - top) / 2;
+
+      ctx.beginPath();
+      ctx.lineWidth = width || 2;
+      ctx.strokeStyle = color || 'rgba(255, 128, 0, 0.5)';
+      ctx.arc(centerX, centerY, (r - radiusDecrease || 0), 0, 2 * Math.PI);
+      ctx.stroke();
+    }
+  }
+};
+// </block:plugin>
+
+// <block:config:0>
+const config = {
+  type: 'doughnut',
+  data: data,
+  options: {
+    plugins: {
+      emptyDoughnut: {
+        color: 'rgba(255, 128, 0, 0.5)',
+        width: 2,
+        radiusDecrease: 20
+      }
+    }
+  },
+  plugins: [plugin]
+};
+// </block:config>
+
+const actions = [
+  {
+    name: 'Randomize',
+    handler(chart) {
+      chart.data.datasets.forEach(dataset => {
+        dataset.data = Utils.points(NUMBER_CFG);
+      });
+      chart.update();
+    }
+  }
+];
+
+module.exports = {
+  actions,
+  config
+};
+```

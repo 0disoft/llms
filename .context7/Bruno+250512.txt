@@ -1,0 +1,1679 @@
+TITLE: Sending a Simple GET Request - Bru Format
+DESCRIPTION: Demonstrates the minimal structure of a Bru file for making a basic GET request to a specified URL. It requires Bruno to execute.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/samples.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+get {
+  url: https://api.github.com/users/usebruno
+}
+```
+
+----------------------------------------
+
+TITLE: Installing Bruno CLI using npm (bash)
+DESCRIPTION: This command installs the Bruno Command Line Interface globally using the npm package manager. Ensure Node.js (recommended LTS version 18 or higher) is installed beforehand.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-cli/installation.mdx#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+npm install -g @usebruno/cli
+```
+
+----------------------------------------
+
+TITLE: Accessing Response Properties in Javascript
+DESCRIPTION: This snippet demonstrates how to access the `body`, `headers`, and `status` properties of a sample `res` object in a Javascript context. It shows retrieving the response body string, a specific header value using bracket notation, and the HTTP status code.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/response/response-object.mdx#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+// Example response object
+const res = {
+  body: '{"message": "Hello, world!"}',
+  headers: {
+    'Content-Type': 'application/json',
+    'Cache-Control': 'no-cache'
+  },
+  status: 200,
+};
+
+// Accessing response properties
+console.log(res.body); // Output: '{"message": "Hello, world!"}'
+console.log(res.headers['Content-Type']); // Output: 'application/json'
+console.log(res.status); // Output: 200
+```
+
+----------------------------------------
+
+TITLE: Example Request Object Structure and Property Access (JavaScript)
+DESCRIPTION: Provides a comprehensive example showing the structure of a sample `req` object and demonstrating how to access various nested properties including the method, URL, headers, and authentication details.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/request/request-object.mdx#_snippet_3
+
+LANGUAGE: javascript
+CODE:
+```
+// Example request object
+const req = {
+  assertions: [],
+  auth: { username: 'myUsername', password: 'mySuperPassword' },
+  headers: {
+    authorization: 'Bearer <token>',
+    'content-type': 'application/json',
+    accept: 'application/json',
+    // Add more headers as needed...
+  },
+  method: 'GET',
+  mode: 'none',
+  responseType: 'arraybuffer',
+  script: {
+    req: "// Create an array of objects\nconst data = [\n  { i…q);\nconst myVariable = bru.getEnvVar('password');"
+  },
+  signal: {},
+  url: '{{base.url}}/users/2?queryTest=queryResult',
+  vars: {}
+};
+
+
+// Accessing request properties
+console.log(req.method); // Output: "GET"
+console.log(req.url); // Output: "{{base.url}}/users/2?queryTest=queryResult"
+console.log(req.headers.authorization); // Output: "Bearer <token>"
+console.log(req.auth.username); // Output: "myUsername"
+```
+
+----------------------------------------
+
+TITLE: Pull Changes from Remote Repository (Bash)
+DESCRIPTION: Fetches changes from a specified remote repository and branch and merges them into the current local branch. This command is used to synchronize your local repository with updates from collaborators or another source.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/git-integration/using-cli.mdx#_snippet_5
+
+LANGUAGE: bash
+CODE:
+```
+git pull origin main
+```
+
+----------------------------------------
+
+TITLE: Run All Requests Bruno CLI Bash
+DESCRIPTION: Navigate to your API collection directory and execute this command to run all requests within the collection.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-cli/commandOptions.mdx#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+bru run
+```
+
+----------------------------------------
+
+TITLE: Stage All Changes in Directory (Bash)
+DESCRIPTION: Stages all changes in the current directory and its subdirectories. This command prepares newly created, modified, or deleted files (like `.bru` files) to be included in the next commit.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/git-integration/using-cli.mdx#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+git add .
+```
+
+----------------------------------------
+
+TITLE: Asserting API Response Status and Body in Bruno (JavaScript)
+DESCRIPTION: This snippet demonstrates how to write basic test assertions in Bruno using JavaScript and the Chai library. It shows two test cases: one verifying the HTTP status code of the response (`res.getStatus()`) and another verifying the JSON body content (`res.getBody()`). The `expect` syntax from Chai is used for making assertions.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/tests/introduction.mdx#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+test("should be able to login", function () {
+  expect(res.getStatus()).to.equal(200);
+});
+
+test("should return json", function () {
+  expect(res.getBody()).to.eql({
+    hello: "Bruno",
+  });
+});
+```
+
+----------------------------------------
+
+TITLE: Writing API Tests with JavaScript in Bruno
+DESCRIPTION: This JavaScript code snippet demonstrates how to write automated API tests within Bruno's scripting environment. It uses the `test` function to define individual test cases and the `expect` function (powered by the integrated Chai library) to assert conditions on the API response object (`res`), verifying the HTTP status code and the content/structure of the response body.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/get-started/bruno-basics/create-a-test.mdx#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+test("should be able to login", function () {
+  const data = res.getBody();
+  expect(res.getStatus()).to.equal(200);
+});
+
+test("should return json", function () {
+  const data = res.getBody();
+  expect(res.getBody()).to.eql({
+    hello: "Bruno",
+  });
+});
+```
+
+----------------------------------------
+
+TITLE: Sending POST with JSON Body and Headers - Bru Format
+DESCRIPTION: Shows how to construct a POST request with a JSON payload and custom headers in a Bru file. It specifies the URL in the `post` block, the JSON body in a `body` block, and headers in a `headers` block. Requires Bruno.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/samples.mdx#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+post {
+  url: https://api.textlocal.in/send
+}
+
+body {
+  {
+    "apiKey": "secret",
+    "numbers": "9988776655",
+    "message": "Woof! lets play with some apis"
+  }
+}
+
+headers {
+  content-type: application/json
+  Authorization: Bearer topsecret
+}
+```
+
+----------------------------------------
+
+TITLE: Storing OAuth2 Access Token - Request Post-Response Script - JavaScript
+DESCRIPTION: This script is added to the post-response tab of a specific request. It extracts the 'access_token' from the response body of that request and saves it to a runtime variable named 'access_token_set_by_request_script'. This token can then be accessed by other requests within the collection.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/auth/oauth2/password-credentials.mdx#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+bru.setVar('access_token_set_by_request_script', res.body.access_token);
+```
+
+----------------------------------------
+
+TITLE: Extracting OAuth2 Access Token - Collection Post-Response Script - JavaScript
+DESCRIPTION: This script is configured in the collection's post-response tab. It checks if the request's authentication mode is OAuth2 and if the response body contains an 'access_token'. If both conditions are met, it stores the access token value in a collection-level runtime variable named 'access_token_set_by_collection_script'.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/auth/oauth2/password-credentials.mdx#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+if(req.getAuthMode() == 'oauth2' && res.body.access_token) {
+    bru.setVar('access_token_set_by_collection_script', res.body.access_token);
+}
+```
+
+----------------------------------------
+
+TITLE: Installing Project Dependencies - JavaScript (npm)
+DESCRIPTION: This command uses npm (Node Package Manager) to install all necessary project dependencies listed in the `package.json` file. This is required before running the development server or building the project.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/readme.md#_snippet_1
+
+LANGUAGE: javascript
+CODE:
+```
+npm install
+```
+
+----------------------------------------
+
+TITLE: Storing OAuth2 Access Token Bruno Request JavaScript
+DESCRIPTION: This JavaScript snippet, intended for Bruno's post-response script section at the request level, assigns the `access_token` value from the response body to a request-level runtime variable named `access_token_set_by_request_script` using the `bru.setVar` function. This makes the token available for use in subsequent requests or within the same request's configuration. It requires access to the `res` and `bru` objects provided by the Bruno runtime.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/auth/oauth2/client-credentials.mdx#_snippet_1
+
+LANGUAGE: javascript
+CODE:
+```
+bru.setVar('access_token_set_by_request_script', res.body.access_token);
+```
+
+----------------------------------------
+
+TITLE: Setting Runtime Variable from Response Body in Javascript
+DESCRIPTION: Shows how to capture a value, like an authentication token from a response body, and store it as a runtime variable using the `bru.setVar` function within a Bruno post-response script.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/runtime-variables.mdx#_snippet_0
+
+LANGUAGE: Javascript
+CODE:
+```
+bru.setVar("token", res.body.token);
+```
+
+----------------------------------------
+
+TITLE: Getting and Using Runtime Variable in Pre-request Script in Javascript
+DESCRIPTION: Illustrates how to retrieve the value of a runtime variable using `bru.getVar` within a Bruno pre-request script and then programmatically use that value, for example, to set a request header.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/runtime-variables.mdx#_snippet_2
+
+LANGUAGE: Javascript
+CODE:
+```
+const token = bru.getVar("token");
+req.setHeader("Authorization", `Bearer ${token}`);
+```
+
+----------------------------------------
+
+TITLE: Defining Variables and Secrets in Bruno Environment
+DESCRIPTION: This snippet shows the structure of a Bruno environment file (`.bru`). It defines regular variables (like `url`) within the `vars` block and lists variables marked as `secret` within the `vars:secret` block. Variables listed under `vars:secret` will not have their values stored in this file.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/secrets-management/secret-variables.mdx#_snippet_0
+
+LANGUAGE: bru
+CODE:
+```
+vars {
+  url: https://echo.usebruno.com
+}
+vars:secret [
+  jwt-token
+]
+```
+
+----------------------------------------
+
+TITLE: Defining Request Details (Dictionary) - Bru/Bash
+DESCRIPTION: This snippet demonstrates a dictionary block in a Bru file, defining request details like the URL for a GET request and various headers. It shows how key-value pairs are structured and how the `~` prefix disables the `transaction-id` header.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/language.mdx#_snippet_0
+
+LANGUAGE: Bash
+CODE:
+```
+get {
+  url: https://api.textlocal.in/send
+}
+
+headers {
+  content-type: application/json
+  Authorization: Bearer 123
+  ~transaction-id: {{transactionId}}
+}
+```
+
+----------------------------------------
+
+TITLE: Adding Tests to API Request - Bru Format
+DESCRIPTION: Illustrates how to include automated tests within a Bru file to validate the API response. Tests are defined in a `tests` block using functions like `test` and assertion libraries like `expect`. Requires Bruno to run the tests.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/samples.mdx#_snippet_4
+
+LANGUAGE: bash
+CODE:
+```
+post {
+  url: https://api.textlocal.in/login
+}
+
+body {
+  {
+    "username": "johnnash",
+    "password": "governingdynamics"
+  }
+}
+
+tests {
+  test("should be able to login", function() {
+    expect(res.status).to.equal(201);
+  });
+
+  test("should receive the token", function() {
+    expect(res.body.token).to.be.a('string');
+  });
+}
+```
+
+----------------------------------------
+
+TITLE: Starting Local Development Server - JavaScript (npm)
+DESCRIPTION: This command executes the 'dev' script defined in the project's `package.json` file, typically starting a local development server. It allows viewing the documentation site locally for development and testing purposes.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/readme.md#_snippet_2
+
+LANGUAGE: javascript
+CODE:
+```
+npm run dev
+```
+
+----------------------------------------
+
+TITLE: Making Synchronous GET Request with Axios in Bruno Script
+DESCRIPTION: This JavaScript snippet demonstrates how to use the axios library (available in Bruno scripts) to make a synchronous GET request to an external API. It fetches user data from the GitHub API, waits for the response using `await`, and then extracts the `avatar_url` from the response data to set a Bruno variable named `avatarUrl` using `bru.setVar`. Requires the axios library to be available in the Bruno scripting environment.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/request/sync-requests.mdx#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+const axios = require("axios");
+
+const response = await axios.get("https://api.github.com/users/usebruno");
+
+bru.setVar("avatarUrl", response.data.avatar_url);
+```
+
+----------------------------------------
+
+TITLE: Defining Environment Variables in Bruno (.bru)
+DESCRIPTION: This snippet shows the structure of an environment file in Bruno's custom `.bru` format. It defines environment-specific variables within a 'vars' block using a key-value syntax. This file stores configuration like host URLs that vary per environment.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/environment-variables.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+vars {
+  host: http://localhost:8787
+}
+```
+
+----------------------------------------
+
+TITLE: Storing OAuth2 Access Token Bruno Collection JavaScript
+DESCRIPTION: This JavaScript snippet, intended for Bruno's post-response script section at the collection level, checks if the current request used OAuth2 authentication and if an access token is present in the response body. If both conditions are met, it assigns the access token value to a collection-level runtime variable named `access_token_set_by_collection_script` using the `bru.setVar` function, making it available for subsequent requests within the collection. It requires access to the `req`, `res`, and `bru` objects provided by the Bruno runtime.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/auth/oauth2/client-credentials.mdx#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+if(req.getAuthMode() == 'oauth2' && res.body.access_token) {
+    bru.setVar('access_token_set_by_collection_script', res.body.access_token);
+}
+```
+
+----------------------------------------
+
+TITLE: Defining Request Headers Bruno Configuration Bash
+DESCRIPTION: Shows the syntax for defining custom headers for a request using the `headers` tag. Each key-value pair represents a header name and its corresponding value to be included in the request.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_11
+
+LANGUAGE: bash
+CODE:
+```
+headers {
+  content-type: application/json
+  Authorization: Bearer topsecret
+}
+```
+
+----------------------------------------
+
+TITLE: Using Runtime Variable in Request Header using {{}} Syntax in Plaintext
+DESCRIPTION: Demonstrates how to reference a previously set runtime variable, such as a token, directly within a request header, query parameter, body, or URL using the `{{variableName}}` syntax.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/runtime-variables.mdx#_snippet_1
+
+LANGUAGE: Plaintext
+CODE:
+```
+Authorization: Bearer {{token}}
+```
+
+----------------------------------------
+
+TITLE: Example Referencing Specific Bruno Secret Key (Syntax)
+DESCRIPTION: Illustrates an example of referencing a specific key (`username`) within a named secret (`dbCredentials`). This follows the `$secrets.<name>.<key-name>` pattern.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/secrets-management/secret-managers/aws-secrets-manager/using-secrets.mdx#_snippet_1
+
+LANGUAGE: Bruno Syntax
+CODE:
+```
+$secrets.dbCredentials.username
+```
+
+----------------------------------------
+
+TITLE: Example Path Parameter URL - Bash
+DESCRIPTION: This code snippet provides an example URL demonstrating the use of a path parameter. It shows how a dynamic value placeholder (preceded by a colon) is embedded directly within the URL path to identify a specific resource.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/send-requests/REST/parameters.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+https://api.example.com/users/:id
+```
+
+----------------------------------------
+
+TITLE: File Conversion OpenAPI YAML to Bruno JavaScript
+DESCRIPTION: Provides a complete Node.js script for converting an OpenAPI YAML file to a Bruno collection JSON file. It uses `fs/promises` to read files, `js-yaml` to parse the YAML content, and `@usebruno/converters` for the conversion logic. The script takes input and output file paths and handles basic error logging.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/converters/openapi-to-bruno.mdx#_snippet_3
+
+LANGUAGE: javascript
+CODE:
+```
+const { openApiToBruno } = require('@usebruno/converters');
+const { readFile, writeFile } = require('fs/promises');
+const yaml = require('js-yaml');
+
+async function convertOpenApiToBruno(inputFile, outputFile) {
+  try {
+    const yamlContent = await readFile(inputFile, 'utf8');
+    const openApiSpec = yaml.load(yamlContent);
+    const brunoCollection = openApiToBruno(openApiSpec);
+    await writeFile(outputFile, JSON.stringify(brunoCollection, null, 2));
+    console.log('OpenAPI YAML conversion successful!');
+  } catch (error) {
+    console.error('Error during OpenAPI YAML conversion:', error);
+  }
+}
+
+
+convertOpenApiToBruno('path/to/openapi-spec.yaml', 'path/to/bruno-collection.json');
+```
+
+----------------------------------------
+
+TITLE: Defining Request Tests Bruno Configuration Bash
+DESCRIPTION: Explains how to define tests for the request response using the `body:test` tag. Test assertions, often using Chai/Mocha syntax (like `expect`), are placed within this block.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_21
+
+LANGUAGE: bash
+CODE:
+```
+body:test {
+  expect(res.status).to.equal(200);
+}
+```
+
+----------------------------------------
+
+TITLE: Using Chai for Assertions in Bruno Pre-request Script
+DESCRIPTION: This JavaScript snippet demonstrates how to import and use the `chai` assertion library within a Bruno pre-request script. It imports `chai` using `require`, extracts the `expect` function, defines a simple addition function, and asserts the function's return value against an expected result.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/inbuilt-libraries.mdx#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+const chai = require('chai');
+
+const { expect } = chai;
+
+function add(a, b) {
+  return a + b;
+}
+
+const result = add(2, 3);
+
+expect(result).to.equal(5);
+
+console.log('Test passed!');
+```
+
+----------------------------------------
+
+TITLE: Referencing .env Secrets in Bruno Environment
+DESCRIPTION: Example showing how to reference secrets defined in the .env file within a Bruno environment file (.bru) using the {{process.env.<secret-name>}} syntax.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/secrets-management/dotenv-file.mdx#_snippet_1
+
+LANGUAGE: bru
+CODE:
+```
+vars {
+  baseURL: https://echo.usebruno.com
+  JWT_TOKEN: {{process.env.JWT_TOKEN}}
+  API_KEY: {{process.env.API_KEY}}
+}
+```
+
+----------------------------------------
+
+TITLE: Performing GET Request Bruno Configuration Bash
+DESCRIPTION: Illustrates how to define a standard HTTP GET request using the `get` tag. The snippet includes the `url` parameter to specify the target endpoint for the request.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+get {
+  url: https://api.github.com/users/usebruno
+}
+```
+
+----------------------------------------
+
+TITLE: Basic Data Access and Usage in Request Body Script (JavaScript)
+DESCRIPTION: This JavaScript snippet combines accessing variables from the current iteration's data (`get()`) and using them to dynamically set the request body using `bru.request.setBody()`. Useful in pre-request scripts.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/automate-test/data-driven-testing.mdx#_snippet_15
+
+LANGUAGE: javascript
+CODE:
+```
+// Get values from current iteration
+const username = bru.runner.iterationData.get("username");
+const password = bru.runner.iterationData.get("password");
+
+// Use in request
+bru.request.setBody({
+    username: username,
+    password: password
+});
+```
+
+----------------------------------------
+
+TITLE: Running Bruno Collection via CLI (Bash)
+DESCRIPTION: This Bash command shows one way to run a Bruno collection from the command line using a CSV data file. It generates an HTML report and specifies the path to the data file.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/automate-test/data-driven-testing.mdx#_snippet_6
+
+LANGUAGE: bash
+CODE:
+```
+bru run --reporter-html results.html --csv-file-path /path/to/csv/file.csv
+```
+
+----------------------------------------
+
+TITLE: Performing PUT Request Bruno Configuration Bash
+DESCRIPTION: Shows the syntax for defining an HTTP PUT request using the `put` tag. The necessary `url` parameter is included to specify the resource endpoint for the PUT operation.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+put {
+  url: https://api.github.com/users/usebruno
+}
+```
+
+----------------------------------------
+
+TITLE: Run Tests and Generate HTML Report (Shell)
+DESCRIPTION: This command executes all tests within a Bruno collection from the command line. The `--reporter-html` flag specifies that an HTML report should be generated and saved to the file name provided (`results.html` in this example). The command must be run from the root directory of the Bruno collection.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/automate-test/automate-test.mdx#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+bru run --reporter-html results.html
+```
+
+----------------------------------------
+
+TITLE: Converting Postman Collection File to Bruno File - Node.js
+DESCRIPTION: Provides a complete Node.js asynchronous function to read a Postman collection JSON file, convert its content to the Bruno format using `@usebruno/converters`, and write the resulting Bruno collection to a new JSON file.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/converters/postman-to-bruno.mdx#_snippet_1
+
+LANGUAGE: javascript
+CODE:
+```
+const { postmanToBruno } = require('@usebruno/converters');
+const { readFile, writeFile } = require('fs/promises');
+
+async function convertPostmanToBruno(inputFile, outputFile) {
+  try {
+    const inputData = await readFile(inputFile, 'utf8');
+    const brunoCollection = postmanToBruno(JSON.parse(inputData));
+    await writeFile(outputFile, JSON.stringify(brunoCollection, null, 2));
+    console.log('Conversion successful!');
+  } catch (error) {
+    console.error('Error during conversion:', error);
+  }
+}
+
+// Usage example
+convertPostmanToBruno('path/to/postman-collection.json', 'path/to/bruno-collection.json');
+```
+
+----------------------------------------
+
+TITLE: Pattern for Referencing Bruno Secrets (Syntax)
+DESCRIPTION: Provides the general syntax pattern required to reference secret values within Bruno requests. Secrets must be prefixed with `$secrets`, followed by the secret's name and the specific key name, separated by periods.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/secrets-management/secret-managers/aws-secrets-manager/using-secrets.mdx#_snippet_0
+
+LANGUAGE: Bruno Syntax
+CODE:
+```
+$secrets.<name>.<key-name>
+```
+
+----------------------------------------
+
+TITLE: Storing OAuth2 Access Token in Bruno Request Script (Javascript)
+DESCRIPTION: This Javascript snippet is designed for a specific request's post-response script in Bruno. It extracts the 'access_token' from the response body and stores it in a request-scoped runtime variable named 'access_token_set_by_post_response_script'. This makes the token available for use in subsequent requests within the same collection.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/auth/oauth2/authorization-code.mdx#_snippet_1
+
+LANGUAGE: Javascript
+CODE:
+```
+bru.setVar('access_token_set_by_post_response_script', res.body.access_token);
+```
+
+----------------------------------------
+
+TITLE: Setting String Variable in Bruno (JavaScript)
+DESCRIPTION: Sets a string variable named "greeting" with the value "Hello World" using Bruno's `bru.setVar()` function. This variable can then be interpolated into request URLs, headers, or bodies using `{{greeting}}`, resulting in the string value being inserted.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/interpolation.mdx#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+// Setting a string variable
+bru.setVar("greeting", "Hello World");
+```
+
+----------------------------------------
+
+TITLE: Querying Response Data using Basic Dot Notation in Javascript
+DESCRIPTION: Shows a basic example of using the `res` object with simple dot notation to access a nested property 'total' within 'order'. This demonstrates the fundamental querying mechanism.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/response/response-query.mdx#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+res('order.total')
+```
+
+----------------------------------------
+
+TITLE: Sample Data File Content (CSV)
+DESCRIPTION: This snippet provides a simple example of the content expected in a CSV data file for the Bruno runner, showing headers and two rows of data.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/automate-test/data-driven-testing.mdx#_snippet_17
+
+LANGUAGE: csv
+CODE:
+```
+username,password
+user1,pass123
+user2,pass456
+```
+
+----------------------------------------
+
+TITLE: Accessing OAuth2 Token in Script - JavaScript
+DESCRIPTION: This snippet demonstrates how to retrieve an OAuth2 token's access token value within a Bruno script. It uses the `bru.getOauth2CredentialVar` function, passing the specific variable key formatted as `$oauth2.<Token ID>.access_token` to access the stored token data for a given OAuth2 configuration identified by `<Token ID>`. Replace `<Token ID>` with the actual ID assigned to your OAuth2 configuration.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/auth/oauth2-2.0/overview.mdx#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+bru.getOauth2CredentialVar('$oauth2.<Token ID>.access_token')
+```
+
+----------------------------------------
+
+TITLE: Defining JSON Request Body Bruno Configuration Bash
+DESCRIPTION: Demonstrates defining the request body in JSON format using the `body` tag. This is the default body type if no specific type (like `body:text`) is provided.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_12
+
+LANGUAGE: bash
+CODE:
+```
+body {
+  {
+    username: 'john',
+    password: 'governingdynamics'
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Getting Response Status JavaScript
+DESCRIPTION: Retrieves the HTTP status code of the response (`res`). Useful for checking the success or failure of the request.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_15
+
+LANGUAGE: javascript
+CODE:
+```
+let status = res.getStatus();
+```
+
+----------------------------------------
+
+TITLE: Storing OAuth2 Access Token in Bruno Collection Script (Javascript)
+DESCRIPTION: This Javascript snippet is intended for a Bruno collection's post-response script. It checks if the request utilized OAuth2 authentication and if the response body contains an 'access_token'. If true, it stores the token's value in a collection-scoped runtime variable named 'access_token_set_by_collection_script' for use across requests in the collection.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/auth/oauth2/authorization-code.mdx#_snippet_0
+
+LANGUAGE: Javascript
+CODE:
+```
+if(req.getAuthMode() == 'oauth2' && res.body.access_token) {
+    bru.setVar('access_token_set_by_collection_script', res.body.access_token);
+}
+```
+
+----------------------------------------
+
+TITLE: Sending GET with Headers - Bru Format
+DESCRIPTION: Illustrates how to include custom headers in a GET request within a Bru file. It defines the target URL in the `get` block and headers in a separate `headers` block. Requires Bruno.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/samples.mdx#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+get {
+  url: https://api.textlocal.in/send?apiKey=secret&numbers=9988776655&message=hello
+}
+
+headers {
+  content-type: application/json
+  Authorization: Bearer topsecret
+}
+```
+
+----------------------------------------
+
+TITLE: Setting Request URL JavaScript
+DESCRIPTION: Sets or updates the URL of the request object (`req`). This allows dynamic modification of the request endpoint based on script logic.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_1
+
+LANGUAGE: javascript
+CODE:
+```
+req.setUrl("https://api.github.com/search/repositories?q=vue");
+```
+
+----------------------------------------
+
+TITLE: Setting Runtime Variable with Bru JavaScript
+DESCRIPTION: Sets a runtime variable with a key-value pair using the `bru` object. Runtime variables are temporary and useful for passing data between scripts within a single run.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_30
+
+LANGUAGE: javascript
+CODE:
+```
+let data = res.getBody();
+bru.setVar("petId", data.id);
+```
+
+----------------------------------------
+
+TITLE: Defining Query Parameters Bruno Configuration Bash
+DESCRIPTION: This snippet demonstrates defining query parameters for a request using the `params:query` tag. Each key-value pair within the block represents a query parameter that will be appended to the request URL.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_9
+
+LANGUAGE: bash
+CODE:
+```
+params:query {
+  apiKey: secret
+  numbers: 9988776655
+  message: hello
+}
+```
+
+----------------------------------------
+
+TITLE: Getting Environment Variable with Bru JavaScript
+DESCRIPTION: Retrieves the value of the currently active Bruno environment variable by its key using the `bru` object. This accesses variables specific to the selected environment.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_25
+
+LANGUAGE: javascript
+CODE:
+```
+let token = bru.getEnvVar("access_token");
+```
+
+----------------------------------------
+
+TITLE: Getting Response Body JavaScript
+DESCRIPTION: Retrieves the body or data returned in the response object (`res`). The format depends on the response's content type (e.g., JSON object, string).
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_18
+
+LANGUAGE: javascript
+CODE:
+```
+let data = res.getBody();
+```
+
+----------------------------------------
+
+TITLE: Getting Folder Variable with Bru JavaScript
+DESCRIPTION: Retrieves the value of a variable defined at the folder level by its key using the `bru` object. Folder variables are available to requests within that folder and its subfolders.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_28
+
+LANGUAGE: javascript
+CODE:
+```
+let company = bru.getFolderVar("company");
+```
+
+----------------------------------------
+
+TITLE: Getting Collection Variable with Bru JavaScript
+DESCRIPTION: Retrieves the value of a variable defined at the collection level by its key using the `bru` object. Collection variables are available across all requests in the collection.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_27
+
+LANGUAGE: javascript
+CODE:
+```
+let namespace = bru.getCollectionVar("namespace");
+```
+
+----------------------------------------
+
+TITLE: Defining Form-Urlencoded Request Body Bruno Configuration Bash
+DESCRIPTION: Shows the syntax for defining the request body using the `application/x-www-form-urlencoded` format with the `body:form-urlencoded` tag. Key-value pairs represent form fields.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_15
+
+LANGUAGE: bash
+CODE:
+```
+body:form-urlencoded {
+  apikey: secret
+  numbers: +91998877665
+  ~message: hello
+}
+```
+
+----------------------------------------
+
+TITLE: Defining Secret Variables (Array) - Bru/Bash
+DESCRIPTION: This snippet demonstrates an array block in a Bru file, specifically defining a list of variables marked as `secret`. It shows a simple list of strings enclosed in square brackets and how the `~` prefix can disable an item within the list.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/language.mdx#_snippet_2
+
+LANGUAGE: Bash
+CODE:
+```
+vars:secret [
+  access_key,
+  access_secret,
+  ~transactionId
+]
+```
+
+----------------------------------------
+
+TITLE: Run Requests with Environment Bruno CLI Bash
+DESCRIPTION: Specify a particular environment to use during the collection run using the --env option, followed by the environment name.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-cli/commandOptions.mdx#_snippet_4
+
+LANGUAGE: bash
+CODE:
+```
+bru run folder --env Local
+```
+
+----------------------------------------
+
+TITLE: Debugging Runtime Variable in Console (JavaScript)
+DESCRIPTION: Demonstrates how to access a runtime variable using the `bru.getVar()` method within the Bruno console for debugging purposes. The `bru` object provides access to Bruno's scripting API.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/overview.mdx#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+// Basic syntax: console.log(bru.get[Type]Var(key))
+console.log(bru.getVar('myVar'))           // Runtime variables
+```
+
+----------------------------------------
+
+TITLE: Setting Query Params Object in Bruno (JavaScript)
+DESCRIPTION: Defines a JavaScript object containing common query parameters (`limit`, `offset`, `filter`) and sets it as a Bruno variable named "searchParams". This object facilitates dynamic construction of request query strings using object property interpolation (e.g., `limit={{searchParams.limit}}`).
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/interpolation.mdx#_snippet_7
+
+LANGUAGE: JavaScript
+CODE:
+```
+bru.setVar("searchParams", {
+  limit: 10,
+  offset: 0,
+  filter: "active"
+});
+```
+
+----------------------------------------
+
+TITLE: Setting Environment Variable with Bru JavaScript
+DESCRIPTION: Sets the value of an environment variable in the currently active Bruno environment using the `bru` object. Useful for storing dynamic values like auth tokens.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_26
+
+LANGUAGE: javascript
+CODE:
+```
+function onResponse(res) {
+  let data = res.getBody();
+  let token = bru.setEnvVar("access_token", data.token);
+}
+```
+
+----------------------------------------
+
+TITLE: Generating User Test Data with Dynamic Variables (JSON)
+DESCRIPTION: This JSON snippet shows how to use dynamic variables like $randomUUID, $randomFullName, $randomEmail, $randomPhoneNumber, $randomStreetAddress, $randomCity, and $randomCountry to generate realistic test data for a user object within a Bruno request body or payload. It demonstrates structuring nested data with random values.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/dynamic-variables.mdx#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "user": {
+    "id": "{{$randomUUID}}",
+    "name": "{{$randomFullName}}",
+    "email": "{{$randomEmail}}",
+    "phone": "{{$randomPhoneNumber}}",
+    "address": {
+      "street": "{{$randomStreetAddress}}",
+      "city": "{{$randomCity}}",
+      "country": "{{$randomCountry}}"
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Getting Runtime Variable with Bru JavaScript
+DESCRIPTION: Retrieves the value of a runtime variable set dynamically during script execution using the `bru` object. Runtime variables persist only for the duration of the current run.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_29
+
+LANGUAGE: javascript
+CODE:
+```
+let petId = bru.getVar("petId");
+```
+
+----------------------------------------
+
+TITLE: Basic Runtime Variable Creation using bru.setVar in Javascript
+DESCRIPTION: Provides a simple example of using the `bru.setVar` function to create a basic runtime variable named 'hey' with the string value 'Bruno' in a Bruno script.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/runtime-variables.mdx#_snippet_3
+
+LANGUAGE: Javascript
+CODE:
+```
+bru.setVar("hey", "Bruno");
+```
+
+----------------------------------------
+
+TITLE: Accessing HTTP Method from Request Object (JavaScript)
+DESCRIPTION: Shows how to retrieve the HTTP method (e.g., 'GET', 'POST') used for the request by accessing the `method` property of the `req` object. The method indicates the action type.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/request/request-object.mdx#_snippet_1
+
+LANGUAGE: javascript
+CODE:
+```
+// Example usage
+console.log(req.method); // Output: "GET"
+```
+
+----------------------------------------
+
+TITLE: Setting Request Header JavaScript
+DESCRIPTION: Sets or updates a specific request header on the `req` object. If the header exists, its value is updated; otherwise, it is added.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_6
+
+LANGUAGE: javascript
+CODE:
+```
+req.setHeader("content-type", "application/json");
+```
+
+----------------------------------------
+
+TITLE: Accessing Collection Variable in Bruno Script - Javascript
+DESCRIPTION: This snippet shows how to retrieve the value of a collection variable named "namespace" within a Bruno pre-request or post-response script using the `bru.getCollectionVar()` function. The function takes the variable name as an argument and returns its current value.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/collection-variables.mdx#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+let namespace = bru.getCollectionVar("namespace");
+```
+
+----------------------------------------
+
+TITLE: Run Folder Requests Bruno CLI Bash
+DESCRIPTION: Execute all requests located within a specific folder in your collection by specifying the folder name with the run command.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-cli/commandOptions.mdx#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+bru run folder
+```
+
+----------------------------------------
+
+TITLE: Defining Initial Request Body in Bruno (JSON)
+DESCRIPTION: This JSON snippet shows the initial request body structure for a POST request. It defines the basic fields and values expected by the API endpoint.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/automate-test/data-driven-testing.mdx#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+    "name": "morpheus",
+    "job": "leader"
+}
+```
+
+----------------------------------------
+
+TITLE: Getting Global Environment Variable with Bru JavaScript
+DESCRIPTION: Retrieves the value of a global Bruno environment variable by its key using the `bru` object. Global variables are accessible across all collections and environments.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_24
+
+LANGUAGE: js
+CODE:
+```
+bru.getGlobalEnvVar(key);
+```
+
+LANGUAGE: javascript
+CODE:
+```
+bru.getGlobalEnvVar("val");
+```
+
+----------------------------------------
+
+TITLE: Setting Complex Product Object in Bruno (JavaScript)
+DESCRIPTION: Defines a complex JavaScript object representing product details, including strings, numbers, arrays, nested objects, and dates, and sets it as a Bruno variable named "product". This demonstrates how to interpolate various nested data types into a request body using dot and index notation.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/interpolation.mdx#_snippet_8
+
+LANGUAGE: JavaScript
+CODE:
+```
+bru.setVar("product", {
+  name: "Bruno Pro",
+  price: 99.99,
+  features: ["Git Integration", "Offline First"],
+  metadata: {
+    version: "2.2.0",
+    released: new Date()
+  }
+});
+```
+
+----------------------------------------
+
+TITLE: Generating JUnit Report with Bruno CLI (bash)
+DESCRIPTION: Shows how to generate a test report in JUnit XML format. The `--reporter-junit` option directs the output to `results.xml`, making the report compatible with CI/CD systems that consume JUnit reports.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-cli/builtInReporters.mdx#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+bru run request.bru --reporter-junit results.xml
+```
+
+----------------------------------------
+
+TITLE: Setting Number Variable in Bruno (JavaScript)
+DESCRIPTION: Sets a number variable named "userId" with the value 123 using Bruno's `bru.setVar()` function. This variable can be interpolated into request URLs, headers, or bodies using `{{userId}}`, inserting the numeric value directly.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/interpolation.mdx#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+// Setting a number variable
+bru.setVar("userId", 123);
+```
+
+----------------------------------------
+
+TITLE: Accessing Data File Variables in Request Body (JSON)
+DESCRIPTION: This JSON snippet shows how to use variables loaded from a data file within the request body using the `{{variableName}}` syntax. Bruno will substitute these placeholders with values from the current iteration.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/automate-test/data-driven-testing.mdx#_snippet_3
+
+LANGUAGE: json
+CODE:
+```
+{
+  "name": "{{name}}",
+  "email": "{{email}}"
+}
+```
+
+----------------------------------------
+
+TITLE: Setting Boolean Variable in Bruno (JavaScript)
+DESCRIPTION: Sets a boolean variable named "isActive" with the value `true` using Bruno's `bru.setVar()` function. This variable can be interpolated into request bodies, URLs, or headers using `{{isActive}}`, inserting the boolean literal `true` or `false`.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/interpolation.mdx#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+// Setting a boolean variable
+bru.setVar("isActive", true);
+```
+
+----------------------------------------
+
+TITLE: Accessing Data File Variables in Scripts (JavaScript)
+DESCRIPTION: This JavaScript snippet demonstrates how to access data file variables within pre-request or post-response scripts using the `bru.getVar()` function. It logs the value of the 'name' and 'email' variables for the current iteration.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/automate-test/data-driven-testing.mdx#_snippet_5
+
+LANGUAGE: javascript
+CODE:
+```
+console.log(bru.getVar("name")); // Outputs: John Doe
+console.log(bru.getVar("email")); // Outputs: john.doe@example.com
+```
+
+----------------------------------------
+
+TITLE: Defining Multipart-Form Request Body Bruno Configuration Bash
+DESCRIPTION: Demonstrates defining the request body using the `multipart/form-data` format with the `body:multipart-form` tag. Key-value pairs represent form parts, which can include files.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_16
+
+LANGUAGE: bash
+CODE:
+```
+body:multipart-form {
+  apikey: secret
+  numbers: +91998877665
+  ~message: hello
+}
+```
+
+----------------------------------------
+
+TITLE: Populating Business Data with Dynamic Variables (JSON)
+DESCRIPTION: This JSON snippet demonstrates generating business-related test data using dynamic variables like $randomCompanyName, $randomCatchPhrase, $randomDepartment, $randomBankAccount, and $randomTransactionType. It's suitable for testing endpoints that handle company or financial information within a Bruno request structure.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/dynamic-variables.mdx#_snippet_2
+
+LANGUAGE: json
+CODE:
+```
+{
+  "company": {
+    "name": "{{$randomCompanyName}}",
+    "catchPhrase": "{{$randomCatchPhrase}}",
+    "department": "{{$randomDepartment}}",
+    "account": {
+      "number": "{{$randomBankAccount}}",
+      "type": "{{$randomTransactionType}}"
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Setting Request Body JavaScript
+DESCRIPTION: Sets the body or payload for the request object (`req`). The input can be a string, object (for JSON), or other supported body types.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_9
+
+LANGUAGE: javascript
+CODE:
+```
+req.setBody({
+  username: "john nash",
+  password: "governingdynamics"
+});
+```
+
+----------------------------------------
+
+TITLE: Querying Nested Property using Standard Dot Notation in Javascript
+DESCRIPTION: Demonstrates querying a deeply nested property 'amount' within the 'customer.orders.items' path using standard dot notation. This is a fundamental method for accessing nested values.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/response/response-query.mdx#_snippet_2
+
+LANGUAGE: javascript
+CODE:
+```
+res('customer.orders.items.amount')
+```
+
+----------------------------------------
+
+TITLE: Installing Bruno CLI using pnpm (bash)
+DESCRIPTION: This command installs the Bruno Command Line Interface globally using the pnpm package manager. Ensure Node.js (recommended LTS version 18 or higher) is installed beforehand.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-cli/installation.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+pnpm install -g @usebruno/cli
+```
+
+----------------------------------------
+
+TITLE: Setting Array Variables in Bruno (JavaScript)
+DESCRIPTION: Defines two JavaScript arrays, one of strings and one of objects, and sets them as Bruno variables named "apiTypes" and "configs". Elements and properties within arrays can be accessed using index notation (e.g., `{{apiTypes[0]}}`) for interpolation. Requires Bruno v2.2.0 or higher.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/interpolation.mdx#_snippet_4
+
+LANGUAGE: JavaScript
+CODE:
+```
+// Define your arrays
+const technologies = ["REST", "GraphQL", "gRPC"];
+
+const settings = [
+  { port: 3000, env: "dev" },
+  { port: 8080, env: "prod" }
+];
+
+// Set arrays as variables
+bru.setVar("apiTypes", technologies);
+bru.setVar("configs", settings);
+```
+
+----------------------------------------
+
+TITLE: Performing POST Request Bruno Configuration Bash
+DESCRIPTION: Demonstrates how to define an HTTP POST request using the `post` tag. The snippet requires the `url` parameter to indicate the endpoint where the POST request will be sent.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+post {
+  url: https://api.github.com/users/usebruno
+}
+```
+
+----------------------------------------
+
+TITLE: Defining Request Body and Tests (Text) - Bru/Bash
+DESCRIPTION: This snippet illustrates a text block in a Bru file, used for defining multi-line content such as a JSON request body and a test script block. It shows how arbitrary text content, including structured formats like JSON and JavaScript-like tests, is contained within curly braces.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/language.mdx#_snippet_1
+
+LANGUAGE: Bash
+CODE:
+```
+body {
+  {
+    "hello": "world"
+  }
+}
+
+tests {
+  expect(res.status).to.equal(200);
+}
+```
+
+----------------------------------------
+
+TITLE: Getting a Specific Iteration Data Value in Scripts (JavaScript)
+DESCRIPTION: This JavaScript snippet shows how to retrieve the value of a specific variable (e.g., 'username') from the current iteration's data using `bru.runner.iterationData.get()`. It then logs the retrieved value.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/automate-test/data-driven-testing.mdx#_snippet_9
+
+LANGUAGE: javascript
+CODE:
+```
+const username = bru.runner.iterationData.get("username");
+console.log(`Current username: ${username}`);
+```
+
+----------------------------------------
+
+TITLE: Installing Bruno via Homebrew (bash)
+DESCRIPTION: Command to install the Bruno application on MacOS using the Homebrew package manager. This requires Homebrew to be previously installed and configured on your Mac system.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/get-started/bruno-basics/download.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+brew install bruno
+```
+
+----------------------------------------
+
+TITLE: Installing Bruno via Winget (bash)
+DESCRIPTION: Command to install the Bruno application on Windows using the Winget package manager. Winget is typically available on modern versions of Windows 10 and Windows 11.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/get-started/bruno-basics/download.mdx#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+winget install Bruno.Bruno
+```
+
+----------------------------------------
+
+TITLE: Filtering Array Elements and Querying Property using Filter Function in Javascript
+DESCRIPTION: Demonstrates filtering elements within arrays found via deep navigation (`..items`) using the `[?]` syntax combined with a provided JavaScript filter function (`i => i.amount > 20`). It then queries the 'amount' property of the filtered elements.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/response/response-query.mdx#_snippet_5
+
+LANGUAGE: javascript
+CODE:
+```
+res('..items[?].amount', i => i.amount > 20)
+```
+
+----------------------------------------
+
+TITLE: Setting Multiple Request Headers JavaScript
+DESCRIPTION: Sets multiple request headers on the `req` object using an object mapping header names to values. Existing headers not included in the object remain unchanged unless explicitly set.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_7
+
+LANGUAGE: javascript
+CODE:
+```
+req.setHeaders({
+  "content-type": "application/json",
+  "transaction-id": "foobar"
+});
+```
+
+----------------------------------------
+
+TITLE: Run Requests with Environment and Variable Override Bruno CLI Bash
+DESCRIPTION: In addition to specifying an environment, you can override individual environment variables directly via the command line using the --env-var option. This is especially useful for passing secrets not accessible otherwise.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-cli/commandOptions.mdx#_snippet_5
+
+LANGUAGE: bash
+CODE:
+```
+bru run folder --env Local --env-var JWT_TOKEN=1234
+```
+
+----------------------------------------
+
+TITLE: Accessing Request Variables in Bruno Scripts - JavaScript
+DESCRIPTION: This snippet demonstrates how to retrieve the value of request variables named 'source' and 'destination' within a Bruno script using the `bru.getRequestVar()` function. This function is part of the Bruno scripting environment and is used to access variables defined specifically for the current request.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/request-variables.mdx#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+let source = bru.getRequestVar("source");
+let destination = bru.getRequestVar("destination");
+```
+
+----------------------------------------
+
+TITLE: Installing Bruno via Snap (bash)
+DESCRIPTION: Command to install the Bruno application on Linux using the Snap package manager. This requires the Snapd service to be installed and often requires superuser privileges (sudo).
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/get-started/bruno-basics/download.mdx#_snippet_6
+
+LANGUAGE: bash
+CODE:
+```
+sudo snap install bruno
+```
+
+----------------------------------------
+
+TITLE: Accessing Folder Variable in Javascript Script
+DESCRIPTION: This snippet demonstrates how to retrieve the value of a folder variable within a Bruno script (like a pre-request or post-response script) using the built-in `bru.getFolderVar()` function. The function takes the variable name as a string argument and returns its corresponding value.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/folder-variables.mdx#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+let bearerToken = bru.getFolderVar("bearerToken");
+```
+
+----------------------------------------
+
+TITLE: Initialize Git Repository (Bash)
+DESCRIPTION: Initializes a new Git repository in the current directory (your Bruno collection folder). This creates a `.git` subdirectory and prepares the directory for version control tracking of your `.bru` files.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/git-integration/using-cli.mdx#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+git init
+```
+
+----------------------------------------
+
+TITLE: Configuring Vault Token Auth in secrets.json (JSON)
+DESCRIPTION: This JSON snippet configures the secrets.json file for a Bruno collection to connect to a HashiCorp Vault server using token authentication when run via the CLI. It specifies the Vault server URL, namespace, and includes an example secret mapping for a 'Prod' environment, expecting the authentication token to be provided via an environment variable.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/secrets-management/secret-managers/hashicorp-vault/using-with-cli.mdx#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{
+  "type": "vault",
+  "cli": {
+    "type": "vault-server",
+    "vaultServerConfig": {
+      "url": "http://localhost:8200",
+      "namespace": "bruno",
+      "auth": {
+        "method": "token",
+        "token": "{{authToken}}"
+      }
+    }
+  },
+  "data": [
+    {
+      "environment": "Prod",
+      "secrets": [
+        {
+          "name": "db",
+          "path": "secret/db",
+          "enabled": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Generating JSON Report with Bruno CLI (bash)
+DESCRIPTION: Demonstrates how to generate a test report in JSON format using the Bruno CLI. The `bru run` command executes the specified request file, and the `--reporter-json` option outputs the results to the `results.json` file. This is useful for programmatic parsing.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-cli/builtInReporters.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+bru run request.bru --reporter-json results.json
+```
+
+----------------------------------------
+
+TITLE: Run Single Request Bruno CLI Bash
+DESCRIPTION: To execute only a specific request file from your collection, provide its filename as an argument to the run command.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-cli/commandOptions.mdx#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+bru run request.bru
+```
+
+----------------------------------------
+
+TITLE: Defining Path Parameters Bruno Configuration Bash
+DESCRIPTION: Illustrates how to define path parameters for a request using the `params:path` tag. Key-value pairs in this block are used to substitute placeholders (like `:userId`) in the request URL.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_10
+
+LANGUAGE: bash
+CODE:
+```
+params:path {
+  userId: 13
+}
+```
+
+----------------------------------------
+
+TITLE: Defining Secrets in .env File
+DESCRIPTION: Example showing how to define secrets like API keys and tokens in a .env file at the root of the Bruno collection folder.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/secrets-management/dotenv-file.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+JWT_TOKEN=your_jwt_token_value
+API_KEY=your_api_key_value
+```
+
+----------------------------------------
+
+TITLE: Defining Environment Variable in .env File (dotenv)
+DESCRIPTION: This snippet shows an example of defining a key-value pair within a .env file. The .env file is located at the root of the Bruno collection and is used to store sensitive information accessible as process environment variables. The format is simple KEY=VALUE or KEY= VALUE.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/process-env.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+key = bruno
+```
+
+----------------------------------------
+
+TITLE: Performing DELETE Request Bruno Configuration Bash
+DESCRIPTION: Explains how to define an HTTP DELETE request using the `delete` tag. The snippet includes the `url` parameter to identify the resource to be deleted.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_4
+
+LANGUAGE: bash
+CODE:
+```
+delete {
+  url: https://api.github.com/users/usebruno
+}
+```
+
+----------------------------------------
+
+TITLE: Querying Array Element and Property using Array Indexing in Javascript
+DESCRIPTION: Shows how to combine deep navigation with array indexing `[0]` to access a specific element within an array ('items') found deeply in the structure and then access a property ('amount') of that element.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/response/response-query.mdx#_snippet_4
+
+LANGUAGE: javascript
+CODE:
+```
+res('..items[0].amount')
+```
+
+----------------------------------------
+
+TITLE: Setting Auth Config Object in Bruno (JavaScript)
+DESCRIPTION: Defines a JavaScript object containing API authentication credentials (`apiKey` and `secret`) and sets it as a Bruno variable named "authConfig". This object allows for easy interpolation of auth details into request headers or other parts of the request using dot notation (e.g., `{{authConfig.apiKey}}`).
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/variables/interpolation.mdx#_snippet_6
+
+LANGUAGE: JavaScript
+CODE:
+```
+bru.setVar("authConfig", {
+  apiKey: "your-api-key",
+  secret: "your-secret"
+});
+```
+
+----------------------------------------
+
+TITLE: Using Dynamic Variables for Authentication (JSON)
+DESCRIPTION: This JSON snippet illustrates using dynamic variables such as $randomUserName, $randomPassword, and $isoTimestamp to populate authentication credentials within a Bruno request. This is useful for testing login endpoints with unique or time-sensitive data.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/dynamic-variables.mdx#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+{
+  "credentials": {
+    "username": "{{$randomUserName}}",
+    "password": "{{$randomPassword}}",
+    "lastLogin": "{{$isoTimestamp}}"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Defining GraphQL Variables Bruno Configuration Bash
+DESCRIPTION: Shows the syntax for defining variables to be used with a GraphQL query body using the `body:graphql:vars` tag. Variables are typically defined as a JSON object.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_18
+
+LANGUAGE: bash
+CODE:
+```
+body:graphql:vars {
+  {
+    "limit": 5
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Retrieving Test Data: Get Test Results (JavaScript)
+DESCRIPTION: Retrieves the test results for the current request. Applicable only within test scripts. Returns an object containing test results; requires awaiting the result.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_37
+
+LANGUAGE: javascript
+CODE:
+```
+const testResults = await bru.getTestResults();
+```
+
+----------------------------------------
+
+TITLE: Getting Response Header JavaScript
+DESCRIPTION: Retrieves the value of a specific response header by its name from the `res` object. Useful for accessing information returned in headers.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_16
+
+LANGUAGE: javascript
+CODE:
+```
+let transactionId = res.getHeader("transaction-id");
+```
+
+----------------------------------------
+
+TITLE: Getting Request Header JavaScript
+DESCRIPTION: Retrieves the value of a specific request header by its name from the `req` object. Case-insensitive lookup is typically supported.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/testing/script/javascript-reference.mdx#_snippet_4
+
+LANGUAGE: javascript
+CODE:
+```
+req.getHeader("transaction-id");
+```
+
+----------------------------------------
+
+TITLE: Converting Postman Collection to Bruno - Basic
+DESCRIPTION: Demonstrates the basic usage of the `postmanToBruno` function from the `@usebruno/converters` library to convert a Postman collection object into a Bruno collection object in memory.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/converters/postman-to-bruno.mdx#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+const { postmanToBruno } = require('@usebruno/converters');
+
+const brunoCollection = postmanToBruno(postmanCollection);
+```
+
+----------------------------------------
+
+TITLE: Script for Converting Insomnia File to Bruno Javascript
+DESCRIPTION: This complete Node.js script demonstrates how to perform a file-based conversion. It uses the `fs/promises` module to read the input Insomnia JSON file, parses it, uses `insomniaToBruno` for the conversion, and then writes the resulting Bruno collection to an output file. It includes basic error handling.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/converters/insomnia-to-bruno.mdx#_snippet_1
+
+LANGUAGE: javascript
+CODE:
+```
+const { insomniaToBruno } = require('@usebruno/converters');
+const { readFile, writeFile } = require('fs/promises');
+
+async function convertInsomniaToBruno(inputFile, outputFile) {
+  try {
+    const inputData = await readFile(inputFile, 'utf8');
+    const brunoCollection = insomniaToBruno(JSON.parse(inputData));
+    await writeFile(outputFile, JSON.stringify(brunoCollection, null, 2));
+    console.log('Insomnia conversion successful!');
+  } catch (error) {
+    console.error('Error during Insomnia conversion:', error);
+  }
+}
+
+
+convertInsomniaToBruno('path/to/insomnia-collection.json', 'path/to/bruno-collection.json');
+```
+
+----------------------------------------
+
+TITLE: Defining Metadata Bruno Configuration Bash
+DESCRIPTION: This snippet shows how to use the `meta` tag to define metadata for a request in Bruno's configuration format. It includes parameters for name, type (http or graphql), and sequence number which affects sorting.
+SOURCE: https://github.com/usebruno/bruno-docs/blob/main/src/pages/bru-lang/tag-reference.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+meta {
+  name: Get users
+  type: http
+  seq: 1
+}
+```
