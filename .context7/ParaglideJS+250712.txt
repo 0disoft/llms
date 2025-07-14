@@ -1,0 +1,1292 @@
+TITLE: Using the New `createParaglide()` API
+DESCRIPTION: Demonstrates the usage of the new `createParaglideModule()` function, which provides access to Paraglide's compiled APIs without a build step. The example shows how to initialize Paraglide and use runtime functions like `localizeUrl()` and server middleware like `paraglideMiddleware()`.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: JavaScript
+CODE:
+```
+const project = await fs.readFile("./project.inlang");
+
+const paraglide = await createParaglideModule({
+	project,
+	compilerOptions: {
+		strategy: ["url"],
+	},
+});
+
+// Use runtime functions
+paraglide.localizeUrl("https://example.com", { locale: "de" });
+
+// Use server middleware
+app.use(paraglide.paraglideMiddleware());
+```
+
+----------------------------------------
+
+TITLE: Migrate URLPattern API to Tuple-Based `localized` Array
+DESCRIPTION: Details a breaking change in the URLPattern API, where `localizedNamedGroups` and `deLocalizedNamedGroups` are replaced by a new tuple-based `localized` array. This update enables more flexible translated pathnames and a more intuitive API.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: JSON
+CODE:
+```
+{
+	"pattern": "https://:domain(.*)/:locale(de|fr)?/:path*",
+	"deLocalizedNamedGroups": { "locale": null },
+	"localizedNamedGroups": {
+		"en": { "locale": null },
+		"fr": { "locale": "fr" },
+		"de": { "locale": "de" }
+	}
+}
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pattern": "https://:domain(.*)/:path*",
+  "localized": [
+    ["fr", "https://:domain(.*)/fr/:path*"],
+    ["de", "https://:domain(.*)/de/:path*"],
+    ["en", "https://:domain(.*)/:path*"]
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Paraglide JS multi-tenancy URL patterns
+DESCRIPTION: Provides illustrative examples of common URL patterns for implementing multi-tenancy with Paraglide JS 2.0. This includes domain-based and path-based strategies, demonstrating how locales can be handled across different tenant configurations.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: Configuration Example
+CODE:
+```
+# Domain-based with sub-locale
+customer1.fr/about         → French (default)
+customer1.fr/en/about      → English version
+
+# Domain-based with root locale
+customer2.com/about        → English (default)
+customer2.com/fr/about     → French version
+
+# Path-based for any domain
+example.com/en/about       → English
+example.com/fr/about       → French
+app.example.com/en/about   → English
+app.example.com/fr/about   → French
+```
+
+----------------------------------------
+
+TITLE: API Reference and Usage: Custom Locale Resolution Strategies
+DESCRIPTION: This entry details the new custom strategy concept for locale resolution, offering a more modular and type-safe approach than direct function overwriting. It includes API definitions for `defineCustomClientStrategy` and `defineCustomServerStrategy`, along with examples demonstrating how to define a custom strategy using `sessionStorage` and integrate it into the `compile` configuration.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: APIDOC
+CODE:
+```
+defineCustomClientStrategy(name: string, strategy: { getLocale: () => string | undefined; setLocale: (locale: string) => void })
+  - Description: Defines a custom client-side locale resolution strategy.
+  - Parameters:
+    - name: A string following the pattern 'custom-<name>' (alphanumeric characters only).
+    - strategy: An object containing 'getLocale' and 'setLocale' functions.
+      - getLocale(): Function to retrieve the current locale.
+      - setLocale(locale: string): Function to set the current locale.
+
+defineCustomServerStrategy(name: string, strategy: { getLocale: () => string | undefined; setLocale: (locale: string) => void })
+  - Description: Defines a custom server-side locale resolution strategy.
+  - Parameters:
+    - name: A string following the pattern 'custom-<name>' (alphanumeric characters only).
+    - strategy: An object containing 'getLocale' and 'setLocale' functions.
+      - getLocale(): Function to retrieve the current locale.
+      - setLocale(locale: string): Function to set the current locale.
+
+Key features:
+  - Custom strategies must follow the pattern 'custom-<name>' where '<name>' contains only alphanumeric characters.
+  - Can be combined with built-in strategies in the strategy array.
+  - Respect strategy order for fallback handling.
+  - Support both client and server environments.
+  - Provide better error isolation and type safety.
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { defineCustomClientStrategy } from "./paraglide/runtime.js";
+
+defineCustomClientStrategy("custom-sessionStorage", {
+	getLocale: () => sessionStorage.getItem("user-locale") ?? undefined,
+	setLocale: (locale) => sessionStorage.setItem("user-locale", locale),
+});
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+compile({
+	strategy: ["custom-sessionStorage", "cookie", "baseLocale"],
+});
+```
+
+----------------------------------------
+
+TITLE: Paraglide JS Locale Extraction API Reference
+DESCRIPTION: Comprehensive API documentation for Paraglide JS functions related to defining custom server strategies and extracting locales. This includes `defineCustomServerStrategy` for registering custom logic, `extractLocaleFromRequest` for synchronous extraction, and `extractLocaleFromRequestAsync` for asynchronous extraction, detailing their parameters and return types.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: APIDOC
+CODE:
+```
+defineCustomServerStrategy(strategyName: string, options: object)
+  - Defines a custom server strategy for locale extraction.
+  - Parameters:
+    - strategyName: string - The unique name for the custom strategy (e.g., "custom-database").
+    - options: object - An object containing the strategy's implementation.
+      - getLocale: (request: any) => Promise<string> | string - A function that extracts the locale from the request. This function can be synchronous or asynchronous.
+
+extractLocaleFromRequest(request: any): string
+  - Synchronously extracts the locale from the request using defined strategies.
+  - Important: This function does NOT support custom asynchronous strategies directly.
+  - Parameters:
+    - request: any - The incoming request object from which to extract the locale.
+  - Returns: string - The extracted locale string.
+
+extractLocaleFromRequestAsync(request: any): Promise<string>
+  - Asynchronously extracts the locale from the request using defined strategies.
+  - This function fully supports custom asynchronous strategies defined via `defineCustomServerStrategy`.
+  - Parameters:
+    - request: any - The incoming request object from which to extract the locale.
+  - Returns: Promise<string> - A Promise that resolves to the extracted locale string.
+```
+
+----------------------------------------
+
+TITLE: Paraglide JS CompilerOptions API Reference
+DESCRIPTION: Detailed API documentation for the `CompilerOptions` object in Paraglide JS, used to configure the compilation process. It includes properties for managing output directory, adding custom files, and controlling cookie behavior for locale management.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/compiler-options
+
+LANGUAGE: APIDOC
+CODE:
+```
+CompilerOptions: object
+  Defined in: compiler-options.ts:19
+
+  Properties:
+    additionalFiles?: Record<string, string>
+      Description: The `additionalFiles` option is a map of file paths to their content, allowing additional files to be copied to the output directory alongside compiled messages.
+      Example Usage: See 'Example: Configure additionalFiles' snippet.
+      Output Structure:
+        - outdir/
+          - messages/
+          - my-file.js
+          - messages.js
+          - runtime.js
+
+    cleanOutdir?: boolean
+      Description: Specifies whether to clean (empty) the output directory before writing new files during compilation.
+      Default: true
+
+    cookieDomain?: string
+      Description: Defines the domain attribute for the locale cookie. If undefined or empty, the cookie is scoped to the exact current domain only. If specified, it allows the cookie to be shared across subdomains.
+      Example Usage: See 'Example: Configure cookieDomain' snippet.
+      Default: "" (no domain attribute, exact domain only)
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+await compile({
+  project: "./project.inlang",
+  outdir: "./src/paraglide",
+  additionalFiles: {
+    "my-file.js": "console.log('hello')"
+  }
+})
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+// Default: exact domain only (compatible with server-side cookies)
+cookieDomain: undefined // Cookie: "PARAGLIDE_LOCALE=en; path=/; max-age=34560000"
+
+// Subdomain sharing: available across all subdomains
+cookieDomain: "example.com" // Cookie: "PARAGLIDE_LOCALE=en; path=/; max-age=34560000; domain=example.com"
+```
+
+----------------------------------------
+
+TITLE: Programmatic compilation with Paraglide JS API
+DESCRIPTION: Illustrates the usage of the new direct compiler API in Paraglide JS. This programmatic access enables advanced workflows such as integration into CI/CD pipelines and custom tooling, providing full control over the compilation process.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: JavaScript
+CODE:
+```
+// New programmatic API
+import { compile } from "@inlang/paraglide-js";
+
+await compile({
+	project: "./project.inlang",
+	outdir: "./src/paraglide",
+});
+```
+
+----------------------------------------
+
+TITLE: Paraglide.js Server Middleware for Locale Handling
+DESCRIPTION: Documents the server-side middleware responsible for handling locale extraction from API requests, managing redirects, and integrating with various locale strategies. This entry covers its parameters, behavior, and renaming.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: APIDOC
+CODE:
+```
+serverMiddleware(req, resolve, options?)
+  - Purpose: Handles server-side locale extraction from API requests and manages redirects.
+  - Parameters:
+    - req: The incoming request object.
+    - resolve: A function to resolve the request.
+    - options (optional): Configuration options for the middleware.
+      - disableAsyncLocalStorage (boolean): If true, disables async local storage (e.g., for specific server environments).
+  - Behavior:
+    - Automatically handles redirects.
+    - Extracts locale from API requests (requires `cookie` or `baseLocale` strategy for correct resolution).
+    - Renamed to `paraglideMiddleware` and moved to `./paraglide/server.js`.
+  - Related:
+    - `paraglideMiddleware` (new name)
+    - Locale strategies: `url`, `cookie`, `baseLocale`, `localStorage`
+```
+
+----------------------------------------
+
+TITLE: Initialize a Paraglide JS Project
+DESCRIPTION: This command initializes a new Paraglide JS project, setting up the necessary configuration files and creating example message files. It's the first step to integrate Paraglide JS into your application.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/vanilla-js-ts
+
+LANGUAGE: Shell
+CODE:
+```
+npx @inlang/paraglide-js@latest init
+```
+
+----------------------------------------
+
+TITLE: Migrate from `localizePath` to `localizeHref` API
+DESCRIPTION: Replaces the deprecated `localizePath()` API with the new `localizeHref()` API for generating localized URLs. This change affects how localized links are created in HTML attributes.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: JavaScript
+CODE:
+```
+- <a href={localizePath("/about")}>About</a>
++ <a href={localizeHref("/about")}>About</a>
+```
+
+----------------------------------------
+
+TITLE: Inlang Paraglide.js Runtime Overwrite API
+DESCRIPTION: API documentation for functions that allow overriding default runtime behaviors in Inlang Paraglide.js. These functions are crucial for adapting Paraglide.js to specific server or client environments by customizing how URL origins are resolved, how server-side async local storage is handled, and how locale getter/setter functions operate.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/runtime
+
+LANGUAGE: APIDOC
+CODE:
+```
+overwriteGetUrlOrigin(fn: () => string): void
+  - Overwrites the function that resolves the URL origin.
+  - Use in server environments to define how the URL origin is resolved.
+  - Parameters:
+    - fn: A function that returns the URL origin as a string.
+  - Returns: void
+
+overwriteServerAsyncLocalStorage(value: undefined | ParaglideAsyncLocalStorage): void
+  - Sets the server-side async local storage.
+  - This function is needed because the `runtime.js` file must define the `serverAsyncLocalStorage` variable to avoid a circular import between `runtime.js` and `server.js` files.
+  - Parameters:
+    - value: The value to set for the server-side async local storage. Can be `undefined` or an instance of `ParaglideAsyncLocalStorage`.
+  - Returns: void
+
+overwriteSetLocale(fn: (newLocale) => void): void
+  - Overwrites the `setLocale()` function.
+  - Use this function to customize how the locale is set, for example, to modify a cookie, environment variable, or a user's preference.
+  - Parameters:
+    - fn: A function that takes the `newLocale` as an argument and performs the custom locale setting logic.
+  - Returns: void
+```
+
+----------------------------------------
+
+TITLE: Inlang Paraglide.js Message Tracking API
+DESCRIPTION: API documentation for the `trackMessageCall` function in Inlang Paraglide.js. This function is used for tracking message calls within the application, likely for internal analytics, debugging, or internationalization-related metrics.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/runtime
+
+LANGUAGE: APIDOC
+CODE:
+```
+trackMessageCall(safeModuleId: string, locale: any): void
+  - Parameters:
+    - safeModuleId: A string identifier for the module.
+    - locale: The locale associated with the message call (type `any`).
+  - Returns: void
+```
+
+----------------------------------------
+
+TITLE: Programmatic Usage of Paraglide.js Compiler Library
+DESCRIPTION: The Paraglide.js compiler is now exposed as a standalone library, allowing developers to integrate and extend its functionality programmatically. This example demonstrates how to import and use the `compile` function with specified input and output paths.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { compile } from "@inlang/paraglide-js/compiler";
+
+await compile({
+	path: "/path/to/project.inlang",
+	outdir: "/path/to/output"
+});
+```
+
+----------------------------------------
+
+TITLE: Illustrate locale issues when calling Paraglide.js messages outside SvelteKit request context
+DESCRIPTION: This example highlights a common pitfall: calling Paraglide.js messages (`m.hello()`) outside of SvelteKit's `load` functions or hooks. In such contexts, there's no URL available to derive the current locale, leading to incorrect or missing locale information. This typically occurs in standalone server-side files not directly tied to a request.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/sveltekit
+
+LANGUAGE: TypeScript
+CODE:
+```
+// hello.ts
+import { m } from './paraglide/messages.js';
+
+// 💥 there is no url in this context to retrieve
+//    the locale from.
+console.log(m.hello());
+```
+
+----------------------------------------
+
+TITLE: Generate Static Localized URLs with Paraglide.js
+DESCRIPTION: Demonstrates how to use the new `generateStaticLocalizedUrls()` API to create localized versions of given URL paths. It takes an array of unlocalized paths and returns an object containing localized pathnames for each configured locale.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: JavaScript
+CODE:
+```
+const localizedUrls = generateStaticLocalizedUrls([
+  "/example",
+  "/page/blog",
+  "/123/hello"
+])
+
+console.log(localizedUrls.map(url => url.pathnames))
+// >> /de/example
+// >> /fr/example
+// >> ...
+```
+
+----------------------------------------
+
+TITLE: Implement Full-Stack User Preference Locale Strategy in Paraglide.js
+DESCRIPTION: Provides a comprehensive example of a user preference locale strategy that works across both client and server. It shows how `defineCustomClientStrategy()` can read/set locales (e.g., from `window.__userLocale` and via API calls to update a database), and how `defineCustomServerStrategy()` can perform async database lookups for user-specific locales.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/strategy
+
+LANGUAGE: JavaScript
+CODE:
+```
+// File: src/locale-strategies.js
+import { defineCustomClientStrategy, defineCustomServerStrategy } from "./paraglide/runtime.js";
+import { getUserLocale, setUserLocale, extractUserIdFromRequest } from "./services/userService.js";
+
+// Client-side strategy - works with user preferences in browser
+defineCustomClientStrategy("custom-userPreference", {
+  getLocale: () => {
+    // Get from memory cache, framework state store, or return undefined to fall back
+    return window.__userLocale ?? undefined;
+  },
+  setLocale: async (locale) => {
+    try {
+      // Update user preference in database via API
+      await setUserLocale(locale);
+      window.__userLocale = locale;
+
+      // Optional: Also update URL query param for immediate reflection
+      const url = new URL(window.location);
+      url.searchParams.set('locale', locale);
+      window.history.replaceState({}, '', url.toString());
+    } catch (error) {
+      console.warn("Failed to save user locale preference:", error);
+      // Strategy can still succeed even if save fails
+    }
+  }
+});
+
+// Server-side strategy - async database lookup
+defineCustomServerStrategy("custom-userPreference", {
+  getLocale: async (request) => {
+    const userId = extractUserIdFromRequest(request);
+    if (!userId) return undefined;
+
+    try {
+      // Async database call - this is now fully supported!
+      return await getUserLocale(userId);
+    } catch (error) {
+      console.warn("Failed to fetch user locale from database:", error);
+      return undefined; // Fallback to next strategy
+    }
+  }
+});
+```
+
+----------------------------------------
+
+TITLE: Inlang Paraglide.js Locale Management API
+DESCRIPTION: API documentation for the primary `setLocale` function in Inlang Paraglide.js, used to change the application's current locale. It details parameters for controlling page reloads on the client-side, providing flexibility for different application architectures.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/runtime
+
+LANGUAGE: APIDOC
+CODE:
+```
+setLocale(newLocale: any, options?: { reload?: boolean }): void
+  - Sets the application's locale.
+  - By default, `setLocale` reloads the site on the client. Reloading can be disabled by passing `reload: false` as an option.
+  - If reloading is disabled, you need to ensure that the UI is updated to reflect the new locale.
+  - Parameters:
+    - newLocale: The new locale to set (type `any`).
+    - options?: Optional configuration object.
+      - reload?: A boolean indicating whether to reload the page after setting the locale (defaults to `true`).
+  - Returns: void
+```
+
+----------------------------------------
+
+TITLE: Integrating Paraglide JS Framework-Agnostic Server Middleware
+DESCRIPTION: This example demonstrates how to integrate the new universal `paraglideMiddleware()` in a server-side rendering (SSR) framework like SvelteKit. The middleware is designed to be framework-agnostic, allowing the same pattern to be applied to Next.js, Astro, and other SSR environments, handling locale resolution and automatic redirects based on user preferences.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: JavaScript
+CODE:
+```
+// SvelteKit example - same pattern works for Next.js, Astro, etc.
+import { paraglideMiddleware } from "./paraglide/server.js";
+
+export const handle = ({ event, resolve }) => {
+	return paraglideMiddleware(event.request, () => resolve(event));
+};
+```
+
+----------------------------------------
+
+TITLE: Simplifying Paraglide JS Integration by Removing Framework Adapters
+DESCRIPTION: This conceptual snippet highlights a significant architectural change in Paraglide JS 2.0: the elimination of framework-specific adapters. Previously, users needed `@inlang/paraglide-sveltekit` or `@inlang/paraglide-next`. Now, a unified API removes this dependency, streamlining integration across various frameworks and simplifying project setup.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: JavaScript
+CODE:
+```
+- @inlang/paraglide-sveltekit
+- @inlang/paraglide-next
++ // No more adapters are needed
+```
+
+----------------------------------------
+
+TITLE: Define locale resolution `strategy` in `compile`
+DESCRIPTION: Introduces the new `strategy` API within the `compile` configuration, enabling users to define custom strategies for determining and setting the current locale. This example shows a common strategy combining pathname, cookie, and base locale.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: JavaScript
+CODE:
+```
+await compile({
++  strategy: ["pathname", "cookie", "baseLocale"]
+})
+```
+
+----------------------------------------
+
+TITLE: Install Paraglide JS CLI
+DESCRIPTION: This command initializes Paraglide JS in your project, setting up the necessary files and configurations. It should be run in your project's root directory.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/sveltekit
+
+LANGUAGE: bash
+CODE:
+```
+npx @inlang/paraglide-js@latest init
+```
+
+----------------------------------------
+
+TITLE: Inlang Paraglide.js Custom Locale Strategy APIs
+DESCRIPTION: Documents the `overwriteGetLocale` and `overwriteSetLocale` APIs in Inlang Paraglide.js, which enable developers to define custom logic for retrieving and setting the current locale. These APIs are essential for integrating Paraglide JS with various frameworks, routing mechanisms, or custom locale storage solutions like cookies or HTTP headers.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/strategy
+
+LANGUAGE: APIDOC
+CODE:
+```
+overwriteGetLocale(): Function
+  - Defines the function that messages use to determine the current locale.
+  - Purpose: Reads the locale from a source like a cookie, HTTP header, or i18n routing.
+  - Note: Needs to be defined separately for client and server Paraglide runtimes.
+
+overwriteSetLocale(locale: string): Function
+  - Defines the function that applications call to change the locale.
+  - Parameters:
+    - locale: The new locale string to set.
+  - Purpose: Handles any side effects of changing the locale and triggers a re-render in your application.
+  - Note: Often primarily required on the client side; needs to be defined separately for client and server Paraglide runtimes.
+```
+
+----------------------------------------
+
+TITLE: API Reference: Locale Extraction Functions
+DESCRIPTION: This section documents the newly exported functions for extracting locale information. `extractLocaleFromHeader` is designed for server-side use to parse the `Accept-Language` header, while `extractLocaleFromNavigator` is for client-side environments to read from `navigator.languages`. These functions facilitate custom locale resolution strategies.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: APIDOC
+CODE:
+```
+extractLocaleFromHeader(): string | undefined
+  - Description: Extracts the locale from the `Accept-Language` header on the server.
+  - Returns: The extracted locale string or `undefined` if not found.
+
+extractLocaleFromNavigator(): string | undefined
+  - Description: Extracts the locale from the `navigator.languages` array on the client.
+  - Returns: The extracted locale string or `undefined` if not found.
+```
+
+----------------------------------------
+
+TITLE: Initialize Paraglide JS Project
+DESCRIPTION: This command initializes a new Paraglide JS project, setting up the necessary files and configurations for internationalization.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/react-router
+
+LANGUAGE: bash
+CODE:
+```
+npx @inlang/paraglide-js@latest init
+```
+
+----------------------------------------
+
+TITLE: Example URL to Language Mappings for Multi-Tenancy
+DESCRIPTION: This snippet illustrates how different customer domains or specific URL paths can be mapped to their corresponding default languages in a multi-tenancy i18n setup. It provides a conceptual overview before diving into the configuration.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/multi-tenancy
+
+LANGUAGE: text
+CODE:
+```
+https://customer1.com/about -> de
+https://customer2.de/en/about -> en
+https://customer3.com/fr/about -> fr
+```
+
+----------------------------------------
+
+TITLE: Extend Paraglide.js Compiler with compileProject
+DESCRIPTION: This example shows how to use the lower-level `compileProject` function for extending the Paraglide compiler's capabilities. It first loads an inlang project from a directory using `@inlang/sdk` and then passes the loaded project object to `compileProject` for more granular control and advanced compilation scenarios.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/compiling-messages
+
+LANGUAGE: javascript
+CODE:
+```
+import { compileProject } from "@inlang/paraglide-js";
+import { loadProjectFromDirectory } from "@inlang/sdk";
+
+const inlangProject = await loadProjectFromDirectory({
+	path: "./project.inlang",
+});
+
+const output = await compileProject({
+	project: inlangProject,
+});
+
+console.log(output);
+```
+
+----------------------------------------
+
+TITLE: Implement Paraglide Middleware in SvelteKit Server Hooks
+DESCRIPTION: Add the `paraglideMiddleware` to your `src/hooks.server.ts` to handle incoming requests. This middleware localizes the request and transforms the HTML output by replacing the `%lang%` placeholder with the determined locale.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/sveltekit
+
+LANGUAGE: typescript
+CODE:
+```
+import type { Handle } from '@sveltejs/kit';
+import { paraglideMiddleware } from '$lib/paraglide/server';
+
+// creating a handle to use the paraglide middleware
+const paraglideHandle: Handle = ({ event, resolve }) =>
+	paraglideMiddleware(event.request, ({ request: localizedRequest, locale }) => {
+		event.request = localizedRequest;
+		return resolve(event, {
+			transformPageChunk: ({ html }) => {
+				return html.replace('%lang%', locale);
+			}
+		});
+	});
+
+export const handle: Handle = paraglideHandle;
+```
+
+----------------------------------------
+
+TITLE: Configure Paraglide Vite Plugin
+DESCRIPTION: Add the Paraglide Vite plugin to your `vite.config.ts` to enable automatic message compilation and integration with your build process. Specify the inlang project file and the output directory for generated Paraglide files.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/react-router
+
+LANGUAGE: typescript
+CODE:
+```
+import { reactRouter } from "@react-router/dev/vite";
+import { defineConfig } from "vite";
+import { paraglideVitePlugin } from "@inlang/paraglide-js";
+
+export default defineConfig({
+	plugins: [
+		reactRouter(),
+		paraglideVitePlugin({
+			project: "./project.inlang",
+			outdir: "./app/paraglide",
+		}),
+	],
+});
+```
+
+----------------------------------------
+
+TITLE: Paraglide JS: Asynchronous Custom Locale Extraction
+DESCRIPTION: This example illustrates the updated approach for implementing custom server strategies in Paraglide JS, supporting asynchronous operations. It shows how to define a strategy with an async `getLocale` and how to correctly extract the locale using the new `extractLocaleFromRequestAsync` function, enabling database lookups or other async tasks.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: JavaScript
+CODE:
+```
+// Use the async version for custom strategies
+defineCustomServerStrategy("custom-database", {
+	getLocale: async (request) => {
+		return await getUserLocaleFromDatabase(request);
+	},
+});
+
+const locale = await extractLocaleFromRequestAsync(request); // Supports async custom strategies
+```
+
+----------------------------------------
+
+TITLE: Extract Locale from URL
+DESCRIPTION: Extracts the locale from a given URL string or URL object using the native URLPattern API. This is useful for routing and content negotiation based on URL structure.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/runtime
+
+LANGUAGE: APIDOC
+CODE:
+```
+extractLocaleFromUrl(url: string | URL): any
+
+  Parameters:
+    url: string | URL - The full URL from which to extract the locale.
+
+  Returns:
+    any: The extracted locale, or undefined if no locale is found.
+```
+
+----------------------------------------
+
+TITLE: Ensuring Locale Resolution for API Requests
+DESCRIPTION: This snippet addresses locale resolution issues for API requests when only the 'url' strategy is used. It demonstrates adding 'cookie' and 'baseLocale' to the strategy array to ensure the locale is always resolved, even for non-document requests.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/errors
+
+LANGUAGE: JavaScript
+CODE:
+```
+-strategy: ["url"]
++strategy: ["url", "cookie", "baseLocale"]
+```
+
+----------------------------------------
+
+TITLE: Example Localized URL Structure for SSG
+DESCRIPTION: Shows a typical structure for localized URLs in a static site generation context, demonstrating how different language versions of a page are represented. This is essential for frameworks to generate all necessary localized files during build time.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/server-side-rendering
+
+LANGUAGE: text
+CODE:
+```
+https://example.com/about
++https://example.com/de/about
++https://example.com/fr/about
+```
+
+----------------------------------------
+
+TITLE: Define Custom Client Locale Strategy Handler
+DESCRIPTION: Defines the interface for a custom client-side strategy handler, providing methods to get and set the current locale. This handler is used by Paraglide JS to manage internationalization on the client.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/runtime
+
+LANGUAGE: APIDOC
+CODE:
+```
+CustomClientStrategyHandler<> = object
+  Defined in: runtime/strategy.js:22
+
+  Type declaration:
+    getLocale: () => Promise<string | undefined> | string | undefined
+      Returns: Promise<string | undefined> | string | undefined
+
+    setLocale: (locale) => Promise<void> | void
+      Parameters:
+        locale: string
+      Returns: Promise<void> | void
+```
+
+----------------------------------------
+
+TITLE: Paraglide JS locale API renaming
+DESCRIPTION: Documents the renaming of `LanguageTag` related functions and properties to `locale` in Paraglide JS 2.0. This change aligns the API with broader industry standards for internationalization terminology.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: JavaScript
+CODE:
+```
+-languageTag()
++getLocale()
+-setLanguageTag()
++setLocale()
+-availableLanguageTags
++locales
+```
+
+----------------------------------------
+
+TITLE: Export Middleware in React Router Root
+DESCRIPTION: This snippet shows how to export the `localeMiddleware` in your `root.tsx` file, making it available for React Router's unstable middleware feature to apply global request handling.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/react-router
+
+LANGUAGE: typescript
+CODE:
+```
+export const unstable_middleware = [localeMiddleware];
+```
+
+----------------------------------------
+
+TITLE: Integrating Paraglide JS with Vite
+DESCRIPTION: This example illustrates how to configure Paraglide JS within a Vite project using the `paraglideVitePlugin`. It shows the necessary `defineConfig` setup in `vite.config.js` or `vite.config.ts` to enable message compilation during the build process.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/compiling-messages
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { defineConfig } from "vite";
+import { paraglideVitePlugin } from "@inlang/paraglide-js";
+
+export default defineConfig({
+	plugins: [
+		paraglideVitePlugin({
+			project: "./project.inlang",
+			outdir: "./src/paraglide",
+		}),
+	],
+});
+```
+
+----------------------------------------
+
+TITLE: Get URL Origin
+DESCRIPTION: Retrieves the origin of the current URL. In non-browser environments, it defaults to "http://y.com", but this behavior can be customized by using `overwriteGetUrlOrigin()`.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/runtime
+
+LANGUAGE: APIDOC
+CODE:
+```
+getUrlOrigin(): string
+```
+
+----------------------------------------
+
+TITLE: Define `currentLanguageTag` Function with Type Annotation
+DESCRIPTION: Provides an example of a `currentLanguageTag` function that returns a localized string based on the current language tag. It demonstrates the use of a JSDoc type annotation for the `variants` object and includes a fallback mechanism for unknown language tags.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: javascript
+CODE:
+```
+export const currentLanguageTag = (params) => {
+	/** @type {Record<string, string>} */
+	const variants = {
+		en: `The current language tag is "${params.languageTag}".`,
+		de: `Der aktuelle Sprachtag ist "${params.languageTag}".`,
+	}
+	return variants[languageTag()] ?? "currentLanguageTag"
+}
+```
+
+----------------------------------------
+
+TITLE: Configuring URL Patterns for Multi-Tenant Inlang Paraglide.js Applications
+DESCRIPTION: Provides an example configuration for `urlPatterns` in Inlang Paraglide.js, tailored for a multi-tenant application. It demonstrates how to prioritize specific routes (e.g., products, categories) over a general wildcard pattern to ensure accurate URL matching and routing for localized content.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/strategy
+
+LANGUAGE: JavaScript
+CODE:
+```
+compile({
+  project: "./project.inlang",
+  outdir: "./src/paraglide",
+  strategy: ["url", "cookie"],
+  urlPatterns: [
+    // Specific product routes first
+    {
+      pattern: "https://:tenant.example.com/products/:id",
+      localized: [
+        ["en", "https://:tenant.example.com/products/:id"],
+        ["de", "https://:tenant.example.com/produkte/:id"],
+        ["fr", "https://:tenant.example.com/produits/:id"],
+      ],
+    },
+    // Specific category routes next
+    {
+      pattern: "https://:tenant.example.com/categories/:name",
+      localized: [
+        ["en", "https://:tenant.example.com/categories/:name"],
+        ["de", "https://:tenant.example.com/kategorien/:name"],
+        ["fr", "https://:tenant.example.com/categories/:name"],
+      ],
+    },
+    // General wildcard pattern last
+    {
+      pattern: "https://:tenant.example.com/:path(.*)?",
+      localized: [
+        ["en", "https://:tenant.example.com/:path(.*)?"],
+        ["de", "https://:tenant.example.com/de/:path(.*)?"],
+        ["fr", "https://:tenant.example.com/fr/:path(.*)?"],
+      ],
+    },
+  ],
+});
+```
+
+----------------------------------------
+
+TITLE: Configuring Tenant-Specific Locale Redirections with `compile`
+DESCRIPTION: Provides a comprehensive configuration example using the `compile` function to define `urlPatterns` for multi-tenant applications. It shows how to restrict locales for specific tenants by redirecting unsupported locale requests to a 404 page, ensuring controlled access to localized content.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/multi-tenancy
+
+LANGUAGE: JavaScript
+CODE:
+```
+await compile({
+	project: "./project.inlang",
+	strategy: ["url"],
+	urlPatterns: [
+		// Define 404 pages for each tenant
+		{
+			pattern: "https://customer1.com/404",
+			localized: [
+				["en", "https://customer1.com/404"],
+				["de", "https://customer1.com/de/404"]
+				// No fr pattern - will use the en pattern as fallback
+			]
+		},
+		// Customer1 - only supports en and de
+		{
+			pattern: "https://customer1.com/:path(.*)?",
+			localized: [
+				["en", "https://customer1.com/:path(.*)?"],
+				["de", "https://customer1.com/de/:path(.*)?"],
+				["fr", "https://customer1.com/404"],  // Redirect fr to 404
+				["es", "https://customer1.com/404"]  // Redirect es to 404
+			]
+		},
+		// Customer2 - only supports fr and es
+		{
+			pattern: "https://customer2.com/:path(.*)?",
+			localized: [
+				["fr", "https://customer2.com/:path(.*)?"],
+				["es", "https://customer2.com/es/:path(.*)?"],
+				["en", "https://customer2.com/404"],  // Redirect en to 404
+				["de", "https://customer2.com/404"]  // Redirect de to 404
+			]
+		},
+		// Customer3 - supports all locales
+		{
+			pattern: "https://customer3.com/:path(.*)?",
+			localized: [
+				["en", "https://customer3.com/:path(.*)?"],
+				["de", "https://customer3.com/de/:path(.*)?"],
+				["fr", "https://customer3.com/fr/:path(.*)?"],
+				["es", "https://customer3.com/es/:path(.*)?"]
+			]
+		}
+	]
+});
+```
+
+----------------------------------------
+
+TITLE: Implement Paraglide Server-Side Rendering Middleware
+DESCRIPTION: This middleware function integrates Paraglide's server-side rendering capabilities into a React Router application. It uses `paraglideMiddleware` to handle locale detection and redirection based on the incoming request.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/react-router
+
+LANGUAGE: typescript
+CODE:
+```
+import { paraglideMiddleware } from "~/paraglide/server";
+import type { Route } from "../+types/root";
+
+const localeMiddleware: Route.unstable_MiddlewareFunction = async (
+  { request },
+  next,
+) => {
+  return await paraglideMiddleware(request, () => {
+    return next();
+  }, { onRedirect: (response) => throw response });
+};
+
+export { localeMiddleware };
+```
+
+----------------------------------------
+
+TITLE: Get Current Locale
+DESCRIPTION: Retrieves the currently active locale. This function provides a simple way to access the locale that has been determined and set by the Paraglide.js runtime.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/runtime
+
+LANGUAGE: APIDOC
+CODE:
+```
+getLocale(): any
+
+  Returns:
+    any: The current locale.
+```
+
+LANGUAGE: javascript
+CODE:
+```
+if (getLocale() === 'de') {
+    console.log('Germany 🇩🇪');
+  } else if (getLocale() === 'nl') {
+    console.log('Netherlands 🇳🇱');
+  }
+```
+
+----------------------------------------
+
+TITLE: Define Custom Server Locale Strategy Handler
+DESCRIPTION: Defines the interface for a custom server-side strategy handler, providing a method to get the current locale, optionally based on a request object. This handler is used by Paraglide JS to manage internationalization on the server.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/runtime
+
+LANGUAGE: APIDOC
+CODE:
+```
+CustomServerStrategyHandler<> = object
+  Defined in: runtime/strategy.js:18
+
+  Type declaration:
+    getLocale: (request?) => Promise<string | undefined> | string | undefined
+      Parameters:
+        request?: Request
+      Returns: Promise<string | undefined> | string | undefined
+```
+
+----------------------------------------
+
+TITLE: Cloudflare Worker Locale and Origin Override
+DESCRIPTION: Example of an `async fetch` handler in a Cloudflare Worker that determines the locale from the request URL and overrides the global locale and URL origin settings per request. This ensures proper localization in isolated serverless environments.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/server-side-rendering
+
+LANGUAGE: typescript
+CODE:
+```
+export default {
+  async fetch(request: Request) {
+    // Determine locale from request
+    const locale = getLocaleFromURL(request.url);
+
+    // Override per-request
+    overwriteGetLocale(() => locale);
+    overwriteGetUrlOrigin(() => new URL(request.url).origin);
+
+    return handleRequest(request);
+  }
+};
+```
+
+----------------------------------------
+
+TITLE: Update `compile` strategy to URLPattern
+DESCRIPTION: Updates the `strategy` option within the `compile` configuration from `"pathname"` to `"url"`. This change leverages the new URLPattern API for more powerful localization strategies, including base paths, translated pathnames, and domain-based localization.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: JavaScript
+CODE:
+```
+await compile({
+-  strategy: ["pathname"],
++  strategy: ["url"],
+})
+```
+
+----------------------------------------
+
+TITLE: Update Paraglide.js Locale Strategy Configuration
+DESCRIPTION: Shows how to update the locale extraction strategy in Paraglide.js. Adding 'cookie' and 'baseLocale' to the 'url' strategy ensures correct locale resolution for API requests and prevents unwanted redirects, aligning with user expectations.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/changelog
+
+LANGUAGE: JavaScript
+CODE:
+```
+-strategy: ["url"]
++strategy: ["url", "cookie", "baseLocale"]
+```
+
+----------------------------------------
+
+TITLE: Compile Paraglide JS Messages
+DESCRIPTION: This command compiles your internationalization messages defined in the `project.inlang` file. It generates TypeScript or JavaScript files containing the message functions, which are then outputted to the specified directory, typically `src/paraglide`.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/vanilla-js-ts
+
+LANGUAGE: Shell
+CODE:
+```
+npx @inlang/paraglide-js compile --project ./project.inlang --outdir ./src/paraglide
+```
+
+----------------------------------------
+
+TITLE: Overwrite Get Locale Function
+DESCRIPTION: Allows developers to overwrite the default `getLocale()` function. This enables custom logic for resolving the current locale, such as retrieving it from browser preferences, cookies, environment variables, or user settings.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/runtime
+
+LANGUAGE: APIDOC
+CODE:
+```
+overwriteGetLocale(fn: () => any): void
+  fn: The function to use for resolving the locale. It should return the current locale string.
+```
+
+----------------------------------------
+
+TITLE: Localizing Href for Customer 2 Domains
+DESCRIPTION: Shows the application of `localizeHref` and `deLocalizeHref` for Customer 2. It details URL changes when localizing between English and French, and de-localizing French URLs, providing clear output examples.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/multi-tenancy
+
+LANGUAGE: JavaScript
+CODE:
+```
+localizeHref("https://customer2.com/about", { locale: "en" })
+// Output: "https://customer2.com/about"
+
+localizeHref("https://customer2.com/about", { locale: "fr" })
+// Output: "https://customer2.com/fr/about"
+
+deLocalizeHref("https://customer2.com/fr/about");
+// Output: "https://customer2.com/about"
+```
+
+----------------------------------------
+
+TITLE: Configure Multi-Tenancy with URL Patterns in Paraglide JS
+DESCRIPTION: This JavaScript configuration example demonstrates how to set up multi-tenancy using the `urlPatterns` option in Paraglide JS. It defines rules for different domains to serve specific default languages and fallback options, enabling a single application to handle diverse localization requirements.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/multi-tenancy
+
+LANGUAGE: JavaScript
+CODE:
+```
+await compile({
+	project: "./project.inlang",
+	strategy: ["url"],
+	urlPatterns: [
+		// 1) customer1.fr => root locale is fr, sub-locale is /en/
+		{
+			pattern: "https://customer1.fr/:path(.*)?",
+			localized: [
+				["fr", "https://customer1.fr/:path(.*)?"],
+				["en", "https://customer1.fr/en/:path(.*)?"]
+			]
+		},
+		// 2) customer2.com => root locale is en, sub-locale is /fr/
+		{
+			pattern: "https://customer2.com/:path(.*)?",
+			localized: [
+				["en", "https://customer2.com/:path(.*)?"],
+				["fr", "https://customer2.com/fr/:path(.*)?"]
+			]
+		},
+		// 3) Any other domain => path-based for en/fr
+		{
+			pattern: "https://:domain(.*)/:path(.*)?",
+			localized: [
+				["en", "https://:domain(.*)/en/:path(.*)?"],
+				["fr", "https://:domain(.*)/fr/:path(.*)?"]
+			]
+		}
+	]
+});
+```
+
+----------------------------------------
+
+TITLE: Configure Paraglide JS with Cookie-Only Locale Strategy
+DESCRIPTION: This example demonstrates how to configure Paraglide JS to exclusively use the `cookie` strategy for locale determination. The locale will be read directly from a cookie, without any fallbacks.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/strategy
+
+LANGUAGE: JavaScript
+CODE:
+```
+compile({
+	project: "./project.inlang",
+	outdir: "./src/paraglide",
+	strategy: ["cookie"]
+})
+```
+
+----------------------------------------
+
+TITLE: Using Paraglide JS Messages and Runtime in JavaScript/TypeScript
+DESCRIPTION: This snippet demonstrates how to import and use the generated message functions (`m`) and runtime utilities (`getLocale`, `setLocale`) from Paraglide JS. It shows how to display localized messages, pass parameters, change the active locale, and retrieve the current locale programmatically.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/vanilla-js-ts
+
+LANGUAGE: JavaScript
+CODE:
+```
+// Import your message functions
+import { m } from "./src/paraglide/messages.js";
+import { getLocale, setLocale } from "./src/paraglide/runtime.js";
+
+// Use a message (with parameters if needed)
+console.log(m.greeting({ name: "World" })); // "Hello World!"
+
+// Change the locale
+setLocale("de");
+
+console.log(m.greeting({ name: "Welt" })); // "Hallo Welt!"
+
+// Get the current locale
+console.log(getLocale()); // "de"
+```
+
+----------------------------------------
+
+TITLE: Configure Paraglide Vite Plugin in SvelteKit
+DESCRIPTION: Integrate Paraglide JS into your SvelteKit project by adding the `paraglideVitePlugin` to your `vite.config.js`. This plugin compiles messages and defines the output directory and localization strategies (e.g., URL, cookie, base locale).
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/sveltekit
+
+LANGUAGE: javascript
+CODE:
+```
+import { sveltekit } from '@sveltejs/kit/vite';
+import { defineConfig } from 'vite';
+import { paraglideVitePlugin } from '@inlang/paraglide-js';
+
+export default defineConfig({
+	plugins: [
+		sveltekit(),
+		paraglideVitePlugin({
+			project: './project.inlang',
+			outdir: './src/lib/paraglide',
+			strategy: ['url', 'cookie', 'baseLocale']
+		})
+	]
+});
+```
+
+----------------------------------------
+
+TITLE: Integrate serverMiddleware in Metaframeworks (Next.js, SvelteKit)
+DESCRIPTION: Demonstrates basic integration of `serverMiddleware` within metaframeworks that use a `handle` function, such as Next.js, SvelteKit, Astro, or Nuxt. It processes the incoming request and then passes it to the framework's `resolve` function to continue handling.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/server
+
+LANGUAGE: javascript
+CODE:
+```
+// Basic usage in metaframeworks like NextJS, SvelteKit, Astro, Nuxt, etc.
+export const handle = async ({ event, resolve }) => {
+  return serverMiddleware(event.request, ({ request, locale }) => {
+    // let the framework further resolve the request
+    return resolve(request);
+  });
+};
+```
+
+----------------------------------------
+
+TITLE: Enable SvelteKit prerendering for SSG with Paraglide.js
+DESCRIPTION: This snippet shows how to enable static site generation (SSG) in SvelteKit by setting `prerender = true` in the `routes/+layout.ts` file. This is a crucial step when using Paraglide.js for internationalization to ensure all pages are pre-rendered during the build process.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/sveltekit
+
+LANGUAGE: TypeScript
+CODE:
+```
+// routes/+layout.ts
+export const prerender = true;
+```
+
+----------------------------------------
+
+TITLE: Pass Parameters to Paraglide JS Messages
+DESCRIPTION: For messages that include dynamic content, Paraglide JS allows passing parameters as an object. This example demonstrates how to provide values for placeholders defined within a message string. The parameters are passed as the first argument to the message function.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/basics
+
+LANGUAGE: javascript
+CODE:
+```
+// messages/en.json
+// { "greeting": "Hello {name}!" }
+
+import { m } from "./paraglide/messages.js";
+
+// Pass parameters as an object
+console.log(m.greeting({ name: "Samuel" })); // "Hello Samuel!"
+```
+
+----------------------------------------
+
+TITLE: Inlang Paraglide.js Runtime Utility Functions
+DESCRIPTION: Provides documentation for utility functions available at runtime, such as locale assertion and custom client strategy definition. These functions help manage and validate locale-related operations.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/runtime
+
+LANGUAGE: APIDOC
+CODE:
+```
+assertIsLocale(input: any): any
+  Description: Asserts that the input is a locale.
+  Parameters:
+    - input: any - The input to check.
+  Returns: any - The input if it is a locale.
+  Throws: If the input is not a locale.
+
+defineCustomClientStrategy(strategy: any, handler: CustomClientStrategyHandler): void
+  Description: Defines a custom strategy that is executed on the client.
+  Parameters:
+    - strategy: any - The name of the custom strategy to define. Must follow the pattern custom-name with alphanumeric characters, hyphens, or underscores.
+    - handler: CustomClientStrategyHandler - The handler for the custom strategy, which should implement the methods getLocale and setLocale.
+  Returns: void
+```
+
+----------------------------------------
+
+TITLE: Configure React Router Routes with Locale Prefix
+DESCRIPTION: This configuration demonstrates how to prefix your React Router routes with an optional locale parameter. This allows for URL patterns like `/en/page` or `/page`, ensuring compatibility with Paraglide JS's URL-based locale strategy.
+SOURCE: https://inlang.com/m/gerre34r/library-inlang-paraglideJs/react-router
+
+LANGUAGE: typescript
+CODE:
+```
+import {
+	type RouteConfig,
+	index,
+	prefix,
+	route,
+} from "@react-router/dev/routes";
+
+export default [
+	...prefix(":locale?", [
+		index("routes/home.tsx"),
+		route("about", "routes/about.tsx"),
+	]),
+] satisfies RouteConfig;
+```

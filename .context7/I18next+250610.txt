@@ -1,0 +1,110 @@
+TITLE: Initialize i18next with Language Detector and Resources
+DESCRIPTION: This snippet demonstrates the initialization of the i18next library. It uses `i18nextBrowserLanguageDetector` for automatic language detection and configures fallback languages and translation resources. It also includes examples of using `i18next.t` for basic translation and `i18next.getFixedT` for context-specific translations, along with debug output.
+SOURCE: https://github.com/i18next/i18next/blob/master/sample.html#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+i18next
+  .use(window.i18nextBrowserLanguageDetector)
+  .init({
+    fallbackLng: 'en',
+    //lng: 'en', // evtl. use language-detector https://github.com/i18next/i18next-browser-languageDetector
+    resources: {
+      // evtl. load via http https://github.com/i18next/i18next-http-backend
+      en: {
+        translation: {
+          input: {
+            placeholder: "a placeholder"
+          },
+          nav: {
+            home: 'Home',
+            page1: 'Page One',
+            page2: 'Page Two'
+          }
+        }
+      }
+    },
+    debug: true
+  }, function(err, t) {
+    var fixedT = i18next.getFixedT(null, null);
+    console.warn(fixedT('nav.page3', 'support'), fixedT('nav.page3', 'support') === 'support');
+    console.warn(i18next.t('input.placeholder'), i18next.t('input.placeholder') === 'a placeholder');
+    console.warn(i18next.t('nav.home'), i18next.t('nav.home') === 'Home');
+    console.warn(i18next);
+  });
+```
+
+----------------------------------------
+
+TITLE: Importing i18next in JavaScript
+DESCRIPTION: This snippet demonstrates various methods to import the i18next library in a JavaScript project, including using Deno, a raw GitHub file, or a CDN.
+SOURCE: https://github.com/i18next/i18next/blob/master/src/README.md#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+import i18next from 'https://deno.land/x/i18next/index.js';
+// or import i18next from 'https://raw.githubusercontent.com/i18next/i18next/master/src/index.js'
+// or import i18next from 'https://cdn.jsdelivr.net/gh/i18next/i18next/src/index.js'
+```
+
+----------------------------------------
+
+TITLE: Run Specific TypeScript i18next Tests (Bash)
+DESCRIPTION: Run tests for a particular TypeScript project within the i18next test suite. Use the `--project` flag followed by the project name to target a specific test scenario.
+SOURCE: https://github.com/i18next/i18next/blob/master/CONTRIBUTING.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+npm run test:typescript -- --project custom-types
+```
+
+----------------------------------------
+
+TITLE: Run Local i18next Tests (Bash)
+DESCRIPTION: Execute the local test suite for the i18next project using the designated npm script. These tests are specifically configured for local environments and not intended for CI/CD.
+SOURCE: https://github.com/i18next/i18next/blob/master/CONTRIBUTING.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm run test:local
+```
+
+----------------------------------------
+
+TITLE: Generate and Analyze TypeScript Trace (Bash)
+DESCRIPTION: Runs the TypeScript compiler (`tsc`) with a specific project configuration (`-p tsconfig.json`) and generates a performance trace into the `traceDir` directory. It then uses `analyze-trace` to process the generated trace data for analysis.
+SOURCE: https://github.com/i18next/i18next/blob/master/test/typescript/many-keys/PERF_README.md#_snippet_2
+
+LANGUAGE: Bash
+CODE:
+```
+npx tsc -p tsconfig.json --generateTrace traceDir && analyze-trace traceDir
+```
+
+----------------------------------------
+
+TITLE: Run TypeScript Performance Check (Bash)
+DESCRIPTION: Executes the TypeScript compiler (`tsc`) using `npx` to perform a type check without emitting output files (`--noEmit`). The `time` command measures the execution duration, providing a basic performance metric.
+SOURCE: https://github.com/i18next/i18next/blob/master/test/typescript/many-keys/PERF_README.md#_snippet_1
+
+LANGUAGE: Bash
+CODE:
+```
+time npx tsc --noEmit
+```
+
+----------------------------------------
+
+TITLE: Change Directory for Performance Tests (Bash)
+DESCRIPTION: Changes the current working directory to the location containing the performance test files for many keys in the TypeScript test suite.
+SOURCE: https://github.com/i18next/i18next/blob/master/test/typescript/many-keys/PERF_README.md#_snippet_0
+
+LANGUAGE: Bash
+CODE:
+```
+cd test/typescript/many-keys
+```
