@@ -2,11 +2,11 @@
 이 파일은 LLM이 `.gemini/tasks/` 폴더에 작업 기록을 작성할 때 참고하는 예시 파일입니다.
 새로운 작업 기록 파일은 아래 지침에 따라 생성되어야 합니다.
 
-1.  **파일명 규칙:** `YYYYMMDD_HHMMSS_task_summary.md`
-*   `YYYYMMDD`: 작업 완료 연월일 (예: 20240713)
-*   `HHMMSS`: 작업 완료 시분초 (예: 143000)
-*   `task_summary`: 작업 내용을 요약하는 영어 소문자 및 하이픈 조합 (예: gemini-md-update)
-*   예시: `20240713_143000_gemini-md-update.md`
+1.  파일명 규칙: `YYMMDD_HHMM-task_summary.md`
+*   `YYMMDD`: 작업 완료 연월일 (예: 240713)
+*   `HHMM`: 작업 완료 시분 (예: 1430)
+*   `task_summary`: 작업 내용을 요약하는 영어 소문자 및 언더바 조합 (예: gemini_md_update)
+*   예시: `240713_1430-gemini_md_update.md`
 
 2.  **내용 구조:** 아래 Markdown 템플릿을 복사하여 사용하고, 각 섹션을 채워주십시오.
 ---
