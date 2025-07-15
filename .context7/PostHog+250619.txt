@@ -1,0 +1,1563 @@
+TITLE: Getting or Creating User ID for PostHog Flag Evaluation
+DESCRIPTION: This code snippet shows how to obtain or generate a unique `distinct_id` for a user within the Next.js middleware. It first checks for an existing `distinct_id` in the PostHog cookie. If not found, it generates a new one using `crypto.randomUUID()` to ensure each user has a unique identifier for feature flag evaluation.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/redirect-testing.md#_snippet_7
+
+LANGUAGE: js
+CODE:
+```
+import { NextResponse } from 'next/server'
+
+export async function middleware(request) {
+  const ph_project_api_key = '<ph_project_api_key>'
+  const ph_cookie_key = `ph_${ph_project_api_key}_posthog`
+  const cookie = request.cookies.get(ph_cookie_key);
+
+  let distinct_id;
+  if (cookie) {
+    // Use PostHog distinct_id
+    distinct_id = JSON.parse(cookie.value).distinct_id;
+  } else {
+    // Create new distinct_id
+    distinct_id = crypto.randomUUID();
+  }
+//... rest of code
+```
+
+----------------------------------------
+
+TITLE: Calculate Revenue from Closed Deals by Joining Stripe and HubSpot Data
+DESCRIPTION: This SQL query joins `hubspot_contacts` data (filtering for customers by `lifecyclestage`) with `stripe_charge` data (filtering for successful charges). It aggregates the `amount` from Stripe charges and extracts the billing email, then joins with HubSpot contacts on email to compare `recent_deal_amount` with `amount_paid`.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/hubspot-reports.md#_snippet_2
+
+LANGUAGE: sql
+CODE:
+```
+with
+    closed_deals as (
+        select email, recent_deal_amount
+        from hubspot_contacts
+        where lifecyclestage = 'customer'
+    ),
+    revenue as (
+        select 
+            sum(amount) / 100 as amount_paid, 
+            JSONExtractString(billing_details, 'email') as stripe_email
+        from stripe_charge
+        where status = 'succeeded'
+        group by stripe_email
+    )
+select email, recent_deal_amount, amount_paid
+from closed_deals
+left join revenue on revenue.stripe_email = closed_deals.email
+```
+
+----------------------------------------
+
+TITLE: Constructing Custom JSON Payloads with Templating
+DESCRIPTION: This example shows how to build a custom JSON payload that conforms to an existing API specification by templating PostHog event data. It demonstrates embedding event labels, usernames, and timestamps into a structured JSON object.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/cdp/destinations/customizing-destinations.md#_snippet_3
+
+LANGUAGE: ts
+CODE:
+```
+{
+    "event_source": "posthog",
+    "event": {
+        "event_label": "conversion",
+        "username": "{person.name}",
+        "datetime": "{event.timestamp}"
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Implement A/B Test Logic for LLM with PostHog Feature Flags in Node.js
+DESCRIPTION: This JavaScript code snippet demonstrates how to integrate PostHog feature flags into a Node.js API route to conduct an A/B test. It initializes PostHog, fetches the 'llm-experiment' flag based on the user's email, and then conditionally changes the OpenAI model ('gpt-3.5-turbo' to 'gpt-4o') or the prompt based on the active variant ('model-change' or 'prompt-change'). It also ensures that all PostHog events are flushed using `posthog.shutdown()` before the API response is sent, and includes error handling for OpenAI API calls.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/llm-ab-tests.md#_snippet_9
+
+LANGUAGE: javascript
+CODE:
+```
+// your existing imports and code
+
+export async function POST(request) {
+  const posthog = new PostHog("<ph_project_api_key>", {
+    api_host:  "<ph_client_api_host>",
+  })
+  
+  const { ingredients, email } = await request.json();
+
+  try {
+    let model = "gpt-3.5-turbo";
+    let prompt = "Generate a recipe using these ingredients";
+
+    // Fetch the experiment variant and update the model or prompt if needed
+    const enabledVariant = await posthog.getFeatureFlag('llm-experiment', email);
+    if (enabledVariant === 'model-change') {
+      model = 'gpt-4o';
+    } else if (enabledVariant === 'prompt-change') {
+      prompt = 'Generate a healthy and delicious high protein recipe using these ingredients';
+    }
+
+    const completion = await openai.chat.completions.create({
+      model,
+      messages: [
+        { role: "system", content: "You are a helpful assistant that generates recipes." },
+        { role: "user", content: `${prompt}: ${ingredients}` }
+      ],
+    });
+
+    // Flush and send all pending events before the end of the request
+    await posthog.shutdown()
+
+    return new Response(JSON.stringify({ recipe: completion.choices[0].message.content }), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error('OpenAI API error:', error);
+    return new Response(JSON.stringify({ error: 'Failed to generate recipe' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Capture OpenAI Chat Completions with PostHog
+DESCRIPTION: Demonstrates how to use the PostHog-wrapped OpenAI client to create chat completions. It automatically captures AI-related properties and allows for custom distinct IDs, trace IDs, additional properties, groups, and privacy mode.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/ai-engineering/_snippets/openai.mdx#_snippet_2
+
+LANGUAGE: python
+CODE:
+```
+response = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+    messages=[
+        {"role": "user", "content": "Tell me a fun fact about hedgehogs"}
+    ],
+    posthog_distinct_id="user_123", # optional
+    posthog_trace_id="trace_123", # optional
+    posthog_properties={"conversation_id": "abc123", "paid": True}, # optional
+    posthog_groups={"company": "company_id_in_your_db"},  # optional 
+    posthog_privacy_mode=False # optional
+)
+
+print(response.choices[0].message.content)
+```
+
+LANGUAGE: ts
+CODE:
+```
+const completion = await openai.chat.completions.create({
+    model: "gpt-3.5-turbo",
+    messages: [{ role: "user", content: "Tell me a fun fact about hedgehogs" }],
+    posthogDistinctId: "user_123", // optional
+    posthogTraceId: "trace_123", // optional
+    posthogProperties: { conversation_id: "abc123", paid: true }, // optional
+    posthogGroups: { company: "company_id_in_your_db" }, // optional 
+    posthogPrivacyMode: false // optional
+});
+
+console.log(completion.choices[0].message.content)
+```
+
+----------------------------------------
+
+TITLE: Create Next.js API Route for AI Generation with PostHog Tracing
+DESCRIPTION: This JavaScript code defines a Next.js API route (/api/generate) that handles POST requests for AI text generation. It initializes PostHog and Cohere clients, then uses withTracing from @posthog/ai to wrap the Cohere model, enabling automatic capture of AI generation events into PostHog. The route takes input and model from the request body, generates text, and returns the content, with error handling for API failures.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/cohere-analytics.md#_snippet_3
+
+LANGUAGE: javascript
+CODE:
+```
+// app/api/generate/route.js
+import { NextResponse } from 'next/server';
+import { createCohere } from '@ai-sdk/cohere';
+import { generateText } from 'ai';
+import { PostHog } from 'posthog-node';
+import { withTracing } from '@posthog/ai';
+
+const phClient = new PostHog(
+  '<ph_project_api_key>',
+  { host: '<ph_api_client_host>' }
+);
+
+const cohere = createCohere({
+  apiKey: '<cohere_api_key>'
+});
+
+export async function POST(request) {
+  try {
+    const body = await request.json();
+    const { input, model } = body;
+
+    // Wrap the Cohere model with PostHog tracing
+    const tracedModel = withTracing(cohere(model), phClient, {
+      posthogDistinctId: '<your_distinct_id>', // optional
+      posthogProperties: { // optional
+        conversation_id: 'abc123',
+        user_type: 'paid'
+      }
+    });
+
+    const { text } = await generateText({
+      model: tracedModel,
+      prompt: input
+    });
+
+    return NextResponse.json({
+      content: text
+    });
+
+  } catch (error) {
+    console.error('Cohere API error:', error);
+    return NextResponse.json(
+      { error: 'There was an error processing your request' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Manage User Data Capture Opt-Out/In Status with PostHog JavaScript SDK
+DESCRIPTION: Provides examples of `posthog.opt_out_capturing()`, `posthog.opt_in_capturing()`, and `posthog.has_opted_out_capturing()` for dynamically controlling and checking a user's data capture preference. These methods allow for granular control over individual user privacy settings.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/libraries/react-native/index.mdx#_snippet_12
+
+LANGUAGE: javascript
+CODE:
+```
+posthog.opt_out_capturing()
+posthog.opt_in_capturing()
+posthog.has_opted_out_capturing()
+```
+
+----------------------------------------
+
+TITLE: Prevent Autocapture of Sensitive HTML Elements
+DESCRIPTION: To prevent PostHog's autocapture from collecting data from specific HTML elements, add the `ph-no-capture` class name to those elements. This ensures that only `name`, `id`, and `class` attributes are collected from input tags, enhancing data privacy.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/product-analytics/privacy.mdx#_snippet_0
+
+LANGUAGE: html
+CODE:
+```
+<button class='ph-no-capture'>Sensitive information here</button>
+```
+
+----------------------------------------
+
+TITLE: Correct JavaScript A/B Test User Filtering
+DESCRIPTION: This JavaScript code snippet demonstrates the correct method for filtering users in an A/B test. By first checking if 'user.hasCompletedAction' is true and returning early, it ensures that only users who are genuinely affected by the new feature are considered for the experiment, leading to more accurate and meaningful test outcomes.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/product-engineers/ab-testing-mistakes.md#_snippet_1
+
+LANGUAGE: js
+CODE:
+```
+// Correct. Will exclude unaffected users
+function showNewChanges(user) {
+
+  if (user.hasCompletedAction) {
+    return false
+  }
+
+  // other checks
+
+  if (posthog.getFeatureFlag('experiment-key') === 'control') {
+    return false;
+  }
+
+  return true
+}
+```
+
+----------------------------------------
+
+TITLE: React Component for Sticky Feature Flag Evaluation and Display
+DESCRIPTION: This React component demonstrates a complete implementation of a sticky feature flag. It uses the `usePostHog` hook to evaluate the `sticky-experiment` flag, updates component state with the variant, and captures the assignment using `posthog.capture` with `$set_once` within a `useEffect` hook. The component then conditionally renders content based on the assigned variant, ensuring a consistent user experience.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/sticky-feature-flags.md#_snippet_1
+
+LANGUAGE: React
+CODE:
+```
+import { usePostHog } from 'posthog-js/react'
+import { useEffect, useState } from 'react'
+
+export default function StickyExperiment() {
+  const [variant, setVariant] = useState(null)
+  const posthog = usePostHog()
+
+  useEffect(() => {
+    // Evaluate the sticky flag
+    const flagValue = posthog.isFeatureEnabled('sticky-experiment')
+    
+    // Set the variant state
+    setVariant(flagValue)
+    
+    // Capture the assignment (only sets on first evaluation)
+    posthog.capture('sticky_flag_evaluated', {
+      $set_once: { 
+        sticky_experiment_variant: flagValue
+      }
+    })
+  }, [posthog])
+
+  if (!variant) return <div>Loading...</div>
+
+  return (
+    <div>
+      <h1>Sticky Feature Flag Demo</h1>
+      {variant === 'test' ? (
+        <div>🧪 You're seeing the test variant!</div>
+      ) : (
+        <div>📊 You're seeing the control variant!</div>
+      )}
+    </div>
+  )
+}
+```
+
+----------------------------------------
+
+TITLE: Implement Server-Side Feature Flags in Next.js App Router
+DESCRIPTION: Shows how to fetch and apply feature flags from PostHog on the server side to conditionally render UI. An `async` function `getData()` retrieves all flags for a `distinctId`, and the main component awaits this data to check flag status.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/nextjs-app-directory-analytics.md#_snippet_9
+
+LANGUAGE: js
+CODE:
+```
+import Link from 'next/link'
+import PostHogClient from '../posthog'
+
+export default async function About() {
+
+  const flags = await getData();
+
+  return (
+    <main>
+      <h1>About</h1>
+      <Link href="/">Go home</Link>
+      { flags['main-cta'] &&
+        <Link href="http://posthog.com/">Go to PostHog</Link>
+      }
+    </main>
+  )
+}
+
+async function getData() {
+  const posthog = PostHogClient()
+  const flags = await posthog.getAllFlags(
+    'ian@posthog.com' // replace with a user's distinct ID
+  );
+  return flags
+}
+```
+
+----------------------------------------
+
+TITLE: Full Next.js Middleware for PostHog Flag Bootstrapping
+DESCRIPTION: Provides the complete `middleware.js` code, integrating distinct ID handling, API request for feature flags, and setting a `bootstrapData` cookie. This comprehensive example enables server-side bootstrapping of PostHog flags to prevent UI flickering in Next.js applications.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/nextjs-bootstrap-flags.md#_snippet_8
+
+LANGUAGE: javascript
+CODE:
+```
+// middleware.js
+import { NextResponse } from 'next/server'
+
+export async function middleware(request) {
+
+  const ph_project_api_key = '<ph_project_api_key>'
+  const ph_cookie_key = `ph_${ph_project_api_key}_posthog`
+  const cookie = request.cookies.get(ph_cookie_key);
+
+  let distinct_id;
+  if (cookie) {
+    distinct_id = JSON.parse(cookie.value).distinct_id;
+  } else {
+    distinct_id= crypto.randomUUID();
+  }
+  
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      api_key: ph_project_api_key,
+      distinct_id: distinct_id
+    })
+  };
+  
+  const ph_request = await fetch(
+		'<ph_client_api_host>/flags?v=2', // or eu
+		requestOptions
+	);
+  const data = await ph_request.json();
+
+  const bootstrapData = {
+    distinctID: distinct_id,
+    featureFlags: data.featureFlags
+  }
+
+  const response = NextResponse.next()
+  response.cookies.set('bootstrapData', JSON.stringify(bootstrapData))
+
+  return response
+}
+
+export const config = {
+  matcher: ['/((?!api|_next/static|favicon.ico|vercel.svg|next.svg).*)'],
+};
+```
+
+----------------------------------------
+
+TITLE: Schedule Batch Event Capture with Node-Cron
+DESCRIPTION: This Node.js snippet sets up a cron job using `node-cron` to periodically process cached API call data. Every 10 seconds, it iterates through the cache, captures a batch event for each distinct ID with the total calls, and then clears the cache to prepare for the next interval.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/track-high-volume-apis.md#_snippet_10
+
+LANGUAGE: node
+CODE:
+```
+// index.js
+//...
+const cron = require('node-cron');
+
+//...
+
+cron.schedule('*/10 * * * * *', () => {
+  cache.keys().forEach((key) => {
+    let apiCalls = cache.get(key);
+    client.capture(
+      { 
+        event: 'big_route_batch',
+        distinctId: key,
+        properties: { 
+          calls: apiCalls,
+	  distinctId: key
+        }
+      }
+    );
+  });
+  cache.flushAll();
+});
+```
+
+----------------------------------------
+
+TITLE: Initialize PostHog with bootstrapped feature flags in React
+DESCRIPTION: Configures the PostHog client in a React `providers.js` file. It retrieves bootstrapped feature flag data from a cookie named 'bootstrapData', parses it, and passes it to the `posthog.init` method. This ensures flags are available immediately upon page load. It also sets up the `PostHogProvider` for React components.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/nextjs-bootstrap-flags.md#_snippet_10
+
+LANGUAGE: js
+CODE:
+```
+// app/providers.js
+'use client'
+import posthog from 'posthog-js'
+import { PostHogProvider } from 'posthog-js/react'
+import cookieCutter from 'cookie-cutter'
+
+if (typeof window !== 'undefined') {
+  const flags = cookieCutter.get('bootstrapData')
+
+  let bootstrapData = {}
+  if (flags) {
+    bootstrapData = JSON.parse(flags)
+  }
+
+  posthog.init("<ph_project_api_key>", {
+    api_host: "<ph_client_api_host>",
+    bootstrap: bootstrapData
+  })
+}
+
+export default function PHProvider({ children }) {
+  return <PostHogProvider client={posthog}>{children}</PostHogProvider>
+}
+```
+
+----------------------------------------
+
+TITLE: Display Most Popular Paths as a Bar Chart with PostHog and Recharts
+DESCRIPTION: This example illustrates how to query the PostHog API for the most popular page paths using HogQL, filter out null or root paths, and render the results as a vertical bar chart using Recharts. It focuses on adapting the chart layout and axis configurations for better readability of path data.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/recharts.md#_snippet_5
+
+LANGUAGE: javascript
+CODE:
+```
+//... imports
+import { BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
+
+function App() {
+
+	// ... useState, useEffect, fetch request, etc.
+  
+      const payload = {
+        "query": {
+          "kind": "HogQLQuery",
+          "query": `SELECT 
+                      properties.$pathname AS pathname,
+                      count() AS pageview_count
+                    FROM events
+                    WHERE 
+	                    event = '$pageview' 
+	                    AND properties.$pathname IS NOT NULL 
+	                    AND properties.$pathname != '/'
+                    GROUP BY pathname
+                    ORDER BY pageview_count DESC
+                    LIMIT 10`
+        }
+      }
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(payload),
+        });
+        const data = await response.json();
+        setData(data.results);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+    fetchQuery();
+  }, []);
+
+  const formattedData = data.map(([pathname, count]) => ({
+    pathname,
+    pageviews: count
+  }));
+
+  return (
+    <>
+      <BarChart width={1000} height={400} data={formattedData} layout='vertical' >
+        <XAxis type="number" stroke='white' />
+        <YAxis type="category" dataKey="pathname" width={300} stroke='white' />
+        <Tooltip />
+        <Bar dataKey="pageviews" fill="#FFA500" activeBar={false} />
+      </BarChart>
+    </>
+  )
+}
+
+export default App
+```
+
+LANGUAGE: hogql
+CODE:
+```
+SELECT 
+                      properties.$pathname AS pathname,
+                      count() AS pageview_count
+                    FROM events
+                    WHERE 
+	                    event = '$pageview' 
+	                    AND properties.$pathname IS NOT NULL 
+	                    AND properties.$pathname != '/'
+                    GROUP BY pathname
+                    ORDER BY pageview_count DESC
+                    LIMIT 10
+```
+
+----------------------------------------
+
+TITLE: Calculate Monthly Recurring Revenue (MRR) from Stripe data
+DESCRIPTION: This SQL query mimics Stripe's MRR calculation by summing monthly-normalized amounts of all active subscriptions. It extracts values from JSON fields in the `stripe_subscription` table, normalizes annual subscriptions to a monthly equivalent, and filters for active subscriptions not in trial. A limitation is noted regarding the inability to calculate rolling MRR due to Stripe API sync constraints.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/stripe-reports.md#_snippet_0
+
+LANGUAGE: SQL
+CODE:
+```
+WITH subscription_items AS (
+   SELECT
+       id,
+       current_period_start,
+       JSONExtractArrayRaw(items ?? '[]', 'data') AS data_items
+   FROM stripe_subscription
+   WHERE status = 'active'
+   AND (trial_end IS NULL OR trial_end < now())
+),
+flattened_items AS (
+   SELECT
+       id,
+       current_period_start,
+       arrayJoin(data_items) AS item
+   FROM subscription_items
+)
+SELECT
+   sum(
+       case
+           when JSONExtractString(JSONExtractRaw(item, 'plan'), 'interval') = 'month' 
+               then JSONExtractFloat(JSONExtractRaw(item, 'plan'), 'amount')
+           when JSONExtractString(JSONExtractRaw(item, 'plan'), 'interval') = 'year' 
+               then JSONExtractFloat(JSONExtractRaw(item, 'plan'), 'amount') / 12
+           else 0
+       end
+   ) / 100 AS current_mrr,
+   count(DISTINCT id) as subscription_count 
+FROM flattened_items
+WHERE JSONExtractBool(JSONExtractRaw(item, 'plan'), 'active') = true
+AND JSONExtractFloat(JSONExtractRaw(item, 'plan'), 'amount') > 0
+```
+
+----------------------------------------
+
+TITLE: PostHog JavaScript SDK Initialization
+DESCRIPTION: This script initializes the PostHog JavaScript SDK, loading the necessary `array.js` file and defining all available PostHog methods (e.g., `capture`, `identify`, `getFeatureFlag`). It sets up the global `posthog` object and prepares it for tracking and feature flag management. The second line demonstrates how to call `posthog.init` with your project API key and host.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/integrate/snippet.mdx#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init('<ph_project_api_key>',{api_host:'<ph_client_api_host>', defaults:'<ph_posthog_js_defaults>'})
+```
+
+----------------------------------------
+
+TITLE: Set up PostHog Autocapture with HTML Snippet
+DESCRIPTION: This HTML snippet provides the fastest way to integrate PostHog's autocapture functionality into your website. Paste it into the <head> tags of your base HTML page to automatically capture events like pageviews, clicks, and form submissions. Remember to replace the placeholder values for API key, host, and defaults.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/event-tracking-guide.md#_snippet_0
+
+LANGUAGE: html
+CODE:
+```
+<script>
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+  posthog.init('<ph_project_api_key>',{api_host:'<ph_client_api_host>', defaults:'<ph_posthog_js_defaults>'})
+</script>
+```
+
+----------------------------------------
+
+TITLE: Capture Custom Event with PostHog (Multi-language)
+DESCRIPTION: Illustrates how to capture a custom event, 'order_created', with associated properties like order ID, subtotal, and customer name, across various programming languages using the PostHog client.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/getting-started/_snippets/set-person-properties.mdx#_snippet_1
+
+LANGUAGE: python
+CODE:
+```
+posthog.capture(
+  'distinct_id',
+  'order_created',
+  {
+      'order_id': '#0054',
+      'subtotal': 3599,
+      'customer_name': 'Max Hedgehog'
+  }
+)
+```
+
+LANGUAGE: php
+CODE:
+```
+PostHog::capture(array(
+  'distinctId' => 'distinct_id',
+  'event' => 'order_created',
+  'properties' => array(
+    'order_id' => '#0054',
+    'subtotal' => 3599,
+    'customer_name' => 'Max Hedgehog'
+  )
+));
+```
+
+LANGUAGE: ruby
+CODE:
+```
+posthog.capture({
+    distinct_id: 'distinct_id',
+    event: 'order_created',
+    properties: {
+        order_id: '#0054',
+        subtotal: 3599,
+        customer_name: 'Max Hedgehog'
+    }
+})
+```
+
+LANGUAGE: go
+CODE:
+```
+client.Enqueue(posthog.Capture{
+  DistinctId: "distinct_id",
+  Event:      "order_created",
+  Properties: posthog.NewProperties().
+    Set("order_id", "#0054").
+    Set("subtotal", 3599).
+    Set("customer_name", "Max Hedgehog")
+})
+```
+
+LANGUAGE: java
+CODE:
+```
+posthog.capture(
+  "distinct id",
+  "movie_played",
+  new HashMap<String, Object>() {
+    {
+      put("order_id", "#0054");
+      put("subtotal", 3599);
+      put("customer_name", "Max Hedgehog");
+    }
+  }
+);
+```
+
+----------------------------------------
+
+TITLE: Capture Event with Person Properties in C#
+DESCRIPTION: To set person properties in user profiles, include them when capturing an event. This allows associating custom data like 'name' or 'initial_url' with a distinct user.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/libraries/dotnet/index.mdx#_snippet_0
+
+LANGUAGE: csharp
+CODE:
+```
+posthog.Capture(
+    "distinct_id",
+    "event_name",
+    personPropertiesToSet: new() { ["name"] = "Max Hedgehog" },
+    personPropertiesToSetOnce: new() { ["initial_url"] = "/blog" }
+);
+```
+
+----------------------------------------
+
+TITLE: Install PostHog JavaScript Snippet
+DESCRIPTION: This snippet initializes the PostHog library on your website, enabling automatic capture of pageviews and other events. Replace the placeholder values for `<ph_project_api_key>` and `<ph_client_api_host>` with your project's specific credentials. It should be placed within the `<head>` tags of your HTML, ideally just before the closing `</head>` tag, to ensure it loads on all pages. For ES5 support (e.g., Internet Explorer 11), replace `/static/array.js` with `/static/array.full.es5.js` within the snippet.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/integrate/_snippets/install-js-snippet.mdx#_snippet_0
+
+LANGUAGE: HTML
+CODE:
+```
+<script>
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments)))}}(p="posthog"),r=["ph_request_queue","identify","reset","capture","disable","opt_out_capturing","has_opted_out_capturing","is_opted_out_capturing","set_config","get_config","onFeatureFlags","onSessionId","reloadFeatureFlags","group","people","register","unregister","isFeatureEnabled","addSuperProperties","addSuperPropertiesAndCapture","setProfileProperties","setOnceProfileProperties","clearCache","screen","startSessionRecording","stopSessionRecording","sendEvents"],g(e,p),function(){for(var t=0;t<r.length;t++)g(e,r[t])}(),e._i.push([i,s,a]))}(document,window.posthog||[]);
+posthog.init('<ph_project_api_key>',{api_host:'<ph_client_api_host>'})
+</script>
+```
+
+----------------------------------------
+
+TITLE: Identify User with Properties in PostHog
+DESCRIPTION: The 'identify' method is used to associate a distinct ID with a user and set their properties in PostHog. This is crucial for tracking individual user journeys and segmenting your audience. It typically requires a unique 'distinctId' and a map or object of 'properties' such as name and email.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/getting-started/_snippets/identify-user-backend.mdx#_snippet_0
+
+LANGUAGE: node
+CODE:
+```
+client.identify({
+    distinctId: 'distinct_id',
+    properties: {
+        name: 'Max Hedgehog',
+        email: 'max@hedgehogmail.com',
+    },
+})
+```
+
+LANGUAGE: python
+CODE:
+```
+posthog.identify(
+    'distinct_id',
+    {
+        'name': 'Max Hedgehog',
+        'email': 'max@hedgehogmail.com'
+    }
+)
+```
+
+LANGUAGE: php
+CODE:
+```
+PostHog::identify(array(
+  'distinctId' => 'distinct_id',
+  'properties' => array(
+    'name' => 'Max Hedgehog',
+    'email' => 'max@hedgehogmail.com'
+  )
+));
+```
+
+LANGUAGE: ruby
+CODE:
+```
+posthog.identify({
+  distinct_id: "distinct_id",
+  properties: {
+    name: "Max Hedgehog",
+    email: "max@hedgehogmail.com"
+  }
+})
+```
+
+LANGUAGE: go
+CODE:
+```
+client.Enqueue(posthog.Identify{
+  DistinctId: "distinct_id",
+  Properties: posthog.NewProperties().
+    Set("name", "Max Hedgehog").
+    Set("email", "max@hedgehogmail.com")
+})
+```
+
+LANGUAGE: java
+CODE:
+```
+posthog.identify(
+  "distinct_id",
+  new HashMap<String, Object>() {
+    {
+      put("name", "Max Hedgehog");
+      put("email", "max@hedgehogmail.com");
+    }
+  }
+);
+```
+
+----------------------------------------
+
+TITLE: Python Script to Migrate Statsig Dynamic Configs to PostHog
+DESCRIPTION: This Python script automates the migration of dynamic configurations from Statsig to PostHog. It fetches dynamic configs from the Statsig Console API, transforms their structure (including default values, rules, and return values) into PostHog feature flag variants and payloads, and then creates these feature flags in PostHog via its API. The script handles the conversion of Statsig rules into PostHog variants and ensures the default value is set correctly. It requires Statsig console API key, PostHog API key, and project ID.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/migrate/statsig.mdx#_snippet_1
+
+LANGUAGE: python
+CODE:
+```
+# Convert dynamic configs to flags
+import json
+import requests
+
+console_key = 'console-a1B2c3D4e5F6g7H8i9J0k2L3M4N5o6P7Q8R9S0TUvWxYz'
+configs_url = 'https://statsigapi.net/console/v1/dynamic_configs'
+ph_api_key = 'phx_1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0tuvwxyz'
+ph_project_id = '12345'
+
+headers = {
+  'Accept': 'application/json',
+  'STATSIG-API-KEY': console_key
+}
+params = {
+  'limit': 10,
+  'page': 1
+}
+
+response = requests.get(configs_url, headers=headers, params=params)
+if response.status_code == 200:
+  configs_data = response.json()
+else:
+  print(f"Error: {response.status_code}")
+  print(response.text)
+
+# Convert dynamic configs to PostHog flag format
+configs = configs_data["data"]
+for config in configs:
+
+  variants = []
+  payloads = {}
+
+  rules = config.get('rules', [])
+  if len(rules) == 0:
+    payloads["true"] = json.dumps(config['defaultValue'])
+  else: 
+    default_variant = {
+      "key": "default",
+      "description": "Default from Statsig",
+      "rollout_percentage": 100
+    }
+    variants.append(default_variant)
+    payloads["default"] = json.dumps(config['defaultValue'])
+
+    rules = config.get('rules', [])
+    for rule in rules:
+      variant_key = rule['name'].lower().replace(' ', '_')
+      variant = {
+        "key": variant_key,
+        "description": rule['name'] + " from Statsig. Use an override to target this variant.",
+        "rollout_percentage": 0
+      }
+      variants.append(variant)
+
+      payloads[variant_key] = json.dumps(rule['returnValue'])
+
+  ph_flag = {
+    "created_by": {
+      "first_name": config['creatorName'].split()[0],
+      "last_name": config['creatorName'].split()[-1] if len(config['creatorName'].split()) > 1 else "",
+      "email": config['creatorEmail']
+    },
+    "name": f"{config['name']}\n\n{config['description']}",
+    "key": config['id'],
+    "active": config['isEnabled'],
+    "filters": {
+      "groups": [
+        {
+          "properties": [],
+          "rollout_percentage": 100
+        }
+      ],
+      "multivariate": {"variants": variants} if len(variants) > 1 else None,
+      "payloads": payloads
+    }
+  }
+
+  # Create flag in PostHog
+  response = requests.post(
+    "<ph_app_host>/api/projects/{ph_project_id}/feature_flags/".format(
+        ph_project_id=ph_project_id
+    ),
+    headers={"Authorization": "Bearer {}".format(ph_api_key)},
+    json=ph_flag
+  ).json()
+```
+
+----------------------------------------
+
+TITLE: Set Person Properties using $set and $set_once
+DESCRIPTION: The recommended way to set person properties is to send a `$set` event with a `$set` property. For SDKs that provide helper methods (such as `posthog.setPersonProperties`), we recommend using them, as they handle important side effects like switching the user to identified mode. This allows setting both standard properties (`$set`) and properties that should only be set once (`$set_once`).
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/getting-started/_snippets/user-properties-how-to-set.mdx#_snippet_0
+
+LANGUAGE: js-web
+CODE:
+```
+posthog.setPersonProperties(
+    { name: 'Max Hedgehog' }, // $set properties
+    { initial_url: '/blog' }  // $set_once properties
+)
+```
+
+LANGUAGE: node
+CODE:
+```
+client.capture({
+    distinctId: 'distinct_id',
+    event: '$set',
+    properties: {
+        $set: { name: 'Max Hedgehog'  },
+        $set_once: { initial_url: '/blog' },
+    },
+})
+```
+
+LANGUAGE: python
+CODE:
+```
+posthog.capture(
+    'distinct_id',
+    event='$set',
+    properties={
+        '$set': {'name': 'Max Hedgehog'},
+        '$set_once': {'initial_url': '/blog'}
+    }
+)
+```
+
+LANGUAGE: php
+CODE:
+```
+PostHog::capture(array(
+    'distinctId' => 'distinct_id',
+    'event' => '$set',
+    'properties' => array(
+        '$set' => array(
+            'name' => 'Max Hedgehog'
+        ),
+        '$set_once' => array(
+            'initial_url' => '/blog'
+        )
+    )
+));
+```
+
+LANGUAGE: ruby
+CODE:
+```
+posthog.capture({
+    distinct_id: 'distinct_id',
+    event: '$set',
+    properties: {
+        '$set': { name: 'Max Hedgehog' },
+        '$set_once': { initial_url: '/blog' }
+    }
+})
+```
+
+LANGUAGE: go
+CODE:
+```
+client.Enqueue(posthog.Capture{
+    DistinctId: "distinct_id",
+    Event:      "$set",
+    Properties: map[string]interface{}{
+        "$set": map[string]interface{}{
+            "name": "Max Hedgehog",
+        },
+        "$set_once": map[string]interface{}{
+            "initial_url": "/blog",
+        },
+    },
+})
+```
+
+LANGUAGE: java
+CODE:
+```
+posthog.capture("distinct_id", "$set", new HashMap<String, Object>() {
+  {
+    put("$set",  new HashMap<String, Object>() {       
+      {
+        put("name", "Max Hedgehog");
+      }
+    });
+    put("$set_once",  new HashMap<String, Object>() {
+      {
+        put("initial_url", "/blog");
+      }
+    });
+  }
+});
+```
+
+LANGUAGE: bash
+CODE:
+```
+curl -v -L --header "Content-Type: application/json" -d '{
+    "api_key": "<ph_project_api_key>",
+    "properties": {
+      "$set": {"name": "Max Hedgehog" },
+      "$set_once": {"initial_url": "/blog"}
+    },
+    "timestamp": "2020-08-16 09:03:11.913767",
+    "distinct_id": "1234",
+    "event": "$set"
+}' <ph_client_api_host>/i/v0/e/
+```
+
+----------------------------------------
+
+TITLE: Masking Views for Privacy in Mobile Session Replay
+DESCRIPTION: To ensure user privacy, PostHog's mobile session replay allows masking of sensitive views. This is achieved by adding a specific tag or accessibility identifier to the view, preventing its content from being captured in recordings. This example demonstrates how to apply the `ph-no-capture` tag in Android XML layouts and set the `accessibilityIdentifier` in Swift for iOS.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/blog/mobile-session-replay.md#_snippet_0
+
+LANGUAGE: XML
+CODE:
+```
+<ImageView
+    android:id="@+id/imvProfilePhoto"
+    android:layout_width="200dp"
+    android:layout_height="200dp"
+    android:tag="ph-no-capture"
+/>
+```
+
+LANGUAGE: Swift
+CODE:
+```
+let imvProfilePhoto = UIImageView(frame: CGRect(x: 50, y: 50, width: 100, height: 100))
+imvProfilePhoto.accessibilityIdentifier = "ph-no-capture"
+```
+
+----------------------------------------
+
+TITLE: Using PostHog Functions with `usePostHog` Hook in React
+DESCRIPTION: Illustrates how to access and use `posthog-js` methods like `identify`, `group`, and `capture` within a React component using the `usePostHog` hook. It also demonstrates custom event capturing, autocapture, and how to ignore specific elements from autocapture.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/libraries/react/index.mdx#_snippet_2
+
+LANGUAGE: react
+CODE:
+```
+import { usePostHog } from 'posthog-js/react'
+import { useEffect } from 'react'
+import { useUser, useLogin } from '../lib/user'
+
+function App() {
+    const posthog = usePostHog()
+    const login = useLogin()
+    const user = useUser()
+
+    useEffect(() => {
+        if (user) {
+            // Identify sends an event, so you may want to limit how often you call it
+            posthog?.identify(user.id, {
+                email: user.email,
+            })
+            posthog?.group('company', user.company_id)
+        }
+    }, [posthog, user.id, user.email, user.company_id])
+
+    const loginClicked = () => {
+        posthog?.capture('clicked_log_in')
+        login()
+    }
+
+    return (
+        <div className="App">
+            {/* Fire a custom event when the button is clicked */}
+            <button onClick={() => posthog?.capture('button_clicked')}>Click me</button>
+            {/* This button click event is autocaptured by default */}
+            <button data-attr="autocapture-button">Autocapture buttons</button>
+            {/* This button click event is not autocaptured */}
+            <button className="ph-no-capture">Ignore certain elements</button>
+            <button onClick={loginClicked}>Login</button>
+        </div>
+    )
+}
+
+export default App
+```
+
+----------------------------------------
+
+TITLE: Create Next.js API Route for OpenRouter Integration and PostHog Tracking
+DESCRIPTION: This JavaScript code defines a Next.js API route (`app/api/generate/route.js`) that handles POST requests. It uses the `@posthog/ai` OpenAI client to interact with the OpenRouter API, sending user input and a specified model. The `posthog-node` client is integrated to capture `$ai_generation` events for observability. It returns the generated content or an error response.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/openrouter-observability.md#_snippet_3
+
+LANGUAGE: javascript
+CODE:
+```
+import { NextResponse } from 'next/server';
+import { OpenAI } from '@posthog/ai'
+import { PostHog } from 'posthog-node'
+
+const phClient = new PostHog(
+  '<ph_project_api_key>',
+  { host: '<ph_api_client_host>' }
+)
+
+const openai = new OpenAI({
+  baseURL: 'https://openrouter.ai/api/v1',
+  apiKey: '<openrouter_api_key>',
+  posthog: phClient,
+});
+
+export async function POST(request) {
+  try {
+    const body = await request.json();
+    const { input, model } = body;
+
+    const completion = await openai.chat.completions.create({
+      messages: [{ role: "user", content: input }],
+      model: model
+    });
+
+    return NextResponse.json({
+      content: completion.choices[0].message.content
+    });
+
+  } catch (error) {
+    console.error('OpenRouter API error:', error);
+    return NextResponse.json(
+      { error: 'There was an error processing your request' },
+      { status: 500 }
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Capture Events with Custom Properties
+DESCRIPTION: This snippet demonstrates how to send custom properties along with an event capture call. Properties are additional data points that provide context to events, enabling detailed segmentation, filtering, and breakdown analysis within PostHog. They can include various data formats like booleans, dates, and numerics.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/event-tracking-guide.md#_snippet_5
+
+LANGUAGE: js
+CODE:
+```
+posthog.capture(
+  'event_name', 
+  { property1: 'value', property2: 'another value' }
+);
+```
+
+LANGUAGE: php
+CODE:
+```
+PostHog::capture(array(
+  'distinctId' => 'distinct_id_of_your_user',
+  'event' => 'movie_played',
+  'properties' => array(
+    'movie_id' => '123',
+    'category' => 'romcom'
+  )
+));
+```
+
+LANGUAGE: ruby
+CODE:
+```
+posthog.capture({
+  distinct_id: 'distinct_id',
+  event: 'movie_played',
+  properties: {
+    movie_id: '123',
+    category: 'romcom'
+  }
+})
+```
+
+LANGUAGE: go
+CODE:
+```
+client.Enqueue(posthog.Capture{
+  DistinctId: "test-user",
+  Event:      "test-snippet",
+  Properties: posthog.NewProperties().
+    Set("plan", "Enterprise").
+    Set("friends", 42),
+    Set("proUser", true),
+})
+```
+
+----------------------------------------
+
+TITLE: Python Script for Google Analytics to PostHog Data Conversion
+DESCRIPTION: This comprehensive Python script demonstrates how to retrieve event data from Google BigQuery, transform it to match PostHog's schema, and then capture it using the PostHog Python SDK. It includes functions for flattening nested records, mapping keys, omitting irrelevant data, and extracting person properties, ensuring compatibility for historical data migration.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/migrate/google-analytics.mdx#_snippet_1
+
+LANGUAGE: python
+CODE:
+```
+from posthog import Posthog
+from datetime import datetime
+from google.cloud import bigquery
+
+
+posthog = Posthog(
+  '<ph_project_api_key>', 
+  host='<ph_client_api_host>',
+  debug=True,
+  historical_migration=True
+)
+
+key_mapping = {
+  'page_title': 'title',
+  'page_location': '$current_url',
+  'page_referrer': '$referrer',
+  'category': '$device_type',
+  'operating_system': '$os',
+  'operating_system_version': '$os_version',
+  'language': '$browser_language',
+  'web_info.browser': '$browser',
+  'web_info.browser_version': '$browser_version',
+  'web_info.hostname': '$host',
+  'city': '$geoip_city_name',
+  'country': '$geoip_country_name',
+  'continent': '$geoip_continent_name',
+  'region': '$geoip_subdivision_1_name'
+}
+
+omitted_keys = [
+  'event_date',
+  'event_timestamp',
+  'event_name',
+  'event_bundle_sequence_id',
+  'event_server_timestamp_offset',
+  'user_id',
+  'user_pseudo_id',
+  'stream_id',
+  'platform',
+  'batch_event_index',
+  'batch_page_id',
+  'batch_ordering_id',
+  'session_traffic_source_last_click'
+]
+
+def get_record_key_value(param):
+  record_key = param['key']
+  value_dict = param['value']
+  record_value = next((v for v in value_dict.values() if v is not None), None)
+  return record_key, record_value
+
+def flatten_row(row):
+  flat_row = {}
+  for key, value in row.items():
+    print(f"{key}: {value}")
+    if value == None:
+      continue
+    elif isinstance(value, list) and len(value) == 0:
+      continue
+    elif key in omitted_keys:
+      continue
+    elif key in ['user_properties', 'user_first_touch_timestamp', 'user_ltv']:
+      # We'll handle user properties separately
+      continue
+    elif key in ['event_params', 'items']:
+      # Flatten records
+      for param in value:
+        record_key, record_value = get_record_key_value(param)
+        flat_row[record_key] = record_value
+    elif key in ['privacy_info', 'device', 'geo', 'app_info', 'collected_traffic_source', 'traffic_source', 'event_dimensions', 'ecommerce']:
+      # Flatten dicts and nested dicts
+      for key, val in value.items():
+        if isinstance(val, dict):
+          for sub_key, sub_val in val.items():
+            # We might not want to do this
+            flat_row[f"{key}.{sub_key}"] = sub_val
+        else:
+          flat_row[key] = val
+    else:
+      flat_row[key] = value
+  return flat_row
+
+def get_person_properties(row):
+  person_properties = {}
+  user_properties = row.get('user_properties', [])
+  for prop in user_properties:
+    key, value = get_record_key_value(prop)
+    person_properties[key] = value
+  user_first_touch_timestamp = row.get('user_first_touch_timestamp')
+  user_ltv = row.get('user_ltv')
+  if user_first_touch_timestamp is not None:
+    person_properties['user_first_touch_timestamp'] = user_first_touch_timestamp
+  if user_ltv is not None:
+    person_properties['user_ltv'] = user_ltv
+  return person_properties
+
+def get_properties(row):
+  properties = {}
+  for key, value in row.items():
+    if value == None:
+      continue
+    elif key in omitted_keys:
+      continue
+    elif value in ['(not provided)', '(not set)']:
+      continue
+    elif key in key_mapping:
+      properties[key_mapping[key]] = value
+    else:
+      properties[key] = value
+  return properties
+```
+
+----------------------------------------
+
+TITLE: Cypress Integration Tests for Funnel User Experience
+DESCRIPTION: This JavaScript code provides a comprehensive Cypress integration test suite for a 'Funnels' feature within a web application. It includes `beforeEach` setup, tests for page loading, editing existing funnels, navigating to a new funnel creation screen, and an end-to-end flow for creating a new funnel by adding an action. The tests interact with elements using `data-attr` selectors for reliability.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/blog/cypress-end-to-end-tests.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+describe('Funnels', () => {
+  //boilerplate to make sure we are on the funnel page of the app
+  beforeEach(() => {
+    cy.get('[data-attr=menu-item-funnels]').click()
+  })
+
+  // Test to make sure that the funnel page actually loaded
+  it('Funnels loaded', () => {
+    cy.get('h1').should('contain', 'Funnels')
+  })
+
+  // Test that when we select a funnel then we can edit that funnel
+  it('Click on a funnel', () => {
+    cy.get('[data-attr=funnel-link-0]').click()
+    cy.get('[data-attr=funnel-editor]').should('exist')
+  })
+
+  // Test that we can create a new funnel when we click 'create funnel' button
+  it('Go to new funnel screen', () => {
+    cy.get('[data-attr=create-funnel]').click()
+    cy.get('[data-attr=funnel-editor]').should('exist')
+  })
+
+  // Test that we can create a new funnel end to end
+  it('Add 1 action to funnel', () => {
+    cy.get('[data-attr=create-funnel]').click()
+    cy.get('[data-attr=funnel-editor]').should('exist')
+
+    cy.get('[data-attr=edit-funnel-input]').type('Test funnel')
+    cy.get('[data-attr=add-action-event-button]').click()
+    cy.get('[data-attr=trend-element-subject-0]').click()
+    cy.contains('Pageviews').click()
+
+    cy.get('[data-attr=save-funnel-button]').click()
+
+    cy.get('[data-attr=funnel-viz]').should('exist')
+  })
+})
+```
+
+----------------------------------------
+
+TITLE: Capture Multiple Events in Batches with PostHog
+DESCRIPTION: This snippet illustrates how to initialize the PostHog client and capture multiple events in a batch. It shows examples for both Python and Node.js, demonstrating how to define event data including distinct IDs, event names, properties, and timestamps, then send them using the respective client libraries. The `historicalMigration` option is also shown for specific use cases.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/migrate/_snippets/sdk-migration.mdx#_snippet_0
+
+LANGUAGE: python
+CODE:
+```
+from posthog import Posthog
+from datetime import datetime
+
+posthog = Posthog(
+    '<ph_project_api_key>', 
+    host='<ph_client_api_host>',
+    debug=True,
+    historical_migration=True
+)
+
+events = [
+  {
+    "event": "batched_event_name",
+    "properties": {
+      "distinct_id": "user_id",
+      "timestamp": datetime.fromisoformat("2024-04-02T12:00:00")
+    }
+  },
+  {
+    "event": "batched_event_name",
+    "properties": {
+      "distinct_id": "used_id",
+      "timestamp": datetime.fromisoformat("2024-04-02T12:00:00")
+    }
+  }
+]
+
+for event in events:
+  posthog.capture(
+    distinct_id=event["properties"]["distinct_id"],
+    event=event["event"],
+    properties=event["properties"],
+    timestamp=event["properties"]["timestamp"],
+  )
+```
+
+LANGUAGE: node
+CODE:
+```
+import { PostHog } from 'posthog-node'
+
+const client = new PostHog(
+    '<ph_project_api_key>',
+    { 
+      host: '<ph_client_api_host>', 
+      historicalMigration: true
+    }
+)
+
+client.debug()
+
+client.capture({
+    event: "batched_event_name",
+    distinctId: "user_id",
+    properties: {},
+    timestamp: "2024-04-03T12:00:00Z"
+})
+
+client.capture({
+    event: "batched_event_name",
+    distinctId: "user_id",
+    properties: {},
+    timestamp: "2024-04-03T13:00:00Z"
+})
+
+await client.shutdown() 
+```
+
+----------------------------------------
+
+TITLE: Set User Properties Once with $set_once in PostHog
+DESCRIPTION: Explains the `$set_once` property, which functions similarly to `$set` but with a key difference: it only sets the property if it has not been previously defined for the user. This ensures a property's initial value is preserved.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/libraries/react-native/index.mdx#_snippet_8
+
+LANGUAGE: js
+CODE:
+```
+posthog.capture('some_event', { $set_once: { userProperty: 'value' } })
+```
+
+----------------------------------------
+
+TITLE: Manually Configure PostHog Secure Cookies
+DESCRIPTION: Control the `SECURE_COOKIES` flag, which defaults to 'True' in production and 'False' in debug/test modes. Setting this flag to 'True' is crucial for security when handling live data and running on HTTPS, affecting Django sessions, CSRF tokens, and Toolbar login. Incorrect settings can lead to login issues or Man-In-The-Middle (MITM) vulnerabilities.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/self-host/configure/securing-posthog.mdx#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+SECURE_COOKIES=False
+# or
+SECURE_COOKIES=True
+```
+
+----------------------------------------
+
+TITLE: Implement Feature Flag Logic in Flutter `main.dart`
+DESCRIPTION: This Dart code snippet demonstrates how to integrate a Posthog feature flag into a Flutter application. It fetches the 'my-cool-flag' flag using `isFeatureEnabled` and passes its boolean state to `FeatureScreenView` via `Navigator.push`. The `FeatureScreenView` then uses this state to conditionally change its background color, showcasing dynamic UI control based on feature flag status.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/tutorials/flutter-feature-flags.md#_snippet_8
+
+LANGUAGE: dart
+CODE:
+```
+import 'package:flutter/material.dart';
+import 'feature_screen_view.dart';
+import 'package:posthog_flutter/posthog_flutter.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      title: 'Flutter Feature Flags App',
+      home: MainScreen(),
+    );
+  }
+}
+
+class MainScreen extends StatelessWidget {
+  const MainScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Main Screen')),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text('Hello, world!'),
+            ElevatedButton(
+              child: const Text('Go to Next Screen'),
+              onPressed: () async { 
+                bool isFlagEnabled =  await Posthog().isFeatureEnabled('my-cool-flag'); 
+                if (context.mounted) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => FeatureScreenView(isFlagEnabled: isFlagEnabled)),
+                  );
+                }
+              }
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Dynamically Set PostHog Persistence Based on Cookie Consent
+DESCRIPTION: This JavaScript Web SDK snippet shows how to dynamically update the PostHog client's persistence setting based on user cookie consent. If consent is given, data is persisted using `localStorage+cookie`; otherwise, it uses `memory` persistence, ensuring data is only stored for the current page view and aiding in compliance with privacy regulations.
+SOURCE: https://github.com/posthog/posthog.com/blob/master/contents/docs/privacy/data-collection.mdx#_snippet_3
+
+LANGUAGE: js-web
+CODE:
+```
+const handleCookieConsent = (consent) => {
+  posthog.set_config({ persistence: consent === 'yes' ? 'localStorage+cookie' : 'memory' });
+  localStorage.setItem('cookie_consent', consent);
+};
+```
