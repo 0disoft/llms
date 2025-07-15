@@ -1,0 +1,1501 @@
+TITLE: Installing Phaser via npm
+DESCRIPTION: This command installs the Phaser game framework as a dependency in your project using the Node Package Manager (npm). It's the recommended way to include Phaser in modern JavaScript/TypeScript development workflows.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/README.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+npm install phaser
+```
+
+----------------------------------------
+
+TITLE: Sequencing Multiple Events with Phaser Timeline (JavaScript)
+DESCRIPTION: This comprehensive example illustrates how to sequence multiple diverse events within a single Phaser Timeline using an array of configuration objects. It demonstrates scheduling a sprite creation with sound, a tween animation with another sound, and a custom event with property setting, showcasing the Timeline's flexibility for complex game sequences. The timeline is started with `play()` after its definition.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/Timeline.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+const timeline = this.add.timeline([
+    {
+        at: 1000,
+        run: () => { this.logo = this.add.sprite(400, 300, 'logo'); },
+        sound: 'TitleMusic'
+    },
+    {
+        at: 2500,
+        tween: {
+            targets: this.logo,
+            y: 600,
+            yoyo: true
+        },
+        sound: 'Explode'
+    },
+    {
+        at: 8000,
+        event: 'HURRY_PLAYER',
+        target: this.background,
+        set: {
+            tint: 0xff0000
+        }
+    }
+]);
+
+timeline.play();
+```
+
+----------------------------------------
+
+TITLE: Creating a New Phaser Game Project with CLI
+DESCRIPTION: This command-line interface (CLI) tool, `create-phaser-game`, provides an interactive way to quickly set up a new Phaser project. It allows users to select from official project templates and demo games, downloading and configuring the necessary packages. It supports various package managers like npm, npx, yarn, pnpm, and bun.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/README.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm create @phaserjs/game@latest
+npx @phaserjs/create-game@latest
+yarn create @phaserjs/game
+pnpm create @phaserjs/game@latest
+bun create @phaserjs/game@latest
+```
+
+----------------------------------------
+
+TITLE: Initializing a Phaser Game with ESM Imports
+DESCRIPTION: This snippet demonstrates how to set up a basic Phaser game using ES Module (ESM) imports. It shows how to import core Phaser classes like `AUTO`, `Scene`, and `Game` directly from the `phaser.esm.js` bundle, allowing for direct browser usage without a separate bundler. The example initializes a `Game` instance with a simple `Scene` that adds text to the display.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/ESMSupport.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { AUTO, Scene, Game } from './phaser.esm.js';
+
+class Test extends Scene
+{
+    constructor ()
+    {
+        super();
+    }
+
+    create ()
+    {
+        this.add.text(10, 10, 'Welcome to Phaser ESM');
+    }
+}
+
+const config = {
+    type: AUTO,
+    width: 800,
+    height: 600,
+    parent: 'phaser-example',
+    scene: [ Test ]
+};
+
+const game = new Game(config);
+```
+
+----------------------------------------
+
+TITLE: Defining Tween Property with Start, From, and To Values in Phaser
+DESCRIPTION: This snippet illustrates the most comprehensive way to define a tween property using `start`, `from`, and `to` values. The target's property (e.g., `alpha`) is immediately set to the `start` value (0) upon tween activation. After any delays, it transitions to the `from` value (0.5) and then tweens to the `to` value (1) over the tween's duration. This provides maximum control over initial, pre-tween, and final states.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.19/CHANGELOG-v3.19.md#_snippet_11
+
+LANGUAGE: JavaScript
+CODE:
+```
+alpha: { start: 0, from: 0.5, to: 1 }
+```
+
+----------------------------------------
+
+TITLE: Sequencing Sprite Animations in Phaser 3
+DESCRIPTION: This snippet demonstrates how to chain multiple animations together using the new `anims.chain` method in Phaser 3. It allows for sequential playback of animations on a Sprite, ensuring they play in the specified order after the initial animation completes. This feature leverages the `nextAnimsQueue` property for managing the animation sequence.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.24/CHANGELOG-v3.24.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.mole.anims.play('digging').anims.chain('lifting').anims.chain('looking').anims.chain('lowering');
+```
+
+----------------------------------------
+
+TITLE: Defining Tween Property with From and To Values in Phaser
+DESCRIPTION: This snippet demonstrates how to configure a tween property using `from` and `to` values. The target's property (e.g., `alpha`) is initially set to the `from` value (0) and then tweened to the `to` value (1) after any specified delays have expired. This ensures the starting state is applied before the animation begins.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.19/CHANGELOG-v3.19.md#_snippet_9
+
+LANGUAGE: JavaScript
+CODE:
+```
+alpha: { from: 0, to: 1 }
+```
+
+----------------------------------------
+
+TITLE: Loading and Displaying Custom Fonts with FontFile in Phaser
+DESCRIPTION: This example demonstrates how to load custom TTF/OTF fonts using the new `FontFile` loader in Phaser's `preload` method. Once loaded, these fonts can be applied to `Text` Game Objects in the `create` method by specifying the `fontFamily` in the text style configuration, eliminating the need for external web font loaders or CSS.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.87/CHANGELOG-v3.87.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+preload ()
+{
+    this.load.font('Caroni', 'assets/fonts/ttf/caroni.otf', 'opentype');
+    this.load.font('troika', 'assets/fonts/ttf/troika.otf', 'opentype');
+}
+
+create ()
+{
+    this.add.text(32, 32, 'The face of the moon was in shadow.', { fontFamily: 'troika', fontSize: 80, color: '#ff0000' });
+    this.add.text(150, 350, 'Waves flung themselves at the blue evening.', { fontFamily: 'Caroni', fontSize: 64, color: '#5656ee' });
+}
+```
+
+----------------------------------------
+
+TITLE: Configuring TypeScript for Phaser
+DESCRIPTION: This JSON snippet shows the necessary configurations to add to your `tsconfig.json` file when working with Phaser in a TypeScript project. It ensures that the TypeScript compiler correctly recognizes Phaser's types and provides proper type checking and autocompletion.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/README.md#_snippet_4
+
+LANGUAGE: json
+CODE:
+```
+"lib": ["es6", "dom", "dom.iterable", "scripthost"],
+"typeRoots": ["./node_modules/phaser/types"],
+"types": ["Phaser"]
+```
+
+----------------------------------------
+
+TITLE: Setting and Accessing Data Manager Values - JavaScript
+DESCRIPTION: Demonstrates how to set a single value in the Phaser Data Manager using the `set` method and how to access and modify it directly via the new `values` property. This allows for easier conditional checks and direct manipulation of stored data.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_10
+
+LANGUAGE: JavaScript
+CODE:
+```
+data.set('gold', 50)
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+data.values.gold
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+if (data.values.level === 2)
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+data.values.gold += 50
+```
+
+----------------------------------------
+
+TITLE: Setting Multiple Data Manager Values with an Object - JavaScript
+DESCRIPTION: Illustrates the updated `set` method in the Phaser Data Manager, which now accepts an object literal to set multiple key-value pairs simultaneously. This simplifies batch data initialization.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_11
+
+LANGUAGE: JavaScript
+CODE:
+```
+data.set({ name: 'Red Gem Stone', level: 2, owner: 'Link', gold: 50 })
+```
+
+----------------------------------------
+
+TITLE: Enabling DOM Elements in Phaser 3 Configuration
+DESCRIPTION: This configuration snippet shows how to enable DOM Elements in a Phaser 3 game. By adding `dom: { createContainer: true }` to the game configuration object, Phaser automatically creates a DOM container div positioned over the game canvas, allowing HTML elements to be controlled and displayed.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.17/CHANGELOG-v3.17.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+dom {
+  createContainer: true
+}
+```
+
+----------------------------------------
+
+TITLE: Basic Usage Example of Phaser 3 Camera 3D Plugin
+DESCRIPTION: This comprehensive example demonstrates the full lifecycle of using the Camera 3D plugin. It includes game configuration, preloading the plugin and assets, initializing the 3D camera, creating 3D sprites, and continuously transforming them in the update loop.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/plugins/camera3d/readme.md#_snippet_3
+
+LANGUAGE: JavaScript
+CODE:
+```
+var config = {
+    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+};
+
+var camera;
+var transform;
+
+var game = new Phaser.Game(config);
+
+function preload ()
+{
+    this.load.scenePlugin('Camera3DPlugin', 'plugins/camera3d.min.js', 'Camera3DPlugin', 'cameras3d');
+
+    this.load.image('particle', 'assets/sprites/mushroom2.png');
+}
+
+function create ()
+{
+    camera = this.cameras3d.add(85).setZ(300).setPixelScale(128);
+
+    var sprites = camera.createRect({ x: 4, y: 4, z: 16 }, { x: 48, y: 48, z: 32 }, 'particle');
+
+    //  Our rotation matrix
+    transform = new Phaser.Math.Matrix4().rotateX(-0.01).rotateY(-0.02).rotateZ(0.01);
+}
+
+function update ()
+{
+    camera.transformChildren(transform);
+}
+```
+
+----------------------------------------
+
+TITLE: Adding Attractors to a Matter Game Object in Phaser
+DESCRIPTION: This snippet demonstrates how to add a custom attractor function to a Matter game object during its creation in Phaser. The `attractors` property accepts an array of functions, each defining a force interaction between `bodyA` (the object with the attractor) and `bodyB` (the affected object), returning an object with `x` and `y` force components.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.85/MatterAttractor.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.matter.add.image(x, y, 'key', null, {
+    attractors: [
+        (bodyA, bodyB) => ({
+            x: (bodyA.position.x - bodyB.position.x) * 0.000001,
+            y: (bodyA.position.y - bodyB.position.y) * 0.000001
+        })
+    ]
+});
+```
+
+----------------------------------------
+
+TITLE: Setting Right-to-Left Text Rendering in Phaser
+DESCRIPTION: The `Text.setRTL` method allows a Phaser Text Game Object to be rendered from right-to-left, overriding the default left-to-right direction. This is useful for languages that read from right to left.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.70/CHANGELOG-v3.70.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+textObject.setRTL(true);
+```
+
+----------------------------------------
+
+TITLE: Defining Wrap Bounds for Matter.js Body in Phaser
+DESCRIPTION: This snippet demonstrates how to define a `wrapBounds` object. This object specifies the minimum and maximum `x` and `y` coordinates that define the rectangular area within which a Matter.js body will wrap. These bounds are crucial for enabling the wrapping behavior.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.85/MatterWrapBounds.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+const wrapBounds = {
+        min: {
+            x: 0,
+            y: 0
+        },
+        max: {
+            x: 800,
+            y: 600
+        }
+    };
+```
+
+----------------------------------------
+
+TITLE: Loading SVG with Resizing Options in Phaser.js
+DESCRIPTION: This snippet demonstrates how to load an SVG file in Phaser.js and optionally resize it during the loading process. You can specify a fixed `width` and `height` in the configuration object to set exact dimensions, or use a `scale` factor to proportionally enlarge or shrink the SVG. This feature is useful for adjusting SVGs with small viewBoxes or optimizing memory usage for large SVGs.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.12/CHANGELOG-v3.12.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.load.svg('morty', 'file.svg', { width: 300, height: 600 })
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.load.svg('morty', 'file.svg', { scale: 4 })
+```
+
+----------------------------------------
+
+TITLE: Using Shape Game Object as Geometry Mask in Phaser
+DESCRIPTION: Shows how any Phaser Shape Game Object can now be directly used as a Geometry Mask, providing more flexibility for complex masking operations. This simplifies the creation of non-rectangular masks by leveraging existing shape objects.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/Masks.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+const shape = this.add.rectangle(100, 100, 50, 50);
+const gameObject = this.add.image(100, 100, 'myImage');
+gameObject.setMask(shape.createGeometryMask());
+```
+
+----------------------------------------
+
+TITLE: Creating a Rectangle Shape in Phaser 3.13
+DESCRIPTION: This snippet demonstrates how to create a new Rectangle Game Object using the `this.add.rectangle` factory method in Phaser 3.13. It specifies the rectangle's position (400, 300), dimensions (500x120 pixels), and fill color (0x00ff00). This shape behaves like any other Game Object, supporting scaling, rotation, and physics.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.13/CHANGELOG-v3.13.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.add.rectangle(400, 300, 500, 120, 0x00ff00);
+```
+
+----------------------------------------
+
+TITLE: Setting Letter Spacing for Text in Phaser
+DESCRIPTION: The `Text.setLetterSpacing` method and `Text.letterSpacing` property control the spacing between characters in a Text Game Object. While offering fine control, enabling this feature renders characters individually, making it performance-intensive for long strings or many text objects. For large quantities of characters with letter spacing, Bitmap Font Text is recommended.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.70/CHANGELOG-v3.70.md#_snippet_4
+
+LANGUAGE: JavaScript
+CODE:
+```
+textObject.setLetterSpacing(5); // Positive for wider spacing
+textObject.setLetterSpacing(-2); // Negative for tighter spacing
+```
+
+----------------------------------------
+
+TITLE: Animating a Post-FX Wipe Effect on a Container in Phaser
+DESCRIPTION: This example shows how to apply a 'Wipe' post-effect to a Phaser Container and then animate its `progress` property using a tween. The `postFX` property applies effects after the object has been drawn. Tweens allow for smooth, real-time adjustments of effect properties, causing the wipe effect to play out from 0 to 1.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_1
+
+LANGUAGE: js
+CODE:
+```
+const fx = container.postFX.addWipe();
+
+this.tweens.add({
+    targets: fx,
+    progress: 1
+});
+```
+
+----------------------------------------
+
+TITLE: Advanced Animation Control for Particles in Phaser
+DESCRIPTION: The `anims` property within the `ParticleEmitter` configuration object now accepts a `Phaser.Types.Animations.PlayAnimationConfig` object. This enhancement provides extensive control over particle animations, including options for random start frames, repeat delays, and yoyo effects.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.70/CHANGELOG-v3.70.md#_snippet_9
+
+LANGUAGE: JavaScript
+CODE:
+```
+const emitter = particles.createEmitter({
+  frame: 'star',
+  x: 400,
+  y: 300,
+  speed: 200,
+  gravityY: 200,
+  anims: {
+    key: 'sparkle',
+    frameRate: 10,
+    repeat: -1,
+    randomFrame: true,
+    yoyo: true
+  }
+});
+```
+
+----------------------------------------
+
+TITLE: Enabling Pixel-Perfect Input for Phaser Game Objects
+DESCRIPTION: This snippet demonstrates two ways to enable pixel-perfect input for a Phaser Game Object. The first uses `this.input.makePixelPerfect()` directly, while the second uses the `pixelPerfect: true` property within the `setInteractive` configuration object. This feature allows input checks to be performed against the texture's pixel data, requiring an optional alpha tolerance level. It's an expensive process and should be used judiciously.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.add.sprite(x, y, key).setInteractive(this.input.makePixelPerfect())
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+setInteractive({ pixelPerfect: true })
+```
+
+----------------------------------------
+
+TITLE: Listening for Tween Complete Event in Phaser
+DESCRIPTION: This snippet demonstrates how to subscribe to the `complete` event of a Phaser Tween. The `Tween.COMPLETE_EVENT` is dispatched when a tween finishes its animation cycle or is explicitly stopped. This event is crucial for triggering follow-up actions or cleaning up resources once an animation has concluded.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.19/CHANGELOG-v3.19.md#_snippet_3
+
+LANGUAGE: JavaScript
+CODE:
+```
+tween.on('complete')
+```
+
+----------------------------------------
+
+TITLE: Loading Video in Phaser (Before and After API Changes)
+DESCRIPTION: This snippet illustrates the simplified video loading process in Phaser. Previously, the `this.load.video` method required five parameters, including `loadEvent` and `asBlob`. The updated API streamlines this by only requiring the video key, URL, and an optional `noAudio` boolean, making video loading more concise.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/VideoGameObject.md#_snippet_0
+
+LANGUAGE: js
+CODE:
+```
+//  Previously you had to do this. Note the 5 paramters:
+this.load.video('wormhole', 'wormhole.mp4', 'loadeddata', false, true);
+
+//  Now, you just specify the key, URL and the 'noAudio' boolean:
+this.load.video('wormhole', 'wormhole.mp4', true);
+```
+
+----------------------------------------
+
+TITLE: Simulating WebGL Context Loss and Restore in Phaser (JavaScript)
+DESCRIPTION: This snippet demonstrates how to programmatically test WebGL context loss and restoration in a Phaser game. It retrieves the `WEBGL_lose_context` extension and uses `setTimeout` to simulate a context loss after 1 second, followed by a context restore after another 1 second, aiding in debugging and development.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.80/WebGLContextRestore.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+const webGLLoseContextExtension = game.renderer.getExtension('WEBGL_lose_context');
+
+setTimeout(function () {
+    webGLLoseContextExtension.loseContext();
+    setTimeout(function () {
+        webGLLoseContextExtension.restoreContext();
+    }, 1000)
+}, 1000);
+```
+
+----------------------------------------
+
+TITLE: Creating and Playing a Phaser Timeline with Initial Event (JavaScript)
+DESCRIPTION: This example shows how to instantiate a Phaser Timeline with an initial configuration object, scheduling a function to run at a specific time (1000ms). After creation, the `play()` method is called to start the timeline, which will then execute the `run` callback at the specified `at` time.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/Timeline.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+const timeline = this.add.timeline({
+    at: 1000,
+    run: () => {
+        this.add.sprite(400, 300, 'logo');
+    }
+});
+
+timeline.play();
+```
+
+----------------------------------------
+
+TITLE: Conditional Timeline Events in Phaser
+DESCRIPTION: When creating a `TimelineEvent`, an optional `if` callback can now be set. This callback is invoked at the start of the event; if it returns `true`, the event proceeds, otherwise it is skipped. This enables the creation of conditional events within a Timeline.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.70/CHANGELOG-v3.70.md#_snippet_14
+
+LANGUAGE: JavaScript
+CODE:
+```
+timeline.add({
+  at: 1000,
+  if: () => {
+    // Only play sound if player has enough coins
+    return player.coins >= 10;
+  },
+  sound: 'coinSound'
+});
+```
+
+----------------------------------------
+
+TITLE: Using Phaser setInteractive with Multiple Input Properties
+DESCRIPTION: This snippet shows how the `setInteractive` method can now accept a single Input Configuration object to set multiple input-related properties simultaneously. This streamlines the setup of interactive Game Objects, allowing properties like `draggable` and `pixelPerfect` to be configured in one call.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_4
+
+LANGUAGE: JavaScript
+CODE:
+```
+setInteractive({ draggable: true, pixelPerfect: true })
+```
+
+----------------------------------------
+
+TITLE: Implementing Spatial Sound with Web Audio in Phaser
+DESCRIPTION: This snippet demonstrates how to initialize a sound, set the listener's position, and play a sound with spatial properties in Phaser's Web Audio Sound system. It shows how to define the sound's 3D position, reference distance, and make it automatically track a game object's coordinates.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/SpatialSound.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.music = this.sound.add('theme');
+
+this.sound.setListenerPosition(400, 300);
+
+this.music.play({
+    loop: true,
+    source: {
+        x: 400,
+        y: 300,
+        refDistance: 50,
+        follow: this.playerSprite
+    }
+});
+```
+
+----------------------------------------
+
+TITLE: Listening for Tween Loop Event in Phaser
+DESCRIPTION: This example shows how to listen for the `loop` event on a Phaser Tween. The `Tween.LOOP_EVENT` is dispatched each time a tween completes a loop and is about to start a new one, specifically after any `loopDelay` has expired. This allows for specific actions to be performed at the beginning of each loop iteration.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.19/CHANGELOG-v3.19.md#_snippet_4
+
+LANGUAGE: JavaScript
+CODE:
+```
+tween.on('loop')
+```
+
+----------------------------------------
+
+TITLE: Creating Bitmap Mask on Game Object in Phaser
+DESCRIPTION: Illustrates how to create a Bitmap Mask for an existing Game Object using its `createBitmapMask` method. This update allows passing texture and frame parameters directly, streamlining the process of applying a textured mask to a game object.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/Masks.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+const gameObject = this.add.image(0, 0, 'myImage');
+const mask = gameObject.createBitmapMask(x, y, 'maskTexture', 'maskFrame');
+```
+
+----------------------------------------
+
+TITLE: Creating DOM Elements with Inline Styles in Phaser 3
+DESCRIPTION: This example illustrates how to create a DOM Element Game Object using `this.add.dom` by directly providing an HTML tag, inline CSS styles, and inner text as string arguments. The parameters include the x and y coordinates, the HTML tag ('div'), a CSS style string, and the inner text for the element.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.17/CHANGELOG-v3.17.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.add.dom(x, y, 'div', 'background-color: lime; width: 220px; height: 100px; font: 48px Arial', 'Phaser');
+```
+
+----------------------------------------
+
+TITLE: Applying a Post-FX Tilt Shift to the Main Camera in Phaser
+DESCRIPTION: This snippet illustrates how to apply a 'Tilt Shift' post-effect directly to the main camera in Phaser. Applying effects to the camera affects everything being rendered by that camera, providing a performance-efficient way to apply global visual effects compared to applying them to individual game objects.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_2
+
+LANGUAGE: js
+CODE:
+```
+this.cameras.main.postFX.addTiltShift();
+```
+
+----------------------------------------
+
+TITLE: Configuring Webpack for Sound Feature Exclusion in Phaser
+DESCRIPTION: A new Webpack configuration option, `FEATURE_SOUND`, allows developers to control the inclusion of the Sound Manager and its related systems in the build. Setting this option to `false` will exclude sound functionalities, reducing the final build size.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.17/CHANGELOG-v3.17.md#_snippet_5
+
+LANGUAGE: JavaScript
+CODE:
+```
+// webpack.config.js
+const webpack = require('webpack');
+
+module.exports = {
+  // ... other configs
+  plugins: [
+    new webpack.DefinePlugin({
+      'FEATURE_SOUND': JSON.stringify(false)
+    })
+  ]
+};
+```
+
+----------------------------------------
+
+TITLE: Listening for Tween Start Event in Phaser
+DESCRIPTION: This code demonstrates how to subscribe to the `start` event of a Phaser Tween. The `Tween.START_EVENT` is dispatched precisely when the tween begins actively animating its properties, after any initial delays have passed. This event is distinct from `active` and is ideal for actions that should occur only when the visual animation commences.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.19/CHANGELOG-v3.19.md#_snippet_6
+
+LANGUAGE: JavaScript
+CODE:
+```
+tween.on('start')
+```
+
+----------------------------------------
+
+TITLE: Listening for Tween Update Event in Phaser
+DESCRIPTION: This snippet shows how to listen for the `update` event on a Phaser Tween. The `Tween.UPDATE_EVENT` is dispatched continuously as a tween property updates its value during the animation. This event provides a way to perform custom logic or visual feedback in real-time as the tween progresses.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.19/CHANGELOG-v3.19.md#_snippet_7
+
+LANGUAGE: JavaScript
+CODE:
+```
+tween.on('update')
+```
+
+----------------------------------------
+
+TITLE: Listening for Gamepad Button Events in Phaser
+DESCRIPTION: These snippets illustrate two ways to listen for button events. `this.input.gamepad.on('down')` listens for events globally via the Gamepad Plugin, while `gamepadReference.on('down')` allows listening for events directly on a specific `Gamepad` instance.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_9
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.input.gamepad.on('down')
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+gamepadReference.on('down')
+```
+
+----------------------------------------
+
+TITLE: Random Start Frame for Animations in Phaser
+DESCRIPTION: Both `Animation Config` and `Play Animation Config` now support a `randomFrame` boolean property, defaulting to `false`. When `true`, a random frame from the animation is selected at the start of playback, increasing visual variety for groups of sprites using the same animation. This is also reflected in `Animation.randomFrame` and `AnimationState.randomFrame` properties.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.70/CHANGELOG-v3.70.md#_snippet_8
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.anims.create({
+  key: 'walk',
+  frames: this.anims.generateFrameNumbers('player'),
+  frameRate: 10,
+  repeat: -1,
+  randomFrame: true // Pick a random frame to start
+});
+
+sprite.play({
+  key: 'walk',
+  randomFrame: true // Pick a random frame to start
+});
+```
+
+----------------------------------------
+
+TITLE: Creating a Basic Phaser Timeline Instance (JavaScript)
+DESCRIPTION: This snippet demonstrates the simplest way to create a new instance of the Timeline Class using Phaser's Game Object Factory. The created timeline starts in a paused state and requires an explicit call to its `play()` method to begin execution.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/Timeline.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+const timeline = this.add.timeline();
+```
+
+----------------------------------------
+
+TITLE: Listening for Tween Active Event in Phaser
+DESCRIPTION: This code snippet illustrates how to listen for the `active` event dispatched by a Phaser Tween. The `Tween.ACTIVE_EVENT` is triggered when the Tween Manager brings the tween to life, even if it hasn't started actively tweening values due to delay settings. This allows developers to execute logic precisely when a tween becomes operational.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.19/CHANGELOG-v3.19.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+tween.on('active')
+```
+
+----------------------------------------
+
+TITLE: Importing Phaser in a Web Worker - JavaScript
+DESCRIPTION: This snippet demonstrates the method to import the Phaser library within a Web Worker. It's a prerequisite for running Phaser in a worker thread, enabling off-main-thread processing. This specific approach is used when the worker is created with `type: 'classic'`.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.53/CHANGELOG-v3.53.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+importScripts('phaser.js')
+```
+
+----------------------------------------
+
+TITLE: Creating Matter.js Game Object with Wrap Bounds in Phaser
+DESCRIPTION: This code shows how to create a Matter.js game object, such as an image, and directly apply the `wrapBounds` during its creation. By passing the `wrapBoundary` object in the configuration, the game object will automatically enable the wrapping behavior within the defined boundaries.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.85/MatterWrapBounds.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+const gameObject = this.matter.add.image(x, y, 'key', null, {
+        wrapBounds: wrapBoundary 
+    });
+```
+
+----------------------------------------
+
+TITLE: Querying Gamepad Button Values and Totals in Phaser
+DESCRIPTION: These methods allow querying the state of individual buttons and the total number of buttons available on a connected gamepad. `getButtonValue()` retrieves the current value of a specific button, while `getButtonTotal()` returns the count of all buttons.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_6
+
+LANGUAGE: JavaScript
+CODE:
+```
+Gamepad.getButtonValue()
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+Gamepad.getButtonTotal()
+```
+
+----------------------------------------
+
+TITLE: Loading Image with Normal Map in Phaser
+DESCRIPTION: This snippet demonstrates how to load an image asset along with its associated normal map using a configuration object in Phaser's Loader. This method allows for specifying both the main image URL and the normal map URL concisely, providing an alternative to the previous array-based loading method.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.7.1/CHANGELOG-v3.7.1.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+load.image({ key: 'shinyRobot', url: 'rob.png', normalMap: 'rob_n.png' });
+```
+
+----------------------------------------
+
+TITLE: Configuring Staggered Delay with Single Value in Phaser Tweens
+DESCRIPTION: This snippet demonstrates how to use `this.tweens.stagger` within a tween configuration to apply a fixed staggered delay to multiple targets. Each target in the tween will have its delay increased by the specified amount (e.g., 500ms) relative to the previous target, creating a sequential animation effect. This is useful for animating groups of objects in a cascading manner.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.19/CHANGELOG-v3.19.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+delay: this.tweens.stagger(500)
+```
+
+----------------------------------------
+
+TITLE: Implementing Preloader Scene for Facebook Instant Games
+DESCRIPTION: This Phaser Scene snippet illustrates how to integrate the game's preloader with the Facebook Instant Games loader. It uses `this.facebook.showLoadProgress(this)` to update the Facebook loader and `this.facebook.once('startgame', ...)` to transition to the next scene after loading is complete.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/plugins/fbinstant/readme.md#_snippet_3
+
+LANGUAGE: JavaScript
+CODE:
+```
+class Preloader extends Phaser.Scene {
+
+    constructor ()
+    {
+        super('Preloader');
+    }
+
+    preload ()
+    {
+        this.facebook.showLoadProgress(this);
+        this.facebook.once('startgame', this.startGame, this);
+
+        //  Now load all of your assets
+    }
+
+    startGame ()
+    {
+        this.scene.start('MainMenu');
+    }
+
+}
+```
+
+----------------------------------------
+
+TITLE: Controlling Size and Origin Update with setTexture in Phaser
+DESCRIPTION: The `GameObject.setTexture` method now includes optional `updateSize` and `updateOrigin` parameters. These booleans, passed to `setFrame`, control whether the Game Object's size and origin are automatically updated when its texture is changed.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.70/CHANGELOG-v3.70.md#_snippet_7
+
+LANGUAGE: JavaScript
+CODE:
+```
+gameObject.setTexture('newTextureKey', 'frameName', false, false); // Don't update size or origin
+```
+
+----------------------------------------
+
+TITLE: Listening for Tween Repeat Event in Phaser
+DESCRIPTION: This snippet illustrates how to listen for the `repeat` event of a Phaser Tween. The `Tween.REPEAT_EVENT` is dispatched when a specific tween property repeats its animation, after any `repeatDelay` has expired. This event is useful for tracking individual property repetitions within a tween.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.19/CHANGELOG-v3.19.md#_snippet_5
+
+LANGUAGE: JavaScript
+CODE:
+```
+tween.on('repeat')
+```
+
+----------------------------------------
+
+TITLE: Accessing Post FX Controller on Phaser Game Object (JavaScript)
+DESCRIPTION: This property provides an instance of the FX Controller specifically for Post FX. It allows you to add, remove, and clear Post FX from the Game Object, featuring methods such as `add`, `remove`, and `clear` for comprehensive effect management.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_5
+
+LANGUAGE: JavaScript
+CODE:
+```
+GameObject.postFX
+```
+
+----------------------------------------
+
+TITLE: Loading and Adding GLSL Shaders in Phaser 3
+DESCRIPTION: This snippet demonstrates how to preload a GLSL shader file into Phaser's cache and then create a new Shader Game Object in the scene. The `preload` function uses `this.load.glsl` to load the shader, and the `create` function uses `this.add.shader` to instantiate it, specifying its key, position (x, y), and dimensions (width, height).
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.17/CHANGELOG-v3.17.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+function preload ()
+{
+    this.load.glsl('fire', 'shaders/fire.glsl.js');
+}
+ 
+function create ()
+{
+    this.add.shader('fire', 400, 300, 512, 512);
+}
+```
+
+----------------------------------------
+
+TITLE: Configuring Staggered Delay with Range in Phaser Tweens
+DESCRIPTION: This example shows how to define a staggered delay using a range of values with `this.tweens.stagger`. The provided range (e.g., `[500, 1000]`) will be distributed evenly across all tween targets, assigning a unique delay to each. This allows for more varied and organic staggered animations compared to a fixed delay.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.19/CHANGELOG-v3.19.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+delay: this.tweens.stagger([ 500, 1000 ])
+```
+
+----------------------------------------
+
+TITLE: Adding ColorMatrix Post FX to Phaser Game Object (JavaScript)
+DESCRIPTION: This method adds a ColorMatrix Post FX effect to the Game Object. It allows for advanced color manipulation by applying a transformation matrix to the object's colors, enabling effects like grayscale, sepia, or custom color shifts.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_14
+
+LANGUAGE: JavaScript
+CODE:
+```
+GameObject.postFX.addColorMatrix
+```
+
+----------------------------------------
+
+TITLE: Adding Displacement Post FX to Phaser Game Object (JavaScript)
+DESCRIPTION: This method adds a Displacement Post FX effect to the Game Object. It distorts the object's pixels based on a displacement map, creating complex visual warps and ripples.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_17
+
+LANGUAGE: JavaScript
+CODE:
+```
+GameObject.postFX.addDisplacement
+```
+
+----------------------------------------
+
+TITLE: Capturing Next WebGL Frame with Spector.js (Phaser)
+DESCRIPTION: Captures the next WebGL frame that is rendered and sends it to the Spector.js tool for inspection. This is particularly useful for debugging the rendering process of the very next frame to be drawn.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/Spector.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+game.renderer.captureNextFrame();
+```
+
+----------------------------------------
+
+TITLE: Stopping WebGL Capture with Spector.js (Phaser)
+DESCRIPTION: Stops the currently active WebGL capture and returns the result as a JSON object. If the Spector.js UI is displayed, the result will also be shown. This method returns `undefined` if no capture is active or if no commands were found.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/Spector.md#_snippet_5
+
+LANGUAGE: JavaScript
+CODE:
+```
+const captureResult = game.renderer.stopCapture();
+
+if (captureResult) {
+  console.log('Capture stopped. Result:', captureResult);
+} else {
+  console.log('No active capture or no commands found.');
+}
+```
+
+----------------------------------------
+
+TITLE: Adding Bloom Post FX to Phaser Game Object (JavaScript)
+DESCRIPTION: This method adds a Bloom Post FX effect to the Game Object. It creates a glowing fringe around bright areas, simulating the effect of intense light bleeding into surrounding dark areas.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_13
+
+LANGUAGE: JavaScript
+CODE:
+```
+GameObject.postFX.addBloom
+```
+
+----------------------------------------
+
+TITLE: Setting Default Game Object Pipeline in Phaser
+DESCRIPTION: This Game Configuration property allows developers to specify the default rendering pipeline for Game Objects. By default, it's set to the Multi Tint pipeline, but it can be customized to use any other pipeline, including a custom one, influencing how Game Objects are rendered across the game.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/WebGLRenderer.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+defaultPipeline
+```
+
+----------------------------------------
+
+TITLE: Accessing Input Manager's isOver Property in Phaser
+DESCRIPTION: This snippet demonstrates how to access the `isOver` property, which indicates if the mouse or a pointer is currently over the game canvas. It's now part of the Input Manager and accessible via the Input Plugin from within a Scene, replacing the old `Phaser.Game.isOver`.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.16/CHANGELOG-v3.16.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.input.isOver
+```
+
+----------------------------------------
+
+TITLE: Accessing Specific Gamepads in Phaser
+DESCRIPTION: This snippet demonstrates how to directly access a connected gamepad using the new `GamepadPlugin`. The `pad1` property provides direct access to the first connected gamepad, simplifying input handling for specific controllers.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_5
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.input.gamepad.pad1
+```
+
+----------------------------------------
+
+TITLE: Adding Blur Post FX to Phaser Game Object (JavaScript)
+DESCRIPTION: This method adds a Blur Post FX effect to the Game Object. It applies a blurring filter, making the object appear out of focus or creating a motion blur effect.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_11
+
+LANGUAGE: JavaScript
+CODE:
+```
+GameObject.postFX.addBlur
+```
+
+----------------------------------------
+
+TITLE: Starting WebGL Capture with Spector.js (Phaser)
+DESCRIPTION: Initiates a capture on the Phaser canvas. The capture automatically stops after reaching a specified number of commands or after 10 seconds. The `quickCapture` parameter can be set to `true` to skip thumbnail capture for faster performance.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/Spector.md#_snippet_4
+
+LANGUAGE: JavaScript
+CODE:
+```
+// Capture 100 commands, without quick capture
+game.renderer.startCapture(100, false);
+
+// Capture 50 commands, with quick capture (no thumbnails)
+game.renderer.startCapture(50, true);
+```
+
+----------------------------------------
+
+TITLE: Preloading Phaser 3 Camera 3D Plugin (External)
+DESCRIPTION: This snippet demonstrates how to preload the Phaser 3 Camera 3D Plugin when used as an external file. It uses `this.load.scenePlugin` to register the plugin, making it available in the scene.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/plugins/camera3d/readme.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+function preload ()
+{
+    this.load.scenePlugin('Camera3DPlugin', 'plugins/camera3d.min.js', 'Camera3DPlugin', 'cameras3d');
+}
+```
+
+----------------------------------------
+
+TITLE: Adding TiltShift Post FX to Phaser Game Object (JavaScript)
+DESCRIPTION: This method adds a TiltShift Post FX effect to the Game Object. Post FX are applied after the Game Object is rendered, affecting its appearance with a selective focus effect, often making large objects look like miniatures.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_21
+
+LANGUAGE: JavaScript
+CODE:
+```
+GameObject.postFX.addTiltShift
+```
+
+----------------------------------------
+
+TITLE: Adding Bokeh Post FX to Phaser Game Object (JavaScript)
+DESCRIPTION: This method adds a Bokeh Post FX effect to the Game Object. It simulates the aesthetic quality of the blur produced in out-of-focus areas of an image, often used for depth-of-field effects.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_20
+
+LANGUAGE: JavaScript
+CODE:
+```
+GameObject.postFX.addBokeh
+```
+
+----------------------------------------
+
+TITLE: Handling Animation Start Event in Phaser 3
+DESCRIPTION: This snippet demonstrates how to listen for the 'animationstart' event on a Game Object (e.g., a Sprite) when its animation begins. This replaces the old global 'onStart' callback, allowing for per-Game Object event handling and providing more granular control over animation events.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.4/CHANGELOG-v3.4.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+sprite.on('animationstart')
+```
+
+----------------------------------------
+
+TITLE: Creating Bitmap Mask via Scene Factory in Phaser
+DESCRIPTION: Demonstrates the new method for creating a Bitmap Mask directly from a Phaser Scene's Game Object Factory, simplifying mask instantiation. This allows for easier integration of masks into game objects by providing optional position and texture arguments.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/Masks.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+const mask = this.add.bitmapMask(x, y, texture, frame);
+```
+
+----------------------------------------
+
+TITLE: Configuring Custom Cursors via Phaser setInteractive Method
+DESCRIPTION: This snippet demonstrates how to set custom cursors using the `setInteractive` method's configuration object. The `useHandCursor: true` property is a shortcut to apply the 'pointer' (hand) cursor, while the `cursor: CSSString` property allows specifying any valid CSS cursor string for more general customization when the pointer is over the interactive object.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_3
+
+LANGUAGE: JavaScript
+CODE:
+```
+setInteractive({ useHandCursor: true })
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+setInteractive({ cursor: CSSString })
+```
+
+----------------------------------------
+
+TITLE: Defining Tween Property with Start and To Values in Phaser
+DESCRIPTION: This example shows how to define a tween property using `start` and `to` values. The target's property (e.g., `alpha`) is immediately set to the `start` value (0) as soon as the tween becomes active. It then tweens to the `to` value (1) over the duration of the tween, regardless of any delays. This is useful for setting an immediate initial state.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.19/CHANGELOG-v3.19.md#_snippet_10
+
+LANGUAGE: JavaScript
+CODE:
+```
+alpha: { start: 0, to: 1 }
+```
+
+----------------------------------------
+
+TITLE: Setting Gamepad Axis Threshold in Phaser
+DESCRIPTION: This method allows setting a uniform threshold across all axes of a gamepad with a single call. This is useful for adjusting the sensitivity or dead zone for analog stick inputs.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_8
+
+LANGUAGE: JavaScript
+CODE:
+```
+Gamepad.setAxisThreshold
+```
+
+----------------------------------------
+
+TITLE: Accessing Facebook Instant Games Plugin in Phaser Scene
+DESCRIPTION: This example shows how to access the Facebook Instant Games plugin from within a Phaser Scene using `this.facebook`. It specifically demonstrates retrieving the player's name and displaying it as text.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/plugins/fbinstant/readme.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.add.text(0, 0).setText(this.facebook.playerName);
+```
+
+----------------------------------------
+
+TITLE: Applying a Pre-FX Glow to a Game Object in Phaser
+DESCRIPTION: This snippet demonstrates how to add a 'Glow' pre-effect to a Phaser Game Object (Sprite). The `preFX` property allows applying effects before the object is drawn. It takes the glow color (0xff0000 for red) and strength (32 pixels) as parameters, resulting in a 32-pixel red glow around the player sprite.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_0
+
+LANGUAGE: js
+CODE:
+```
+const player = this.add.sprite(x, y, texture);
+
+player.preFX.addGlow(0xff0000, 32);
+```
+
+----------------------------------------
+
+TITLE: Getting WebGL Canvas FPS (Phaser)
+DESCRIPTION: Retrieves the current frames per second (FPS) of the WebGL canvas. This method provides a real-time performance metric, allowing developers to monitor the rendering speed of their game.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/Spector.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+const fps = game.renderer.getFps();
+console.log(`Current FPS: ${fps}`);
+```
+
+----------------------------------------
+
+TITLE: Configuring Webpack for Phaser Facebook Instant Games Plugin
+DESCRIPTION: This snippet shows the Webpack DefinePlugin configuration required to include the Facebook Instant Games plugin in a Phaser 3 build. Setting `typeof PLUGIN_FBINSTANT` to `true` ensures the plugin is bundled.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/plugins/fbinstant/readme.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+"typeof PLUGIN_FBINSTANT": JSON.stringify(true)
+```
+
+----------------------------------------
+
+TITLE: Adding Wipe Post FX to Phaser Game Object (JavaScript)
+DESCRIPTION: This method adds a Wipe Post FX effect to the Game Object. It creates a transition effect where the object is revealed or hidden by a sweeping motion.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_18
+
+LANGUAGE: JavaScript
+CODE:
+```
+GameObject.postFX.addWipe
+```
+
+----------------------------------------
+
+TITLE: Adding Matter.js Sprite with PhysicsEditor Shape in Phaser
+DESCRIPTION: This snippet demonstrates how to create a Matter.js sprite in Phaser using a complex body shape defined by PhysicsEditor. It requires loading the PhysicsEditor JSON data, which contains predefined shapes, and then passing a specific shape (e.g., `shapes.banana`) to the `shape` property when adding the sprite. This allows for custom collision bodies beyond simple primitives.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_12
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.matter.add.sprite(x, y, texture, frame, { shape: shapes.banana })
+```
+
+----------------------------------------
+
+TITLE: Setting Nested Object Values with Dot Notation in Phaser
+DESCRIPTION: The `Utils.Objects.SetValue` function facilitates setting values within an object, including deeply nested properties, by using dot-notation for the key path. This simplifies updating complex data structures.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.17/CHANGELOG-v3.17.md#_snippet_7
+
+LANGUAGE: JavaScript
+CODE:
+```
+const data = { world: { position: { x: 0, y: 0 } } };
+Phaser.Utils.Objects.SetValue(data, 'world.position.x', 100);
+```
+
+----------------------------------------
+
+TITLE: Adding Gradient Post FX to Phaser Game Object (JavaScript)
+DESCRIPTION: This method adds a Gradient Post FX effect to the Game Object. It applies a color gradient overlay, allowing for dynamic color transitions or stylistic shading.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_12
+
+LANGUAGE: JavaScript
+CODE:
+```
+GameObject.postFX.addGradient
+```
+
+----------------------------------------
+
+TITLE: Accessing Default Pipeline in Phaser PipelineManager
+DESCRIPTION: This property within the `PipelineManager` determines the default pipeline used by most Game Objects during their initialization. It reflects the global default pipeline setting, providing a central point for Game Objects to inherit their rendering behavior.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/WebGLRenderer.md#_snippet_3
+
+LANGUAGE: JavaScript
+CODE:
+```
+PipelineManager.default
+```
+
+----------------------------------------
+
+TITLE: Configuring Webpack for Bundled Phaser 3 Camera 3D Plugin (Part 2)
+DESCRIPTION: This snippet shows the updated webpack configuration setting for the `PLUGIN_CAMERA3D` flag, which must be set to `true` to enable the inclusion of the Camera 3D plugin when Phaser is rebuilt.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/plugins/camera3d/readme.md#_snippet_2
+
+LANGUAGE: JSON
+CODE:
+```
+"typeof PLUGIN_CAMERA3D": JSON.stringify(true)
+```
+
+----------------------------------------
+
+TITLE: Setting Line Points from Objects in Phaser Geom.Line
+DESCRIPTION: The `Geom.Line.setFromObjects` method sets the start and end points of a Line to match those of two provided objects. These objects can be Game Objects or any Vector2-like structure, simplifying line creation from existing entities.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.70/CHANGELOG-v3.70.md#_snippet_15
+
+LANGUAGE: JavaScript
+CODE:
+```
+const line = new Phaser.Geom.Line();
+const objA = new Phaser.GameObjects.Sprite(this, 100, 100, 'star');
+const objB = new Phaser.Math.Vector2(200, 200);
+line.setFromObjects(objA, objB);
+```
+
+----------------------------------------
+
+TITLE: Setting Custom Cursor for Specific Phaser Game Objects
+DESCRIPTION: This snippet illustrates how to assign a custom cursor to individual Phaser Game Objects by setting their `input.cursor` property. It accepts any valid CSS cursor string, including image URLs, which will appear when the pointer hovers over that specific Game Object. Examples include using built-in CSS keywords like 'pointer' or 'help', or a custom image URL.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+button.input.cursor = 'pointer'
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+button.input.cursor = 'help'
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+button.input.cursor = 'url(assets/cursors/sword.cur), pointer'
+```
+
+----------------------------------------
+
+TITLE: Advancing Arcade Physics World by a Single Step in Phaser
+DESCRIPTION: The `Physics.Arcade.World.singleStep` method advances the Arcade Physics World simulation by exactly one step. This provides fine-grained control over the physics update cycle.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.70/CHANGELOG-v3.70.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.physics.world.singleStep();
+```
+
+----------------------------------------
+
+TITLE: Including Phaser from cdnjs CDN
+DESCRIPTION: These script tags provide an alternative method to include the Phaser library from Cloudflare's cdnjs Content Delivery Network (CDN). Similar to jsDelivr, you can opt for either the full or minified version of the library for direct use in web pages.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/README.md#_snippet_3
+
+LANGUAGE: html
+CODE:
+```
+<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.88.2/phaser.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.88.2/phaser.min.js"></script>
+```
+
+----------------------------------------
+
+TITLE: Including Phaser from jsDelivr CDN
+DESCRIPTION: These script tags allow you to include the Phaser library directly into your HTML file from the jsDelivr Content Delivery Network (CDN). You can choose between the full development version (`phaser.js`) or the minified production version (`phaser.min.js`) for faster loading.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/README.md#_snippet_2
+
+LANGUAGE: html
+CODE:
+```
+<script src="//cdn.jsdelivr.net/npm/phaser@3.88.2/dist/phaser.js"></script>
+<script src="//cdn.jsdelivr.net/npm/phaser@3.88.2/dist/phaser.min.js"></script>
+```
+
+----------------------------------------
+
+TITLE: Setting Default Custom Cursor in Phaser
+DESCRIPTION: This snippet shows how to set a custom default cursor for the entire Phaser game using `this.input.setDefaultCursor()`. This method accepts any valid CSS cursor string, including URLs to image files, allowing for global cursor customization.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.input.setDefaultCursor()
+```
+
+----------------------------------------
+
+TITLE: Querying Gamepad Axis Values and Totals in Phaser
+DESCRIPTION: These properties and methods provide access to gamepad axis information. `getAxisTotal` returns the total number of axes on the gamepad, and `getAxisValue` retrieves the current value of a specific axis.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.10/CHANGELOG-v3.10.md#_snippet_7
+
+LANGUAGE: JavaScript
+CODE:
+```
+Gamepad.getAxisTotal
+```
+
+LANGUAGE: JavaScript
+CODE:
+```
+Gamepad.getAxisValue
+```
+
+----------------------------------------
+
+TITLE: Accessing Object Layer ID in Phaser Tilemaps
+DESCRIPTION: The `Tilemaps.ObjectLayer.id` property returns the unique ID of an Object Layer, as specified in Tiled, or zero if not specified. This allows access to layer IDs even if layer names are not unique.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.70/CHANGELOG-v3.70.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+const layerId = objectLayer.id;
+```
+
+----------------------------------------
+
+TITLE: Applying Fill-Based Tint to Tilemap Layers in Phaser
+DESCRIPTION: The new `TilemapLayer.setTintFill` method applies a fill-based tint to tiles within a specified area, contrasting with the additive tint applied by `setTint`. This offers a different visual effect for coloring tiles.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.70/CHANGELOG-v3.70.md#_snippet_10
+
+LANGUAGE: JavaScript
+CODE:
+```
+tilemapLayer.setTintFill(0xff0000, 0, 0, 10, 10); // Tint a 10x10 area red with fill tint
+```
+
+----------------------------------------
+
+TITLE: Enabling Tinted Object Lighting in Phaser Light Shader
+DESCRIPTION: The Light fragment shader now utilizes the `outTintEffect` attribute, allowing the Light Pipeline to correctly apply lighting effects to both tinted and fill-tinted Game Objects. This ensures visual consistency for objects with color modifications under dynamic lighting.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/WebGLRenderer.md#_snippet_10
+
+LANGUAGE: GLSL
+CODE:
+```
+outTintEffect
+```
+
+----------------------------------------
+
+TITLE: Clearing All FX from Phaser Game Object (JavaScript)
+DESCRIPTION: This method removes both Pre and Post FX from the Game Object. It provides a convenient way to reset all applied visual effects, returning the Game Object to its original appearance.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/FX.md#_snippet_4
+
+LANGUAGE: JavaScript
+CODE:
+```
+GameObject.clearFX
+```
+
+----------------------------------------
+
+TITLE: Restarting Tweens in Phaser
+DESCRIPTION: This snippet demonstrates the updated behavior of `Tween.restart`. Calling this method now resets `elapsed`, `progress`, `totalElapsed`, and `totalProgress` to zero, ensuring a clean restart.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.18/CHANGELOG-v3.18.md#_snippet_17
+
+LANGUAGE: JavaScript
+CODE:
+```
+tween.restart();
+```
+
+----------------------------------------
+
+TITLE: Removing Wrap Bounds from Matter.js Game Object in Phaser
+DESCRIPTION: This snippet illustrates how to disable the wrapping behavior for an existing Matter.js game object. By setting the `wrapBounds` property of the game object's body to `null`, the object will no longer wrap around the screen and will behave normally.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.85/MatterWrapBounds.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+gameObject.body.wrapBounds = null;
+```
+
+----------------------------------------
+
+TITLE: Configuring Global Plugin with Initial Data (JavaScript)
+DESCRIPTION: This snippet demonstrates how to configure a global Phaser plugin, passing initial data directly to its 'init' method via the 'data' object. This allows plugins to receive custom parameters upon instantiation, such as game-specific values like starting gold. This configuration is typically part of the Phaser game configuration object.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.12/CHANGELOG-v3.12.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+{ key: 'BankPlugin', plugin: BankPluginV3, start: true, data: { gold: 5000 } }
+```
+
+----------------------------------------
+
+TITLE: Handling Numeric Keypad Input in Phaser 3
+DESCRIPTION: This snippet demonstrates how to listen for numeric keypad keydown events using Phaser's Input Plugin. It shows an example of binding a callback to the 'keydown_NUMPAD_ZERO' event, allowing specific actions to be triggered when the '0' key on the numeric keypad is pressed. This requires the Input Plugin to be active within the scene.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.8/CHANGELOG-v3.8.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+this.input.keyboard.on('keydown_NUMPAD_ZERO')
+```
+
+----------------------------------------
+
+TITLE: Getting Key Hold Duration in Phaser
+DESCRIPTION: The `Key.getDuration` method returns the time, in milliseconds, that a specific keyboard key has been held down. If the key is not currently pressed, the method will return 0.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.17/CHANGELOG-v3.17.md#_snippet_3
+
+LANGUAGE: JavaScript
+CODE:
+```
+const duration = myKey.getDuration();
+```
+
+----------------------------------------
+
+TITLE: Listening for Tween Yoyo Event in Phaser
+DESCRIPTION: This example illustrates how to subscribe to the `yoyo` event of a Phaser Tween. The `Tween.YOYO_EVENT` is dispatched when a tween property reverses its animation direction (yoyos), specifically after any `holdDelay` has expired. This event is useful for triggering actions when a property begins its reverse animation phase.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.19/CHANGELOG-v3.19.md#_snippet_8
+
+LANGUAGE: JavaScript
+CODE:
+```
+tween.on('yoyo')
+```
+
+----------------------------------------
+
+TITLE: Streamlining Sprite Rendering with setQuad in Phaser
+DESCRIPTION: The `setQuad` function now consolidates the logic previously handled by `TransformMatrix.getXRound`, `getYRound`, `getX`, and `getY` methods for sprite rendering in the Multi Tint pipeline. This optimization significantly reduces function calls and getters, improving performance when rendering individual sprites.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.60/WebGLRenderer.md#_snippet_8
+
+LANGUAGE: JavaScript
+CODE:
+```
+setQuad
+```
+
+----------------------------------------
+
+TITLE: Fixing Keyboard Input Spacing in Phaser
+DESCRIPTION: This snippet illustrates the `keyboard.addKeys` method in Phaser. Previously, providing a string with spaces between key characters (e.g., 'W, A, S, D') would cause the method to fail. The updated implementation now trims the input, allowing for more flexible string formatting.
+SOURCE: https://github.com/phaserjs/phaser/blob/master/changelog/3.12/CHANGELOG-v3.12.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+keyboard.addKeys("W, A, S, D")
+```

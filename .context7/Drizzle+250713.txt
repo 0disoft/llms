@@ -1,0 +1,1640 @@
+TITLE: Example API Route Response
+DESCRIPTION: An example JSON response from the `/api/hello` endpoint, showing an empty array for `users` and a success message.
+SOURCE: https://orm.drizzle.team/docs/tutorials/drizzle-with-vercel-edge-functions
+
+LANGUAGE: json
+CODE:
+```
+{
+  "users": [],
+  "message": "success"
+}
+```
+
+----------------------------------------
+
+TITLE: Initialize Drizzle ORM with Vercel Postgres
+DESCRIPTION: Demonstrates how to establish a connection to the Vercel Postgres database using Drizzle ORM. It shows both a basic initialization and an example of providing an existing `@vercel/postgres` driver instance.
+SOURCE: https://orm.drizzle.team/docs/get-started/vercel-new
+
+LANGUAGE: typescript
+CODE:
+```
+import { drizzle } from 'drizzle-orm/vercel-postgres';
+
+const db = drizzle();
+```
+
+LANGUAGE: typescript
+CODE:
+```
+import { sql } from '@vercel/postgres';
+import { drizzle } from 'drizzle-orm/vercel-postgres';
+
+const db = drizzle({ client: sql })
+```
+
+----------------------------------------
+
+TITLE: Example API Response Structure
+DESCRIPTION: This JSON snippet illustrates the expected structure of the response from the `/api/hello` endpoint, containing a list of users and a success message.
+SOURCE: https://orm.drizzle.team/docs/tutorials/drizzle-with-vercel-edge-functions
+
+LANGUAGE: APIDOC
+CODE:
+```
+{
+  "users": [],
+  "message": "success"
+}
+```
+
+----------------------------------------
+
+TITLE: Find Similar Guides using Drizzle ORM and Vector Similarity
+DESCRIPTION: This TypeScript function `findSimilarGuides` retrieves documentation guides similar to a given description by leveraging vector embeddings and cosine similarity with Drizzle ORM. It queries a database table `guides` containing `embedding` vectors, calculates similarity, and returns the top matching guides based on a similarity threshold. The example demonstrates how to call this function with a sample description.
+SOURCE: https://orm.drizzle.team/docs/guides/vector-similarity-search
+
+LANGUAGE: TypeScript
+CODE:
+```
+const findSimilarGuides = async (description: string) => {
+  const embedding = await generateEmbedding(description);
+
+  const similarity = sql<number>`1 - (${cosineDistance(guides.embedding, embedding)})`;
+
+  const similarGuides = await db
+    .select({ name: guides.title, url: guides.url, similarity })
+    .from(guides)
+    .where(gt(similarity, 0.5))
+    .orderBy((t) => desc(t.similarity))
+    .limit(4);
+
+  return similarGuides;
+};
+
+const description = 'Guides on using Drizzle ORM with different platforms';
+
+const similarGuides = await findSimilarGuides(description);
+```
+
+----------------------------------------
+
+TITLE: Perform CRUD Operations with Drizzle ORM
+DESCRIPTION: Demonstrates how to perform Create, Read, Update, and Delete (CRUD) operations using Drizzle ORM. This comprehensive example includes inserting a new user, selecting all users, updating a user's age, and deleting a user based on their email.
+SOURCE: https://orm.drizzle.team/docs/get-started/gel-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { eq } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/gel";
+import { createClient } from "gel";
+import { users } from "../drizzle/schema";
+
+const gelClient = createClient();
+const db = drizzle({ client: gelClient });
+
+async function main() {
+  const user: typeof users.$inferInsert = {
+    name: "John",
+    age: 30,
+    email: "[email protected]",
+  };
+
+  await db.insert(users).values(user);
+  console.log("New user created!");
+
+  const usersResponse = await db.select().from(users);
+  console.log("Getting all users from the database: ", usersResponse);
+  /*
+  const users: {
+    id: number;
+    name: string;
+    age: number;
+    email: string;
+  }[]
+  */
+
+  await db
+    .update(users)
+    .set({
+      age: 31,
+    })
+    .where(eq(users.email, user.email));
+  console.log("User info updated!");
+
+  await db.delete(users).where(eq(users.email, user.email));
+  console.log("User deleted!");
+}
+
+main();
+```
+
+----------------------------------------
+
+TITLE: Drizzle ORM TypeScript CRUD Operations with Xata
+DESCRIPTION: This TypeScript code demonstrates fundamental Create, Read, Update, and Delete (CRUD) operations using Drizzle ORM with a Xata client. It includes examples for inserting a new user, fetching all users, updating a user's age, and deleting a user based on their email.
+SOURCE: https://orm.drizzle.team/docs/get-started/xata-new
+
+LANGUAGE: typescript
+CODE:
+```
+import 'dotenv/config';
+import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/xata-http';
+import { getXataClient } from './xata';
+import { usersTable } from './db/schema';
+
+async function main() {
+  const xata = getXataClient();
+  const db = drizzle(xata);
+
+  const user: typeof usersTable.$inferInsert = {
+    name: 'John',
+    age: 30,
+    email: '[email protected]',
+  };
+
+  await db.insert(usersTable).values(user);
+  console.log('New user created!')
+
+  const users = await db.select().from(usersTable);
+  console.log('Getting all users from the database: ', users)
+  /*
+  const users: {
+    id: number;
+    name: string;
+    age: number;
+    email: string;
+  }[]
+  */
+
+  await db
+    .update(usersTable)
+    .set({
+      age: 31,
+    })
+    .where(eq(usersTable.email, user.email));
+  console.log('User info updated!')
+
+  await db.delete(usersTable).where(eq(usersTable.email, user.email));
+  console.log('User deleted!')
+}
+
+main();
+```
+
+----------------------------------------
+
+TITLE: Configure Drizzle Kit dbCredentials for AWS Data API
+DESCRIPTION: Illustrates how to set up Drizzle Kit's `dbCredentials` for AWS Data API, using the `aws-data-api` driver and providing the database name, resource ARN, and secret ARN.
+SOURCE: https://orm.drizzle.team/docs/drizzle-config-file
+
+LANGUAGE: typescript
+CODE:
+```
+import { defineConfig } from 'drizzle-kit'
+
+export default defineConfig({
+  dialect: "postgresql",
+  driver: "aws-data-api",
+  dbCredentials: {
+    database: "database",
+    resourceArn: "resourceArn",
+    secretArn: "secretArn",
+  }
+});
+```
+
+----------------------------------------
+
+TITLE: Initialize Drizzle ORM with PGLite
+DESCRIPTION: Demonstrates two methods to initialize Drizzle ORM with PGLite: a basic connection using the database URL and an advanced method providing an existing PGLite driver instance.
+SOURCE: https://orm.drizzle.team/docs/get-started/pglite-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { drizzle } from 'drizzle-orm/pglite';
+
+const db = drizzle(process.env.DATABASE_URL!);
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { PGlite } from '@electric-sql/pglite';
+import { drizzle } from 'drizzle-orm/pglite';
+
+const client = new PGlite(process.env.DATABASE_URL!);
+const db = drizzle({ client });
+```
+
+----------------------------------------
+
+TITLE: Create Expo Project with Blank TypeScript Template
+DESCRIPTION: Instructions for initializing a new Expo project using the `blank-typescript` template, demonstrating commands for npm, yarn, pnpm, and bun package managers.
+SOURCE: https://orm.drizzle.team/docs/get-started/op-sqlite-new
+
+LANGUAGE: Shell
+CODE:
+```
+npx create expo-app --template blank-typescript
+```
+
+LANGUAGE: Shell
+CODE:
+```
+yarn create expo-app --template blank-typescript
+```
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm create expo-app --template blank-typescript
+```
+
+LANGUAGE: Shell
+CODE:
+```
+bun create expo-app --template blank-typescript
+```
+
+----------------------------------------
+
+TITLE: Initialize Drizzle ORM Connection with Xata Client
+DESCRIPTION: Demonstrates how to import the `drizzle` function from `drizzle-orm/xata-http` and the generated Xata client, then initialize the Drizzle ORM connection to interact with the database.
+SOURCE: https://orm.drizzle.team/docs/get-started/xata-new
+
+LANGUAGE: typescript
+CODE:
+```
+import { drizzle } from 'drizzle-orm/xata-http';
+import { getXataClient } from './xata'; // Generated client
+
+async function main() {
+    const xata = getXataClient();
+    const db = drizzle(xata);
+}
+
+main();
+```
+
+----------------------------------------
+
+TITLE: Perform Drizzle ORM CRUD Operations
+DESCRIPTION: This TypeScript code demonstrates how to connect to a database using Drizzle ORM and perform common Create, Read, Update, and Delete (CRUD) operations on the 'usersTable'. It includes examples for inserting a new user, selecting all users, updating a user's age, and deleting a user based on their email.
+SOURCE: https://orm.drizzle.team/docs/get-started/planetscale-new
+
+LANGUAGE: typescript
+CODE:
+```
+import 'dotenv/config';
+import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/planetscale-serverless';
+import { usersTable } from './db/schema';
+
+const db = drizzle({ connection: {
+  host: process.env.DATABASE_HOST!,
+  username: process.env.DATABASE_USERNAME!,
+  password: process.env.DATABASE_PASSWORD!,
+}});
+
+async function main() {
+  const user: typeof usersTable.$inferInsert = {
+    name: 'John',
+    age: 30,
+    email: '[email protected]',
+  };
+
+  await db.insert(usersTable).values(user);
+  console.log('New user created!')
+
+  const users = await db.select().from(usersTable);
+  console.log('Getting all users from the database: ', users)
+  /*
+  const users: {
+    id: number;
+    name: string;
+    age: number;
+    email: string;
+  }[]
+  */
+
+  await db
+    .update(usersTable)
+    .set({
+      age: 31,
+    })
+    .where(eq(usersTable.email, user.email));
+  console.log('User info updated!')
+
+  await db.delete(usersTable).where(eq(usersTable.email, user.email));
+  console.log('User deleted!')
+}
+
+main();
+```
+
+----------------------------------------
+
+TITLE: Connect Drizzle ORM to Nile Database using node-postgres
+DESCRIPTION: These examples demonstrate different ways to initialize a Drizzle ORM connection using the node-postgres driver. They cover direct connection string usage, configuration object options (like SSL), and using an existing node-postgres Pool instance.
+SOURCE: https://orm.drizzle.team/docs/get-started/nile-new
+
+LANGUAGE: typescript
+CODE:
+```
+import 'dotenv/config';
+import { drizzle } from 'drizzle-orm/node-postgres';
+
+const db = drizzle(process.env.NILEDB_URL!);
+```
+
+LANGUAGE: typescript
+CODE:
+```
+import 'dotenv/config';
+import { drizzle } from 'drizzle-orm/node-postgres';
+
+// You can specify any property from the node-postgres connection options
+const db = drizzle({
+  connection: {
+    connectionString: process.env.NILEDB_URL!,
+    ssl: true
+  }
+});
+```
+
+LANGUAGE: typescript
+CODE:
+```
+import 'dotenv/config';
+import { pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+
+const pool = new Pool({
+  connectionString: process.env.NILEDB_URL!,
+});
+const db = drizzle({ client: pool });
+```
+
+----------------------------------------
+
+TITLE: Drizzle ORM D1 Batch API Usage Example
+DESCRIPTION: Demonstrates how to use the `db.batch` method in Drizzle ORM with Cloudflare D1. This example shows how to combine multiple database operations, including inserts, updates, and various select queries, into a single atomic batch execution.
+SOURCE: https://orm.drizzle.team/docs/latest-releases/drizzle-orm-v0290
+
+LANGUAGE: typescript
+CODE:
+```
+const batchResponse = await db.batch([
+  db.insert(usersTable).values({ id: 1, name: 'John' }).returning({
+    id: usersTable.id,
+  }),
+  db.update(usersTable).set({ name: 'Dan' }).where(eq(usersTable.id, 1)),
+  db.query.usersTable.findMany({}),
+  db.select().from(usersTable).where(eq(usersTable.id, 1)),
+  db.select({ id: usersTable.id, invitedBy: usersTable.invitedBy }).from(
+    usersTable,
+  ),
+]);
+```
+
+----------------------------------------
+
+TITLE: Configure Drizzle Kit with AWS Data API Driver
+DESCRIPTION: Example of configuring Drizzle Kit to use the `aws-data-api` driver for a PostgreSQL dialect. This setup requires specific `dbCredentials` for connecting to an AWS RDS Data API endpoint.
+SOURCE: https://orm.drizzle.team/docs/drizzle-config-file
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { defineConfig } from "drizzle-kit";
+
+export default defineConfig({
+  dialect: "postgresql",
+  schema: "./src/schema.ts",
+  driver: "aws-data-api",
+  dbCredentials: {
+    database: "database",
+    resourceArn: "resourceArn",
+    secretArn: "secretArn",
+  },
+});
+```
+
+----------------------------------------
+
+TITLE: Basic Project File Structure for Drizzle ORM with PGLite
+DESCRIPTION: Illustrates the recommended directory and file organization for a Drizzle ORM project using PGLite, including schema, migrations, and configuration files.
+SOURCE: https://orm.drizzle.team/docs/get-started/pglite-new
+
+LANGUAGE: plaintext
+CODE:
+```
+📦 <project root>
+ ├ 📂 drizzle
+ ├ 📂 src
+ │   ├ 📂 db
+ │   │  └ 📜 schema.ts
+ │   └ 📜 index.ts
+ ├ 📜 .env
+ ├ 📜 drizzle.config.ts
+ ├ 📜 package.json
+ └ 📜 tsconfig.json
+```
+
+----------------------------------------
+
+TITLE: Connect Drizzle ORM to SingleStore Database
+DESCRIPTION: These examples demonstrate various ways to initialize a Drizzle ORM connection to a SingleStore database using the `drizzle-orm/singlestore` package. It covers connecting via a direct URL, using a configuration object for `mysql2` options, and integrating with an existing `mysql2` client or connection pool.
+SOURCE: https://orm.drizzle.team/docs/get-started/singlestore-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+import 'dotenv/config';
+import { drizzle } from "drizzle-orm/singlestore";
+
+const db = drizzle(process.env.DATABASE_URL);
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+import 'dotenv/config';
+import { drizzle } from "drizzle-orm/singlestore";
+
+// You can specify any property from the mysql2 connection options
+const db = drizzle({ connection: { uri: process.env.DATABASE_URL }});
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+import 'dotenv/config';
+import { drizzle } from "drizzle-orm/singlestore";
+import mysql from "mysql2/promise";
+
+const poolConnection = mysql.createPool({
+  host: "host",
+  user: "user",
+  database: "database"
+});
+const db = drizzle({ client: poolConnection });
+
+// or if you need client connection
+async function main() {
+  const connection = await mysql.createConnection({
+    host: "host",
+    user: "user",
+    database: "database"
+  });
+  const db = drizzle({ client: connection });
+}
+main();
+```
+
+----------------------------------------
+
+TITLE: Perform CRUD Operations with Drizzle ORM
+DESCRIPTION: Provides a comprehensive TypeScript example demonstrating how to connect to a database using Drizzle ORM, insert new user data, retrieve all users, update an existing user's information, and delete a user record. This snippet showcases basic Create, Read, Update, and Delete operations.
+SOURCE: https://orm.drizzle.team/docs/get-started/vercel-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+import 'dotenv/config';
+import { eq } from 'drizzle-orm';
+import { drizzle } from 'drizzle-orm/vercel-postgres';
+import { usersTable } from './db/schema';
+
+async function main() {
+  const db = drizzle();
+
+  const user: typeof usersTable.$inferInsert = {
+    name: 'John',
+    age: 30,
+    email: '[email protected]',
+  };
+
+  await db.insert(usersTable).values(user);
+  console.log('New user created!')
+
+  const users = await db.select().from(usersTable);
+  console.log('Getting all users from the database: ', users)
+  /*
+  const users: {
+    id: number;
+    name: string;
+    age: number;
+    email: string;
+  }[]
+  */
+
+  await db
+    .update(usersTable)
+    .set({
+      age: 31,
+    })
+    .where(eq(usersTable.email, user.email));
+  console.log('User info updated!')
+
+  await db.delete(usersTable).where(eq(usersTable.email, user.email));
+  console.log('User deleted!')
+}
+
+main();
+```
+
+----------------------------------------
+
+TITLE: Drizzle ORM Native Support for LibSQL Client Driver Variations
+DESCRIPTION: This documentation outlines the various `@libsql/client` driver variations supported natively by Drizzle ORM, detailing their primary use cases and connection protocols. It helps developers choose the appropriate driver based on their target environment (Node.js, web frameworks, or specific protocols like HTTP/WS).
+SOURCE: https://orm.drizzle.team/docs/get-started/turso-new
+
+LANGUAGE: APIDOC
+CODE:
+```
+`@libsql/client`:
+  - Defaults to `node` import, automatically changes to `web` if `target` or `platform` is set for bundler (e.g., `esbuild --platform=browser`).
+`@libsql/client/node`:
+  - `node` compatible module.
+  - Supports `:memory:`, `file`, `wss`, `http`, and `turso` connection protocols.
+`@libsql/client/web`:
+  - Module for fullstack web frameworks like `next`, `nuxt`, `astro`, etc.
+`@libsql/client/http`:
+  - Module for `http` and `https` connection protocols.
+`@libsql/client/ws`:
+  - Module for `ws` and `wss` connection protocols.
+`@libsql/client/sqlite3`:
+  - Module for `:memory:` and `file` connection protocols.
+`@libsql/client-wasm`:
+  - Separate experimental package for WASM.
+```
+
+----------------------------------------
+
+TITLE: Define Basic Project File Structure for Drizzle and Turso
+DESCRIPTION: This snippet illustrates the recommended basic file structure for a project integrating Drizzle ORM with Turso. It highlights the placement of schema definitions, migration files, and configuration files for a clean and organized setup.
+SOURCE: https://orm.drizzle.team/docs/get-started/turso-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+📦 <project root>
+ ├ 📂 drizzle
+ ├ 📂 src
+ │   ├ 📂 db
+ │   │  └ 📜 schema.ts
+ │   └ 📜 index.ts
+ ├ 📜 .env
+ ├ 📜 drizzle.config.ts
+ ├ 📜 package.json
+ └ 📜 tsconfig.json
+```
+
+----------------------------------------
+
+TITLE: Create Next.js API Route with Drizzle ORM
+DESCRIPTION: This Next.js API route demonstrates how to fetch data from the database using Drizzle ORM. It defines a GET endpoint that queries the `usersTable` and returns the results as a JSON response, configured for edge runtime and dynamic behavior.
+SOURCE: https://orm.drizzle.team/docs/tutorials/drizzle-with-vercel-edge-functions
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { db } from "@/app/db/db";
+import { usersTable } from "@/app/db/schema";
+import { NextResponse } from "next/server";
+
+export const dynamic = 'force-dynamic'; // static by default, unless reading the request
+export const runtime = 'edge' // specify the runtime to be edge
+
+export async function GET(request: Request) {
+  const users = await db.select().from(usersTable)
+
+  return NextResponse.json({ users, message: 'success' });
+}
+```
+
+----------------------------------------
+
+TITLE: Perform CRUD Operations with Drizzle ORM
+DESCRIPTION: This TypeScript code demonstrates how to perform Create, Read, Update, and Delete (CRUD) operations using Drizzle ORM with a PostgreSQL database. It includes examples for inserting new tenants and todos, querying all tenants and todos, setting a tenant context for multi-tenancy, updating a todo's status, and deleting a todo.
+SOURCE: https://orm.drizzle.team/docs/get-started/nile-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+import 'dotenv/config';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { eq, sql } from 'drizzle-orm';
+import { tenantsTable, todos as todosTable } from './db/schema';
+
+const db = drizzle(process.env.NILEDB_URL!);
+
+async function main() {
+  const tenant: typeof tenantsTable.$inferInsert = {
+    name: 'AwesomeSauce Inc.',
+  };
+
+  await db.insert(tenantsTable).values(tenant);
+  console.log('New tenant created!')
+
+  const tenants = await db.select().from(tenantsTable);
+  console.log('Getting all tenants from the database: ', tenants)
+
+  const todo: typeof todosTable.$inferInsert = {
+    tenantId: tenants[0].id,
+    title: 'Update pitch deck with AI stuff'
+  }
+
+  await db.insert(todosTable).values(todo);
+  console.log('New todo created!')
+
+  const todos = await db.select().from(todosTable);
+  console.log('Getting all todos from the database: ', todos)
+
+  await db.execute(sql`SET nile.tenant_id = '${sql.raw(tenants[0].id)}'`);
+  console.log("Set tenant context");
+
+  // note the lack of tenant_id in the query
+  const tenant_todos = await db.select().from(todosTable);
+  console.log('Getting all todos from the tenant virtual database: ', tenant_todos)
+
+  await db
+    .update(todosTable)
+    .set({
+      complete: true,
+    })
+    .where(eq(todosTable.id, todo.id));
+  console.log('Todo marked as done!')
+
+  await db.delete(todosTable).where(eq(todosTable.id, todo.id));
+  console.log('Todo deleted!')
+}
+
+main();
+```
+
+----------------------------------------
+
+TITLE: Define User Table Schema with Drizzle ORM
+DESCRIPTION: Example of defining a `users` table schema using Drizzle ORM's `pgTable` function, including columns for ID, name, age, and a unique email, with appropriate data types and constraints.
+SOURCE: https://orm.drizzle.team/docs/get-started/pglite-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { integer, pgTable, varchar } from "drizzle-orm/pg-core";
+
+export const usersTable = pgTable("users", {
+  id: integer().primaryKey().generatedAlwaysAsIdentity(),
+  name: varchar({ length: 255 }).notNull(),
+  age: integer().notNull(),
+  email: varchar({ length: 255 }).notNull().unique(),
+});
+```
+
+----------------------------------------
+
+TITLE: Basic Drizzle ORM Project File Structure
+DESCRIPTION: This snippet illustrates the recommended basic file structure for a Drizzle ORM project. It highlights the location for database schema definitions, application entry points, Drizzle migration files, and configuration files.
+SOURCE: https://orm.drizzle.team/docs/get-started/mysql-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+📦 <project root>
+ ├ 📂 drizzle
+ ├ 📂 src
+ │   ├ 📂 db
+ │   │  └ 📜 schema.ts
+ │   └ 📜 index.ts
+ ├ 📜 .env
+ ├ 📜 drizzle.config.ts
+ ├ 📜 package.json
+ └ 📜 tsconfig.json
+```
+
+----------------------------------------
+
+TITLE: Define API Routes for Tenant and Todo Management
+DESCRIPTION: This comprehensive snippet defines various API endpoints for managing tenants and todos within the multi-tenant application. It includes routes for creating and listing tenants, and for adding, updating, and retrieving todo items associated with a specific tenant. The `tenantDB` wrapper is used to ensure all database operations are automatically scoped to the tenant identified by the middleware.
+SOURCE: https://orm.drizzle.team/docs/tutorials/drizzle-with-nile
+
+LANGUAGE: TypeScript
+CODE:
+```
+// create new tenant
+app.post("/api/tenants", async (req, res) => {
+  try {
+    const name = req.body.name;
+    var tenants: any = null;
+    tenants = await tenantDB(async (tx) => {
+        return await tx.insert(tenantSchema).values({ name }).returning();
+    });
+    res.json(tenants);
+  } catch (error: any) {
+    console.log("error creating tenant: " + error.message);
+    res.status(500).json({message: "Internal Server Error",});
+  }
+});
+
+// return list of tenants
+app.get("/api/tenants", async (req, res) => {
+  let tenants: any = [];
+  try {
+      tenants = await tenantDB(async (tx) => {
+        return await tx.select().from(tenantSchema);
+      });
+    res.json(tenants);
+  } catch (error: any) {
+    console.log("error listing tenants: " + error.message);
+    res.status(500).json({message: "Internal Server Error",});
+  }
+});
+
+// add new task for tenant
+app.post("/api/tenants/:tenantId/todos", async (req, res) => {
+  try {
+    const { title, complete } = req.body;
+    if (!title) {
+      res.status(400).json({message: "No task title provided",});
+    }
+    const tenantId = req.params.tenantId;
+
+    const newTodo = await tenantDB(async (tx) => {
+      return await tx
+        .insert(todoSchema)
+        .values({ tenantId, title, complete })
+        .returning();
+    });
+    // return without the embedding vector, since it is huge and useless
+    res.json(newTodo);
+  } catch (error: any) {
+    console.log("error adding task: " + error.message);
+    res.status(500).json({message: "Internal Server Error",});
+  }
+});
+
+// update tasks for tenant
+// No need for where clause because we have the tenant in the context
+app.put("/api/tenants/:tenantId/todos", async (req, res) => {
+  try {
+    const { id, complete } = req.body;
+    await tenantDB(async (tx) => {
+      return await tx
+        .update(todoSchema)
+        .set({ complete })
+        .where(eq(todoSchema.id, id));
+    });
+    res.sendStatus(200);
+  } catch (error: any) {
+    console.log("error updating tasks: " + error.message);
+    res.status(500).json({message: "Internal Server Error",});
+  }
+});
+
+// get all tasks for tenant
+app.get("/api/tenants/:tenantId/todos", async (req, res) => {
+  try {
+    // No need for a "where" clause here because we are setting the tenant ID in the context
+    const todos = await tenantDB(async (tx) => {
+      return await tx
+        .select({
+          id: todoSchema.id,
+          tenant_id: todoSchema.tenantId,
+          title: todoSchema.title,
+          estimate: todoSchema.estimate,
+        })
+        .from(todoSchema);
+    });
+    res.json(todos);
+  } catch (error: any) {
+    console.log("error listing tasks: " + error.message);
+    res.status(500).json({message: error.message,});
+  }
+});
+```
+
+----------------------------------------
+
+TITLE: Perform CRUD operations with Drizzle ORM
+DESCRIPTION: This TypeScript snippet demonstrates how to perform Create, Read, Update, and Delete (CRUD) operations using Drizzle ORM with a MySQL2 database. It includes examples for inserting a new user, fetching all users, updating a user's age, and deleting a user based on their email.
+SOURCE: https://orm.drizzle.team/docs/get-started/mysql-new
+
+LANGUAGE: typescript
+CODE:
+```
+import 'dotenv/config';
+import { drizzle } from 'drizzle-orm/mysql2';
+import { eq } from 'drizzle-orm';
+import { usersTable } from './db/schema';
+
+const db = drizzle(process.env.DATABASE_URL!);
+
+async function main() {
+  const user: typeof usersTable.$inferInsert = {
+    name: 'John',
+    age: 30,
+    email: '[email protected]',
+  };
+
+  await db.insert(usersTable).values(user);
+  console.log('New user created!')
+
+  const users = await db.select().from(usersTable);
+  console.log('Getting all users from the database: ', users)
+  /*
+  const users: {
+    id: number;
+    name: string;
+    age: number;
+    email: string;
+  }[]
+  */
+
+  await db
+    .update(usersTable)
+    .set({
+      age: 31,
+    })
+    .where(eq(usersTable.email, user.email));
+  console.log('User info updated!')
+
+  await db.delete(usersTable).where(eq(usersTable.email, user.email));
+  console.log('User deleted!')
+}
+
+main();
+```
+
+----------------------------------------
+
+TITLE: Example API Route Response
+DESCRIPTION: This JSON object represents a typical successful response from the '/api/hello' endpoint, showing an empty array for 'users' (if no users are in the database) and a 'success' message.
+SOURCE: https://orm.drizzle.team/docs/tutorials/drizzle-with-vercel-edge-functions
+
+LANGUAGE: json
+CODE:
+```
+{
+  "users": [],
+  "message": "success"
+}
+```
+
+----------------------------------------
+
+TITLE: Execute TypeScript Files with Various Runtimes
+DESCRIPTION: These commands show how to run a TypeScript file (`src/index.ts`) using different JavaScript runtimes and package managers. Options include `tsx` via `npx`, `yarn`, `pnpm`, and `bun`, with `bun` being recommended for its module handling capabilities.
+SOURCE: https://orm.drizzle.team/docs/get-started/singlestore-new
+
+LANGUAGE: bash
+CODE:
+```
+npx tsx src/index.ts
+```
+
+LANGUAGE: bash
+CODE:
+```
+yarn tsx src/index.ts
+```
+
+LANGUAGE: bash
+CODE:
+```
+pnpm tsx src/index.ts
+```
+
+LANGUAGE: bash
+CODE:
+```
+bun tsx src/index.ts
+```
+
+LANGUAGE: bash
+CODE:
+```
+bun src/index.ts
+```
+
+----------------------------------------
+
+TITLE: LibSQL and D1 Batch API Explanations
+DESCRIPTION: This section provides detailed explanations of the batch API behavior for LibSQL and Cloudflare D1. It clarifies how transactions are handled (implicit for LibSQL, auto-commit with sequential execution for D1), the impact on performance, and the error handling mechanisms, including rollback behavior for failed statements within a batch.
+SOURCE: https://orm.drizzle.team/docs/batch-api
+
+LANGUAGE: APIDOC
+CODE:
+```
+LibSQL Batch API:
+  - Source: https://docs.turso.tech/sdk/ts/reference#batch-transactions
+  - Description: A batch consists of one or more SQL statements executed sequentially within an implicit transaction controlled by the libSQL backend. If all statements succeed, the transaction is committed. If any statement fails, the entire transaction is rolled back, and no changes are made.
+
+D1 Batch API:
+  - Source: https://developers.cloudflare.com/d1/worker-api/d1-database/#batch
+  - Description: Batches send multiple SQL statements in a single call to the database, significantly reducing network round trips and improving performance. D1 operates in auto-commit mode, guaranteeing that each statement in the list executes and commits sequentially and non-concurrently. Batched statements are treated as SQL transactions; if a statement in the sequence fails, an error is returned for that specific statement, and the entire sequence is aborted or rolled back.
+```
+
+----------------------------------------
+
+TITLE: Install Drizzle ORM and Drizzle Kit Packages
+DESCRIPTION: Instructions for installing the core Drizzle ORM library, `dotenv` for environment variables, `drizzle-kit` for schema migrations, and `tsx` for running TypeScript files, using various package managers.
+SOURCE: https://orm.drizzle.team/docs/get-started/d1-new
+
+LANGUAGE: npm
+CODE:
+```
+npm i drizzle-orm  dotenv
+npm i -D drizzle-kit tsx
+```
+
+LANGUAGE: yarn
+CODE:
+```
+yarn add drizzle-orm  dotenv
+yarn add -D drizzle-kit tsx
+```
+
+LANGUAGE: pnpm
+CODE:
+```
+pnpm add drizzle-orm  dotenv
+pnpm add -D drizzle-kit tsx
+```
+
+LANGUAGE: bun
+CODE:
+```
+bun add drizzle-orm  dotenv
+bun add -D drizzle-kit tsx
+```
+
+----------------------------------------
+
+TITLE: Define User Table Schema with Drizzle ORM
+DESCRIPTION: Example of defining a 'users_table' schema using Drizzle ORM's SQLite-specific functions, including columns for ID, name, age, and email, with primary key and unique constraints.
+SOURCE: https://orm.drizzle.team/docs/get-started/bun-sqlite-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
+
+export const usersTable = sqliteTable("users_table", {
+  id: int().primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
+  age: int().notNull(),
+  email: text().notNull().unique()
+});
+```
+
+----------------------------------------
+
+TITLE: Configure SQLite Database File Environment Variable
+DESCRIPTION: This snippet demonstrates how to set up the `DB_FILE_NAME` environment variable in a `.env` file. This variable specifies the path to the SQLite database file, with an example showing the required `file:` prefix for local database files when using `LibSQL`.
+SOURCE: https://orm.drizzle.team/docs/get-started/sqlite-new
+
+LANGUAGE: Plain Text
+CODE:
+```
+DB_FILE_NAME=
+```
+
+LANGUAGE: Plain Text
+CODE:
+```
+DB_FILE_NAME=file:local.db
+```
+
+----------------------------------------
+
+TITLE: Initialize Drizzle ORM with Node-Postgres
+DESCRIPTION: Demonstrates different ways to initialize Drizzle ORM with a PostgreSQL database using the `node-postgres` driver, including basic connection, connection with SSL options, and using a pre-configured `pg.Pool` instance.
+SOURCE: https://orm.drizzle.team/docs/get-started/postgresql-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+import 'dotenv/config';
+import { drizzle } from 'drizzle-orm/node-postgres';
+
+const db = drizzle(process.env.DATABASE_URL!);
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+import 'dotenv/config';
+import { drizzle } from 'drizzle-orm/node-postgres';
+
+// You can specify any property from the node-postgres connection options
+const db = drizzle({
+  connection: {
+    connectionString: process.env.DATABASE_URL!,
+    ssl: true
+  }
+});
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+import 'dotenv/config';
+import { pgTable, serial, text, varchar } from "drizzle-orm/pg-core";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL!,
+});
+const db = drizzle({ client: pool });
+```
+
+----------------------------------------
+
+TITLE: Generated Drizzle Schema for Gel 'users' Table
+DESCRIPTION: This TypeScript code shows an example of a Drizzle ORM schema file automatically generated from a Gel database schema. It defines the 'users' table with columns like 'id', 'age', 'email', and 'name', including types, constraints, and a unique index.
+SOURCE: https://orm.drizzle.team/docs/get-started/gel-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { gelTable, uniqueIndex, uuid, smallint, text } from "drizzle-orm/gel-core"
+import { sql } from "drizzle-orm"
+
+export const users = gelTable("users", {
+	id: uuid().default(sql`uuid_generate_v4()`).primaryKey().notNull(),
+	age: smallint(),
+	email: text().notNull(),
+	name: text(),
+}, (table) => [
+	uniqueIndex("a8c6061c-f37f-11ef-9249-0d78f6c1807b;schemaconstr").using("btree", table.id.asc().nullsLast().op("uuid_ops")),
+]);
+```
+
+----------------------------------------
+
+TITLE: Basic Netlify Edge Function Example
+DESCRIPTION: This TypeScript code defines a simple Netlify Edge Function. It imports the `Context` type for better type safety and exports an asynchronous default function that takes a `Request` and `Context` object, returning a basic 'User data' string as a `Response`.
+SOURCE: https://orm.drizzle.team/docs/tutorials/drizzle-with-netlify-edge-functions-neon
+
+LANGUAGE: TypeScript
+CODE:
+```
+import type { Context } from "@netlify/edge-functions";
+
+export default async (request: Request, context: Context) => {
+  return new Response("User data");
+};
+```
+
+----------------------------------------
+
+TITLE: Create Next.js API Route with Drizzle ORM
+DESCRIPTION: This Next.js API route defines a GET endpoint that fetches all users from the 'usersTable' using the Drizzle ORM 'db' instance. It demonstrates how to integrate Drizzle queries into a serverless function, returning the results as JSON.
+SOURCE: https://orm.drizzle.team/docs/tutorials/drizzle-with-vercel-edge-functions
+
+LANGUAGE: typescript
+CODE:
+```
+import { db } from "@/db";
+import { usersTable } from "@/db/schema";
+import { NextResponse } from "next/server";
+
+export const dynamic = 'force_dynamic'; // static by default, unless reading the request
+export const runtime = 'edge'; // specify the runtime to be edge
+
+export async function GET(request: Request) {
+  const users = await db.select().from(usersTable);
+
+  return NextResponse.json({ users, message: 'success' });
+}
+```
+
+----------------------------------------
+
+TITLE: Turso CLI Database Management Commands
+DESCRIPTION: Comprehensive documentation for Turso CLI commands used to authenticate, create, inspect, and manage authentication tokens for Turso databases. These commands are essential for setting up and interacting with your Turso instance.
+SOURCE: https://orm.drizzle.team/docs/tutorials/drizzle-with-turso
+
+LANGUAGE: APIDOC
+CODE:
+```
+turso auth signup
+  - Initiates the signup process for a new Turso account.
+
+turso auth login
+  - Logs into an existing Turso account.
+
+turso db create <DATABASE_NAME>
+  - Creates a new Turso database with the specified name.
+  - Parameters:
+    - <DATABASE_NAME>: The desired name for the new database (e.g., 'drizzle-turso-db').
+
+turso db show <DATABASE_NAME>
+  - Displays detailed information about a specific Turso database.
+  - Parameters:
+    - <DATABASE_NAME>: The name of the database to inspect (e.g., 'drizzle-turso-db').
+
+turso db tokens create <DATABASE_NAME>
+  - Generates a new authentication token for accessing the specified Turso database. This token is used for programmatic access.
+  - Parameters:
+    - <DATABASE_NAME>: The name of the database for which to create a token (e.g., 'drizzle-turso-db').
+```
+
+----------------------------------------
+
+TITLE: Basic Project File Structure for Drizzle ORM with Bun:SQLite
+DESCRIPTION: Illustrates the recommended directory and file organization for a Drizzle ORM project using Bun:SQLite, including schema definition, migration files, and configuration files.
+SOURCE: https://orm.drizzle.team/docs/get-started/bun-sqlite-new
+
+LANGUAGE: text
+CODE:
+```
+📦 <project root>
+ ├ 📂 drizzle
+ ├ 📂 src
+ │   ├ 📂 db
+ │   │  └ 📜 schema.ts
+ │   └ 📜 index.ts
+ ├ 📜 .env
+ ├ 📜 drizzle.config.ts
+ ├ 📜 package.json
+ └ 📜 tsconfig.json
+```
+
+----------------------------------------
+
+TITLE: Configure Cloudflare Wrangler for D1 Database
+DESCRIPTION: Example `wrangler.toml` configuration file for setting up a Cloudflare D1 database binding. This configuration specifies project details, compatibility, and the D1 database connection parameters including binding name, database name, ID, and migrations directory.
+SOURCE: https://orm.drizzle.team/docs/get-started/d1-new
+
+LANGUAGE: TOML
+CODE:
+```
+name = "YOUR PROJECT NAME"
+main = "src/index.ts"
+compatibility_date = "2022-11-07"
+node_compat = true
+
+[[ d1_databases ]]
+binding = "DB"
+database_name = "YOUR DB NAME"
+database_id = "YOUR DB ID"
+migrations_dir = "drizzle"
+```
+
+----------------------------------------
+
+TITLE: Configure Database File Name in .env
+DESCRIPTION: Instructions for setting up the database file name using an environment variable in a '.env' file, with an example for a local SQLite database.
+SOURCE: https://orm.drizzle.team/docs/get-started/bun-sqlite-new
+
+LANGUAGE: Shell
+CODE:
+```
+DB_FILE_NAME=
+```
+
+LANGUAGE: Shell
+CODE:
+```
+DB_FILE_NAME=mydb.sqlite
+```
+
+----------------------------------------
+
+TITLE: Create Next.js API Route with Drizzle ORM
+DESCRIPTION: Defines a Next.js API route (`GET` method) that fetches all users from the `usersTable` using Drizzle ORM and returns them as a JSON response. It also configures the route for `edge` runtime and `force-dynamic` behavior.
+SOURCE: https://orm.drizzle.team/docs/tutorials/drizzle-with-vercel-edge-functions
+
+LANGUAGE: typescript
+CODE:
+```
+import { db } from "@/db";
+import { usersTable } from "@/db/schema";
+import { NextResponse } from "next/server";
+
+export const dynamic = 'force-dynamic'; // static by default, unless reading the request
+export const runtime = 'edge' // specify the runtime to be edge
+
+export async function GET(request: Request) {
+  const users = await db.select().from(usersTable)
+
+  return NextResponse.json({ users, message: 'success' });
+}
+```
+
+----------------------------------------
+
+TITLE: Perform Drizzle ORM CRUD Operations with Bun SQLite
+DESCRIPTION: This TypeScript code demonstrates how to connect to a Bun SQLite database using Drizzle ORM and perform basic Create, Read, Update, and Delete (CRUD) operations on a 'users' table. It includes examples for inserting a new user, fetching all users, updating a user's age, and deleting a user, showcasing common database interactions.
+SOURCE: https://orm.drizzle.team/docs/get-started/bun-sqlite-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+import 'dotenv/config';
+import { drizzle } from 'drizzle-orm/bun-sqlite';
+import { eq } from 'drizzle-orm';
+import { usersTable } from './db/schema';
+
+const db = drizzle(process.env.DB_FILE_NAME!);
+
+async function main() {
+  const user: typeof usersTable.$inferInsert = {
+    name: 'John',
+    age: 30,
+    email: '[email protected]',
+  };
+
+  await db.insert(usersTable).values(user);
+  console.log('New user created!')
+
+  const users = await db.select().from(usersTable);
+  console.log('Getting all users from the database: ', users)
+  /*
+  const users: {
+    id: number;
+    name: string;
+    age: number;
+    email: string;
+  }[]
+  */
+
+  await db
+    .update(usersTable)
+    .set({
+      age: 31,
+    })
+    .where(eq(usersTable.email, user.email));
+  console.log('User info updated!')
+
+  await db.delete(usersTable).where(eq(usersTable.email, user.email));
+  console.log('User deleted!')
+}
+
+main();
+```
+
+----------------------------------------
+
+TITLE: Setup Expo Project Template
+DESCRIPTION: This snippet provides commands to initialize a new Expo project with a blank TypeScript template using different package managers.
+SOURCE: https://orm.drizzle.team/docs/get-started/expo-new
+
+LANGUAGE: npm
+CODE:
+```
+npx create expo-app --template blank-typescript
+```
+
+LANGUAGE: yarn
+CODE:
+```
+yarn create expo-app --template blank-typescript
+```
+
+LANGUAGE: pnpm
+CODE:
+```
+pnpm create expo-app --template blank-typescript
+```
+
+LANGUAGE: bun
+CODE:
+```
+bun create expo-app --template blank-typescript
+```
+
+----------------------------------------
+
+TITLE: Install Drizzle ORM and Dependencies
+DESCRIPTION: This snippet provides commands for installing Drizzle ORM, the `postgres` driver, `dotenv` for environment variables, `drizzle-kit` for migrations, and `tsx` for running TypeScript files using various package managers.
+SOURCE: https://orm.drizzle.team/docs/get-started/supabase-new
+
+LANGUAGE: Shell
+CODE:
+```
+npm i drizzle-orm postgres dotenv
+npm i -D drizzle-kit tsx
+```
+
+LANGUAGE: Shell
+CODE:
+```
+yarn add drizzle-orm postgres dotenv
+yarn add -D drizzle-kit tsx
+```
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm add drizzle-orm postgres dotenv
+pnpm add -D drizzle-kit tsx
+```
+
+LANGUAGE: Shell
+CODE:
+```
+bun add drizzle-orm postgres dotenv
+bun add -D drizzle-kit tsx
+```
+
+----------------------------------------
+
+TITLE: Drizzle ORM Builders Compatible with Batch API
+DESCRIPTION: This snippet lists the various Drizzle ORM query builders that can be included within a `db.batch` operation. It covers common SQL operations such as selecting, inserting, updating, and deleting data, as well as specific methods for fetching single records or multiple records, demonstrating the flexibility of the batch API.
+SOURCE: https://orm.drizzle.team/docs/batch-api
+
+LANGUAGE: TypeScript
+CODE:
+```
+db.all(),
+db.get(),
+db.values(),
+db.run(),
+db.execute(),
+db.query.<table>.findMany(),
+db.query.<table>.findFirst(),
+db.select()...,
+db.update()...,
+db.delete()...,
+db.insert()...,
+```
+
+----------------------------------------
+
+TITLE: Select Data with Drizzle ORM in TypeScript
+DESCRIPTION: This snippet demonstrates various data selection queries using Drizzle ORM. It includes fetching a user by ID, retrieving users along with their post counts, and querying posts created within the last 24 hours. It showcases `select`, `from`, `where`, `leftJoin`, `groupBy`, `orderBy`, `limit`, `offset`, and `sql` functions.
+SOURCE: https://orm.drizzle.team/docs/tutorials/drizzle-with-turso
+
+LANGUAGE: typescript
+CODE:
+```
+import { asc, count, eq, getTableColumns, gt, sql } from 'drizzle-orm';
+import { db } from '../index';
+import { SelectUser, postsTable, usersTable } from '../schema';
+
+export async function getUserById(id: SelectUser['id']): Promise<
+  Array<{
+    id: number;
+    name: string;
+    age: number;
+    email: string;
+  }>
+> {
+  return db.select().from(usersTable).where(eq(usersTable.id, id));
+}
+
+export async function getUsersWithPostsCount(
+  page = 1,
+  pageSize = 5,
+): Promise<
+  Array<{
+    postsCount: number;
+    id: number;
+    name: string;
+    age: number;
+    email: string;
+  }>
+> {
+  return db
+    .select({
+      ...getTableColumns(usersTable),
+      postsCount: count(postsTable.id),
+    })
+    .from(usersTable)
+    .leftJoin(postsTable, eq(usersTable.id, postsTable.userId))
+    .groupBy(usersTable.id)
+    .orderBy(asc(usersTable.id))
+    .limit(pageSize)
+    .offset((page - 1) * pageSize);
+}
+
+export async function getPostsForLast24Hours(
+  page = 1,
+  pageSize = 5,
+): Promise<
+  Array<{
+    id: number;
+    title: string;
+  }>
+> {
+  return db
+    .select({
+      id: postsTable.id,
+      title: postsTable.title,
+    })
+    .from(postsTable)
+    .where(gt(postsTable.createdAt, sql`(datetime('now','-24 hour'))`))
+    .orderBy(asc(postsTable.title), asc(postsTable.id))
+    .limit(pageSize)
+    .offset((page - 1) * pageSize);
+}
+```
+
+----------------------------------------
+
+TITLE: Example Output of Similar Guides Query
+DESCRIPTION: This JSON array represents the typical output structure returned by the `findSimilarGuides` function. Each object in the array contains the `name` (title), `url`, and calculated `similarity` score for a matching guide, ordered by similarity.
+SOURCE: https://orm.drizzle.team/docs/guides/vector-similarity-search
+
+LANGUAGE: JSON
+CODE:
+```
+[
+  {
+    name: 'Drizzle with Turso',
+    url: '/docs/tutorials/drizzle-with-turso',
+    similarity: 0.8642314333984994
+  },
+  {
+    name: 'Drizzle with Supabase Database',
+    url: '/docs/tutorials/drizzle-with-supabase',
+    similarity: 0.8593631126014918
+  },
+  {
+    name: 'Drizzle with Neon Postgres',
+    url: '/docs/tutorials/drizzle-with-neon',
+    similarity: 0.8541051184461372
+  },
+  {
+    name: 'Drizzle with Vercel Edge Functions',
+    url: '/docs/tutorials/drizzle-with-vercel-edge-functions',
+    similarity: 0.8481551084241092
+  }
+]
+```
+
+----------------------------------------
+
+TITLE: Execute TypeScript Files with Various Runtimes
+DESCRIPTION: These commands illustrate different ways to run a TypeScript file (`src/index.ts`) using popular package managers and runtimes. Options include `tsx` via `npx`, `yarn`, `pnpm`, and direct execution with `bun`, which is highlighted for its robust module handling.
+SOURCE: https://orm.drizzle.team/docs/get-started/tidb-new
+
+LANGUAGE: Shell
+CODE:
+```
+npx tsx src/index.ts
+```
+
+LANGUAGE: Shell
+CODE:
+```
+yarn tsx src/index.ts
+```
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm tsx src/index.ts
+```
+
+LANGUAGE: Shell
+CODE:
+```
+bun tsx src/index.ts
+```
+
+LANGUAGE: Shell
+CODE:
+```
+bun src/index.ts
+```
+
+----------------------------------------
+
+TITLE: Install Drizzle ORM and TiDB Serverless Driver
+DESCRIPTION: This snippet provides commands to install Drizzle ORM, the TiDB serverless driver, dotenv for environment variables, and drizzle-kit with tsx for development. It covers various package managers.
+SOURCE: https://orm.drizzle.team/docs/get-started/tidb-new
+
+LANGUAGE: npm
+CODE:
+```
+npm i drizzle-orm @tidbcloud/serverless dotenv
+npm i -D drizzle-kit tsx
+```
+
+LANGUAGE: yarn
+CODE:
+```
+yarn add drizzle-orm @tidbcloud/serverless dotenv
+yarn add -D drizzle-kit tsx
+```
+
+LANGUAGE: pnpm
+CODE:
+```
+pnpm add drizzle-orm @tidbcloud/serverless dotenv
+pnpm add -D drizzle-kit tsx
+```
+
+LANGUAGE: bun
+CODE:
+```
+bun add drizzle-orm @tidbcloud/serverless dotenv
+bun add -D drizzle-kit tsx
+```
+
+----------------------------------------
+
+TITLE: LibSQL Client Driver Variations and Connection Protocols
+DESCRIPTION: Documentation for the different `@libsql/client` driver variations, detailing their import paths, supported environments, and connection protocols for integrating with Drizzle ORM.
+SOURCE: https://orm.drizzle.team/docs/get-started-sqlite
+
+LANGUAGE: APIDOC
+CODE:
+```
+@libsql/client driver variations:
+
+- @libsql/client:
+    - Description: Defaults to `node` import, automatically changes to `web` if `target` or `platform` is set for bundler (e.g., `esbuild --platform=browser`).
+- @libsql/client/node:
+    - Description: `node` compatible module.
+    - Supported Protocols: `:memory:`, `file`, `wss`, `http`, `turso` connection protocols.
+- @libsql/client/web:
+    - Description: Module for fullstack web frameworks (e.g., `next`, `nuxt`, `astro`).
+- @libsql/client/http:
+    - Description: Module for `http` and `https` connection protocols.
+- @libsql/client/ws:
+    - Description: Module for `ws` and `wss` connection protocols.
+- @libsql/client/sqlite3:
+    - Description: Module for `:memory:` and `file` connection protocols.
+- @libsql/client-wasm:
+    - Description: Separate experimental package for WASM.
+```
+
+----------------------------------------
+
+TITLE: Define SQLite Table Schema with Drizzle ORM
+DESCRIPTION: Example of defining a `users_table` schema using Drizzle ORM's SQLite dialect. This snippet illustrates how to use `sqliteTable` to define columns like `id`, `name`, `age`, and `email`, including constraints such as primary key, auto-increment, not null, and unique.
+SOURCE: https://orm.drizzle.team/docs/get-started/d1-new
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
+
+export const usersTable = sqliteTable("users_table", {
+  id: int().primaryKey({ autoIncrement: true }),
+  name: text().notNull(),
+  age: int().notNull(),
+  email: text().notNull().unique(),
+});
+```
+
+----------------------------------------
+
+TITLE: Basic Project File Structure for Drizzle ORM with Nile
+DESCRIPTION: This snippet illustrates the recommended directory and file organization for a Drizzle ORM project integrated with Nile. It shows the placement of schema definitions, migration files, environment variables, and Drizzle configuration.
+SOURCE: https://orm.drizzle.team/docs/get-started/nile-new
+
+LANGUAGE: text
+CODE:
+```
+📦 <project root>
+ ├ 📂 drizzle
+ ├ 📂 src
+ │   ├ 📂 db
+ │   │  └ 📜 schema.ts
+ │   └ 📜 index.ts
+ ├ 📜 .env
+ ├ 📜 drizzle.config.ts
+ ├ 📜 package.json
+ └ 📜 tsconfig.json
+```
+
+----------------------------------------
+
+TITLE: Initialize Drizzle ORM with SingleStore using URI
+DESCRIPTION: Demonstrates how to initialize the Drizzle ORM driver for SingleStore by providing a database URI. This can be done either directly as a string or encapsulated within a connection configuration object, allowing for basic connection setup.
+SOURCE: https://orm.drizzle.team/docs/get-started-singlestore
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { drizzle } from "drizzle-orm/singlestore";
+
+const db = drizzle(process.env.DATABASE_URL);
+
+const response = await db.select().from(...)
+```
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { drizzle } from "drizzle-orm/singlestore";
+
+// You can specify any property from the mysql2 connection options
+const db = drizzle({ connection:{ uri: process.env.DATABASE_URL }});
+
+const response = await db.select().from(...)
+```
