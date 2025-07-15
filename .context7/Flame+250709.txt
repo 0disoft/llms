@@ -1,0 +1,1166 @@
+TITLE: Dartdoc Example for Method Documentation
+DESCRIPTION: Demonstrates how to write effective Dartdoc comments for methods. The example shows starting with a verb in the present simple tense, adding paragraph breaks, and including details about pre-conditions, post-conditions, and potential errors to guide users on method usage.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/development/style_guide.md#_snippet_6
+
+LANGUAGE: Dart
+CODE:
+```
+/// Adds a new [child] into the container, and becomes the owner of that
+/// child.
+///
+/// The child will be disposed of when this container is destroyed.
+/// It is an error to try to add a child that already belongs to another
+/// container.
+void addChild(T child) { ... }
+```
+
+----------------------------------------
+
+TITLE: Migration Guide: Old vs. New Tap Event APIs in Flame
+DESCRIPTION: A guide for migrating existing Flame projects from deprecated `Tappable`/`Draggable` mixins to the new `TapCallbacks`/`DragCallbacks` API. It highlights critical changes in method signatures, event argument types, return values, event propagation, and coordinate access for tap events.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/inputs/tap_events.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+Migration from Tappable/Draggable to TapCallbacks/DragCallbacks:
+  Mixins:
+    - Replace Tappable/Draggable with TapCallbacks/DragCallbacks.
+  Method Signature Changes (for onTapDown, onTapUp, onTapCancel, onLongTapDown):
+    - Old: (int pointerId, TapDownDetails details)
+    - New: (event: TapDownEvent | TapUpEvent | TapCancelEvent)
+  Return Value:
+    - Old: Had a return value.
+    - New: No return value.
+  Event Propagation:
+    - For onTapDown: Set event.continuePropagation = true to pass through taps.
+    - For other events: Pass-through automatically.
+  Coordinate Access:
+    - Old: Manual computation.
+    - New: Use event.localPosition, event.canvasPosition, event.devicePosition.
+  Hierarchy Considerations:
+    - If component is part of a custom ancestor, ensure ancestor has correct size or implements containsLocalPoint().
+```
+
+----------------------------------------
+
+TITLE: RouterComponent API Reference
+DESCRIPTION: Detailed API specification for the RouterComponent class, outlining its purpose, internal structure, navigation behaviors, and key properties for managing game screens and their transparency.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/router.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+RouterComponent:
+  Purpose: Manages navigation across multiple screens within a game, similar to Flutter's Navigator.
+  Internal Structure: Contains a stack of routes.
+  Behaviors:
+    - Routes are placed on top of the stack.
+    - pop(): Removes the topmost page.
+    - Routes are addressed by unique names.
+  Constructor Parameters (implied from usage):
+    - routes: Map<String, Route> - A map of unique names to Route instances.
+    - initialRoute: String - The name of the route to display initially.
+```
+
+----------------------------------------
+
+TITLE: DialogueRunner Class API Reference
+DESCRIPTION: Provides a reference to the `DialogueRunner` class documentation within the `jenny` package, indicating its file location and symbol for API lookup.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/other_modules/jenny/runtime/dialogue_runner.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+:file: src/dialogue_runner.dart
+:symbol: DialogueRunner
+:package: jenny
+```
+
+----------------------------------------
+
+TITLE: AlignComponent API Reference
+DESCRIPTION: Provides the core API reference for the `AlignComponent` in the `flame` package, including its symbol name, file path, and external links to related Flutter alignment classes.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/layout/align_component.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+:package: flame
+:symbol: AlignComponent
+:file: src/layout/align_component.dart
+
+[Align]: https://api.flutter.dev/flutter/widgets/Align-class.html
+[Alignment]: https://api.flutter.dev/flutter/painting/Alignment-class.html
+```
+
+----------------------------------------
+
+TITLE: TapCallbacks Mixin API Reference
+DESCRIPTION: Detailed API documentation for the `TapCallbacks` mixin, outlining its purpose, the tap event methods it provides (`onTapDown`, `onLongTapDown`, `onTapUp`, `onTapCancel`), and requirements for proper hit detection using `containsLocalPoint()`.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/inputs/tap_events.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+TapCallbacks Mixin:
+  Purpose: Enables a Component to receive tap events.
+  Methods:
+    onTapDown(event: TapDownEvent): void
+      Description: Called when a tap contact is made.
+      Behavior: By default, does nothing. Can be overridden.
+      Propagation: Set event.continuePropagation to true to pass through to components below.
+    onLongTapDown(event: TapDownEvent): void
+      Description: Called when a long tap contact is made.
+      Behavior: By default, does nothing. Can be overridden.
+    onTapUp(event: TapUpEvent): void
+      Description: Called when a tap contact is lifted.
+      Behavior: By default, does nothing. Can be overridden.
+    onTapCancel(event: TapCancelEvent): void
+      Description: Called when a tap contact is cancelled (e.g., finger moved).
+      Behavior: By default, does nothing. Can be overridden.
+  Requirements:
+    - Component must implement containsLocalPoint() for hit detection.
+    - PositionComponent uses its size for containsLocalPoint().
+    - Bare Component requires manual containsLocalPoint() implementation.
+    - Parent components in a hierarchy must also implement containsLocalPoint() correctly.
+```
+
+----------------------------------------
+
+TITLE: Integrate Custom Game World into FlameGame
+DESCRIPTION: This example illustrates how to create a custom game world by extending the `World` class and integrating it into `FlameGame`. It shows overriding the `onLoad` method to add initial components, like a `Player`, to the game world.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/README.md#_snippet_2
+
+LANGUAGE: dart
+CODE:
+```
+import 'package:flame/game.dart';
+import 'package:flame/components.dart';
+import 'package:flutter/widgets.dart';
+
+void main() {
+  runApp(
+    GameWidget(
+      game: FlameGame(world: MyWorld()),
+    ),
+  );
+}
+
+class MyWorld extends World {
+  @override
+  Future<void> onLoad() async {
+    add(Player(position: Vector2(0, 0)));
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Flame Engine Utility Extensions API Reference
+DESCRIPTION: Comprehensive API documentation for various utility extensions provided by Flame, covering methods and factories for `Canvas`, `Color`, `Image`, `Offset`, `Rect`, `math.Rectangle`, and `Size` objects. These extensions simplify common operations and conversions.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/other/util.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+Import from: package:flame/extensions.dart
+
+Canvas Extensions:
+  Methods:
+    scaleVector(Vector2 scale): Scales the canvas by a Vector2.
+    translateVector(Vector2 offset): Translates the canvas by a Vector2.
+    renderPoint(): Renders a single point on the canvas (mostly for debugging).
+    renderAt(): Manipulates Canvas transformation matrix for rendering, then resets.
+    renderRotated(): Manipulates Canvas transformation matrix for rendering, then resets.
+
+Color Extensions:
+  Methods:
+    darken(double amount): Darkens the shade of the color (amount between 0 to 1).
+    brighten(double amount): Brightens the shade of the color (amount between 0 to 1).
+  Factories:
+    ColorExtension.fromRGBHexString(String hexString): Parses an RGB color from a valid hex string (e.g., #1C1C1C).
+    ColorExtension.fromARGBHexString(String hexString): Parses an ARGB color from a valid hex string (e.g., #FF1C1C1C).
+
+Image Extensions:
+  Methods:
+    pixelsInUint8(): Retrieves the pixel data as a Uint8List, in the ImageByteFormat.rawRgba pixel format.
+    getBoundingRect(): Get the bounding rectangle of the Image as a Rect.
+    size(): The size of an Image as Vector2.
+    darken(double amount): Darkens each pixel of the Image (amount between 0 to 1).
+    brighten(double amount): Brightens each pixel of the Image (amount between 0 to 1).
+
+Offset Extensions:
+  Methods:
+    toVector2(): Creates a Vector2 from the Offset.
+    toSize(): Creates a Size from the Offset.
+    toPoint(): Creates a Point from the Offset.
+    toRect(): Creates a Rect starting in (0,0) and its bottom right corner is the [Offset].
+
+Rect Extensions:
+  Methods:
+    toOffset(): Creates an Offset from the Rect.
+    toVector2(): Creates a Vector2 starting in (0,0) and goes to the size of the Rect.
+    containsPoint(Vector2 point): Whether this Rect contains a Vector2 point or not.
+    intersectsSegment(Vector2 p1, Vector2 p2): Whether the segment formed by two Vector2s intersects this Rect.
+    intersectsLineSegment(LineSegment segment): Whether the LineSegment intersects the Rect.
+    toVertices(): Turns the four corners of the Rect into a list of Vector2.
+    toFlameRectangle(): Converts this Rect into a Flame Rectangle.
+    toMathRectangle(): Converts this Rect into a math.Rectangle.
+    toGeometryRectangle(): Converts this Rect into a Rectangle from flame-geom.
+    transform(Matrix4 matrix): Transforms the Rect using a Matrix4.
+  Factories:
+    RectExtension.getBounds(List<Vector2> points): Construct a Rect that represents the bounds of a list of Vector2s.
+    RectExtension.fromCenter(Vector2 center): Construct a Rect from a center point (using Vector2).
+
+math.Rectangle Extensions:
+  Methods:
+    toRect(): Converts this math Rectangle into an ui Rect.
+
+Size Extensions:
+  Methods:
+    toVector2(): Creates an Vector2 from the Size.
+    toOffset(): Creates a Offset from the Size.
+    toPoint(): Creates a Point from the Size.
+    toRect(): Creates a Rect starting in (0,0) with the size of Size.
+```
+
+----------------------------------------
+
+TITLE: Route API Reference
+DESCRIPTION: API documentation for the Route component, detailing its role in defining page content, controlling transparency, and managing state persistence within the RouterComponent's navigation stack.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/router.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+Route:
+  Purpose: Holds information about the content of a particular page, mounted as a child to RouterComponent.
+  Key Property:
+    - builder: Function - A function that creates the component with the content of its page.
+  Properties:
+    - transparent: bool (default: false) - If true, allows pages below to render and receive events. If false (opaque), prevents rendering/events for pages below.
+    - maintainState: bool (default: true) - If true, maintains the state of the page component after being popped. If false, drops the component and calls builder each time activated.
+  Methods (implied from text):
+    - pushReplacementNamed(routeName: String): Replaces the current route with a new one by name.
+    - pushReplacement(route: Route): Replaces the current route with a new Route instance.
+```
+
+----------------------------------------
+
+TITLE: FunctionStorage API Reference
+DESCRIPTION: API documentation for the FunctionStorage class, detailing its methods and properties for managing user-defined functions in Yarn scripts.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/other_modules/jenny/runtime/function_storage.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+FunctionStorage Class
+
+Methods:
+  hasFunction(name: String) -> bool
+    Description: Returns the status of whether the function 'name' has been already registered.
+
+  addFunction0(name: String, fn: T0 Function())
+    Description: Registers a no-argument function 'fn' as the user-defined function 'name'.
+
+  addFunction1(name: String, fn1: T0 Function(T1))
+    Description: Registers a single-argument function 'fn1' under the name 'name'.
+
+  addFunction2(name: String, fn2: T0 Function(T1, T2))
+    Description: Registers a two-argument function 'fn2' with the given 'name'.
+
+  addFunction3(name: String, fn3: T0 Function(T1, T2, T3))
+    Description: Registers a three-argument function 'fn3' with the name 'name'.
+
+  addFunction4(name: String, fn4: T0 Function(T1, T2, T3, T4))
+    Description: Registers a four-argument function 'fn4' as 'name'.
+
+  clear()
+    Description: Removes all user-defined functions.
+
+  remove(name: String)
+    Description: Removes the user-defined function with the specified 'name'.
+
+Properties:
+  length: int
+    Description: The number of user-defined functions registered so far.
+
+  isEmpty: bool
+    Description: Returns 'true' if no user-defined functions were registered.
+
+  isNotEmpty: bool
+    Description: Has any functions been registered at all?
+```
+
+----------------------------------------
+
+TITLE: CommandStorage API Reference
+DESCRIPTION: Detailed API documentation for the CommandStorage class, including its methods for managing commands and properties for checking its state.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/other_modules/jenny/runtime/command_storage.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+CommandStorage:
+  Methods:
+    hasCommand(String name): bool
+      name: The name of the command to check.
+      Returns: true if the command exists, false otherwise.
+    addCommand0(String name, FutureOr<void> Function() fn): void
+      name: The name to register the command under.
+      fn: The no-argument Dart function to register.
+    addCommand1(String name, FutureOr<void> Function(T1) fn): void
+      name: The name to register the command under.
+      fn: The single-argument Dart function to register.
+    addCommand2(String name, FutureOr<void> Function(T1, T2) fn): void
+      name: The name to register the command under.
+      fn: The two-argument Dart function to register.
+    addCommand3(String name, FutureOr<void> Function(T1, T2, T3) fn): void
+      name: The name to register the command under.
+      fn: The three-argument Dart function to register.
+    addCommand4(String name, FutureOr<void> Function(T1, T2, T3, T4) fn): void
+      name: The name to register the command under.
+      fn: The four-argument Dart function to register.
+    addCommand5(String name, FutureOr<void> Function(T1, T2, T3, T4, T5) fn): void
+      name: The name to register the command under.
+      fn: The five-argument Dart function to register.
+    addOrphanedCommand(name): void
+      name: The name of the command to register without a backing Dart function.
+      Description: Registers a command which is not backed by any Dart function. Such command will still be delivered to DialogueViews via the onCommand() callback, but its arguments will not be parsed.
+    clear(): void
+      Description: Removes all user-defined commands.
+    remove(String name): void
+      name: The name of the command to remove.
+      Description: Removes the user-defined command with the specified name.
+  Properties:
+    length: int
+      Description: The number of user-defined commands registered so far.
+    isEmpty: bool
+      Description: Returns true if no user-defined commands were registered.
+    isNotEmpty: bool
+      Description: Returns true if any commands have been registered.
+```
+
+----------------------------------------
+
+TITLE: UserDefinedCommand Class API Reference
+DESCRIPTION: Detailed API documentation for the UserDefinedCommand class, outlining its purpose and properties (name, argumentString, arguments) with their types and descriptions.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/other_modules/jenny/runtime/user_defined_command.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+UserDefinedCommand class:
+  Represents a single invocation of a custom (non-built-in) command within a yarn script.
+  Objects of this type will be delivered to a DialogueView in its .onCommand() method.
+
+  Properties:
+    name: String
+      The name of the command, without the angle brackets.
+      Example: "smile" for <<smile>>.
+
+    argumentString: String
+      Command arguments, as a single string.
+      Example: "Hippo 3.17" for <<move Hippo {$delta}>> where $delta is 3.17.
+      Re-evaluated every time the command is executed.
+      Accessing before command execution is an error.
+
+    arguments: List<dynamic>?
+      Command arguments, as a list of parsed values.
+      Null if the command was declared without a signature (i.e. as an "orphaned command").
+      If the command was linked as an external function, the number and types of arguments in the list will correspond to the arguments of that function.
+      Example: ['Hippo', 3.17] for <<move Hippo {$delta}>> if linked to move(String target, double distance).
+```
+
+----------------------------------------
+
+TITLE: Flame Engine Text Styling and Rendering API Reference
+DESCRIPTION: Comprehensive API documentation for the Flame Engine's text styling and rendering components, detailing abstract style classes, concrete style implementations, text renderers, and utility components for displaying text on the game canvas.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/rendering/text_rendering.md#_snippet_16
+
+LANGUAGE: APIDOC
+CODE:
+```
+FlameTextStyle (abstract class)
+  Description: Root abstract class for all text styles in Flame Engine. Inherits from this to define custom text styling.
+  Methods:
+    copyWith(): Creates a copy of the style.
+    merge(): Merges this style with another, returning a new style.
+  Note: Not to be confused with Flutter's `TextStyle`.
+
+DocumentStyle
+  Inherits from: FlameTextStyle
+  Description: Style definition for the entire document root.
+  Properties:
+    size: Dimensions of the document.
+    padding: Padding around the document content.
+    background: `BackgroundStyle` instance for the document's background.
+    specific styles: Styles applicable to blocks and inline elements within the document.
+
+BlockStyle
+  Inherits from: FlameTextStyle
+  Description: Style definition for block-level nodes.
+  Properties:
+    margin: Margin around the block.
+    padding: Padding within the block.
+    background: `BackgroundStyle` instance for the block's background.
+    text: `InlineTextStyle` instance for text within the block.
+
+BackgroundStyle
+  Inherits from: FlameTextStyle
+  Description: Style definition for backgrounds of blocks or documents.
+  Properties:
+    color: Background color.
+    border: Border properties.
+
+InlineTextStyle
+  Inherits from: FlameTextStyle
+  Description: Style definition for inline text elements.
+  Properties:
+    font: Font properties (e.g., family, size).
+    color: Text color.
+  Methods:
+    asTextRenderer(): Converts this style into a `TextRenderer`.
+
+TextRenderer
+  Description: A simplified interface for rendering text, often derived from an `InlineTextStyle`.
+
+InlineTextElement
+  Description: Represents a pre-compiled, laid-out piece of rich text, combining a node (what) with a style (how).
+  Composition: Can be thought of as a combination of `TextRenderer` and a string.
+
+TextPainterTextElement
+  Description: A specific type of `InlineTextElement` returned when using a `TextRenderer` directly, skipping layout.
+
+SpriteFontTextElement
+  Description: A specific type of `InlineTextElement` returned when using a `TextRenderer` directly, typically for sprite fonts.
+
+TextPaint
+  Description: A basic implementation of `TextRenderer` for simple text rendering.
+
+TextComponent
+  Description: A Flame Component System (FCS) component that uses `TextPaint` for rendering text.
+
+SpriteFontRenderer
+  Description: A `TextRenderer` implementation specifically designed for rendering text using sprite fonts.
+  Parameters: Accepts a `SpriteFont` object.
+
+TextBoxComponent
+  Description: A Flame Component System (FCS) component for rendering multiple lines of text with automatic line breaks.
+  Usage: Uses any `TextRenderer` to draw each line as an `Element` and handles its own layout and line breaking.
+```
+
+----------------------------------------
+
+TITLE: Flame Engine EffectController Class API Reference
+DESCRIPTION: Provides a detailed API reference for the `EffectController` class, including its powerful factory constructor parameters for defining complex animation sequences with custom durations, curves, repetitions, and callbacks. Also lists common properties available to all effect controllers.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/effects.md#_snippet_24
+
+LANGUAGE: APIDOC
+CODE:
+```
+EffectController:
+  Constructor:
+    Signature:
+      EffectController({
+          required double duration,
+          Curve curve = Curves.linear,
+          double? reverseDuration,
+          Curve? reverseCurve,
+          bool alternate = false,
+          double atMaxDuration = 0.0,
+          double atMinDuration = 0.0,
+          int? repeatCount,
+          bool infinite = false,
+          double startDelay = 0.0,
+          VoidCallback? onMax,
+          VoidCallback? onMin,
+      })
+    Parameters:
+      duration (required double): the length of the main part of the effect, i.e. how long it should take to go from 0 to 100%. This parameter cannot be negative, but can be zero. If this is the only parameter specified then the effect will grow linearly over the duration seconds.
+      curve (Curve, default: Curves.linear): if given, creates a non-linear effect that grows from 0 to 100% according to the provided curve.
+      reverseDuration (double?, optional): if provided, adds an additional step to the controller: after the effect has grown from 0 to 100% over the duration seconds, it will then go backwards from 100% to 0 over the reverseDuration seconds. In addition, the effect will complete at progress level of 0 (normally the effect completes at progress 1).
+      reverseCurve (Curve?, optional): the curve to be used during the "reverse" step of the effect. If not given, this will default to curve.flipped.
+      alternate (bool, default: false): setting this to true is equivalent to specifying the reverseDuration equal to the duration. If the reverseDuration is already set, this flag has no effect.
+      atMaxDuration (double, default: 0.0): if non-zero, this inserts a pause after the effect reaches its max progress and before the reverse stage. During this time the effect is kept at 100% progress. If there is no reverse stage, then this will simply be a pause before the effect is marked as completed.
+      atMinDuration (double, default: 0.0): if non-zero, this inserts a pause after the reaches its lowest progress (0) at the end of the reverse stage. During this time, the effect's progress is at 0%. If there is no reverse stage, then this pause will still be inserted after the "at-max" pause if it's present, or after the forward stage otherwise. In addition, the effect will now complete at progress level of 0.
+      repeatCount (int?, optional): if greater than one, it will cause the effect to repeat itself the prescribed number of times. Each iteration will consists of the forward stage, pause at max, reverse stage, then pause at min (skipping those that were not specified).
+      infinite (bool, default: false): if true, the effect will repeat infinitely and never reach completion. This is equivalent to as if repeatCount was set to infinity.
+      startDelay (double, default: 0.0): an additional wait time inserted before the beginning of the effect. This wait time is executed only once, even if the effect is repeating. During this time the effect's .started property returns false. The effect's onStart() callback will be executed at the end of this waiting period. Using this parameter is the simplest way to create a chain of effects that execute one after another (or with an overlap).
+      onMax (VoidCallback?, optional): callback function which will be invoked right after reaching its max progress and before the optional pause and reverse stage.
+      onMin (VoidCallback?, optional): callback function which will be invoked right after reaching its lowest progress at the end of the reverse stage and before the optional pause and forward stage.
+  Properties:
+    .started (bool): true if the effect has already started. For most effect controllers this property is always true. The only exception is the DelayedEffectController which returns false while the effect is in the waiting stage.
+    .completed (bool): becomes true when the effect controller finishes execution.
+    .progress (double): current value of the effect controller, a floating-point value from 0 to 1. This variable is the main "output" value of an effect controller.
+    .duration (double?): total duration of the effect, or null if the duration cannot be determined (for example if the duration is random or infinite).
+```
+
+----------------------------------------
+
+TITLE: Dartdoc Convention for Class Documentation
+DESCRIPTION: Provides examples of the recommended convention for starting Dartdoc comments for classes. It suggests beginning the documentation with the class name itself (e.g., `[MyClass] is...`) to immediately clarify the subject of the documentation, especially for lengthy descriptions.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/development/style_guide.md#_snippet_5
+
+LANGUAGE: Dart
+CODE:
+```
+/// [MyClass] is ...
+/// [MyClass] serves as ...
+/// [MyClass] does the following ...
+```
+
+----------------------------------------
+
+TITLE: Flame Engine Decorator Chaining API Reference
+DESCRIPTION: API documentation for the Decorator class and PositionComponent's decorator property, detailing methods for chaining and manipulating decorators within the Flame engine. This reference is inferred from the provided conceptual documentation.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/rendering/decorators.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+class PositionComponent:
+  properties:
+    decorator: Decorator
+      Description: The root decorator used to position the component on the screen. For PositionComponent, this property is already present, and the HasDecorator mixin is not needed.
+
+class Decorator:
+  methods:
+    addLast(newDecorator: Decorator): void
+      Parameters:
+        newDecorator: Decorator - The decorator instance to be added.
+      Description: Adds the provided newDecorator to the end of the existing decorator chain. This method supports chaining multiple decorators, allowing the entire chain to be manipulated from its root.
+    removeLast(): void
+      Description: Removes the last decorator from the current chain.
+```
+
+----------------------------------------
+
+TITLE: Create a Behavior Tree in Dart
+DESCRIPTION: Example of creating a behavior tree using 'Sequence', 'Condition', and 'Task' nodes in Dart. This snippet demonstrates how to define a sequence of actions (like checking hunger, going to shop, buying food, etc.) that an AI agent might perform.
+SOURCE: https://github.com/flame-engine/flame/blob/main/packages/flame_behavior_tree/behavior_tree/README.md#_snippet_1
+
+LANGUAGE: dart
+CODE:
+```
+final treeRoot = Sequence(
+  children: [
+    Condition(() => isHungry),
+    Task(() => goToShop()),
+    Task(() => buyFood()),
+    Task(() => goToHome()),
+    Task(() => eatFood()),
+  ]
+);
+```
+
+----------------------------------------
+
+TITLE: Flame Component Class API Reference
+DESCRIPTION: Detailed API documentation for the `Component` class in Flame, including its core methods for managing children, lifecycle callbacks, and properties for state and rendering priority.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/components.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+Component Class:
+  Inherits from: (Base class for all Flame components)
+  Description: The base class for all components in the Flame Component System (FCS). Components can have children and define various lifecycle methods.
+
+  Methods:
+    add(Component c):
+      Description: Adds a single child component to this component.
+      Parameters:
+        c (Component): The component to add as a child.
+      Returns: void
+
+    addAll(Iterable<Component> components):
+      Description: Adds multiple child components to this component.
+      Parameters:
+        components (Iterable<Component>): An iterable collection of components to add as children.
+      Returns: void
+
+    onGameResize(Vector2 size):
+      Description: Called whenever the game screen is resized, and also when the component is added to the component tree, before onMount.
+      Parameters:
+        size (Vector2): The new size of the game screen.
+      Returns: void
+      Optional: Yes (override)
+
+    onParentResize(Vector2 size):
+      Description: Called when the component is mounted into the component tree, and whenever the parent of the current component changes its size.
+      Parameters:
+        size (Vector2): The new size of the parent component.
+      Returns: void
+      Optional: Yes (override)
+
+    onRemove():
+      Description: Overridden to run code before the component is removed from the game. Guaranteed to run only once.
+      Returns: void
+      Optional: Yes (override)
+
+    onLoad():
+      Description: Overridden to run asynchronous initialization code for the component (e.g., loading assets). Executed before onGameResize and onMount. Guaranteed to execute only once.
+      Returns: Future<void>
+      Optional: Yes (override)
+
+    onMount():
+      Description: Runs every time the component is mounted into a game tree. Should not initialize 'late final' variables. Waits in a queue if parent is not yet mounted.
+      Returns: void
+      Optional: Yes (override)
+
+    onChildrenChanged(Component child, ComponentChildrenChangeType type):
+      Description: Overridden to detect changes in a parent's children. Called when a child is added to or removed from a parent.
+      Parameters:
+        child (Component): The child component involved in the change.
+        type (ComponentChildrenChangeType): The type of change (added or removed).
+      Returns: void
+      Optional: Yes (override)
+
+  Properties:
+    priority (int):
+      Description: Determines the component's sorting order within its parent's children. Higher priority means rendered on top. Default is 0.
+      Type: int
+      Default: 0
+
+    isLoaded (bool):
+      Description: Returns true if the component has finished loading.
+      Type: bool
+
+    loaded (Future<void>):
+      Description: A Future that completes once the component has finished loading.
+      Type: Future<void>
+
+    isMounted (bool):
+      Description: Returns true if the component is currently mounted in the game tree.
+      Type: bool
+
+    mounted (Future<void>):
+      Description: A Future that completes once the component has finished mounting.
+      Type: Future<void>
+
+    isRemoved (bool):
+      Description: Returns true if the component has been removed from the game.
+      Type: bool
+
+    removed (Future<void>):
+      Description: A Future that completes once the component has been removed.
+      Type: Future<void>
+```
+
+----------------------------------------
+
+TITLE: Basic YarnSpinner File Structure Example
+DESCRIPTION: This code snippet illustrates the fundamental components of a .yarn file. It includes examples of single-line comments, file-level tags, `declare` commands for variable initialization, and the basic syntax for defining a node with a title and content separator.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/other_modules/jenny/language/language.md#_snippet_0
+
+LANGUAGE: YarnSpinner
+CODE:
+```
+// This is a comment
+// The line below, however, is a tag:
+# Chapter 1d
+
+<<declare $visited_graveyard = false>>
+<<declare $money = 25>>  // is this too much?
+
+title: Start
+---
+// Node content
+===
+```
+
+----------------------------------------
+
+TITLE: Initialize Basic Flame Game with GameWidget
+DESCRIPTION: This code demonstrates the fundamental setup for a Flame game within a Flutter application. It uses `GameWidget` as the root widget to host a simple `FlameGame` instance, providing the entry point for your game.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/README.md#_snippet_1
+
+LANGUAGE: dart
+CODE:
+```
+import 'package:flame/game.dart';
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(
+    GameWidget(
+      game: FlameGame(),
+    ),
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: API Reference: MarkupAttribute
+DESCRIPTION: Provides a reference to `MarkupAttribute`, which represents the runtime structure of a markup attribute within a dialogue line. This is an internal API detail for developers working with the runtime representation of Yarn scripts.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/other_modules/jenny/language/markup.md#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+MarkupAttribute: the runtime representation
+  of a markup attribute within a line.
+```
+
+----------------------------------------
+
+TITLE: Dart RowComponent API Documentation
+DESCRIPTION: Provides API documentation for the `RowComponent` in Dart, detailing its associated package, the symbol name, and the exact file path where it is defined within the `flame` engine source.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/layout/row_component.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+RowComponent:
+  package: flame
+  symbol: RowComponent
+  file: src/experimental/row_component.dart
+```
+
+----------------------------------------
+
+TITLE: CharacterStorage API Reference
+DESCRIPTION: API reference for the `CharacterStorage` symbol, part of the `jenny` package, located in `src/character_storage.dart`.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/other_modules/jenny/runtime/character_storage.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+package: jenny
+symbol: CharacterStorage
+file: src/character_storage.dart
+```
+
+----------------------------------------
+
+TITLE: Jenny Package VariableStorage API Reference
+DESCRIPTION: API reference for the `VariableStorage` symbol within the `jenny` package, located in `src/variable_storage.dart`.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/other_modules/jenny/runtime/variable_storage.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+:package: jenny
+:symbol: VariableStorage
+:file: src/variable_storage.dart
+```
+
+----------------------------------------
+
+TITLE: WorldRoute API Reference
+DESCRIPTION: API specification for the WorldRoute, a specialized Route designed for dynamic swapping of game worlds or levels within the RouterComponent's navigation system, including state management options.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/router.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+WorldRoute:
+  Inherits from: Route
+  Purpose: Allows setting active game worlds via the router, e.g., for swapping levels.
+  Behaviors:
+    - Replaces the current world with the new one.
+    - By default, maintains the state of the world after being popped.
+  Constructor Parameters:
+    - worldBuilder: Function - A function that creates the World component.
+    - maintainState: bool (default: true) - If false, the world is recreated each time the route is activated.
+    - camera: CameraComponent (optional) - Explicitly pass the camera to use if not using the built-in one.
+```
+
+----------------------------------------
+
+TITLE: flutter-app Directive Parameters Reference
+DESCRIPTION: Detailed API documentation for the `flutter-app` directive's parameters, outlining their purpose, expected values, and impact on the embedded Flutter application. This reference covers `sources`, `page`, `show` modes, `width`, and `height` for customizing the embedded experience.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/development/documentation.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+flutter-app Directive Parameters:
+  sources: string
+    Description: Specifies the root directory of the Flutter code, relative to `doc/_sphinx`. Must contain a `pubspec.yaml`.
+  page: string
+    Description: A sub-path within the `sources` directory. Appended to the HTML page path (`main.dart.html?$page`) and used for displaying source code. Allows bundling multiple examples into one executable.
+  show: string (space-separated modes)
+    Modes:
+      widget: Creates an iframe with the embedded example directly on the page.
+      code: Shows a button to display the source code of the example.
+      infobox: Displays the result in a floating window (best combined with `widget` and `code`).
+      popup: Shows a button to display the example in an overlay window (suitable for larger apps, not recommended with `widget`).
+    Description: Controls how the embedded application is displayed.
+  width: integer (optional)
+    Description: Defines the width of the embedded application in pixels. Defaults to 100% if not defined.
+  height: integer (optional)
+    Description: Defines the height of the embedded application in pixels. Defaults to 350px if not defined.
+```
+
+----------------------------------------
+
+TITLE: Install Flame package using Flutter Pub
+DESCRIPTION: This command adds the Flame game engine package as a dependency to your Flutter project's `pubspec.yaml` file. It's the first step to integrating Flame into your application, allowing you to use its features.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/README.md#_snippet_0
+
+LANGUAGE: Console
+CODE:
+```
+flutter pub add flame
+```
+
+----------------------------------------
+
+TITLE: Add Tap Input Handling to a Sprite Component
+DESCRIPTION: This code enhances the `Player` `SpriteComponent` by incorporating the `TapCallbacks` mixin to process user taps. It overrides `onTapUp` to dynamically increase the player's size upon interaction, showcasing how to implement basic input responses.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/README.md#_snippet_4
+
+LANGUAGE: dart
+CODE:
+```
+import 'package:flame/components.dart';
+import 'package:flame/geometry.dart';
+import 'package:flame/extensions.dart';
+
+class Player extends SpriteComponent with TapCallbacks {
+  Player({super.position}) :
+    super(size: Vector2.all(200), anchor: Anchor.center);
+
+  @override
+  Future<void> onLoad() async {
+    sprite = await Sprite.load('player.png');
+  }
+  
+  @override
+  void onTapUp(TapUpEvent info) {
+    size += Vector2.all(50);
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Initialize Flame Game and Integrate with Flutter
+DESCRIPTION: This snippet demonstrates how to set up the main `FlameGame` class and integrate it into a Flutter application using `GameWidget`. It provides the minimal code required to run an an empty Flame game.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/tutorials/space_shooter/step_1.md#_snippet_0
+
+LANGUAGE: dart
+CODE:
+```
+import 'package:flutter/material.dart';
+import 'package:flame/game.dart';
+
+class SpaceShooterGame extends FlameGame {
+}
+
+void main() {
+  runApp(GameWidget(game: SpaceShooterGame()));
+}
+```
+
+----------------------------------------
+
+TITLE: Flame Drag Event Callbacks API Reference
+DESCRIPTION: Detailed API documentation for the `DragCallbacks` mixin methods in Flame, including their purpose, associated event objects (`DragStartEvent`, `DragUpdateEvent`), and key properties like `devicePosition`, `canvasPosition`, `localPosition`, `delta`, and `timestamp`.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/inputs/drag_events.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+onDragStart(event: DragStartEvent):
+  Description: First event in a drag sequence. Delivered to the topmost component at the touch point with DragCallbacks.
+  Properties of DragStartEvent:
+    devicePosition: Coordinate in the device's coordinate system.
+    canvasPosition: Coordinate in the game widget's coordinate system.
+    localPosition: Coordinate in the component's local coordinate system.
+  Behavior: Setting event.continuePropagation to true allows propagation to components below.
+
+onDragUpdate(event: DragUpdateEvent):
+  Description: Fired continuously as the user drags.
+  Properties of DragUpdateEvent:
+    localPosition: Position in local coordinate system (NaNs if outside component).
+    renderingTrace: Empty if outside component.
+    canvasPosition: Valid regardless of component bounds.
+    devicePosition: Valid regardless of component bounds.
+    delta: Amount moved since previous onDragUpdate or onDragStart.
+    timestamp: Time elapsed since the beginning of the drag.
+  Behavior: Default implementation delivers to all components that received previous onDragStart with the same pointer id.
+
+onDragEnd():
+  Description: Fired when the user lifts their finger, stopping the drag gesture.
+  Properties: No position associated with this event.
+
+onDragCancel():
+  Description: Precise semantics unclear; default implementation converts this event into an onDragEnd.
+```
+
+----------------------------------------
+
+TITLE: Example Pull Request Titles Following Conventional Commits
+DESCRIPTION: Provides concrete examples of pull request titles that adhere to the conventional commit specification, illustrating various change types and their proper formatting.
+SOURCE: https://github.com/flame-engine/flame/blob/main/CONTRIBUTING.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+feat: Component.childrenFactory can be used to set up a global ComponentSet factory
+fix: Avoid infinite loop in `FlameGame`
+docs: Add a `JoystickComponent` example
+docs: Improve the Mandarin README
+test: Add infinity test for `MoveEffect.to`
+refactor: Optimize the structure of the game loop
+```
+
+----------------------------------------
+
+TITLE: DoubleTapCallbacks Mixin API Reference
+DESCRIPTION: API documentation for the `DoubleTapCallbacks` mixin, detailing its role in enabling double-tap event reception for components. It lists the key methods (`onDoubleTapUp`, `onDoubleTapCancel`, `onDoubleTapDown`) that can be overridden to implement specific double-tap behaviors.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/inputs/tap_events.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+DoubleTapCallbacks Mixin:
+  Purpose: Enables a Component to receive double-tap events.
+  Methods:
+    onDoubleTapUp(event: DoubleTapEvent): void
+      Description: Called when a double-tap contact is lifted.
+      Behavior: By default, does nothing. Can be overridden.
+    onDoubleTapCancel(event: DoubleTapEvent): void
+      Description: Called when a double-tap contact is cancelled.
+      Behavior: By default, does nothing. Can be overridden.
+    onDoubleTapDown(event: DoubleTapEvent): void
+      Description: Called when a double-tap contact is made.
+      Behavior: By default, does nothing. Can be overridden.
+```
+
+----------------------------------------
+
+TITLE: Implement custom game logic with Flame's low-level Game API
+DESCRIPTION: Explore how to extend the abstract `Game` class to implement custom game engine functionality, such as `render` and `update` methods. This approach provides more control but means foregoing some built-in Flame features. The example demonstrates a basic `Game` subclass and its integration with `GameWidget`.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/game.md#_snippet_4
+
+LANGUAGE: Dart
+CODE:
+```
+class MyGameSubClass extends Game {
+  @override
+  void render(Canvas canvas) {
+    // ...
+  }
+
+  @override
+  void update(double dt) {
+    // ...
+  }
+}
+
+void main() {
+  final myGame = MyGameSubClass();
+  runApp(
+    GameWidget(
+      game: myGame,
+    )
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Complete AudioPool example in FlameGame
+DESCRIPTION: A comprehensive example demonstrating the integration of AudioPools within a `FlameGame` class, showing how to load, play, and dispose of multiple sound effects for game events like laser shots and explosions.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/bridge_packages/flame_audio/audio_pool.md#_snippet_6
+
+LANGUAGE: dart
+CODE:
+```
+import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
+
+class MyGame extends FlameGame {
+  late AudioPool laserSound;
+  late AudioPool explosionSound;
+
+  @override
+  Future<void> onLoad() async {
+    // Load sound effects into audio pools
+    laserSound = await FlameAudio.createPool(
+      'laser.mp3',
+      minPlayers: 3,
+      maxPlayers: 6,
+    );
+
+    explosionSound = await FlameAudio.createPool(
+      'explosion.mp3',
+      minPlayers: 2,
+      maxPlayers: 4,
+    );
+  }
+
+  void fireLaser() async {
+    // Play the laser sound effect - can be called rapidly
+    final stop = await laserSound.start();
+
+    // If you need to stop the sound early:
+    // await stop();
+  }
+
+  void enemyDestroyed() async {
+    // Play explosion sound effect
+    await explosionSound.start(volume: 0.7);
+  }
+
+  @override
+  Future<void> onRemove() async {
+    await super.onRemove();
+
+    // Clean up resources when the game component is removed
+    await laserSound.dispose();
+    await explosionSound.dispose();
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Define a Player Sprite Component for Rendering
+DESCRIPTION: This snippet defines a `Player` class inheriting from `SpriteComponent` to display an image. It configures the component's size and anchor, and asynchronously loads the `player.png` sprite during initialization. Ensure `player.png` is in `assets/images` and configured in `pubspec.yaml`.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/README.md#_snippet_3
+
+LANGUAGE: dart
+CODE:
+```
+import 'package:flame/components.dart';
+import 'package:flame/geometry.dart';
+import 'package:flame/extensions.dart';
+
+class Player extends SpriteComponent {
+  Player({super.position}) :
+    super(size: Vector2.all(200), anchor: Anchor.center);
+
+  @override
+  Future<void> onLoad() async {
+    sprite = await Sprite.load('player.png');
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: CameraComponent API Reference
+DESCRIPTION: Reference for key methods of the `CameraComponent` in Flame Engine, used to control camera behavior such as following targets, moving, stopping, and setting boundaries.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/camera.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+CameraComponent Methods:
+- follow(target: Component, maxSpeed: double?, horizontalOnly: bool?, verticalOnly: bool?)
+    Description: Forces the camera to follow the provided target.
+    Parameters:
+      target: The component to follow.
+      maxSpeed: Optional maximum speed of camera movement.
+      horizontalOnly: If true, camera only moves horizontally.
+      verticalOnly: If true, camera only moves vertically.
+
+- stop()
+    Description: Undoes the effect of previous camera movement calls and stops the camera at its current position.
+
+- moveBy(offset: Vector2)
+    Description: Moves the camera by the specified offset.
+    Parameters:
+      offset: The Vector2 representing the movement offset.
+    Notes: Automatically cancels any existing follow or move behaviors.
+
+- moveTo(point: Vector2)
+    Description: Moves the camera to the designated point on the world map.
+    Parameters:
+      point: The Vector2 representing the target point in world coordinates.
+    Notes: Automatically cancels any existing follow or move behaviors.
+
+- setBounds(shape: Shape)
+    Description: Adds limits to where the camera is allowed to go.
+    Parameters:
+      shape: A Shape object defining the camera's movement boundaries.
+    Notes: Commonly a rectangle, but can be any Shape.
+```
+
+----------------------------------------
+
+TITLE: SpriteButtonComponent API Reference
+DESCRIPTION: API documentation for `SpriteButtonComponent` in Flame, a button component defined by two sprites. It specifies how to use different sprites to represent the button's pressed and released states.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/inputs/other_inputs.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+SpriteButtonComponent:
+  Description: A button that is defined by two `Sprite`s.
+  Properties:
+    - Sprite for released state
+    - Sprite for pressed state
+```
+
+----------------------------------------
+
+TITLE: Registering a Service Worker in JavaScript
+DESCRIPTION: This JavaScript snippet checks if the Service Worker API is supported by the browser. If supported, it registers 'flutter_service_worker.js' as a service worker once the window's 'load' event fires. This is a standard practice for enabling progressive web app features like offline access and background processing.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/tutorials/klondike/app/web/index.html#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('flutter_service_worker.js');
+  });
+}
+```
+
+----------------------------------------
+
+TITLE: Valid Yarn Variable Names
+DESCRIPTION: Examples of valid variable names in YarnSpinner, which must start with a `$` sign followed by a letter or underscore, then letters, digits, or underscores.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/other_modules/jenny/language/expressions/variables.md#_snippet_0
+
+LANGUAGE: text
+CODE:
+```
+$i
+$WARNING
+$_secret_
+$door10
+$climbed_over_wall_and_avoided_all_guard_patrols
+$DoorPassword
+```
+
+----------------------------------------
+
+TITLE: API Reference for Creating Custom Effects in Flame
+DESCRIPTION: Details the process and required methods for creating custom effects in Flame Engine. Custom effects extend the base `Effect` class or its specialized subclasses, requiring an `EffectController` and implementation of the `apply` method for updates, with optional `onStart` and `onFinish` callbacks.
+SOURCE: https://github.com/flame-engine/flame/blob/main/doc/flame/effects.md#_snippet_23
+
+LANGUAGE: APIDOC
+CODE:
+```
+class Effect {
+  // Constructor
+  Effect(EffectController controller);
+
+  // Abstract method to implement
+  apply(double progress): void
+    - Called at each update tick while the effect is active.
+    - Make changes to the target of the effect.
+    - Recommendation: Use relative updates (increment/decrement) to allow multiple effects to act on the same component without interference.
+
+  // Optional callbacks
+  onStart(): void
+    - Called when the effect starts.
+
+  onFinish(): void
+    - Called when the effect ends.
+}
+
+// Specialized abstract subclasses:
+class ComponentEffect<T> extends Effect {}
+class Transform2DEffect extends Effect {}
+```
