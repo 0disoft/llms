@@ -1,0 +1,1409 @@
+TITLE: Bevy Entities API Changes and New Types
+DESCRIPTION: Detailed documentation of the updated `Entities` API, including changes to method signatures and return types, and the definition of the new `EntityIdLocation` type.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/entities_apis.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Entities API Changes:
+
+1. Entities::flush
+   - Purpose: Flushes entity operations, now with metadata support.
+   - Parameter Change: Now accepts `&mut EntityIdLocation` instead of `&mut EntityLocation`.
+   - Metadata: Asks for metadata about the flush operation.
+   - Source Location: `MaybeLocation::caller()` can be used.
+   - Tick: Should be retrieved from the world.
+
+2. EntityIdLocation
+   - Type: Alias for `Option<EntityLocation>`.
+   - Purpose: Represents an entity's location, allowing for `None` if an entity ID is allocated/reserved but not yet fully located (e.g., in commands).
+   - Behavior: Replaces invalid locations with `None`.
+
+3. Entities::free
+   - Return Type Change: Now returns `Option<EntityIdLocation>` instead of `Option<EntityLocation>`.
+
+4. Entities::get
+   - Status: Remains unchanged.
+
+5. Entities::get_id_location
+   - New Method: Provides access to an `Entity`'s `EntityIdLocation`.
+```
+
+----------------------------------------
+
+TITLE: Running Bevy Engine Examples in Release Mode
+DESCRIPTION: Instructions on how to execute specific Bevy engine examples, particularly stress tests, using `cargo run` in release mode for optimal performance benchmarking. The `<example name>` placeholder should be replaced with the actual name of the example to run.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_2
+
+LANGUAGE: sh
+CODE:
+```
+cargo run --release --example <example name>
+```
+
+----------------------------------------
+
+TITLE: Build Bevy WebAssembly Examples with Helper Script
+DESCRIPTION: Utilizes Bevy's internal helper script ('build-wasm-example') to compile specific examples for WebAssembly, supporting both WebGL2 and experimental WebGPU APIs, with an option for debug builds.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_14
+
+LANGUAGE: sh
+CODE:
+```
+cargo run -p build-wasm-example -- --api webgl2 load_gltf
+```
+
+LANGUAGE: sh
+CODE:
+```
+cargo run -p build-wasm-example -- --api webgpu load_gltf
+```
+
+LANGUAGE: sh
+CODE:
+```
+cargo run -p build-wasm-example -- --debug --api webgl2 load_gltf
+```
+
+----------------------------------------
+
+TITLE: Run Bevy Example with Specific Window Compositor
+DESCRIPTION: This command demonstrates how to execute a Bevy example, specifically 'hello_world', while explicitly forcing it to use the 'wayland' window compositor. This is useful for testing platform-specific rendering or input behaviors.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+cargo run --features wayland --example hello_world
+```
+
+----------------------------------------
+
+TITLE: Build Bevy Example for WebAssembly and Generate Bindings
+DESCRIPTION: Compiles a Bevy example (e.g., 'lighting') for the WebAssembly target in release mode, then uses 'wasm-bindgen' to create JavaScript bindings and output files for web integration.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_12
+
+LANGUAGE: sh
+CODE:
+```
+cargo build --release --example lighting --target wasm32-unknown-unknown
+wasm-bindgen --out-name wasm_example \
+  --out-dir examples/wasm/target \
+  --target web target/wasm32-unknown-unknown/release/examples/lighting.wasm
+```
+
+----------------------------------------
+
+TITLE: Run Bevy Solari Example (Non-Realtime Pathtracing)
+DESCRIPTION: Command to run the `solari` example with non-realtime pathtracing, demonstrating a different rendering mode of the `bevy_solari` crate.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/release-notes/bevy_solari.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+cargo run --release --example solari --features bevy_solari -- --pathtracer
+```
+
+----------------------------------------
+
+TITLE: Android Development: Configure Bevy for Older Android APIs
+DESCRIPTION: TOML configuration snippet to enable `NativeActivity` in Bevy's `Cargo.toml`. This is necessary for compatibility with older Android API levels when the default `GameActivity` is not supported.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_6
+
+LANGUAGE: toml
+CODE:
+```
+bevy = { version = "0.14", default-features = false, features = ["android-native-activity", ...] }
+```
+
+----------------------------------------
+
+TITLE: Serve Bevy WebAssembly Examples Locally
+DESCRIPTION: Demonstrates various methods to serve the 'examples/wasm' directory using different local HTTP servers (basic-http-server, Python's http.server, Ruby's httpd) to run WebAssembly applications in a browser.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_13
+
+LANGUAGE: sh
+CODE:
+```
+basic-http-server examples/wasm
+```
+
+LANGUAGE: sh
+CODE:
+```
+python3 -m http.server --directory examples/wasm
+```
+
+LANGUAGE: sh
+CODE:
+```
+ruby -run -ehttpd examples/wasm
+```
+
+----------------------------------------
+
+TITLE: Run a Bevy Example Project from Repository
+DESCRIPTION: This command-line snippet demonstrates how to switch to the latest stable version of the Bevy repository and execute a specific example project, such as 'breakout', using Cargo's run command. This is useful for quickly testing built-in examples.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/README.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+# Switch to the correct version (latest release, default is main development branch)
+git checkout latest
+# Runs the "breakout" example
+cargo run --example breakout
+```
+
+----------------------------------------
+
+TITLE: Build and Run Bevy iOS Example
+DESCRIPTION: Navigates to the mobile examples directory and runs the 'make run' command to build, install, and launch the Bevy application on the default iOS simulator.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_8
+
+LANGUAGE: sh
+CODE:
+```
+cd examples/mobile
+make run
+```
+
+----------------------------------------
+
+TITLE: Run Bevy Solari Example (Realtime Direct Lighting)
+DESCRIPTION: Command to run the `solari` example with realtime direct lighting, without denoising, to observe the initial progress of the `bevy_solari` crate.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/release-notes/bevy_solari.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+cargo run --release --example solari --features bevy_solari
+```
+
+----------------------------------------
+
+TITLE: Open Bevy iOS Project in Xcode
+DESCRIPTION: Opens the Bevy mobile example Xcode project, allowing for manual build, run, and debugging within the Xcode IDE.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_10
+
+LANGUAGE: sh
+CODE:
+```
+open bevy_mobile_example.xcodeproj/
+```
+
+----------------------------------------
+
+TITLE: Run Bevy Android Example on Device
+DESCRIPTION: After setting up the project and configuring `Cargo.toml`, this command uses `cargo-apk` to build and run the specified Bevy mobile example application on a connected Android device.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/mobile/android_basic/readme.md#_snippet_3
+
+LANGUAGE: sh
+CODE:
+```
+cargo apk run -p bevy_mobile_example
+```
+
+----------------------------------------
+
+TITLE: Run Bevy Mikktspace Generate Example
+DESCRIPTION: This shell command executes the `generate` example provided with the `bevy_mikktspace` crate. The example demonstrates the process of generating tangents for a cube, specifically designed to handle models with 4 triangular faces per side, showcasing the library's core functionality.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/crates/bevy_mikktspace/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+cargo run --example generate
+```
+
+----------------------------------------
+
+TITLE: Android Development Setup: Install Rust Target and cargo-ndk
+DESCRIPTION: Initial setup steps for Bevy Android development, including adding the Android AArch64 target to Rustup and installing the `cargo-ndk` tool for cross-compilation.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_3
+
+LANGUAGE: sh
+CODE:
+```
+rustup target add aarch64-linux-android
+```
+
+LANGUAGE: sh
+CODE:
+```
+cargo install cargo-ndk
+```
+
+----------------------------------------
+
+TITLE: Checkout Bevy Repository Versions
+DESCRIPTION: These commands illustrate how to switch to different versions of the Bevy repository using Git. Users can checkout the 'latest' stable release or a specific historical version like 'v0.4.0' to ensure local examples match their Bevy dependency.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+git checkout latest
+```
+
+LANGUAGE: bash
+CODE:
+```
+git checkout v0.4.0
+```
+
+----------------------------------------
+
+TITLE: Bevy Schedule SlotMap API Changes
+DESCRIPTION: Overview of API signature modifications and function removals related to the transition from `Vec`s and `usize` indices to `SlotMap`s with `SystemKey` and `SystemSetKey` for managing Bevy schedules.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/schedule_slotmaps.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Changed Signatures:
+- NodeId::System: Now stores a SystemKey instead of a plain usize
+- NodeId::Set: Now stores a SystemSetKey instead of a plain usize
+- ScheduleBuildPass::collapse_set: Now takes type-specific keys (SystemKey/SystemSetKey). Wrap into NodeId if necessary.
+
+Functions Returning Type-Specific Keys (Wrap into NodeId if necessary):
+- Schedule::systems
+- ScheduleGraph::systems
+- ScheduleGraph::system_sets
+- ScheduleGraph::conflicting_systems
+
+Structures to Index with Key Types (SystemKey/SystemSetKey):
+- ScheduleGraph::systems field
+- ScheduleGraph::system_conditions
+
+Functions Taking Type-Specific Keys (Use pattern matching to extract from NodeId if necessary):
+- ScheduleGraph::get_system_at
+- ScheduleGraph::system_at
+- ScheduleGraph::get_set_at
+- ScheduleGraph::set_at
+- ScheduleGraph::get_set_conditions_at
+- ScheduleGraph::set_conditions_at
+
+Removed Functions:
+- NodeId::index: Match on and use SystemKey and SystemSetKey instead.
+- NodeId::cmp: Use PartialOrd and Ord traits instead.
+```
+
+----------------------------------------
+
+TITLE: Build and Run Bevy iOS Example on Specific Simulator
+DESCRIPTION: Builds and runs the Bevy iOS application on a specified simulator device by providing its UUID via the 'DEVICE_ID' environment variable.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_9
+
+LANGUAGE: sh
+CODE:
+```
+DEVICE_ID=${YOUR_DEVICE_ID} make run
+```
+
+----------------------------------------
+
+TITLE: Resolve Conflicting Borrows with Bevy QueryState Methods
+DESCRIPTION: This Rust example demonstrates how to address conflicting mutable borrow errors when interacting with Bevy's `QueryState` methods like `get()`. It contrasts the problematic Bevy 0.16 approach with several solutions introduced in Bevy 0.17, including using `update_archetypes()` followed by `get_manual()`, or leveraging `query_manual()` and `query()` to obtain a `Query` object for subsequent calls.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/query_items_borrow_from_query_state.md#_snippet_1
+
+LANGUAGE: rust
+CODE:
+```
+let mut state: QueryState<_, _> = ...;
+
+// 0.16
+let d1 = state.get(world, e1);
+let d2 = state.get(world, e2); // Error: cannot borrow `state` as mutable more than once at a time
+
+println!("{d1:?}");
+println!("{d2:?}");
+
+// 0.17
+state.update_archetypes(world);
+let d1 = state.get_manual(world, e1);
+let d2 = state.get_manual(world, e2);
+// OR
+state.update_archetypes(world);
+let d1 = state.query_manual(world).get_inner(e1);
+let d2 = state.query_manual(world).get_inner(e2);
+// OR
+let query = state.query(world);
+let d1 = query.get_inner(e1);
+let d1 = query.get_inner(e2);
+
+println!("{d1:?}");
+println!("{d2:?}");
+```
+
+----------------------------------------
+
+TITLE: Bevy Entity Cloning API Migration Table (0.16 to 0.17)
+DESCRIPTION: This table summarizes the migration path for other related entity cloning APIs in Bevy, from version 0.16 to 0.17. It shows how existing methods have been split into `_opt_out` and `_opt_in` variants across different Bevy contexts, such as `EntityWorldMut` and `EntityCommands`.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/entity_cloner_builder_split.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+API Changes (0.16 -> 0.17):
+  - EntityWorldMut::clone_with -> EntityWorldMut::clone_with_opt_out, EntityWorldMut::clone_with_opt_in
+  - EntityWorldMut::clone_and_spawn_with -> EntityWorldMut::clone_and_spawn_with_opt_out, EntityWorldMut::clone_and_spawn_with_opt_in
+  - EntityCommands::clone_with -> EntityCommands::clone_with_opt_out, EntityCommands::clone_with_opt_in
+  - EntityCommands::clone_and_spawn_with -> EntityCommands::clone_and_spawn_with_opt_out, EntityCommands::clone_and_spawn_with_opt_in
+  - entity_command::clone_with -> entity_command::clone_with_opt_out, entity_command::clone_with_opt_in
+```
+
+----------------------------------------
+
+TITLE: Android Development: Build and Run Bevy Apps
+DESCRIPTION: Commands to build Bevy applications for Android. This involves using `cargo-ndk` to compile shared objects for the target architecture and then `gradlew` to build the final Android application package.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_4
+
+LANGUAGE: sh
+CODE:
+```
+cargo ndk -t <target_name> -o <project_name>/app/src/main/jniLibs build
+```
+
+LANGUAGE: sh
+CODE:
+```
+cargo ndk -t arm64-v8a -o android_example/app/src/main/jniLibs build
+```
+
+LANGUAGE: sh
+CODE:
+```
+./gradlew build
+```
+
+----------------------------------------
+
+TITLE: Install Rust Target and wasm-bindgen for WebAssembly
+DESCRIPTION: Adds the 'wasm32-unknown-unknown' Rust target and installs 'wasm-bindgen-cli', essential tools for compiling Rust to WebAssembly and generating JavaScript bindings.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_11
+
+LANGUAGE: sh
+CODE:
+```
+rustup target add wasm32-unknown-unknown
+cargo install wasm-bindgen-cli
+```
+
+----------------------------------------
+
+TITLE: Bevy EntityClonerBuilder<OptIn> API Reference
+DESCRIPTION: This API documentation describes the `EntityClonerBuilder` when configured for "opt-in" cloning in Bevy. This variant is used to clone only explicitly allowed components. It outlines methods for specifying which components to include and offers conditional cloning options.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/entity_cloner_builder_split.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+EntityClonerBuilder<OptIn>:
+  - allow: Allows specific components to be cloned.
+  - allow_if_new: Clones a component only if the target does not contain it.
+  - without_required_components: Still offers this method.
+  - (Removed) deny: No longer offers deny methods.
+```
+
+----------------------------------------
+
+TITLE: Rust System Method Migration Example
+DESCRIPTION: Illustrates a common migration scenario where a system method's name changes between Bevy versions. The example shows the old (0.15) and new (0.16) syntax for calling a method on the `World` object, demonstrating how to update existing code.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration_guides.md#_snippet_1
+
+LANGUAGE: Rust
+CODE:
+```
+// 0.15
+fn my_system(world: &mut World) {
+    world.old_method();
+}
+
+// 0.16
+fn my_system(world: &mut World) {
+    // Use `new_method()` instead.
+    world.new_method();
+}
+```
+
+----------------------------------------
+
+TITLE: Android Development: Debugging Bevy Apps
+DESCRIPTION: Commands for debugging Bevy applications on Android. This includes viewing logs via `adb logcat` and uninstalling the application to resolve issues like 'unknown activity' errors.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_5
+
+LANGUAGE: sh
+CODE:
+```
+adb logcat | grep 'RustStdoutStderr\|bevy\|wgpu'
+```
+
+LANGUAGE: sh
+CODE:
+```
+adb uninstall org.bevyengine.example
+```
+
+----------------------------------------
+
+TITLE: Install Rust Targets for iOS Development
+DESCRIPTION: Installs the necessary Rust toolchain targets for building Bevy applications for iOS devices and simulators, supporting both ARM and x86 architectures.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_7
+
+LANGUAGE: sh
+CODE:
+```
+rustup target add aarch64-apple-ios x86_64-apple-ios aarch64-apple-ios-sim
+```
+
+----------------------------------------
+
+TITLE: Bevy EntityClonerBuilder Unified ID Filtering API
+DESCRIPTION: This API documentation details the new unified approach to ID filtering within Bevy's `EntityClonerBuilder`. It explains how generic `deny_by_ids` and `allow_by_ids` methods now handle various ID types, including `TypeId`, `ComponentId`, and `BundleId`, simplifying component filtering.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/entity_cloner_builder_split.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+EntityClonerBuilder (Unified ID Filtering):
+  - deny_by_ids: Allows filtering components by TypeId, ComponentId, BundleId, and their IntoIterator variations.
+  - allow_by_ids: Allows filtering components by TypeId, ComponentId, BundleId, and their IntoIterator variations.
+  - allow_by_ids_if_new: Allows filtering components by TypeId, ComponentId, BundleId, and their IntoIterator variations, only if new.
+```
+
+----------------------------------------
+
+TITLE: Mark Bevy Systems as NonSend
+DESCRIPTION: This example shows how to use `bevy_ecs::system::NonSendMarker` as a system parameter to ensure a system executes on the main thread. This is crucial when the system interacts with `!Send` resource replacements like `ACCESS_KIT_ADAPTERS` to prevent uninitialized data access on non-main threads and avoid panics.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/replace_non_send_resources.md#_snippet_2
+
+LANGUAGE: rust
+CODE:
+```
+use bevy_ecs::system::NonSendMarker;
+
+fn my_system(
+    _non_send_marker: NonSendMarker,
+) {
+    ACCESS_KIT_ADAPTERS.with_borrow_mut(|adapters| {
+        // do things with adapters
+    });
+}
+```
+
+----------------------------------------
+
+TITLE: Run Bevy Hot Patching Example
+DESCRIPTION: To test the hot patching feature, run this command. It uses the Dioxus CLI to serve the `hotpatching_systems` example, enabling the `hot-patch` flag and the `hotpatching` Bevy feature. Ensure `BEVY_ASSET_ROOT` is set correctly.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/release-notes/hot_patching.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+BEVY_ASSET_ROOT="." dx serve --hot-patch --example hotpatching_systems --features hotpatching
+```
+
+----------------------------------------
+
+TITLE: Run Bevy Stress Test Example
+DESCRIPTION: Command to execute a specific Bevy stress test example. It uses the '--profile stress-test' flag to ensure the application runs with optimized performance settings, crucial for accurate stress testing results.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/stress_tests/README.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+cargo run --profile stress-test --example <EXAMPLE>
+```
+
+----------------------------------------
+
+TITLE: Bevy Observer API (Pre-0.17)
+DESCRIPTION: Demonstrates the previous syntax for defining observers using `Trigger` and `OnAdd` lifecycle events in Bevy, prior to version 0.17.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/release-notes/observer_overhaul.md#_snippet_0
+
+LANGUAGE: Rust
+CODE:
+```
+app.add_observer(|trigger: Trigger<OnAdd, Player>| {
+    info!("Added player {}", trigger.target());
+});
+```
+
+----------------------------------------
+
+TITLE: Build Documentation Locally with Extensions
+DESCRIPTION: This Bash command demonstrates how to build documentation locally with the custom docs.rs extensions enabled. It sets `RUSTDOCFLAGS` and `RUSTFLAGS` environment variables to include the custom HTML and conditional compilation flag before running `cargo doc`.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/docs-rs/README.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+RUSTDOCFLAGS="--html-after-content docs-rs/trait-tags.html --cfg docsrs_dep" RUSTFLAGS="--cfg docsrs_dep" cargo doc --no-deps --package <package_name>
+```
+
+----------------------------------------
+
+TITLE: Bevy EntityClonerBuilder Common Methods API
+DESCRIPTION: This section lists methods that are universally available across both `EntityClonerBuilder<OptOut>` and `EntityClonerBuilder<OptIn>` variants in Bevy. These methods provide general cloning configuration options, maintaining consistency from previous versions.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/entity_cloner_builder_split.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+EntityClonerBuilder (Common Methods):
+  - with_default_clone_fn
+  - move_components
+  - clone_behavior (variants)
+  - linked_cloning
+```
+
+----------------------------------------
+
+TITLE: Bevy 0.17 Observer API with `On`
+DESCRIPTION: Shows the updated observer API in Bevy 0.17, where `Trigger` is renamed to `On` and lifecycle event prefixes like `OnAdd` are removed for improved readability and ergonomics.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/release-notes/observer_overhaul.md#_snippet_1
+
+LANGUAGE: Rust
+CODE:
+```
+app.add_observer(|trigger: On<Add, Player>| {
+    info!("Added player {}", trigger.target());
+});
+```
+
+----------------------------------------
+
+TITLE: Adjust Android SDK Versions for Older Devices in `Cargo.toml`
+DESCRIPTION: This TOML snippet shows how to modify the `target_sdk_version` and `min_sdk_version` within the `[package.metadata.android.sdk]` section of `Cargo.toml` to support older Android devices, allowing developers to test with different API levels.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/mobile/android_basic/readme.md#_snippet_4
+
+LANGUAGE: toml
+CODE:
+```
+[package.metadata.android.sdk]
+target_sdk_version = >>API<<
+min_sdk_version = >>API or less<<
+```
+
+----------------------------------------
+
+TITLE: Detecting Resource Changes in Bevy ECS
+DESCRIPTION: This example demonstrates how Bevy ECS tracks changes to resources. It shows how to use the `is_changed()` method on a `Res` (Resource) to detect if a resource has been modified, allowing systems to react to global state changes.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/crates/bevy_ecs/README.md#_snippet_8
+
+LANGUAGE: rust
+CODE:
+```
+use bevy_ecs::prelude::*;
+
+#[derive(Resource)]
+struct Time(f32);
+
+// Prints "time changed!" if the Time resource has changed since the last run of the System
+fn system(time: Res<Time>) {
+    if time.is_changed() {
+        println!("time changed!");
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Write and Read Bevy Buffered Events
+DESCRIPTION: This example demonstrates the usage of `EventWriter` to send a `BufferedEvent` and `EventReader` to process all buffered events of that type. `EventWriter::write` adds events to a buffer, and `EventReader::read` iterates over them.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/release-notes/event_split.md#_snippet_5
+
+LANGUAGE: rust
+CODE:
+```
+fn write_hello(mut writer: EventWriter<Message>) {
+    writer.write(Message("I hope these examples are alright".to_string()));
+}
+
+fn read_messages(mut reader: EventReader<Message>) {
+    // Process all buffered events of type `Message`.
+    for Message(message) in reader.read() {
+        println!("{message}");
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Bevy API Migration: DynEq and DynHash Trait Method Removals
+DESCRIPTION: This snippet illustrates the updated syntax for common operations after the removal of `DynEq::as_any` and `DynHash::as_dyn_eq` methods in Bevy. It shows how to cast values to `&dyn Any` or `&dyn DynEq` directly, and how to use `DynEq::dyn_eq` for label types.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/interned-labels-cleanup.md#_snippet_0
+
+LANGUAGE: Rust
+CODE:
+```
+&value as &dyn Any
+```
+
+LANGUAGE: Rust
+CODE:
+```
+&value as &dyn DynEq
+```
+
+LANGUAGE: Rust
+CODE:
+```
+DynEq::dyn_eq
+```
+
+----------------------------------------
+
+TITLE: Bevy EntityClonerBuilder<OptOut> API Reference
+DESCRIPTION: This API documentation details the `EntityClonerBuilder` when configured for "opt-out" cloning in Bevy. It's used to clone all components by default, allowing users to explicitly deny specific components. The methods listed define how to exclude components and manage cloning behavior for existing target components.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/entity_cloner_builder_split.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+EntityClonerBuilder<OptOut>:
+  - deny: Denies specific components from being cloned.
+  - insert_mode: Configures if components are cloned if they already exist at the target.
+  - without_required_by_components: Bypasses denying components that are required by other denied components.
+  - (Removed) allow: No longer offers allow methods.
+  - (Removed) without_required_components: No longer needed as denying A which requires B does not imply B is denied.
+```
+
+----------------------------------------
+
+TITLE: Example `ui_test` Error Annotation for Substring Match
+DESCRIPTION: An example of an error annotation (`//~`) used in `ui_test` to match a specific compiler error. The `v` indicates the error is on the line below, and `ERROR: missing trait` specifies the required error level and a substring to match within the error message.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/tools/compile_fail_utils/README.md#_snippet_1
+
+LANGUAGE: Rust
+CODE:
+```
+//~v ERROR: missing trait
+```
+
+----------------------------------------
+
+TITLE: Defining and Spawning Bevy ECS Component Bundles
+DESCRIPTION: This example demonstrates how to define and use component bundles in Bevy ECS. Bundles allow grouping multiple components to be spawned together, simplifying entity creation and promoting code reusability. It also shows how to use Rust's struct update syntax with bundles.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/crates/bevy_ecs/README.md#_snippet_10
+
+LANGUAGE: rust
+CODE:
+```
+use bevy_ecs::prelude::*;
+
+#[derive(Default, Component)]
+struct Player;
+#[derive(Default, Component)]
+struct Position { x: f32, y: f32 }
+#[derive(Default, Component)]
+struct Velocity { x: f32, y: f32 }
+
+#[derive(Bundle, Default)]
+struct PlayerBundle {
+    player: Player,
+    position: Position,
+    velocity: Velocity,
+}
+
+let mut world = World::new();
+
+// Spawn a new entity and insert the default PlayerBundle
+world.spawn(PlayerBundle::default());
+
+// Bundles play well with Rust's struct update syntax
+world.spawn(PlayerBundle {
+    position: Position { x: 1.0, y: 1.0 },
+    ..Default::default()
+});
+```
+
+----------------------------------------
+
+TITLE: Build Bevy WebAssembly with `wasm-release` Profile
+DESCRIPTION: Compiles a Bevy application for WebAssembly, specifically targeting the `wasm32-unknown-unknown` platform. It utilizes the `wasm-release` profile, which applies specific optimizations for web deployment, resulting in a smaller executable size compared to a standard `--release` build.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_15
+
+LANGUAGE: sh
+CODE:
+```
+cargo build --profile wasm-release --example lighting --target wasm32-unknown-unknown
+```
+
+----------------------------------------
+
+TITLE: Derive Reflect Traits for Rust Types
+DESCRIPTION: Demonstrates how to automatically implement the `Reflect` trait for structs and tuple structs using the `#[derive(Reflect)]` macro. This enables runtime reflection capabilities for the defined types, allowing dynamic interaction with their fields, and initializes an example `Foo` struct for subsequent examples.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/crates/bevy_reflect/README.md#_snippet_0
+
+LANGUAGE: Rust
+CODE:
+```
+// this will automatically implement the `Reflect` trait and the `Struct` trait (because the type is a struct)
+#[derive(Reflect)]
+struct Foo {
+    a: u32,
+    b: Bar,
+    c: Vec<i32>,
+    d: Vec<Baz>,
+}
+
+// this will automatically implement the `Reflect` trait and the `TupleStruct` trait (because the type is a tuple struct)
+#[derive(Reflect)]
+struct Bar(String);
+
+#[derive(Reflect)]
+struct Baz {
+    value: f32,
+}
+
+// We will use this value to illustrate `bevy_reflect` features
+let mut foo = Foo {
+    a: 1,
+    b: Bar("hello".to_string()),
+    c: vec![1, 2],
+    d: vec![Baz { value: 3.14 }],
+};
+```
+
+----------------------------------------
+
+TITLE: Manage Bevy ECS Resources in Rust
+DESCRIPTION: Resources are unique, type-identified data that do not belong to any specific entity, serving as global singletons within the `World`. This example shows how to insert a resource into the world and access it, both directly and within a system.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/crates/bevy_ecs/README.md#_snippet_4
+
+LANGUAGE: Rust
+CODE:
+```
+use bevy_ecs::prelude::*;
+
+#[derive(Resource, Default)]
+struct Time {
+    seconds: f32,
+}
+
+let mut world = World::new();
+
+world.insert_resource(Time::default());
+
+let time = world.get_resource::<Time>().unwrap();
+
+// You can also access resources from Systems
+fn print_time(time: Res<Time>) {
+    println!("{}", time.seconds);
+}
+```
+
+----------------------------------------
+
+TITLE: Trigger and Observe a Basic Bevy Event
+DESCRIPTION: This example demonstrates how to trigger a basic `Event` globally and react to it using a global observer. The `add_observer` method sets up a listener for the `Speak` event, and `commands.trigger` dispatches it.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/release-notes/event_split.md#_snippet_1
+
+LANGUAGE: rust
+CODE:
+```
+app.add_observer(|trigger: On<Speak>| {
+    println!("{}", trigger.message);
+});
+
+// ...
+
+commands.trigger(Speak {
+    message: "Hello!".to_string(),
+});
+```
+
+----------------------------------------
+
+TITLE: Bevy State Management API Renames and Additions
+DESCRIPTION: Overview of renamed components and methods for state-scoped entity and event management in Bevy, including new functionality for despawning on state entry and changes to event handling.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/rename_state_scoped.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Renamed API Elements:
+
+Component Renames:
+- Old: StateScoped
+- New: DespawnOnExitState
+
+Function Renames:
+- Old: clear_state_scoped_entities
+- New: despawn_entities_on_exit_state
+
+Event Management Changes:
+- Old: add_state_scoped_event
+- New: add_event (manual call) + clear_events_on_exit_state
+
+New Functionality:
+- Component: DespawnOnEnterState
+- Method: clear_events_on_enter_state
+```
+
+----------------------------------------
+
+TITLE: Spawn and Access Bevy ECS Entities with Components in Rust
+DESCRIPTION: Entities are unique identifiers that correlate to zero or more Components. This example demonstrates how to spawn an entity with multiple components and then retrieve those components from the world.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/crates/bevy_ecs/README.md#_snippet_2
+
+LANGUAGE: Rust
+CODE:
+```
+use bevy_ecs::prelude::*;
+
+#[derive(Component)]
+struct Position { x: f32, y: f32 }
+#[derive(Component)]
+struct Velocity { x: f32, y: f32 }
+
+let mut world = World::new();
+
+let entity = world
+    .spawn((Position { x: 0.0, y: 0.0 }, Velocity { x: 1.0, y: 0.0 }))
+    .id();
+
+let entity_ref = world.entity(entity);
+let position = entity_ref.get::<Position>().unwrap();
+let velocity = entity_ref.get::<Velocity>().unwrap();
+```
+
+----------------------------------------
+
+TITLE: Filtering Bevy ECS Queries with With and Without
+DESCRIPTION: This example illustrates how to use query filters in Bevy ECS to select entities based on the presence or absence of specific components. It shows how to retrieve components from entities that have a `Player` component but lack an `Alive` component, demonstrating precise entity selection.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/crates/bevy_ecs/README.md#_snippet_6
+
+LANGUAGE: rust
+CODE:
+```
+use bevy_ecs::prelude::*;
+
+#[derive(Component)]
+struct Position { x: f32, y: f32 }
+#[derive(Component)]
+struct Player;
+#[derive(Component)]
+struct Alive;
+
+// Gets the Position component of all Entities with Player component and without the Alive
+// component.
+fn system(query: Query<&Position, (With<Player>, Without<Alive>)>) {
+    for position in &query {
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Illustrate Old `SpecializedRenderPipeline` Implementation
+DESCRIPTION: This Rust code showcases the previous method of pipeline specialization using the `SpecializedRenderPipeline` trait. It details how a `RenderPipelineDescriptor` was constructed and returned based on a `MyKey`, representing the 'producer' pattern that the new API replaces.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/composable_specialization.md#_snippet_2
+
+LANGUAGE: Rust
+CODE:
+```
+impl SpecializedRenderPipeline for MySpecializer {
+    type Key = MyKey;
+
+    fn specialize(&self, key: Self::Key) -> RenderPipelineDescriptor {
+        RenderPipelineDescriptor {
+            label: Some("my_pipeline".into()),
+            layout: vec![
+                if key.msaa.samples() > 0 {
+                    self.layout_msaa.clone()
+                } else {
+                    self.layout.clone()
+                }
+            ],
+            push_constant_ranges: vec![],
+            vertex: VertexState {
+                shader: self.vertex.clone(),
+                shader_defs: vec![],
+                entry_point: "vertex".into(),
+                buffers: vec![],
+            },
+            primitive: Default::default(),
+            depth_stencil: None,
+            multisample: MultisampleState {
+                count: key.msaa.samples(),
+                ..Default::default()
+            },
+            fragment: Some(FragmentState {
+                shader: self.fragment.clone(),
+                shader_defs: vec![],
+                entry_point: "fragment".into(),
+                targets: vec![Some(ColorTargetState {
+                    format: TextureFormat::Rgba8Unorm,
+                    blend: Some(key.blend_state),
+                    write_mask: ColorWrites::all(),
+                })],
+            }),
+            zero_initialize_workgroup_memory: false,
+        }
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Access Bevy `WINIT_WINDOWS` Mutably
+DESCRIPTION: This snippet illustrates how to mutably access the `WINIT_WINDOWS` thread-local resource in Bevy. The `with_borrow_mut` method provides exclusive, writeable access to the data. Similar to immutable access, attempting a mutable borrow when the data is already borrowed will result in a panic.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/replace_non_send_resources.md#_snippet_1
+
+LANGUAGE: rust
+CODE:
+```
+use bevy_winit::WINIT_WINDOWS;
+
+...
+
+WINIT_WINDOWS.with_borrow_mut(|winit_windows| {
+    // do things with `winit_windows`
+});
+```
+
+----------------------------------------
+
+TITLE: Access Bevy `WINIT_WINDOWS` Immutably
+DESCRIPTION: This snippet demonstrates how to immutably access the `WINIT_WINDOWS` thread-local resource in Bevy. The `with_borrow` method allows safe, read-only access to the underlying data, ensuring thread safety for the current thread. Attempting to borrow while the data is already borrowed elsewhere will cause a panic.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/replace_non_send_resources.md#_snippet_0
+
+LANGUAGE: rust
+CODE:
+```
+use bevy_winit::WINIT_WINDOWS;
+
+...
+
+WINIT_WINDOWS.with_borrow(|winit_windows| {
+    // do things with `winit_windows`
+});
+```
+
+----------------------------------------
+
+TITLE: Adjusting Linear Volume in Bevy (Rust)
+DESCRIPTION: This snippet demonstrates the change in Bevy's `Volume::Linear` API. Previously, `Volume::Linear` supported direct addition and subtraction, which was semantically incorrect for percentage-like values. The updated API (0.17+) replaces these operations with `increase_by_percentage` for more accurate and meaningful adjustments.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/remove_the_add_sub_impls_on_volume.md#_snippet_0
+
+LANGUAGE: Rust
+CODE:
+```
+// 0.16
+fn audio_system() {
+    let linear_a = Volume::Linear(0.5);
+    let linear_b = Volume::Linear(0.1);
+    let linear_c = linear_a + linear_b;
+    let linear_d = linear_a - linear_b;
+}
+```
+
+LANGUAGE: Rust
+CODE:
+```
+// 0.17
+fn audio_system() {
+    let linear_a = Volume::Linear(0.5);
+    let linear_b = Volume::Linear(0.1);
+    let linear_c = linear_a.increase_by_percentage(10.0);
+    let linear_d = linear_a.increase_by_percentage(-10.0);
+}
+```
+
+----------------------------------------
+
+TITLE: Post-process WebAssembly with `wasm-opt` for Size Reduction
+DESCRIPTION: Applies the `wasm-opt` tool to a generated WebAssembly binary (`_bg.wasm`) to perform further size optimizations. The `-Oz` flag enables aggressive size reduction. After optimization, the command renames the output file to replace the original unoptimized binary.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/examples/README.md#_snippet_16
+
+LANGUAGE: sh
+CODE:
+```
+wasm-opt -Oz --output optimized.wasm examples/wasm/target/lighting_bg.wasm
+mv optimized.wasm examples/wasm/target/lighting_bg.wasm
+```
+
+----------------------------------------
+
+TITLE: Capture Application Profile with Tracy CLI
+DESCRIPTION: Command to start the Tracy command-line capture tool. This tool will wait for a Tracy-instrumented application to start, automatically connect, and begin capturing its execution data into a specified profile file. The executable name may vary based on the operating system and installation method.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/docs/profiling.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+./capture-release -o my_capture.tracy
+```
+
+----------------------------------------
+
+TITLE: Reference `ui_test` Error Annotation Syntax
+DESCRIPTION: Comprehensive syntax guide for `ui_test` error annotations, detailing location specifiers (`^`, `v`, `|`), and various error matchers including Rustc error codes (`E####`), lint names (`<lint_name>`), and level-based substring or regex matching (`LEVEL: <substring>`, `LEVEL: /<regex>/`). These annotations define expected compiler errors.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/tools/compile_fail_utils/README.md#_snippet_2
+
+LANGUAGE: Rust
+CODE:
+```
+// Location specifiers:
+// ^ The error happens on the line above.
+// v The error happens on the line below.
+// | The error annotation is connected to another one.
+// If the location specifier is missing, the error is assumed to happen on the same line as the annotation.
+
+// Error matchers:
+// E#### (e.g., E0499) - Matches a specific Rustc error code.
+// <lint_name> (e.g., dead_code) - Matches a specific compiler lint.
+// LEVEL: <substring> (e.g., ERROR: missing trait) - Matches an error of a given level containing a substring. Valid levels: ERROR, HELP, WARN, NOTE.
+// LEVEL: /<regex>/ - Matches an error of a given level using a regular expression.
+```
+
+----------------------------------------
+
+TITLE: Example of Rust `#[deprecated]` Attribute Usage
+DESCRIPTION: This Rust code snippet demonstrates how to apply the `#[deprecated]` attribute to a struct. It specifies the version since which the item is deprecated and includes a custom note that will be displayed in compiler warnings, helping users identify and understand obsolete code.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration_guides.md#_snippet_0
+
+LANGUAGE: Rust
+CODE:
+```
+#[deprecated(since = "0.17.0", note = "This message will appear in the deprecation warning.")]
+struct MyStruct;
+```
+
+----------------------------------------
+
+TITLE: Define a Bevy BufferedEvent
+DESCRIPTION: To use an event with Bevy's pull-based event handling system, which involves `EventReader` and `EventWriter`, derive `BufferedEvent` in addition to `Event`. This makes the event compatible with the buffered API.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/release-notes/event_split.md#_snippet_4
+
+LANGUAGE: rust
+CODE:
+```
+#[derive(Event, BufferedEvent)]
+struct Message(String);
+```
+
+----------------------------------------
+
+TITLE: Add Custom Tracing Spans in Bevy Rust
+DESCRIPTION: Demonstrates how to add custom tracing spans to Bevy applications using the `info_span!` macro for CPU profiling. It shows two methods: a simpler approach using `.entered()` for automatic timing, and a manual approach using `.enter()` for more precise control over when the span's timer starts and stops.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/docs/profiling.md#_snippet_0
+
+LANGUAGE: Rust
+CODE:
+```
+{
+  // creates a span and starts the timer
+  let my_span = info_span!("span_name", name = "span_name").entered();
+  do_something_here();
+} // my_span is dropped here ... this stops the timer
+
+
+// You can also "manually" enter the span if you need more control over when the timer starts
+// Prefer the previous, simpler syntax unless you need the extra control.
+let my_span = info_span!("span_name", name = "span_name");
+{
+  // starts the span's timer
+  let guard = my_span.enter();
+  do_something_here();
+} // guard is dropped here ... this stops the timer
+```
+
+----------------------------------------
+
+TITLE: Bevy Platform Crate Features
+DESCRIPTION: Documentation for the configurable features of the `bevy_platform` crate. These features allow users to tailor the crate's behavior and dependencies based on their target platform and specific needs, such as enabling standard library usage or specific synchronization backends.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/crates/bevy_platform/README.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+bevy_platform features:
+  std (default):
+    description: Enables usage of the standard library. Note that where this crate has alternatives to the standard library that it considers better than what's provided, it will provide the alternative even when `std` is enabled. This is explicitly incompatible with `no_std` targets.
+  alloc (default):
+    description: Enables usage of the `alloc` crate. Note that this feature is automatically enabled when enabling `std`. This is compatible with most `no_std` targets, but not all.
+  critical-section:
+    description: Switches to using `critical-section` as a backend for synchronization. You may need to enable this feature on platforms with little to no support for atomic operations.
+```
+
+----------------------------------------
+
+TITLE: Bevy Event Method Renames: `send_event` to `write_event`
+DESCRIPTION: This snippet documents the renaming of various event-related methods within the Bevy engine, transitioning from `send_event` to `write_event` and similar patterns. The old methods are deprecated, indicating a breaking change for users of these APIs.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/send_event_rename.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+API Method Renames:
+Old Method -> New Method
+
+World::send_event -> World::write_event
+World::send_event_default -> World::write_event_default
+World::send_event_batch -> World::write_event_batch
+DeferredWorld::send_event -> DeferredWorld::write_event
+DeferredWorld::send_event_default -> DeferredWorld::write_event_default
+DeferredWorld::send_event_batch -> DeferredWorld::write_event_batch
+Commands::send_event -> Commands::write_event
+Events::send -> Events::write
+Events::send_default -> Events::write_default
+Events::send_batch -> Events::write_batch
+RemovedComponentEvents::send -> RemovedComponentEvents::write
+command::send_event -> command::write_event
+SendBatchIds -> WriteBatchIds
+```
+
+----------------------------------------
+
+TITLE: Bevy System Set Naming Convention Changes
+DESCRIPTION: This entry documents the specific renamings of system sets in Bevy engine to enforce a consistent `*Systems` suffix. It serves as a reference for developers migrating to the new convention or understanding API changes related to system sets.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/system_set_naming_convention.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Renamed System Sets:
+- AccessibilitySystem -> AccessibilitySystems
+- GizmoRenderSystem -> GizmoRenderSystems
+- PickSet -> PickingSystems
+- RunFixedMainLoopSystem -> RunFixedMainLoopSystems
+- TransformSystem -> TransformSystems
+- RemoteSet -> RemoteSystems
+- RenderSet -> RenderSystems
+- SpriteSystem -> SpriteSystems
+- StateTransitionSteps -> StateTransitionSystems
+- RenderUiSystem -> RenderUiSystems
+- UiSystem -> UiSystems
+- Animation -> AnimationSystems
+- AssetEvents -> AssetEventSystems
+- TrackAssets -> AssetTrackingSystems
+- UpdateGizmoMeshes -> GizmoMeshSystems
+- InputSystem -> InputSystems
+- InputFocusSet -> InputFocusSystems
+- ExtractMaterialsSet -> MaterialExtractionSystems
+- ExtractMeshesSet -> MeshExtractionSystems
+- RumbleSystem -> RumbleSystems
+- CameraUpdateSystem -> CameraUpdateSystems
+- ExtractAssetsSet -> AssetExtractionSystems
+- Update2dText -> Text2dUpdateSystems
+- TimeSystem -> TimeSystems
+- EventUpdates -> EventUpdateSystems
+```
+
+----------------------------------------
+
+TITLE: Demonstrate Bevy Entity Despawn Panic with Asynchronous Commands
+DESCRIPTION: This Rust code example illustrates how asynchronous command execution in Bevy can lead to a panic. Two systems are set up to despawn each other's target entities, causing a subsequent command to fail when it attempts to operate on an entity that no longer exists in the world.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/errors/B0003.md#_snippet_0
+
+LANGUAGE: rust
+CODE:
+```
+use bevy::prelude::*;
+
+fn main() {
+    App::new()
+        .add_plugins(DefaultPlugins)
+        .add_systems(Startup, setup)
+        .add_systems(Update, (use_0_and_despawn_1, use_1_and_despawn_0))
+        .run();
+}
+
+#[derive(Resource)]
+struct MyEntities(Entity, Entity);
+
+#[derive(Component)]
+struct Hello;
+
+fn setup(mut commands: Commands) {
+    let entity1 = commands.spawn_empty().id();
+    let entity2 = commands.spawn_empty().id();
+    commands.insert_resource(MyEntities(entity1, entity2));
+}
+
+fn use_0_and_despawn_1(mut commands: Commands, my_entities: Res<MyEntities>) {
+    commands.entity(my_entities.0).insert(Hello);
+    commands.entity(my_entities.1).despawn();
+}
+
+fn use_1_and_despawn_0(mut commands: Commands, my_entities: Res<MyEntities>) {
+    commands.entity(my_entities.1).insert(Hello);
+    commands.entity(my_entities.0).despawn();
+}
+```
+
+----------------------------------------
+
+TITLE: Dynamic Trait Dispatch with Bevy Reflection
+DESCRIPTION: This Rust example illustrates how to define a custom trait (`DoThing`) and make it reflectable using `#[reflect_trait]`. It shows how to derive `Reflect` for a struct (`MyType`) and associate the trait with it using `#[reflect(DoThing)]`. The code then demonstrates registering the type, retrieving the generated `ReflectDoThing` type data, and using it to convert a `&dyn Reflect` reference into a `&dyn DoThing` trait object for dynamic method invocation.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/crates/bevy_reflect/README.md#_snippet_6
+
+LANGUAGE: rust
+CODE:
+```
+#[derive(Reflect)]
+#[reflect(DoThing)]
+struct MyType {
+    value: String,
+}
+
+impl DoThing for MyType {
+    fn do_thing(&self) -> String {
+        format!("{} World!", self.value)
+    }
+}
+
+#[reflect_trait]
+pub trait DoThing {
+    fn do_thing(&self) -> String;
+}
+
+// First, lets box our type as a Box<dyn Reflect>
+let reflect_value: Box<dyn Reflect> = Box::new(MyType {
+    value: "Hello".to_string(),
+});
+
+// This means we no longer have direct access to MyType or its methods. We can only call Reflect methods on reflect_value.
+// What if we want to call `do_thing` on our type? We could downcast using reflect_value.downcast_ref::<MyType>(), but what if we
+// don't know the type at compile time?
+
+// Normally in rust we would be out of luck at this point. Lets use our new reflection powers to do something cool!
+let mut type_registry = TypeRegistry::default();
+type_registry.register::<MyType>();
+
+// The #[reflect] attribute we put on our DoThing trait generated a new `ReflectDoThing` struct, which implements TypeData.
+// This was added to MyType's TypeRegistration.
+let reflect_do_thing = type_registry
+    .get_type_data::<ReflectDoThing>(reflect_value.type_id())
+    .unwrap();
+
+// We can use this generated type to convert our `&dyn Reflect` reference to a `&dyn DoThing` reference
+let my_trait: &dyn DoThing = reflect_do_thing.get(&*reflect_value).unwrap();
+
+// Which means we can now call do_thing(). Magic!
+println!("{}", my_trait.do_thing());
+
+// This works because the #[reflect(MyTrait)] we put on MyType informed the Reflect derive to insert a new instance
+// of ReflectDoThing into MyType's registration. The instance knows how to cast &dyn Reflect to &dyn DoThing, because it
+// knows that &dyn Reflect should first be downcasted to &MyType, which can then be safely casted to &dyn DoThing
+```
+
+----------------------------------------
+
+TITLE: Measure Compile Time Noise with Hyperfine
+DESCRIPTION: Use `hyperfine` to measure the noise in build durations by running commands multiple times with cleanup between executions. This helps in getting more accurate average build times by mitigating external factors.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/docs/profiling.md#_snippet_7
+
+LANGUAGE: Shell
+CODE:
+```
+hyperfine --cleanup "sleep 1; cargo clean" "cargo build"
+```
+
+----------------------------------------
+
+TITLE: Deprecated `SystemState` Methods in Bevy
+DESCRIPTION: Several methods on `SystemState` are now deprecated. `update_archetypes` and `update_archetypes_unsafe_world_cell` should be removed from calls as they no longer perform any action. `get_manual`, `get_manual_mut`, and `get_unchecked_mut` should be replaced with their simpler, functionally equivalent counterparts: `get`, `get_mut`, and `get_unchecked` respectively.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/remove_archetype_component_id.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+Deprecated SystemState Methods:
+- update_archetypes(): No longer functional, remove calls.
+- update_archetypes_unsafe_world_cell(): No longer functional, remove calls.
+- get_manual(): Replace with get().
+- get_manual_mut(): Replace with get_mut().
+- get_unchecked_mut(): Replace with get_unchecked().
+```
+
+----------------------------------------
+
+TITLE: Bevy Core Widgets Overview
+DESCRIPTION: Introduces the unstyled core widgets provided by the `bevy_core_widgets` crate, detailing their purpose and functionality for building interactive UI elements.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/release-notes/headless-widgets.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+bevy_core_widgets crate:
+  CoreButton:
+    description: A push button that emits an activation event when clicked.
+  CoreSlider:
+    description: A standard slider for editing an `f32` value within a given range.
+  CoreScrollbar:
+    description: Used to implement scrollbars.
+  CoreCheckbox:
+    description: Used for checkboxes and toggle switches.
+  CoreRadio:
+    description: Used for individual radio buttons.
+  CoreRadioGroup:
+    description: Used to group radio buttons.
+```
+
+----------------------------------------
+
+TITLE: Migrating Bevy Observer Trigger Type and Event Names
+DESCRIPTION: This Rust code snippet illustrates the API changes in Bevy's observer system. It shows the old and new syntax for defining an observer, specifically the renaming of the `Trigger` type to `On` and the event type `OnAdd` to `Add`. It also implicitly highlights the change in `trigger.target()`'s return type from `Entity` (which could be `Entity::PLACEHOLDER`) to `Option<Entity>`, requiring migration to handle `None` cases.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/observer_triggers.md#_snippet_0
+
+LANGUAGE: rust
+CODE:
+```
+// Old
+commands.add_observer(|trigger: Trigger<OnAdd, Player>| {
+    info!("Spawned player {}", trigger.target());
+});
+
+// New
+commands.add_observer(|trigger: On<Add, Player>| {
+    info!("Spawned player {}", trigger.target());
+});
+```
+
+----------------------------------------
+
+TITLE: Configure Bevy glTF Coordinate Conversion via Cargo.toml Feature
+DESCRIPTION: This TOML snippet demonstrates how to enable the new glTF coordinate conversion behavior globally by adding the `gltf_convert_coordinates_default` feature to your `bevy` dependency in `Cargo.toml`. The first example shows the old behavior, and the second shows how to opt into the new, corrected import behavior.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/convert-coordinates.md#_snippet_0
+
+LANGUAGE: TOML
+CODE:
+```
+# old behavior, ignores glTF's coordinate system
+[dependencies]
+bevy = "0.17.0"
+```
+
+LANGUAGE: TOML
+CODE:
+```
+# new behavior, converts the coordinate system of all glTF assets into Bevy's coordinate system
+[dependencies]
+bevy = { version = "0.17.0", features = ["gltf_convert_coordinates_default"] }
+```
+
+----------------------------------------
+
+TITLE: Observing `CheckChangeTicks` for Custom Schedules in Bevy ECS
+DESCRIPTION: This Rust example demonstrates how to observe `CheckChangeTicks` and pass it to a custom schedule stored as a resource. This is useful when manually managing system ticks, ensuring that systems within the schedule correctly update their change ticks when `World::check_change_ticks` is called.
+SOURCE: https://github.com/bevyengine/bevy/blob/main/release-content/migration-guides/check_change_ticks.md#_snippet_0
+
+LANGUAGE: Rust
+CODE:
+```
+use bevy_ecs::prelude::*;
+use bevy_ecs::component::CheckChangeTicks;
+
+#[derive(Resource)]
+struct CustomSchedule(Schedule);
+
+let mut world = World::new();
+world.add_observer(|check: On<CheckChangeTicks>, mut schedule: ResMut<CustomSchedule>| {
+    schedule.0.check_change_ticks(*check);
+});
+```
