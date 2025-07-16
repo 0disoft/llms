@@ -1,0 +1,1411 @@
+TITLE: Implement a basic Accordion component in Svelte
+DESCRIPTION: Demonstrates importing and using the Accordion component from Bits UI. This example sets up a single-select accordion with two items, showcasing the basic structure and content rendering.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/getting-started.md#_snippet_1
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Accordion } from "bits-ui";
+</script>
+
+<Accordion.Root type="single">
+  <Accordion.Item value="item-1">
+    <Accordion.Header>
+      <Accordion.Trigger>Item 1 Title</Accordion.Trigger>
+    </Accordion.Header>
+    <Accordion.Content
+      >This is the collapsible content for this section.</Accordion.Content
+    >
+  </Accordion.Item>
+  <Accordion.Item value="item-2">
+    <Accordion.Header>
+      <Accordion.Trigger>Item 2 Title</Accordion.Trigger>
+    </Accordion.Header>
+    <Accordion.Content
+      >This is the collapsible content for this section.</Accordion.Content
+    >
+  </Accordion.Item>
+</Accordion.Root>
+```
+
+----------------------------------------
+
+TITLE: Bits UI Slider Component API Updates
+DESCRIPTION: Details API changes for the `Slider` component in Bits UI, including a new required `type` prop for better type inference and the introduction of an `onValueCommit` event handler for more controlled value updates.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_12
+
+LANGUAGE: APIDOC
+CODE:
+```
+Slider Component API Changes:
+
+- Slider.Root:
+  - 'type' prop (required): 'single' | 'multiple'. This is used to properly type the 'value' as either a 'number' or 'number[]'.
+
+- 'onValueCommit' prop:
+  - Type: Function (callback).
+  - Called when the user commits a value change (e.g., by releasing the mouse button or pressing Enter).
+  - Useful for scenarios where you want to update the value only when the user has finished interacting with the slider, not for each movement of the thumb.
+```
+
+----------------------------------------
+
+TITLE: Bits UI Pull Request Title Type Prefixes and Examples
+DESCRIPTION: Guidelines for structuring pull request titles using conventional prefixes (feat, fix, docs, chore) to clearly indicate the type of change, along with illustrative examples for each prefix.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/CONTRIBUTING.md#_snippet_2
+
+LANGUAGE: Text
+CODE:
+```
+feat:
+```
+
+LANGUAGE: Text
+CODE:
+```
+fix:
+```
+
+LANGUAGE: Text
+CODE:
+```
+docs:
+```
+
+LANGUAGE: Text
+CODE:
+```
+chore:
+```
+
+LANGUAGE: Text
+CODE:
+```
+feat: Add support for dark mode
+```
+
+LANGUAGE: Text
+CODE:
+```
+fix: Resolve issue with button alignment
+```
+
+LANGUAGE: Text
+CODE:
+```
+docs: Update contributing guidelines
+```
+
+LANGUAGE: Text
+CODE:
+```
+chore: Upgrade dependencies
+```
+
+----------------------------------------
+
+TITLE: Button Component API Changes in Bits UI v1
+DESCRIPTION: This snippet details the migration steps for the Button component, specifically addressing the removal of the `builders` prop and the new recommended approach for passing attributes.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+Button:
+  - `builders` prop: Removed.
+    - Migration: Use the `child` snippet on various components to receive and pass attributes to the underlying button element.
+```
+
+----------------------------------------
+
+TITLE: Utilize TypeScript for type checking Bits UI props
+DESCRIPTION: Illustrates how Bits UI provides comprehensive TypeScript definitions, enabling type checking and autocompletion for component props. This ensures type safety and improves developer experience when configuring components.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/getting-started.md#_snippet_4
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Accordion } from "bits-ui";
+
+  // TypeScript will validate these props
+  const accordionMultipleProps: Accordion.RootProps = {
+    type: "multiple",
+    value: ["item-1"], // type error if value is not an array
+  };
+
+  const accordionSingleProps: Accordion.RootProps = {
+    type: "single",
+    value: "item-1", // type error if value is an array
+  };
+</script>
+```
+
+----------------------------------------
+
+TITLE: Bits UI Select Component API Updates
+DESCRIPTION: Documents significant API changes for the `Select` component in Bits UI, including prop renames, new required props, component removals, and additions for grouping and portalling. These changes aim to improve type safety and provide more flexible rendering options.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_11
+
+LANGUAGE: APIDOC
+CODE:
+```
+Select Component API Changes:
+
+- Select.Root:
+  - 'multiple' prop removed.
+  - 'type' prop (required): 'single' | 'multiple'. This discriminates the 'value' prop type (string | string[]).
+  - 'name' prop: When provided, automatically renders a hidden input for form submission.
+
+- 'selected' prop replaced with 'value' prop:
+  - 'value': string (for type='single') | string[] (for type='multiple').
+
+- Select.ItemIndicator: Removed.
+  - Replaced by using the 'children' snippet prop to get a reference to the 'selected' state and render a custom indicator.
+
+- Select.Group: Added to support grouping items within the Select.
+- Select.GroupHeading: Added to provide headings for item groups.
+
+- Select.Value: Removed.
+  - Developers should now use the 'value' prop to render their own custom label in the trigger to represent the selected value.
+
+- Select.Content portalling:
+  - Select.Portal component introduced (replaces the 'portal' prop on Select.Content).
+  - Select.Portal accepts a 'to' prop (target container, default: document.body) and a 'disabled' prop to control portalling behavior.
+```
+
+----------------------------------------
+
+TITLE: Migrating Combobox Component in Bits UI v1
+DESCRIPTION: This section details the API changes for the Combobox component in Bits UI v1, including prop replacements, new components for grouping, and changes to content portalling behavior. It covers how to adapt existing implementations to the new API.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_5
+
+LANGUAGE: APIDOC
+CODE:
+```
+Combobox Component API Changes (v0 to v1):
+
+1. Combobox.Root Prop Changes:
+   - `multiple` prop removed.
+   - `type` prop (required) introduced: Set to `'single'` or `'multiple'` to type the `value` prop.
+   - `selected` prop replaced by `value` prop: Accepts `string` (for `type='single'`) or `string[]` (for `type='multiple'`).
+   - Hidden input rendering: Automatically renders a hidden input when the `name` prop is provided to `Combobox.Root`.
+
+2. Combobox.ItemIndicator Component:
+   - `Combobox.ItemIndicator` component removed.
+   - Migration: Use the `children` snippet prop to access the `selected` state and render a custom indicator.
+
+3. Grouping Components:
+   - `Combobox.Group` component added: Supports grouping of items within the combobox.
+   - `Combobox.GroupHeading` component added: Provides a heading for item groups.
+
+4. Content Portalling:
+   - In v0, `Combobox.Content` was automatically portalled (unless `portal` was `false`).
+   - In v1, `Combobox.Portal` component introduced: Wrap `Combobox.Content` with `Combobox.Portal` to enable portalling.
+   - `Combobox.Portal` props:
+     - `to`: Specifies the target portal container (defaults to `document.body`).
+     - `disabled`: Boolean to disable portalling.
+```
+
+----------------------------------------
+
+TITLE: Install Bits UI with npm
+DESCRIPTION: Installs the Bits UI library using npm, making it available for use in your project. This is the first step to integrate Bits UI into your Svelte application.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/getting-started.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm install bits-ui
+```
+
+----------------------------------------
+
+TITLE: Bits UI Tooltip Component API Updates
+DESCRIPTION: Describes the addition of `Tooltip.Provider` to the Bits UI `Tooltip` component. This new required component replaces the previous `group` prop, providing a dedicated mechanism for managing shared tooltip context across an application.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_13
+
+LANGUAGE: APIDOC
+CODE:
+```
+Tooltip Component API Changes:
+
+- Tooltip.Provider: Added (required component).
+  - Replaces the 'group' prop on the previous version's Tooltip component.
+  - Provides context for shared tooltips.
+  - Can wrap your entire app or a specific section of your app to provide shared context for tooltips.
+```
+
+----------------------------------------
+
+TITLE: Apply global styles using Bits UI data attributes
+DESCRIPTION: Demonstrates how to apply global CSS styles to Bits UI components by targeting their specific data attributes. This approach ensures consistent styling across all instances of a component without inline styles.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/getting-started.md#_snippet_3
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Button } from "bits-ui";
+  import "../app.css";
+</script>
+
+<Button.Root>Click me</Button.Root>
+```
+
+LANGUAGE: css
+CODE:
+```
+[data-button-root] {
+  height: 3rem;
+  width: 100%;
+  background-color: #3182ce;
+  color: white;
+  border-radius: 0.375rem;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+}
+
+[data-button-root]:hover {
+  background-color: #2c5282;
+}
+```
+
+----------------------------------------
+
+TITLE: Alert Dialog Component API Changes in Bits UI v1
+DESCRIPTION: This snippet outlines the migration details for the Alert Dialog component, including changes to transition props, the new requirement for `AlertDialog.Portal` for portal rendering, and the altered default behavior of `AlertDialog.Action`.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+AlertDialog.Content, AlertDialog.Overlay:
+  - `transition` props: Removed.
+    - Migration: Refer to the Transitions documentation for leveraging Svelte transitions with `child` snippet and `forceMount`.
+
+AlertDialog.Portal:
+  - Requirement: To render the dialog content in a portal, you must now wrap `AlertDialog.Content` within the `AlertDialog.Portal` component.
+
+AlertDialog.Action:
+  - Behavior Change: No longer closes the dialog by default.
+    - Migration: If submitting a form, handle the form submission logic before manually closing the dialog.
+```
+
+----------------------------------------
+
+TITLE: Accordion Component API Changes in Bits UI v1
+DESCRIPTION: This snippet details the migration steps for the Accordion component, focusing on changes to `Accordion.Root`'s type prop and the removal of transition props from `Accordion.Content`. These changes impact how accordion types are defined and how transitions are handled.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+Accordion.Root:
+  - `multiple` prop: Removed.
+  - `type` prop: Now a required prop, replacing `multiple`.
+    - Values: `'single'` | `'multiple'`
+    - Usage: Used as a discriminant to properly type the `value` prop as either a `string` or `string[]`.
+
+Accordion.Content:
+  - `transition` props: Removed.
+    - Migration: Refer to the Transitions documentation for leveraging Svelte transitions with `child` snippet and `forceMount`.
+```
+
+----------------------------------------
+
+TITLE: Style Accordion with Tailwind CSS classes
+DESCRIPTION: Applies Tailwind CSS classes directly to Bits UI Accordion components to customize their appearance. This example highlights how to style headless components by passing utility classes to their props.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/getting-started.md#_snippet_2
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Accordion } from "bits-ui";
+</script>
+
+<Accordion.Root class="mx-auto w-full max-w-md">
+  <Accordion.Item class="mb-2 rounded-md border border-gray-200">
+    <Accordion.Header class="bg-gray-50 transition-colors hover:bg-gray-100">
+      <Accordion.Trigger
+        class="flex w-full items-center justify-between p-4 text-left font-medium"
+      >
+        <span>Tailwind-styled Accordion</span>
+        <svg
+          class="h-5 w-5 transform transition-transform"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M19 9l-7 7-7-7"
+          />
+        </svg>
+      </Accordion.Trigger>
+    </Accordion.Header>
+    <Accordion.Content class="p-4 text-gray-700">
+      This accordion is styled using Tailwind CSS classes.
+    </Accordion.Content>
+  </Accordion.Item>
+</Accordion.Root>
+```
+
+----------------------------------------
+
+TITLE: Checkbox Component API Changes in Bits UI v1
+DESCRIPTION: This snippet covers the migration details for the Checkbox component, including the removal of `Checkbox.Indicator` and `Checkbox.Input`, changes to the `checked` state type, and the introduction of the new `Checkbox.Group` component.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+Checkbox.Indicator:
+  - Removed.
+    - Migration: Use the `children` snippet prop to get a reference to the `checked` state and render a custom indicator.
+
+Checkbox.Input:
+  - Removed.
+    - Migration: A hidden input is now automatically rendered when the `name` prop is provided to the `Checkbox.Root` component.
+
+Checkbox.Root:
+  - `checked` state type: Changed from `boolean | 'indeterminate'` to `boolean`.
+  - `indeterminate` prop: A new, separate prop has been introduced to manage the indeterminate state.
+
+Checkbox.Group:
+  - New component: Introduced to support checkbox groups, allowing for easier management of multiple checkboxes.
+```
+
+----------------------------------------
+
+TITLE: Command.Root Imperative API Methods
+DESCRIPTION: Documents the programmatic methods available on the `Command.Root` component, allowing for advanced control over its state and items. These methods are accessed via a component binding.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/command.md#_snippet_12
+
+LANGUAGE: APIDOC
+CODE:
+```
+getValidItems(): CommandItem[]
+  - Returns an array of valid (non-disabled, visible) command items.
+  - Useful for checking bounds before operations.
+  - Example:
+    const items = command.getValidItems();
+    console.log(items.length); // number of selectable items
+
+updateSelectedToIndex(index: number): void
+  - Sets selection to item at specified index.
+  - No-op if index is invalid.
+  - Parameters:
+    - index: The 0-based index of the item to select.
+  - Example:
+    // select third item (if it exists)
+    command.updateSelectedToIndex(2);
+
+    // with bounds check
+    const items = command.getValidItems();
+    if (index < items.length) {
+      command.updateSelectedToIndex(index);
+    }
+```
+
+----------------------------------------
+
+TITLE: Migrating Context/Dropdown/Menubar Menu Components in Bits UI v1
+DESCRIPTION: This section outlines the API changes for Context Menu, Dropdown Menu, and Menubar Menu components in Bits UI v1. It covers indicator component removals, label component replacements, `href` prop changes, and updates to content portalling behavior.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_6
+
+LANGUAGE: APIDOC
+CODE:
+```
+Context Menu/Dropdown Menu/Menubar Menu Component API Changes (v0 to v1):
+
+1. Indicator Components:
+   - `*Menu.RadioIndicator` component removed.
+   - `*Menu.CheckboxIndicator` component removed.
+   - Migration: Use the `children` snippet prop to access the `checked` or `selected` state and render a custom indicator.
+
+2. Label Component:
+   - `*Menu.Label` component removed.
+   - Replaced by `*Menu.GroupHeading` component: Used as the heading for a group of items.
+
+3. Item `href` Prop:
+   - `href` prop on `.Item` components removed.
+   - Migration: Use the `child` snippet and render your own anchor (`<a>`) element for navigation.
+
+4. Content Portalling:
+   - In v0, `*Menu.Content` was automatically portalled (unless `portal` was `false`).
+   - In v1, `*Menu.Portal` component introduced: Wrap `*Menu.Content` with `*Menu.Portal` to enable portalling.
+   - `*Menu.Portal` props:
+     - `to`: Specifies the target portal container (defaults to `document.body`).
+     - `disabled`: Boolean to disable portalling.
+```
+
+----------------------------------------
+
+TITLE: Setting Up Bits UI Development Environment
+DESCRIPTION: Commands to clone the Bits UI repository, install project dependencies using pnpm, and start the local development server for documentation and library watching.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/CONTRIBUTING.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+git clone https://github.com/huntabyte/bits-ui.git
+```
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm install
+```
+
+LANGUAGE: Shell
+CODE:
+```
+pnpm dev
+```
+
+----------------------------------------
+
+TITLE: Start Svelte development server
+DESCRIPTION: After installing dependencies, run `npm run dev` to start the local development server. The `--open` flag can be added to automatically open the application in your default web browser.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/tests/README.md#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+npm run dev
+
+npm run dev -- --open
+```
+
+----------------------------------------
+
+TITLE: Usage Example: Integrating Custom Svelte Accordion Wrapper
+DESCRIPTION: This example illustrates how to use the previously defined `MyAccordion.svelte` custom component within a Svelte page (`+page.svelte`). It demonstrates passing an array of `items` to the wrapper component, showcasing how to easily populate and manage an accordion with custom content.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/accordion.md#_snippet_3
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import MyAccordion from "$lib/components/MyAccordion.svelte";
+  const items = [
+    { title: "Item 1", content: "Content 1" },
+    { title: "Item 2", content: "Content 2" }
+  ];
+</script>
+
+<MyAccordion type="single" {items} />
+```
+
+----------------------------------------
+
+TITLE: Applying Svelte Transitions to Tooltip Content
+DESCRIPTION: This example demonstrates how to use Svelte transitions (like `fly` and `fade`) with `Tooltip.Content` by leveraging the `forceMount` prop and the `child` snippet. This provides more control over the content's lifecycle for animation purposes.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/tooltip.md#_snippet_10
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+	import { Tooltip } from "bits-ui";
+	import { fly, fade } from "svelte/transition";
+</script>
+
+<Tooltip.Root>
+	<!-- ... other tooltip components -->
+	<Tooltip.Content forceMount>
+		{#snippet child({ wrapperProps, props, open })}
+			{#if open}
+				<div {...wrapperProps}>
+					<div {...props} transition:fly>
+						<!-- ... -->
+					</div>
+				</div>
+			{/if}
+		{/snippet}
+	</Tooltip.Content>
+</Dialog.Root>
+```
+
+----------------------------------------
+
+TITLE: Migrating Popover Component in Bits UI v1
+DESCRIPTION: This section details the changes to the Popover component's content portalling behavior in Bits UI v1, requiring the use of a new dedicated Portal component.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_8
+
+LANGUAGE: APIDOC
+CODE:
+```
+Popover Component API Changes (v0 to v1):
+
+1. Content Portalling:
+   - In v0, `Popover.Content` was automatically portalled (unless `portal` was `false`).
+   - In v1, `Popover.Portal` component introduced: Wrap `Popover.Content` with `Popover.Portal` to enable portalling.
+   - `Popover.Portal` props:
+     - `to`: Specifies the target portal container (defaults to `document.body`).
+     - `disabled`: Boolean to disable portalling.
+```
+
+----------------------------------------
+
+TITLE: AlertDialog.Content Interaction Control Props
+DESCRIPTION: Detailed API documentation for the `AlertDialog.Content` component's props that control user interactions, including escape key handling and behavior when interacting outside the dialog.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/alert-dialog.md#_snippet_14
+
+LANGUAGE: APIDOC
+CODE:
+```
+AlertDialog.Content Props:
+
+onEscapeKeydown: (e: KeyboardEvent) => void
+  - Description: Callback function invoked when the Escape key is pressed.
+  - Parameters:
+    - e: The KeyboardEvent object.
+  - Usage: Allows overriding the default Escape key behavior (e.g., preventing dialog closure).
+
+interactOutsideBehavior: 'ignore' | 'close' | 'defer-otherwise-close' | 'defer-otherwise-ignore'
+  - Description: Defines the component's behavior when an interaction (touch, mouse, or pointer event) occurs outside the content area.
+  - Values:
+    - 'ignore': (default) Prevents the Alert Dialog from closing.
+    - 'close': Closes the Alert Dialog immediately.
+    - 'defer-otherwise-close': If an ancestor Bits UI component also implements this prop, it will defer the closing decision to that component. Otherwise, the Alert Dialog will close immediately.
+    - 'defer-otherwise-ignore': If an ancestor Bits UI component also implements this prop, it will defer the closing decision to that component. Otherwise, the Alert Dialog will ignore the event and not close.
+
+onInteractOutside: (e: Event) => void
+  - Description: Callback function invoked when an interaction occurs outside the dialog content.
+  - Parameters:
+    - e: The Event object (e.g., MouseEvent, PointerEvent).
+  - Usage: Allows implementing custom logic for outside interactions, potentially preventing default closing.
+```
+
+----------------------------------------
+
+TITLE: Implementing Custom ref Props with WithElementRef
+DESCRIPTION: Provides an example of how to create custom components that support the `ref` pattern using Bits UI's `WithElementRef` type helper, ensuring type-safe element referencing and consistent behavior.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/ref.md#_snippet_4
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { WithElementRef } from "bits-ui";
+  import type { HTMLButtonAttributes } from "svelte/elements";
+
+  // Define props with the ref type
+  let {
+    ref = $bindable(null),
+    children,
+    ...rest
+  }: WithElementRef<
+    HTMLButtonAttributes & {
+      yourPropA: string;
+      yourPropB: number;
+    },
+    HTMLButtonElement
+  > = $props();
+</script>
+
+<button bind:this={ref} {...rest}>
+  {@render children?.()}
+</button>
+```
+
+----------------------------------------
+
+TITLE: Access Imperative API of Command.Root
+DESCRIPTION: Demonstrates how to bind to the `Command.Root` component to gain programmatic control over its methods. This is essential for advanced use cases such as implementing custom keybindings or direct state manipulation.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/command.md#_snippet_11
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Command } from "bits-ui";
+  let command: typeof Command.Root;
+</script>
+
+<Command.Root bind:this={command}>
+  <!-- ... -->
+</Command.Root>
+```
+
+----------------------------------------
+
+TITLE: Migrating Radio Group Component in Bits UI v1
+DESCRIPTION: This section describes the removal of `RadioGroup.ItemIndicator` in Bits UI v1 and the new approach for rendering custom indicators using the `children` snippet prop.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_9
+
+LANGUAGE: APIDOC
+CODE:
+```
+Radio Group Component API Changes (v0 to v1):
+
+1. RadioGroup.ItemIndicator Component:
+   - `RadioGroup.ItemIndicator` component removed.
+   - Migration: Use the `children` snippet prop to access the `checked` state, providing more flexibility to render a custom indicator as needed. Refer to the Radio Group documentation for examples.
+```
+
+----------------------------------------
+
+TITLE: Creating and Using a Reusable Svelte Tooltip Component
+DESCRIPTION: This example demonstrates how to build a custom, reusable Tooltip component (`MyTooltip.svelte`) using `bits-ui` primitives and subsequently how to integrate and use this custom component within another Svelte application file (`+page.svelte`). It showcases component composition, prop passing, and snippet usage.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/tooltip.md#_snippet_5
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Tooltip } from "bits-ui";
+  import { type Snippet } from "svelte";
+
+  type Props = Tooltip.RootProps & {
+    trigger: Snippet;
+    triggerProps?: Tooltip.TriggerProps;
+  };
+
+  let {
+    open = $bindable(false),
+    children,
+    buttonText,
+    triggerProps = {},
+    ...restProps
+  }: Tooltip.RootProps = $props();
+</script>
+
+<!--
+ Ensure you have a `Tooltip.Provider` component wrapping
+ your root layout content
+-->
+<Tooltip.Root bind:open {onOpenChange}>
+  <Tooltip.Trigger {...triggerProps}>
+    {@render trigger()}
+  </Tooltip.Trigger>
+  <Tooltip.Portal>
+    <Tooltip.Content>
+      <Tooltip.Arrow />
+      {@render children?.()}
+    </Tooltip.Content>
+  </Tooltip.Portal>
+</Tooltip.Root>
+```
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import MyTooltip from "$lib/components/MyTooltip.svelte";
+  import BoldIcon from "..some-icon-library"; // not real
+</script>
+
+<MyTooltip triggerProps={{ onclick: () => alert("changed to bold!") }}>
+  {#snippet trigger()}
+    <BoldIcon />
+  {/snippet}
+  Change font to bold
+</MyTooltip>
+```
+
+----------------------------------------
+
+TITLE: Migrating Scroll Area Component in Bits UI v1
+DESCRIPTION: This section notes the removal of the `ScrollArea.Content` component in Bits UI v1, as it is no longer necessary for the component's functionality.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_10
+
+LANGUAGE: APIDOC
+CODE:
+```
+Scroll Area Component API Changes (v0 to v1):
+
+1. ScrollArea.Content Component:
+   - `ScrollArea.Content` component removed.
+   - Rationale: It is no longer necessary for the functionality of the Scroll Area in Bits UI v1.
+```
+
+----------------------------------------
+
+TITLE: Migrating Pin Input Component in Bits UI v1
+DESCRIPTION: This section describes the complete overhaul of the Pin Input component in Bits UI v1, which is now optimized for OTP input. Users should refer to the updated documentation for detailed usage and migration steps.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_7
+
+LANGUAGE: APIDOC
+CODE:
+```
+Pin Input Component API Changes (v0 to v1):
+
+1. Component Overhaul:
+   - The `PinInput` component has been completely re-architected.
+   - New design is optimized for OTP (One-Time Password) input, drawing inspiration from `input-otp`.
+   - Migration: Refer to the official Pin Input documentation for the new API and usage patterns, as direct migration from v0 is not straightforward.
+```
+
+----------------------------------------
+
+TITLE: Svelte Command Component Keyboard Navigation Example
+DESCRIPTION: A Svelte example demonstrating how to integrate the bits-ui Command component and implement custom keyboard navigation. It shows how to bind the component instance and use its methods, specifically `getValidItems` and `updateSelectedToIndex`, to jump to the last item on a specific key press (e.g., 'o').
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/command.md#_snippet_16
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Command } from "bits-ui";
+
+  let command: typeof Command.Root;
+
+  function jumpToLastItem() {
+    if (!command) return;
+    const items = command.getValidItems();
+    if (!items.length) return;
+    command.updateSelectedToIndex(items.length - 1);
+  }
+</script>
+
+<svelte:window
+  onkeydown={(e) => {
+    if (e.key === "o") {
+      jumpToLastItem();
+    }
+  }}
+/>
+<Command.Root bind:this={command}>
+  <!-- Command content -->
+</Command.Root>
+```
+
+----------------------------------------
+
+TITLE: Creating a Reusable Svelte Progress Component
+DESCRIPTION: Illustrates how to build a more comprehensive and reusable `MyProgress` component using the `Progress` primitive from `bits-ui`. This example incorporates props for customization (max, value, min, label, valueLabel) and integrates accessibility attributes like `aria-labelledby` and `aria-valuetext`.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/progress.md#_snippet_1
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Progress, useId } from "bits-ui";
+  import type { ComponentProps } from "svelte";
+
+  let {
+    max = 100,
+    value = 0,
+    min = 0,
+    label,
+    valueLabel,
+  }: ComponentProps<typeof Progress.Root> & {
+    label: string;
+    valueLabel: string;
+  } = $props();
+
+  const labelId = useId();
+</script>
+
+<div>
+  <span id={labelId}> {label} </span>
+  <span>{valueLabel}</span>
+</div>
+<Progress.Root
+  aria-labelledby={labelId}
+  aria-valuetext={valueLabel}
+  {value}
+  {min}
+  {max}
+/>
+```
+
+----------------------------------------
+
+TITLE: Example Changelog Entry for Select.Trigger
+DESCRIPTION: Illustrates a patch change for the `Select.Trigger` component, focusing on accessibility improvements for screen readers and keyboard navigation. This example shows a 'fix' type with a specific component scope.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/policies/changelog-conventions.md#_snippet_1
+
+LANGUAGE: md
+CODE:
+```
+## 1.3.10
+
+### Patch Changes
+
+- fix(Select.Trigger): improve accessibility for screen readers and keyboard navigation
+```
+
+----------------------------------------
+
+TITLE: Basic Avatar Component Quick Start with bits-ui
+DESCRIPTION: Demonstrates how to quickly set up a basic Avatar component using `Avatar.Root`, `Avatar.Image`, and `Avatar.Fallback` primitives from `bits-ui` to display a user's avatar with a fallback.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/avatar.md#_snippet_0
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Avatar } from "bits-ui";
+</script>
+
+<Avatar.Root>
+  <Avatar.Image
+    src="https://github.com/huntabyte.png"
+    alt="Huntabyte's avatar"
+  />
+  <Avatar.Fallback>HB</Avatar.Fallback>
+</Avatar.Root>
+```
+
+----------------------------------------
+
+TITLE: General Prop and Directive Migrations in Bits UI v1
+DESCRIPTION: This snippet provides an overview of common prop and directive changes across various Bits UI components in v1, including replacements for `el`, `asChild`, `transition` props, and `let:` directives. These are fundamental changes affecting multiple components.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/migration-guide.md#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+// Prop Replacements
+- `el` prop: Replaced by `ref` prop across all components that render an HTML element.
+- `asChild` prop: Replaced by the `child` snippet prop.
+
+// Transition Props
+- `transition` props: Removed from components. Instead, use the `child` snippet along with `forceMount` to leverage Svelte transitions.
+
+// Data Exposure
+- `let:` directives: Components that previously exposed data via `let:` directives now provide it through `children`/`child` snippet props.
+```
+
+----------------------------------------
+
+TITLE: Create and Parse ZonedDateTime Objects in TypeScript
+DESCRIPTION: Provides examples for constructing `ZonedDateTime` objects with specific date, time, and timezone information, and parsing them from various ISO 8601 string formats using `parseZonedDateTime`, `parseAbsolute`, and `parseAbsoluteToLocal` functions from `@internationalized/date`.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/dates.md#_snippet_3
+
+LANGUAGE: ts
+CODE:
+```
+// Creating a ZonedDateTime
+import {
+  ZonedDateTime,
+  parseZonedDateTime,
+  parseAbsolute,
+  parseAbsoluteToLocal,
+} from "@internationalized/date";
+
+const date = new ZonedDateTime(
+  2022,
+  2,
+  3, // Date (year, month, day)
+  "America/Los_Angeles", // Timezone
+  -28800000, // UTC offset in milliseconds
+  9,
+  15,
+  0 // Time (hour, minute, second)
+);
+
+// From ISO 8601 strings using different parsing functions
+const date1 = parseZonedDateTime("2024-07-12T00:45[America/New_York]");
+const date2 = parseAbsolute("2024-07-12T07:45:00Z", "America/New_York");
+const date3 = parseAbsoluteToLocal("2024-07-12T07:45:00Z");
+```
+
+----------------------------------------
+
+TITLE: Create Reusable Accordion Content Component with Svelte Transitions
+DESCRIPTION: Provides an example of encapsulating Svelte transition logic within a reusable `MyAccordionContent.svelte` component, demonstrating how to pass props and render children with a `fade` transition.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/accordion.md#_snippet_11
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Accordion, type WithoutChildrenOrChild } from "bits-ui";
+  import type { Snippet } from "svelte";
+  import { fade } from "svelte/transition";
+
+  let {
+    ref = $bindable(null),
+    duration = 200,
+    children,
+    ...restProps
+  }: WithoutChildrenOrChild<Accordion.ContentProps> & {
+    duration?: number;
+    children: Snippet;
+  } = $props();
+</script>
+
+<Accordion.Content forceMount bind:ref {...restProps}>
+  {#snippet child({ props, open })}
+    {#if open}
+      <div {...props} transition:fade={{ duration }}>
+        {@render children?.()}
+      </div>
+    {/if}
+  {/snippet}
+</Accordion.Content>
+```
+
+----------------------------------------
+
+TITLE: Integrating a Custom Svelte Progress Component
+DESCRIPTION: Shows an example of how to import and use the previously defined `MyProgress` component within another Svelte file (e.g., `+page.svelte`). This snippet demonstrates basic state management for the progress value using Svelte's `$state` reactive primitive.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/progress.md#_snippet_2
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import MyProgress from "$lib/components/MyProgress.svelte";
+
+  let value = $state(50);
+</script>
+
+<MyProgress label="Loading images..." valueLabel="{value}%" {value} />
+```
+
+----------------------------------------
+
+TITLE: Using the Custom MyMeter Component in Svelte
+DESCRIPTION: Shows an example of how to import and use the previously defined `MyMeter` component within a Svelte page (`+page.svelte`), demonstrating prop passing for `label`, `valueLabel`, `value`, and `max`.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/meter.md#_snippet_2
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import MyMeter from "$lib/components/MyMeter.svelte";
+
+  let value = $state(3000);
+  const max = 4000;
+</script>
+
+<MyMeter label="Tokens remaining" valueLabel="{value} / {max}" {value} {max} />
+```
+
+----------------------------------------
+
+TITLE: Set Default Value for Bits UI Calendar
+DESCRIPTION: Initialize the Calendar.Root component with a default date. This example demonstrates parsing an ISO 8601 string, typically from a database or API, into a CalendarDate object using the `parseDate` function from `@internationalized/date`.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/calendar.md#_snippet_5
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Calendar } from "bits-ui";
+  import { parseDate } from "@internationalized/date";
+
+  // this came from a database/API call
+  const date = "2024-08-03";
+
+  let value = $state(parseDate(date));
+</script>
+
+<Calendar.Root {value}>
+  <!-- ...-->
+</Calendar.Root>
+```
+
+----------------------------------------
+
+TITLE: Build Nested Menus with Svelte ContextMenu
+DESCRIPTION: This example demonstrates how to create hierarchical or nested menus using the `bits-ui` `ContextMenu.Sub` component. It shows the structure involving `ContextMenu.SubTrigger` and `ContextMenu.SubContent` for organizing sub-menu items.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/context-menu.md#_snippet_9
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { ContextMenu } from "bits-ui";
+</script>
+
+<ContextMenu.Content>
+  <ContextMenu.Item>Item 1</ContextMenu.Item>
+  <ContextMenu.Item>Item 2</ContextMenu.Item>
+  <ContextMenu.Sub>
+    <ContextMenu.SubTrigger>Open Sub Menu</ContextMenu.SubTrigger>
+    <ContextMenu.SubContent>
+      <ContextMenu.Item>Sub Item 1</ContextMenu.Item>
+      <ContextMenu.Item>Sub Item 2</ContextMenu.Item>
+    </ContextMenu.SubContent>
+  </ContextMenu.Sub>
+</ContextMenu.Content>
+```
+
+----------------------------------------
+
+TITLE: Parsing Date Strings with @internationalized/date Functions
+DESCRIPTION: Provides examples of various parsing functions (`parseDate`, `parseDateTime`, `parseZonedDateTime`, `parseAbsolute`, `parseAbsoluteToLocal`) available in `@internationalized/date` for converting different types of date and time strings into corresponding `DateValue` objects.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/dates.md#_snippet_8
+
+LANGUAGE: ts
+CODE:
+```
+import {
+  parseDate, // For CalendarDate
+  parseDateTime, // For CalendarDateTime
+  parseZonedDateTime, // For ZonedDateTime with timezone name
+  parseAbsolute, // For ZonedDateTime from UTC string + timezone
+  parseAbsoluteToLocal, // For ZonedDateTime in local timezone
+} from "@internationalized/date";
+
+// Examples
+const date = parseDate("2024-07-10"); // CalendarDate
+const dateTime = parseDateTime("2024-07-10T12:30:00"); // CalendarDateTime
+const zonedDate = parseZonedDateTime("2024-07-12T00:45[America/New_York]"); // ZonedDateTime
+const absoluteDate = parseAbsolute("2024-07-12T07:45:00Z", "America/New_York"); // ZonedDateTime
+const localDate = parseAbsoluteToLocal("2024-07-12T07:45:00Z"); // ZonedDateTime in user's timezone
+```
+
+----------------------------------------
+
+TITLE: Example Changelog Entries for Menubar
+DESCRIPTION: Shows multiple patch changes for the `Menubar` component, including an internal simplification ('chore') and a fix for preventing simultaneous submenu opening. This demonstrates how multiple changes can be grouped under one version.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/policies/changelog-conventions.md#_snippet_2
+
+LANGUAGE: md
+CODE:
+```
+## 1.3.7
+
+### Patch Changes
+
+- chore(Menubar.Content): simplify internal implementation for maintainability
+- fix(Menubar): prevent multiple submenus from opening simultaneously when too close
+```
+
+----------------------------------------
+
+TITLE: Creating a Reusable Svelte AspectRatio Component
+DESCRIPTION: Illustrates how to encapsulate the `AspectRatio.Root` component within a custom Svelte component (`MyAspectRatio.svelte`). This example shows passing props like `src` and `alt` for an image, demonstrating how to create a more abstract and reusable UI element.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/aspect-ratio.md#_snippet_1
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { AspectRatio, type WithoutChildrenOrChild } from "bits-ui";
+
+  let {
+    src,
+    alt,
+    ref = $bindable(null),
+    imageRef = $bindable(null),
+    ...restProps
+  }: WithoutChildrenOrChild<AspectRatio.RootProps> & {
+    src: string;
+    alt: string;
+    imageRef?: HTMLImageElement | null;
+  } = $props();
+</script>
+
+<AspectRatio.Root {...restProps} bind:ref>
+  <img {src} {alt} bind:this={imageRef} />
+</AspectRatio.Root>
+```
+
+----------------------------------------
+
+TITLE: Implementing Custom Keyframe Animations for Accordion Transitions
+DESCRIPTION: This CSS example provides advanced keyframe animations (`accordionOpen`, `accordionClose`) for `bits-ui` accordion content. These animations offer more control over the opening and closing transitions, including opacity changes, for a smoother user experience.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/styling.md#_snippet_13
+
+LANGUAGE: css
+CODE:
+```
+/* Define keyframes for opening animation */
+@keyframes accordionOpen {
+  0% {
+    height: 0;
+    opacity: 0;
+  }
+  80% {
+    height: var(--bits-accordion-content-height);
+    opacity: 0.8;
+  }
+  100% {
+    height: var(--bits-accordion-content-height);
+    opacity: 1;
+  }
+}
+
+/* Define keyframes for closing animation */
+@keyframes accordionClose {
+  0% {
+    height: var(--bits-accordion-content-height);
+    opacity: 1;
+  }
+  20% {
+    height: var(--bits-accordion-content-height);
+    opacity: 0.8;
+  }
+  100% {
+    height: 0;
+    opacity: 0;
+  }
+}
+
+/* Apply animations based on state */
+[data-accordion-content][data-state="open"] {
+  animation: accordionOpen 400ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+[data-accordion-content][data-state="closed"] {
+  animation: accordionClose 300ms cubic-bezier(0.7, 0, 0.84, 0) forwards;
+}
+```
+
+----------------------------------------
+
+TITLE: Example Changelog Entries for Calendar Components
+DESCRIPTION: Demonstrates patch changes for `Calendar` and `Range Calendar` components, addressing issues with focusability of outside days when disabled and ensuring default placeholder validity for keyboard navigation. This highlights fixes across related components.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/policies/changelog-conventions.md#_snippet_3
+
+LANGUAGE: md
+CODE:
+```
+## 1.3.6
+
+### Patch Changes
+
+- fix(Calendar): prevent outside days from being focusable when `disableOutsideDays` is `true`
+- fix(Range Calendar): prevent outside days from being focusable when `disableOutsideDays` is `true`
+- fix(Calendar): ensure default placeholder isn't a disabled date for keyboard navigation
+```
+
+----------------------------------------
+
+TITLE: Basic Styling for Bits UI Accordion Component
+DESCRIPTION: This Svelte example demonstrates the fundamental structure and styling of a `bits-ui` Accordion component. It includes basic CSS rules for items, triggers, and content, showcasing how to style different states like 'open' and 'disabled' using global data attributes.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/styling.md#_snippet_11
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Accordion } from "bits-ui";
+</script>
+
+<Accordion.Root>
+  <Accordion.Item value="item-1">
+    <Accordion.Trigger>Section 1</Accordion.Trigger>
+    <Accordion.Content>Content for section 1</Accordion.Content>
+  </Accordion.Item>
+  <Accordion.Item value="item-2">
+    <Accordion.Trigger disabled>Section 2 (Disabled)</Accordion.Trigger>
+    <Accordion.Content>Content for section 2</Accordion.Content>
+  </Accordion.Item>
+</Accordion.Root>
+
+<style>
+  /* Base styles */
+  :global([data-accordion-item]) {
+    border: 1px solid #e2e8f0;
+    border-radius: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Trigger styles based on state */
+  :global([data-accordion-trigger]) {
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  :global([data-accordion-trigger][data-state="open"]) {
+    background-color: #f7fafc;
+    border-bottom: 1px solid #e2e8f0;
+  }
+
+  :global([data-accordion-trigger][data-disabled]) {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Content styles */
+  :global([data-accordion-content]) {
+    padding: 1rem;
+  }
+</style>
+```
+
+----------------------------------------
+
+TITLE: Svelte Component Usage Example with WithElementRef
+DESCRIPTION: Demonstrates how to use the `WithElementRef` type helper within a Svelte component. It shows how to define component props using `WithElementRef` to include a `ref` property, which is then bound to an HTML element using `bind:this`.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/type-helpers/with-element-ref.md#_snippet_1
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import type { WithElementRef } from "bits-ui";
+
+  type Props = WithElementRef<
+    {
+      yourPropA: string;
+      yourPropB: number;
+    },
+    HTMLButtonElement
+  >;
+
+  let { yourPropA, yourPropB, ref = $bindable(null) }: Props = $props();
+</script>
+
+<button bind:this={ref}>
+  <!-- ... -->
+</button>
+```
+
+----------------------------------------
+
+TITLE: Two-Way Binding Value State in Svelte
+DESCRIPTION: Demonstrates using Svelte's `bind:value` directive for automatic two-way data binding of the `DateRangePicker`'s selected date range. This snippet includes an example of programmatically updating the bound value, showcasing how changes to the `myValue` variable are reflected in the component and vice-versa, using `CalendarDateTime` for start and end dates.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/date-range-picker.md#_snippet_3
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { DateRangePicker } from "bits-ui";
+  import { CalendarDateTime } from "@internationalized/date";
+  let myValue = $state({
+    start: new CalendarDateTime(2024, 8, 3, 12, 30),
+    end: new CalendarDateTime(2024, 8, 4, 12, 30),
+  });
+</script>
+
+<button
+  onclick={() => {
+    value = {
+      start: value.start.add({ days: 1 }),
+      end: value.end.add({ days: 1 }),
+    };
+  }}
+>
+  Add 1 day
+</button>
+<DateRangePicker.Root bind:value={myValue}>
+  <!-- ... -->
+</DateRangePicker.Root>
+```
+
+----------------------------------------
+
+TITLE: Creating a Reusable Svelte Dialog Overlay Component with Transitions
+DESCRIPTION: This example illustrates how to encapsulate the transition logic for a `bits-ui` Dialog overlay into a custom, reusable Svelte component (`MyDialogOverlay.svelte`). It leverages `forceMount` and the `child` snippet, allowing for a configurable transition duration and promoting cleaner, more maintainable code by abstracting common patterns.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/dialog.md#_snippet_14
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Dialog, type WithoutChildrenOrChild } from "bits-ui";
+  import { fade } from "svelte/transition";
+  import type { Snippet } from "svelte";
+
+  let {
+    ref = $bindable(null),
+    duration = 200,
+    children,
+    ...restProps
+  }: WithoutChildrenOrChild<Dialog.OverlayProps> & {
+    duration?: number;
+    children?: Snippet;
+  } = $props();
+</script>
+
+<Dialog.Overlay forceMount bind:ref {...restProps}>
+  {#snippet child({ props, open })}
+    {#if open}
+      <div {...props} transition:fade={{ duration }}>
+        {@render children?.()}
+      </div>
+    {/if}
+  {/snippet}
+</Dialog.Overlay>
+```
+
+----------------------------------------
+
+TITLE: Create Checkbox Group in Svelte
+DESCRIPTION: Demonstrates how to create a group of related checkboxes using `Checkbox.Group` and `Checkbox.Root` components. This example includes importing the `Checkbox` module and setting a group label.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/checkbox.md#_snippet_11
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Checkbox } from "bits-ui";
+</script>
+
+<Checkbox.Group name="notifications">
+  <Checkbox.GroupLabel>Notifications</Checkbox.GroupLabel>
+  <Checkbox.Root value="marketing" />
+  <Checkbox.Root value="promotions" />
+  <Checkbox.Root value="news" />
+</Checkbox.Group>
+```
+
+----------------------------------------
+
+TITLE: Define a Reusable Svelte Select Component
+DESCRIPTION: This Svelte component wraps `bits-ui` primitives to create a `MySelect` component with a simplified API. It accepts an array of `items` and manages the selected `value` using `$bindable` and `$derived` Svelte runes, providing a custom placeholder and content props.
+SOURCE: https://github.com/huntabyte/bits-ui/blob/main/docs/content/components/select.md#_snippet_2
+
+LANGUAGE: svelte
+CODE:
+```
+<script lang="ts">
+  import { Select, type WithoutChildren } from "bits-ui";
+
+  type Props = WithoutChildren<Select.RootProps> & {
+    placeholder?: string;
+    items: { value: string; label: string; disabled?: boolean }[];
+    contentProps?: WithoutChildren<Select.ContentProps>;
+    // any other specific component props if needed
+  };
+
+  let {
+    value = $bindable(),
+    items,
+    contentProps,
+    placeholder,
+    ...restProps
+  }: Props = $props();
+
+  const selectedLabel = $derived(
+    items.find((item) => item.value === value)?.label
+  );
+</script>
+
+<!--
+TypeScript Discriminated Unions + destructing (required for "bindable") do not
+get along, so we shut typescript up by casting `value` to `never`, however,
+from the perspective of the consumer of this component, it will be typed appropriately.
+-->
+<Select.Root bind:value={value as never} {...restProps}>
+  <Select.Trigger>
+    {selectedLabel ? selectedLabel : placeholder}
+  </Select.Trigger>
+  <Select.Portal>
+    <Select.Content {...contentProps}>
+      <Select.ScrollUpButton>up</Select.ScrollUpButton>
+      <Select.Viewport>
+        {#each items as { value, label, disabled } (value)}
+          <Select.Item {value} {label} {disabled}>
+            {#snippet children({ selected })}
+              {selected ? "✅" : ""}
+              {label}
+            {/snippet}
+          </Select.Item>
+        {/each}
+      </Select.Viewport>
+      <Select.ScrollDownButton>down</Select.ScrollDownButton>
+    </Select.Content>
+  </Select.Portal>
+</Select.Root>
+```
