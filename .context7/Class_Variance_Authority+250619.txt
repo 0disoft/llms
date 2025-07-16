@@ -1,0 +1,1709 @@
+TITLE: Defining Component Variants with cva
+DESCRIPTION: This snippet demonstrates how to use the `cva` library to define a flexible button component. It showcases the `base` styles, `variants` for different intents and sizes, `compoundVariants` for combined conditions, and `defaultVariants` for initial states. The example includes usage with Tailwind CSS classes.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/variants.mdx#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+// components/button.ts
+import { cva } from "cva";
+
+const button = cva({
+  base: "rounded border font-semibold",
+  // **or**
+  // base: ["font-semibold", "border", "rounded"],
+  variants: {
+    intent: {
+      primary: "border-transparent bg-blue-500 text-white hover:bg-blue-600",
+      // **or**
+      // primary: [
+      //   "bg-blue-500",
+      //   "text-white",
+      //   "border-transparent",
+      //   "hover:bg-blue-600",
+      // ],
+      secondary: "border-gray-400 bg-white text-gray-800 hover:bg-gray-100"
+    },
+    size: {
+      small: "px-2 py-1 text-sm",
+      medium: "px-4 py-2 text-base"
+    }
+  },
+  compoundVariants: [
+    {
+      intent: "primary",
+      size: "medium",
+      class: "uppercase",
+      // **or** if you're a React.js user, `className` may feel more consistent:
+      // className: "uppercase"
+    }
+  ],
+  defaultVariants: {
+    intent: "primary",
+    size: "medium"
+  }
+});
+
+button();
+// => "font-semibold border rounded bg-blue-500 text-white border-transparent hover:bg-blue-600 text-base py-2 px-4 uppercase"
+
+button({ intent: "secondary", size: "small" });
+// => "font-semibold border rounded bg-white text-gray-800 border-gray-400 hover:bg-gray-100 text-sm py-1 px-2"
+```
+
+----------------------------------------
+
+TITLE: Define Button Component Variants with cva
+DESCRIPTION: This snippet demonstrates how to define a button component using `cva` (class-variance-authority). It showcases the definition of `variants` (e.g., `intent`, `size`, `disabled`), `compoundVariants` for conditional class application, and `defaultVariants`. It also includes examples of how to call the `button` function with different variant options to generate the corresponding CSS classes.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/getting-started/variants.mdx#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+import { cva } from "class-variance-authority";
+
+const button = cva(["font-semibold", "border", "rounded"], {
+  variants: {
+    intent: {
+      primary: ["bg-blue-500", "text-white", "border-transparent"],
+      // **or**
+      // primary: "bg-blue-500 text-white border-transparent hover:bg-blue-600",
+      secondary: ["bg-white", "text-gray-800", "border-gray-400"]
+    },
+    size: {
+      small: ["text-sm", "py-1", "px-2"],
+      medium: ["text-base", "py-2", "px-4"]
+    },
+    // `boolean` variants are also supported!
+    disabled: {
+      false: null,
+      true: ["opacity-50", "cursor-not-allowed"]
+    }
+  },
+  compoundVariants: [
+    {
+      intent: "primary",
+      disabled: false,
+      class: "hover:bg-blue-600"
+    },
+    {
+      intent: "secondary",
+      disabled: false,
+      class: "hover:bg-gray-100"
+    },
+    {
+      intent: "primary",
+      size: "medium",
+      // **or** if you're a React.js user, `className` may feel more consistent:
+      // className: "uppercase"
+      class: "uppercase"
+    }
+  ],
+  defaultVariants: {
+    intent: "primary",
+    size: "medium",
+    disabled: false
+  }
+});
+
+button();
+// => "font-semibold border rounded bg-blue-500 text-white border-transparent text-base py-2 px-4 hover:bg-blue-600 uppercase"
+
+button({ disabled: true });
+// => "font-semibold border rounded bg-blue-500 text-white border-transparent text-base py-2 px-4 opacity-50 cursor-not-allowed uppercase"
+
+button({ intent: "secondary", size: "small" });
+// => "font-semibold border rounded bg-white text-gray-800 border-gray-400 text-sm py-1 px-2 hover:bg-gray-100"
+```
+
+----------------------------------------
+
+TITLE: Integrate tailwind-merge for Style Conflict Resolution
+DESCRIPTION: Demonstrates how to integrate `tailwind-merge` with `cva` by configuring the `onComplete` hook in `defineConfig`. This setup automatically merges Tailwind CSS classes and resolves conflicts, ensuring correct precedence and cleaner class strings.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/installation.mdx#_snippet_5
+
+LANGUAGE: ts
+CODE:
+```
+// cva.config.ts
+import { defineConfig } from "cva";
+import { twMerge } from "tailwind-merge";
+
+export const { cva, cx, compose } = defineConfig({
+  hooks: {
+    onComplete: (className) => twMerge(className),
+  },
+});
+```
+
+LANGUAGE: ts
+CODE:
+```
+// components/button.ts
+import { cx, cva } from "../cva.config";
+
+export const button = cva({
+  // 1. `twMerge` strips out `bg-gray-200`…
+  base: "font-semibold bg-gray-200 border rounded",
+  variants: {
+    intent: {
+      // 2. …as variant `bg-*` values take precedence
+      primary: "bg-blue-500 text-white border-transparent hover:bg-blue-600",
+      secondary: "bg-white text-gray-800 border-gray-400 hover:bg-gray-100",
+    },
+  },
+  defaultVariants: {
+    intent: "primary",
+  },
+});
+
+button();
+// => "font-semibold border rounded bg-blue-500 text-white border-transparent hover:bg-blue-600 text-base py-2 px-4 uppercase"
+
+cx("bg-gray-200", "bg-blue-500");
+// => "bg-blue-500"
+```
+
+----------------------------------------
+
+TITLE: Implementing Required Variants for cva in TypeScript
+DESCRIPTION: `cva` does not natively support required variants. This example shows how to enforce required variants using TypeScript's `Omit` and `Required<Pick>` utility types to modify the `ButtonVariantProps` type, ensuring that specific variants are always provided.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/getting-started/typescript.mdx#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+// components/button.ts
+import { cva, type VariantProps } from "class-variance-authority";
+
+export type ButtonVariantProps = VariantProps<typeof buttonVariants>;
+export const buttonVariants = cva("…", {
+  variants: {
+    optional: { a: "…", b: "…" },
+    required: { a: "…", b: "…" }
+  }
+});
+
+/**
+ * Button
+ */
+export interface ButtonProps
+  extends Omit<ButtonVariantProps, "required">,
+    Required<Pick<ButtonVariantProps, "required">> {}
+
+export const button = (props: ButtonProps) => buttonVariants(props);
+
+// ❌ TypeScript Error:
+// Argument of type "{}": is not assignable to parameter of type "ButtonProps".
+//   Property "required" is missing in type "{}" but required in type
+//   "ButtonProps".
+button({});
+
+// ✅
+button({ required: "a" });
+```
+
+----------------------------------------
+
+TITLE: Integrate cva with tailwind-merge for conflict resolution
+DESCRIPTION: Demonstrates how to wrap `cva` components with `twMerge` from the `tailwind-merge` package to prevent styling conflicts and create bulletproof components.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/getting-started/installation.mdx#_snippet_4
+
+LANGUAGE: ts
+CODE:
+```
+import { cva, type VariantProps } from "class-variance-authority";
+import { twMerge } from "tailwind-merge";
+
+const buttonVariants = cva(["your", "base", "classes"], {
+  variants: {
+    intent: {
+      primary: ["your", "primary", "classes"]
+    }
+  },
+  defaultVariants: {
+    intent: "primary"
+  }
+});
+
+export interface ButtonVariants extends VariantProps<typeof buttonVariants> {}
+
+export const button = (variants: ButtonVariants) =>
+  twMerge(buttonVariants(variants));
+```
+
+----------------------------------------
+
+TITLE: Generate cva functions with defineConfig
+DESCRIPTION: The `defineConfig` function generates `cva`, `cx`, and `compose` functions based on a preferred configuration, including hooks. It's typically stored in a `cva.config.ts` file for project-wide import and consistent configuration.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/api-reference.mdx#_snippet_3
+
+LANGUAGE: ts
+CODE:
+```
+// cva.config.ts
+import { defineConfig } from "cva";
+
+export const { cva, cx, compose } = defineConfig(options);
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+defineConfig(options)
+  Parameters:
+    options:
+      hooks:
+        onComplete: returns a concatenated class string of all classes passed to cx, cva or compose
+  Returns: An object containing cva, cx, and compose functions
+```
+
+----------------------------------------
+
+TITLE: Build a cva component
+DESCRIPTION: The `cva` function initializes a component with base styles, variants, compound variants, and default variant values. It returns a function that can be used to apply these styles based on provided options.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/api-reference.mdx#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+import { cva } from "cva";
+
+const component = cva(options);
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+cva(options)
+  Parameters:
+    options:
+      base: string | string[] | clsx value - the base class name
+      variants: your variants schema
+      compoundVariants: variants based on a combination of previously defined variants
+      defaultVariants: set default values for previously defined variants
+  Returns: A cva component function
+```
+
+----------------------------------------
+
+TITLE: Usage Example: Rendering a Polymorphic React Button as an Anchor
+DESCRIPTION: Demonstrates how to use the `Button` component created with `cva` and `Slot`. By setting `asChild` to `true` and passing an `<a>` element as a child, the `Button` component renders as an anchor tag while retaining its defined styles.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/polymorphism.mdx#_snippet_2
+
+LANGUAGE: tsx
+CODE:
+```
+import { Button } from "./components/button";
+
+// Renders:
+//   <a href="/sign-up" class="bg-blue-500 text-white border-transparent hover:bg-blue-600">
+//     Sign up
+//   </a>
+export default () => (
+  <Button asChild>
+    <a href="/sign-up">Sign up</a>
+  </Button>
+);
+```
+
+----------------------------------------
+
+TITLE: Implementing Polymorphic React Components with cva and Radix UI Slot
+DESCRIPTION: Illustrates how to build a reusable polymorphic React component using `cva` for styling and `@radix-ui/react-slot` for the `asChild` prop. This pattern allows the component to render as a different underlying HTML element while inheriting styles and props.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/polymorphism.mdx#_snippet_1
+
+LANGUAGE: tsx
+CODE:
+```
+// components/button.tsx
+import * as React from "react";
+import { Slot } from "@radix-ui/react-slot";
+import { cva, type VariantProps } from "cva";
+
+const button = cva({
+  base: "button",
+  variants: {
+    intent: {
+      primary: "bg-blue-500 text-white border-transparent hover:bg-blue-600",
+      secondary: "bg-white text-gray-800 border-gray-400 hover:bg-gray-100"
+    }
+  },
+  defaultVariants: {
+    intent: "primary"
+  }
+});
+
+export interface ButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof button> {
+  asChild?: boolean;
+}
+
+export const Button: React.FC<ButtonProps> = ({
+  asChild,
+  className,
+  intent,
+  ...props
+}) => {
+  const Comp = asChild ? Slot : "button";
+
+  return <Comp className={button({ intent, className })} {...props} />;
+};
+```
+
+----------------------------------------
+
+TITLE: Implementing Required Variants in cva using TypeScript Utility Types
+DESCRIPTION: This example illustrates a pattern for making `cva` variants required using TypeScript's `Omit` and `Required<Pick>` utility types, as `cva` does not offer a built-in solution. It defines a type that enforces the presence of specific variants and provides usage examples demonstrating correct and incorrect invocations.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/typescript.mdx#_snippet_1
+
+LANGUAGE: TypeScript
+CODE:
+```
+// components/button.ts
+import { cva, type VariantProps } from "cva";
+
+export type ButtonVariantProps = VariantProps<typeof buttonVariants>;
+export const buttonVariants = cva({
+  base: "…",
+  variants: {
+    optional: { a: "…", b: "…" },
+    required: { a: "…", b: "…" }
+  }
+});
+
+/**
+ * Button
+ */
+export interface ButtonProps
+  extends Omit<ButtonVariantProps, "required">,
+    Required<Pick<ButtonVariantProps, "required">> {}
+
+export const button = (props: ButtonProps) => buttonVariants(props);
+
+// ❌ TypeScript Error:
+// Argument of type "{}": is not assignable to parameter of type "ButtonProps".
+//   Property "required" is missing in type "{}" but required in type
+//   "ButtonProps".
+button({});
+
+// ✅
+button({ required: "a" });
+```
+
+----------------------------------------
+
+TITLE: Extracting Variant Types with cva in TypeScript
+DESCRIPTION: `cva` offers the `VariantProps` helper to extract variant types from a `cva` instance. This snippet demonstrates how to define a type alias `ButtonProps` using `VariantProps<typeof button>`.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/getting-started/typescript.mdx#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+// components/button.ts
+import type { VariantProps } from "class-variance-authority";
+import { cva, cx } from "class-variance-authority";
+
+/**
+ * Button
+ */
+export type ButtonProps = VariantProps<typeof button>;
+export const button = cva(/* … */);
+```
+
+----------------------------------------
+
+TITLE: Extracting Variant Types with cva's VariantProps Helper
+DESCRIPTION: This snippet demonstrates how to use the `VariantProps` utility from the `cva` library to extract the TypeScript type of the variants defined in a `cva` instance. This allows for creating type-safe component props based on the `cva` definition.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/typescript.mdx#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+// components/button.ts
+import type { VariantProps } from "cva";
+import { cva, cx } from "cva";
+
+/**
+ * Button
+ */
+export type ButtonProps = VariantProps<typeof button>;
+export const button = cva(/* … */);
+```
+
+----------------------------------------
+
+TITLE: Example of Compound Component Structure with Accordion in TSX
+DESCRIPTION: This TypeScript JSX (TSX) snippet illustrates the basic structure of a compound component using an Accordion example. It shows how a parent component (Accordion.Root) can expose subcomponents (Accordion.Item, Accordion.Header, Accordion.Content) as properties, allowing for a clear, composable API.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/compound-components.mdx#_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+import * as Accordion from "./Accordion";
+
+function Example() {
+  return (
+    <Accordion.Root>
+      <Accordion.Item>
+        <Accordion.Header>Section 1</Accordion.Header>
+        <Accordion.Content>Content 1</Accordion.Content>
+      </Accordion.Item>
+    </Accordion.Root>
+  );
+}
+```
+
+----------------------------------------
+
+TITLE: Basic Compound Variant Definition in cva
+DESCRIPTION: This example illustrates the fundamental structure for defining `compoundVariants` within `cva`. Compound variants allow applying specific classes only when a combination of multiple variant conditions is met, enhancing flexibility in component styling.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/getting-started/variants.mdx#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+import { cva } from "class-variance-authority";
+
+const button = cva("…", {
+  variants: {
+    intent: { primary: "…", secondary: "…" },
+    size: { small: "…", medium: "…" }
+  },
+  compoundVariants: [
+    // Applied via:
+    //   `button({ intent: "primary", size: "medium" })`
+    {
+      intent: "primary",
+      size: "medium",
+      class: "…"
+    }
+  ]
+});
+```
+
+----------------------------------------
+
+TITLE: Concatenate class names with cx
+DESCRIPTION: The `cx` function is an alias for `clsx`, used to concatenate multiple class names into a single string. It accepts an array of classes and returns a combined string.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/api-reference.mdx#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+import { cx } from "cva";
+
+const className = cx(classes);
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+cx(classes)
+  Parameters:
+    classes: array of classes to be concatenated (see clsx usage)
+  Returns: string
+```
+
+----------------------------------------
+
+TITLE: Implementing Compound Variants in cva
+DESCRIPTION: This example illustrates the basic structure of `compoundVariants` within `cva`. Compound variants allow applying specific classes when multiple variant conditions are simultaneously met, providing fine-grained control over component styling based on combined properties.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/variants.mdx#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+// components/button.ts
+import { cva } from "cva";
+
+const button = cva({
+  base: "…",
+  variants: {
+    intent: { primary: "…", secondary: "…" },
+    size: { small: "…", medium: "…" }
+  },
+  compoundVariants: [
+    // Applied via:
+    //   `button({ intent: "primary", size: "medium" })`
+    {
+      intent: "primary",
+      size: "medium",
+      class: "…"
+    }
+  ]
+});
+```
+
+----------------------------------------
+
+TITLE: Composing cva Components with cx in TypeScript
+DESCRIPTION: This snippet demonstrates how to combine two `cva` components, `box` and `cardBase`, using the `cx` utility from `class-variance-authority`. It defines variant props for margin, padding, and shadow, and shows how to create a new `card` component that inherits and combines these properties.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/getting-started/composing-components.mdx#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+import type { VariantProps } from "class-variance-authority";
+import { cva, cx } from "class-variance-authority";
+
+/**
+ * Box
+ */
+export type BoxProps = VariantProps<typeof box>;
+export const box = cva(["box", "box-border"], {
+  variants: {
+    margin: { 0: "m-0", 2: "m-2", 4: "m-4", 8: "m-8" },
+    padding: { 0: "p-0", 2: "p-2", 4: "p-4", 8: "p-8" }
+  },
+  defaultVariants: {
+    margin: 0,
+    padding: 0
+  }
+});
+
+/**
+ * Card
+ */
+type CardBaseProps = VariantProps<typeof cardBase>;
+const cardBase = cva(["card", "border-solid", "border-slate-300", "rounded"], {
+  variants: {
+    shadow: {
+      md: "drop-shadow-md",
+      lg: "drop-shadow-lg",
+      xl: "drop-shadow-xl"
+    }
+  }
+});
+
+export interface CardProps extends BoxProps, CardBaseProps {}
+export const card = ({ margin, padding, shadow }: CardProps = {}) =>
+  cx(box({ margin, padding }), cardBase({ shadow }));
+```
+
+----------------------------------------
+
+TITLE: Shallow merge cva components with compose
+DESCRIPTION: The `compose` function allows shallow merging of multiple `cva` components into a single, new component. This is useful for combining styles from different sources or extending existing components.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/api-reference.mdx#_snippet_2
+
+LANGUAGE: ts
+CODE:
+```
+import { compose } from "cva";
+
+const composedComponent = compose(options);
+```
+
+LANGUAGE: APIDOC
+CODE:
+```
+compose(options)
+  Parameters:
+    options: array of cva components
+  Returns: A cva component function
+```
+
+----------------------------------------
+
+TITLE: Composing CVA Components with `compose` method
+DESCRIPTION: This snippet demonstrates how to use the `compose` method from the `cva` library to merge multiple `cva` component definitions (`box` and `root`) into a single `card` component. It shows how variants from both original components can be applied to the composed component, and how additional classes can be appended.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/composing-components.mdx#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+import { cva, compose } from "cva";
+
+const box = cva({
+  base: "box box-border",
+  variants: {
+    margin: { 0: "m-0", 2: "m-2", 4: "m-4", 8: "m-8" },
+    padding: { 0: "p-0", 2: "p-2", 4: "p-4", 8: "p-8" }
+  },
+  defaultVariants: {
+    margin: 0,
+    padding: 0
+  }
+});
+
+const root = cva({
+  base: "card rounded border-solid border-slate-300",
+  variants: {
+    shadow: {
+      md: "drop-shadow-md",
+      lg: "drop-shadow-lg",
+      xl: "drop-shadow-xl"
+    }
+  }
+});
+
+export interface CardProps extends VariantProps<typeof card> {}
+export const card = compose(box, root);
+
+card({ margin: 2, shadow: "md" });
+// => "box box-border m-2 card border-solid border-slate-300 rounded drop-shadow-md"
+card({ margin: 2, shadow: "md", class: "adhoc-class" });
+// => "box box-border m-2 card border-solid border-slate-300 rounded drop-shadow-md adhoc-class"
+```
+
+----------------------------------------
+
+TITLE: Install class-variance-authority package with various package managers
+DESCRIPTION: Instructions for installing the `class-variance-authority` package using pnpm, npm, yarn, and bun package managers.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/getting-started/installation.mdx#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+pnpm i class-variance-authority
+```
+
+LANGUAGE: sh
+CODE:
+```
+npm i class-variance-authority
+```
+
+LANGUAGE: sh
+CODE:
+```
+yarn add class-variance-authority
+```
+
+LANGUAGE: sh
+CODE:
+```
+bun add class-variance-authority
+```
+
+----------------------------------------
+
+TITLE: Extending CVA Components with Class/ClassName Prop in TypeScript
+DESCRIPTION: This snippet demonstrates how to pass additional CSS classes to a `cva` component instance using either the `class` or `className` prop. The provided classes are appended to the component's base classes.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/getting-started/extending-components.mdx#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+// components/button.ts
+import { cva } from "class-variance-authority";
+
+const button = cva(/* … */);
+
+button({ class: "m-4" });
+// => "…buttonClasses m-4"
+
+button({ className: "m-4" });
+// => "…buttonClasses m-4"
+```
+
+----------------------------------------
+
+TITLE: Extending CVA Components with Class or ClassName Prop
+DESCRIPTION: This TypeScript example demonstrates how to use the `class` or `className` prop to add additional CSS classes to a `cva` component. The `cva` function generates base classes, and the provided prop appends extra styles, as shown with `m-4`, allowing for dynamic styling.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/extending-components.mdx#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+// components/button.ts
+import { cva } from "cva";
+
+const button = cva(/* … */);
+
+button({ class: "m-4" });
+// => "…buttonClasses m-4"
+
+button({ className: "m-4" });
+// => "…buttonClasses m-4"
+```
+
+----------------------------------------
+
+TITLE: Generate BEM-style class names with cva
+DESCRIPTION: This TypeScript snippet uses `class-variance-authority` (cva) to create a `button` function that dynamically generates BEM-style class names based on provided variants. It demonstrates defining `intent` and `size` variants, a `compoundVariant` for `primary` and `medium` combination, and `defaultVariants`. Examples show how to call the function to produce class strings.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/examples/bem.mdx#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+import { cva } from "class-variance-authority";
+
+const button = cva("button", {
+  variants: {
+    intent: {
+      primary: "button--primary",
+      secondary: "button--secondary"
+    },
+    size: {
+      small: "button--small",
+      medium: "button--medium"
+    }
+  },
+  compoundVariants: [
+    { intent: "primary", size: "medium", class: "button--primary-small" }
+  ],
+  defaultVariants: {
+    intent: "primary",
+    size: "medium"
+  }
+});
+
+button();
+// => "button button--primary button--medium"
+
+button({ intent: "secondary", size: "small" });
+// => "button button--secondary button--small"
+```
+
+----------------------------------------
+
+TITLE: Generate dynamic button classes with cva in TypeScript
+DESCRIPTION: This TypeScript snippet demonstrates how to use the 'class-variance-authority' (cva) library to dynamically generate CSS class names for a button component. It defines variants for 'intent' (primary, secondary) and 'size' (small, medium), along with a 'compoundVariant' for specific combinations like 'primary' and 'medium'. Default variants are also set, and examples show how cva produces the correct class strings based on provided options.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/examples/bem.mdx#_snippet_1
+
+LANGUAGE: ts
+CODE:
+```
+import { cva } from "class-variance-authority";
+
+const button = cva("button", {
+  variants: {
+    intent: {
+      primary: "button--primary",
+      secondary: "button--secondary"
+    },
+    size: {
+      small: "button--small",
+      medium: "button--medium"
+    }
+  },
+  compoundVariants: [
+    { intent: "primary", size: "medium", class: "button--primary-small" }
+  ],
+  defaultVariants: {
+    intent: "primary",
+    size: "medium"
+  }
+});
+
+button();
+// => "button button--primary button--medium"
+
+button({ intent: "secondary", size: "small" });
+// => "button button--secondary button--small"
+```
+
+----------------------------------------
+
+TITLE: Target Multiple Variant Conditions in cva Compound Variants
+DESCRIPTION: This snippet demonstrates how to apply `compoundVariants` when one of several specified variant conditions is met. By providing an array of values for a variant property, `cva` can apply the compound class if the variant matches any of the values in the array.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/getting-started/variants.mdx#_snippet_2
+
+LANGUAGE: ts
+CODE:
+```
+import { cva } from "class-variance-authority";
+
+const button = cva("…", {
+  variants: {
+    intent: { primary: "…", secondary: "…" },
+    size: { small: "…", medium: "…" }
+  },
+  compoundVariants: [
+    // Applied via:
+    //   `button({ intent: "primary", size: "medium" })`
+    //     or
+    //   `button({ intent: "secondary", size: "medium" })`
+    {
+      intent: ["primary", "secondary"],
+      size: "medium",
+      class: "…"
+    }
+  ]
+});
+```
+
+----------------------------------------
+
+TITLE: Targeting Multiple Conditions with Compound Variants
+DESCRIPTION: This snippet expands on compound variants by demonstrating how to apply classes when any of multiple specified variant conditions are met. By providing an array of values for a variant, the compound variant will activate if the component matches any of those values, enhancing flexibility.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/variants.mdx#_snippet_2
+
+LANGUAGE: ts
+CODE:
+```
+// components/button.ts
+import { cva } from "cva";
+
+const button = cva({
+  base: "…",
+  variants: {
+    intent: { primary: "…", secondary: "…" },
+    size: { small: "…", medium: "…" }
+  },
+  compoundVariants: [
+    // Applied via:
+    //   `button({ intent: "primary", size: "medium" })`
+    //     or
+    //   `button({ intent: "secondary", size: "medium" })`
+    {
+      intent: ["primary", "secondary"],
+      size: "medium",
+      class: "…"
+    }
+  ]
+});
+```
+
+----------------------------------------
+
+TITLE: cva Function API Reference
+DESCRIPTION: Detailed API documentation for the `cva` function, which is used to build a component with dynamic class names based on variants and options. It allows for flexible styling by defining base classes, variants, compound variants, and default values.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/api-reference.mdx#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+cva:
+  Description: Builds a cva component
+  Signature: const component = cva("base", options);
+  Parameters:
+    base:
+      Type: string | string[] | clsx value
+      Description: the base class name
+    options (optional):
+      variants:
+        Description: your variants schema
+      compoundVariants:
+        Description: variants based on a combination of previously defined variants
+      defaultVariants:
+        Description: set default values for previously defined variants (note: these default values can be removed completely by setting the variant as null)
+  Returns: A cva component function
+```
+
+----------------------------------------
+
+TITLE: Basic cva Polymorphism with HTML Elements
+DESCRIPTION: Demonstrates how `cva` classes can be directly applied to any HTML element, making the component polymorphic by default without extra configuration. This example shows a button class applied to an anchor tag.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/polymorphism.mdx#_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+import { button } from "./components/button";
+
+export default () => (
+  <a className={button()} href="/sign-up">
+    Sign up
+  </a>
+);
+```
+
+----------------------------------------
+
+TITLE: Implementing Responsive Variants in TSX with Tailwind and cva
+DESCRIPTION: This TypeScript React example demonstrates how to achieve responsive behavior by conditionally rendering or hiding elements based on Tailwind CSS breakpoints. It applies different `cva` button variants to illustrate a common approach for responsive design when `cva` does not natively support responsive variants, showing how to adapt component appearance across screen sizes.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/faqs.mdx#_snippet_0
+
+LANGUAGE: tsx
+CODE:
+```
+export const Example = () => (
+  <>
+    <div className="hidden sm:inline-flex">
+      <button className={button({ intent: "primary" })}>Hidden until sm</button>
+    </div>
+    <div className="inline-flex sm:hidden">
+      <button className={button({ intent: "secondary" })}>
+        Hidden after sm
+      </button>
+    </div>
+  </>
+);
+```
+
+----------------------------------------
+
+TITLE: Define and apply button variants with cva and Tailwind CSS in 11ty
+DESCRIPTION: This JavaScript snippet demonstrates how to use `class-variance-authority` (cva) to define Tailwind CSS classes for button variants (intent and size) and compound variants. It then shows how to apply these variants within an 11ty template function to generate dynamic button HTML. The use of Tailwind CSS is optional.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/examples/11ty.mdx#_snippet_0
+
+LANGUAGE: js
+CODE:
+```
+// button.11ty.js
+const { cva } = require("class-variance-authority");
+
+// ⚠️ Disclaimer: Use of Tailwind CSS is optional
+const button = cva("button", {
+  variants: {
+    intent: {
+      primary: [
+        "bg-blue-500",
+        "text-white",
+        "border-transparent",
+        "hover:bg-blue-600"
+      ],
+      secondary: [
+        "bg-white",
+        "text-gray-800",
+        "border-gray-400",
+        "hover:bg-gray-100"
+      ]
+    },
+    size: {
+      small: ["text-sm", "py-1", "px-2"],
+      medium: ["text-base", "py-2", "px-4"]
+    }
+  },
+  compoundVariants: [{ intent: "primary", size: "medium", class: "uppercase" }],
+  defaultVariants: {
+    intent: "primary",
+    size: "medium"
+  }
+});
+
+module.exports = function ({ label, intent, size }) {
+  return `<button class="${button({ intent, size })}">${label}</button>`;
+};
+```
+
+----------------------------------------
+
+TITLE: Define a Tailwind CSS Button Component with cva in 11ty
+DESCRIPTION: This JavaScript snippet demonstrates how to use `class-variance-authority` (cva) to define a flexible button component with Tailwind CSS classes within an 11ty project. It showcases defining variants for `intent` (primary/secondary) and `size` (small/medium), as well as a `compoundVariant` for specific combinations. The component is then exported as an 11ty shortcode to render an HTML button with dynamically generated classes.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/examples/11ty.mdx#_snippet_0
+
+LANGUAGE: js
+CODE:
+```
+// button.11ty.js
+const { cva } = require("class-variance-authority");
+
+// ‼️ Disclaimer: Use of Tailwind CSS is optional
+const button = cva("button", {
+  variants: {
+    intent: {
+      primary: [
+        "bg-blue-500",
+        "text-white",
+        "border-transparent",
+        "hover:bg-blue-600"
+      ],
+      secondary: [
+        "bg-white",
+        "text-gray-800",
+        "border-gray-400",
+        "hover:bg-gray-100"
+      ]
+    },
+    size: {
+      small: ["text-sm", "py-1", "px-2"],
+      medium: ["text-base", "py-2", "px-4"]
+    }
+  },
+  compoundVariants: [{ intent: "primary", size: "medium", class: "uppercase" }],
+  defaultVariants: {
+    intent: "primary",
+    size: "medium"
+  }
+});
+
+module.exports = function ({ label, intent, size }) {
+  return `<button class="${button({ intent, size })}">${label}</button>`;
+};
+```
+
+----------------------------------------
+
+TITLE: Configure Tailwind CSS IntelliSense for cva in various editors
+DESCRIPTION: Steps to enable autocompletion for Tailwind CSS classes within `cva` and `cx` functions across different code editors like Visual Studio Code, Zed, Neovim, and WebStorm.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/getting-started/installation.mdx#_snippet_3
+
+LANGUAGE: json
+CODE:
+```
+{
+  "tailwindCSS.classFunctions": ["cva", "cx"]
+}
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "lsp": {
+    "tailwindcss-language-server": {
+      "settings": {
+        "classFunctions": ["cva", "cx"]
+      }
+    }
+  }
+}
+```
+
+LANGUAGE: lua
+CODE:
+```
+require 'lspconfig'.tailwindcss.setup({
+  settings = {
+    tailwindCSS = {
+      classFunctions = { "cva", "cx" },
+    },
+  },
+})
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "classFunctions": ["cva", "cx"]
+}
+```
+
+----------------------------------------
+
+TITLE: Example: Responsive Variants with Tailwind
+DESCRIPTION: Demonstrates how to achieve responsive behavior by conditionally showing or hiding elements with different variants using Tailwind CSS utility classes, instead of relying on built-in responsive variants.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/faqs.mdx#_snippet_0
+
+LANGUAGE: TSX
+CODE:
+```
+export const Example = () => (
+  <>
+    <div className="hidden sm:inline-flex">
+      <button className={button({ intent: "primary" })}>Hidden until sm</button>
+    </div>
+    <div className="inline-flex sm:hidden">
+      <button className={button({ intent: "secondary" })}>
+        Hidden after sm
+      </button>
+    </div>
+  </>
+);
+```
+
+----------------------------------------
+
+TITLE: cx Function API Reference
+DESCRIPTION: Detailed API documentation for the `cx` function, an alias for `clsx`, used for concatenating multiple class names into a single string. It simplifies conditional class name application.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/api-reference.mdx#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+cx:
+  Description: Concatenates class names (an alias of clsx)
+  Signature: const className = cx(classes);
+  Parameters:
+    classes:
+      Type: array
+      Description: array of classes to be concatenated (see clsx usage)
+  Returns: string
+```
+
+----------------------------------------
+
+TITLE: Dynamic Text Content with cva
+DESCRIPTION: This TypeScript snippet demonstrates how 'cva' can be used to manage dynamic text content instead of class names. It defines a 'greeter' function that returns different messages based on an 'isLoggedIn' variant, including a default state and an explicit override.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/examples/other-use-cases.mdx#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+const greeter = cva("Good morning!", {
+  variants: {
+    isLoggedIn: {
+      true: "Here's a secret only logged in users can see",
+      false: "Log in to find out more…"
+    }
+  },
+  defaultVariants: {
+    isLoggedIn: "false"
+  }
+});
+
+greeter();
+// => "Good morning! Log in to find out more…"
+
+greeter({ isLoggedIn: "true" });
+// => "Good morning! Here's a secret only logged in users can see"
+```
+
+----------------------------------------
+
+TITLE: Updating cva Import and Base Style Definition
+DESCRIPTION: This code snippet illustrates the migration from `class-variance-authority` to `cva` and the new method of defining base styles. Previously, base styles were passed directly; now, they are defined within a `base` property of a single configuration object.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/whats-new.mdx#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+-  import { cva } from "class-variance-authority";
++  import { cva } from "cva";
+
+  const component = cva({ base: "your-base-class" });
+```
+
+----------------------------------------
+
+TITLE: Disabling cva Variants Using Null
+DESCRIPTION: This example shows how to effectively disable a variant option by assigning `null` as its value. When a variant is set to `null`, no additional classes are applied for that specific option, allowing for 'unset' or default behaviors. This is useful for controlling class application based on explicit variant choices.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/variants.mdx#_snippet_3
+
+LANGUAGE: ts
+CODE:
+```
+import { cva } from "cva";
+
+const button = cva({
+  base: "button",
+  variants: {
+    intent: {
+      unset: null,
+      primary: "button--primary",
+      secondary: "button--secondary"
+    }
+  }
+});
+
+button({ intent: "unset" });
+// => "button"
+```
+
+----------------------------------------
+
+TITLE: Install cva@beta Package
+DESCRIPTION: Commands to install the `cva@beta` package using various popular JavaScript package managers.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/installation.mdx#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+pnpm i cva@beta
+```
+
+LANGUAGE: sh
+CODE:
+```
+npm i cva@beta
+```
+
+LANGUAGE: sh
+CODE:
+```
+yarn add cva@beta
+```
+
+LANGUAGE: sh
+CODE:
+```
+bun add cva@beta
+```
+
+----------------------------------------
+
+TITLE: Configure Tailwind CSS IntelliSense in Visual Studio Code
+DESCRIPTION: Add `cva` and `cx` functions to the Tailwind CSS IntelliSense configuration in Visual Studio Code's `.vscode/settings.json` to enable autocompletion for these utility functions.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/installation.mdx#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+// .vscode/settings.json
+{
+  "tailwindCSS.classFunctions": ["cva", "cx"]
+}
+```
+
+----------------------------------------
+
+TITLE: Generate Dynamic Text Content with cva
+DESCRIPTION: This snippet illustrates how `cva` can be leveraged to create dynamic text strings. By defining variants, you can conditionally change parts of a string, similar to how `cva` manages class names, enabling flexible content generation based on application state.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/examples/other-use-cases.mdx#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+const greeter = cva("Good morning!", {
+  variants: {
+    isLoggedIn: {
+      true: "Here's a secret only logged in users can see",
+      false: "Log in to find out more…"
+    }
+  },
+  defaultVariants: {
+    isLoggedIn: "false"
+  }
+});
+
+greeter();
+// => "Good morning! Log in to find out more…"
+
+greeter({ isLoggedIn: "true" });
+// => "Good morning! Here's a secret only logged in users can see"
+```
+
+----------------------------------------
+
+TITLE: Configure Tailwind CSS IntelliSense in WebStorm
+DESCRIPTION: Add `cva` and `cx` to the Tailwind CSS configuration in WebStorm's settings to enable IntelliSense for these functions, available from WebStorm 2023.1 onwards.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/installation.mdx#_snippet_4
+
+LANGUAGE: json
+CODE:
+```
+{
+  "classFunctions": ["cva", "cx"]
+}
+```
+
+----------------------------------------
+
+TITLE: Configure Tailwind CSS IntelliSense in Zed
+DESCRIPTION: Configure the `tailwindcss-language-server` in Zed's `.zed/settings.json` to recognize `cva` and `cx` as class functions, providing proper IntelliSense support.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/installation.mdx#_snippet_2
+
+LANGUAGE: json
+CODE:
+```
+// .zed/settings.json
+{
+  "lsp": {
+    "tailwindcss-language-server": {
+      "settings": {
+        "classFunctions": ["cva", "cx"]
+      }
+    }
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Alias class-variance-authority package with npm
+DESCRIPTION: How to alias the `class-variance-authority` package to `cva` using npm install, allowing for a shorter import name.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/getting-started/installation.mdx#_snippet_1
+
+LANGUAGE: sh
+CODE:
+```
+npm i cva@npm:class-variance-authority
+```
+
+----------------------------------------
+
+TITLE: Creating an External Svelte Store for HMR State Preservation
+DESCRIPTION: Demonstrates how to create a simple external Svelte store using the `writable` function from `svelte/store`. This pattern is recommended for retaining important component state across Hot Module Replacement (HMR) updates, as direct HMR state preservation within components can be unpredictable.
+SOURCE: https://github.com/joe-bell/cva/blob/main/examples/beta/svelte/README.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+// store.ts
+// An extremely simple external store
+import { writable } from "svelte/store";
+export default writable(0);
+```
+
+----------------------------------------
+
+TITLE: Creating an External Svelte Store for HMR State Preservation
+DESCRIPTION: This snippet demonstrates how to create a simple external Svelte store using the `writable` function. This approach is recommended to preserve component state across Hot Module Replacement (HMR) updates, addressing common issues where local component state might be lost during HMR.
+SOURCE: https://github.com/joe-bell/cva/blob/main/examples/latest/svelte/README.md#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+// store.ts
+// An extremely simple external store
+import { writable } from "svelte/store";
+export default writable(0);
+```
+
+----------------------------------------
+
+TITLE: Import aliased cva package
+DESCRIPTION: Example of importing the `cva` package after it has been aliased, demonstrating its usage in TypeScript.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/getting-started/installation.mdx#_snippet_2
+
+LANGUAGE: ts
+CODE:
+```
+import { cva } from "cva";
+
+// …
+```
+
+----------------------------------------
+
+TITLE: Create New Astro Minimal Project
+DESCRIPTION: This command initializes a new Astro project using the latest version and the 'minimal' template. It sets up the basic directory structure and necessary configuration files to start developing with Astro.
+SOURCE: https://github.com/joe-bell/cva/blob/main/examples/latest/astro-with-tailwindcss/README.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm create astro@latest -- --template minimal
+```
+
+----------------------------------------
+
+TITLE: Astro Starlight Project Directory Structure
+DESCRIPTION: This snippet illustrates the typical directory and file structure of an Astro + Starlight project. It highlights key folders like "public/" for static assets, "src/" for source code, "src/content/docs/" for Markdown content, and configuration files such as "astro.config.mjs" and "tailwind.config.cjs".
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/README.md#_snippet_1
+
+LANGUAGE: text
+CODE:
+```
+.
+├── public/
+├── src/
+│   ├── assets/
+│   ├── content/
+│   │   ├── docs/
+│   │   └── config.ts
+│   └── env.d.ts
+├── astro.config.mjs
+├── package.json
+├── tailwind.config.cjs
+└── tsconfig.json
+```
+
+----------------------------------------
+
+TITLE: Astro Project Directory Structure
+DESCRIPTION: This snippet illustrates the typical file and folder organization within an Astro project. It highlights key directories like `public/` for static assets, `src/pages/` for route-based files, and the `package.json` for project metadata and dependencies.
+SOURCE: https://github.com/joe-bell/cva/blob/main/examples/beta/astro-with-tailwindcss/README.md#_snippet_1
+
+LANGUAGE: text
+CODE:
+```
+/
+├── public/
+├── src/
+│   └── pages/
+│       └── index.astro
+└── package.json
+```
+
+----------------------------------------
+
+TITLE: Astro Minimal Project Directory Structure
+DESCRIPTION: This snippet illustrates the standard directory layout for an Astro project. It highlights key folders like `public/` for static assets, `src/` for source code including `pages/` for routes, and the `package.json` file for project metadata and dependencies.
+SOURCE: https://github.com/joe-bell/cva/blob/main/examples/latest/astro-with-tailwindcss/README.md#_snippet_1
+
+LANGUAGE: plaintext
+CODE:
+```
+/
+├── public/
+├── src/
+│   └── pages/
+│       └── index.astro
+└── package.json
+```
+
+----------------------------------------
+
+TITLE: Initialize Astro Starlight Tailwind Project
+DESCRIPTION: This command initializes a new Astro project using the latest version, pre-configured with the Starlight documentation theme and Tailwind CSS integration. It sets up the basic project structure and dependencies required for a Starlight documentation site.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/README.md#_snippet_0
+
+LANGUAGE: npm
+CODE:
+```
+npm create astro@latest -- --template starlight/tailwind
+```
+
+----------------------------------------
+
+TITLE: Define BEM-style CSS classes
+DESCRIPTION: This CSS snippet defines a set of BEM-structured classes for a button component, including base styles, intent modifiers (primary, secondary), size modifiers (small, medium), and a compound modifier for specific combinations.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/examples/bem.mdx#_snippet_0
+
+LANGUAGE: css
+CODE:
+```
+.button {
+  /* */
+}
+
+.button--primary {
+  /* */
+}
+.button--secondary {
+  /* */
+}
+
+.button--small {
+  /* */
+}
+.button--medium {
+  /* */
+}
+
+.button--primary-small {
+  /* */
+}
+```
+
+----------------------------------------
+
+TITLE: Define BEM-style CSS classes for button components
+DESCRIPTION: This CSS snippet defines a set of BEM (Block-Element-Modifier) inspired classes for a button component. It includes a base class (.button), intent modifiers (--primary, --secondary), and size modifiers (--small, --medium) to allow for flexible styling. A compound class (--primary-small) is also defined for specific variant combinations.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/examples/bem.mdx#_snippet_0
+
+LANGUAGE: css
+CODE:
+```
+/* styles.css */
+.button {
+  /* */
+}
+
+.button--primary {
+  /* */
+}
+.button--secondary {
+  /* */
+}
+
+.button--small {
+  /* */
+}
+.button--medium {
+  /* */
+}
+
+.button--primary-small {
+  /* */
+}
+```
+
+----------------------------------------
+
+TITLE: Initialize Astro Minimal Project
+DESCRIPTION: This command initializes a new Astro project using the latest version and the 'minimal' template. It sets up the basic directory structure and necessary configuration files for a simple Astro application.
+SOURCE: https://github.com/joe-bell/cva/blob/main/examples/beta/astro-with-tailwindcss/README.md#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+npm create astro@latest -- --template minimal
+```
+
+----------------------------------------
+
+TITLE: Common NPM Development Commands for Astro Starlight
+DESCRIPTION: This section lists essential `npm` commands for developing and managing an Astro + Starlight project. It includes commands for installing dependencies, starting the development server, building for production, previewing the build, and interacting with the Astro CLI.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/README.md#_snippet_2
+
+LANGUAGE: npm
+CODE:
+```
+npm install: Installs dependencies
+npm run dev: Starts local dev server at localhost:3000
+npm run build: Build your production site to ./dist/
+npm run preview: Preview your build locally, before deploying
+npm run astro ...: Run CLI commands like astro add, astro check
+npm run astro -- --help: Get help using the Astro CLI
+```
+
+----------------------------------------
+
+TITLE: Astro Project Development Commands
+DESCRIPTION: This section lists essential `npm` commands for managing an Astro project, including installing dependencies, starting the development server, building for production, and previewing the built site. It also covers general Astro CLI usage.
+SOURCE: https://github.com/joe-bell/cva/blob/main/examples/latest/astro-with-tailwindcss/README.md#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+npm install
+```
+
+LANGUAGE: bash
+CODE:
+```
+npm run dev
+```
+
+LANGUAGE: bash
+CODE:
+```
+npm run build
+```
+
+LANGUAGE: bash
+CODE:
+```
+npm run preview
+```
+
+LANGUAGE: bash
+CODE:
+```
+npm run astro ...
+```
+
+LANGUAGE: bash
+CODE:
+```
+npm run astro --help
+```
+
+----------------------------------------
+
+TITLE: Astro CLI Commands Reference
+DESCRIPTION: This section lists essential command-line interface (CLI) commands for managing an Astro project. It includes commands for dependency installation, starting the development server, building for production, previewing the build, and general Astro CLI operations.
+SOURCE: https://github.com/joe-bell/cva/blob/main/examples/beta/astro-with-tailwindcss/README.md#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+Command | Action
+:--------------------- | :-----------------------------------------------
+`npm install` | Installs dependencies
+`npm run dev` | Starts local dev server at `localhost:3000`
+`npm run build` | Build your production site to `./dist/`
+`npm run preview` | Preview your build locally, before deploying
+`npm run astro ...` | Run CLI commands like `astro add`, `astro check`
+`npm run astro --help` | Get help using the Astro CLI
+```
+
+----------------------------------------
+
+TITLE: Configure Tailwind CSS IntelliSense in Neovim
+DESCRIPTION: Set up Tailwind CSS IntelliSense in Neovim using `lspconfig` to include `cva` and `cx` in the `classFunctions` array, ensuring proper language server integration.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/beta/src/content/docs/getting-started/installation.mdx#_snippet_3
+
+LANGUAGE: lua
+CODE:
+```
+require 'lspconfig'.tailwindcss.setup({
+  settings = {
+    tailwindCSS = {
+      classFunctions = { "cva", "cx" },
+    },
+  },
+})
+```
+
+----------------------------------------
+
+TITLE: Run All Tests for Project CVA
+DESCRIPTION: This script executes all defined tests for the CVA project, verifying the correctness and functionality of the codebase.
+SOURCE: https://github.com/joe-bell/cva/blob/main/CONTRIBUTING.md#_snippet_5
+
+LANGUAGE: sh
+CODE:
+```
+pnpm test
+```
+
+----------------------------------------
+
+TITLE: Import Carbon Component in JavaScript
+DESCRIPTION: Demonstrates how to import the `Carbon` component from a relative path. This pattern is common in JavaScript/TypeScript projects for modularizing UI components or utility functions, making them available for use in other files.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/tutorials.mdx#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { Carbon } from "../../components/Carbon";
+```
+
+----------------------------------------
+
+TITLE: Importing Carbon Component
+DESCRIPTION: Imports the Carbon component from a relative path, likely for use within the current module. This demonstrates a typical module import statement in TypeScript.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/api-reference.mdx#_snippet_0
+
+LANGUAGE: ts
+CODE:
+```
+import { Carbon } from "../../components/Carbon";
+```
+
+----------------------------------------
+
+TITLE: Embed YouTube Video using HTML Iframe
+DESCRIPTION: Illustrates how to embed a YouTube video directly into a webpage using an HTML `<iframe>` tag. The `src` attribute specifies the video URL, while `frameBorder`, `allow`, and `allowFullScreen` attributes control the player's appearance and permissions.
+SOURCE: https://github.com/joe-bell/cva/blob/main/docs/latest/pages/docs/tutorials.mdx#_snippet_1
+
+LANGUAGE: HTML
+CODE:
+```
+<iframe
+  src="https://www.youtube.com/embed/T-Zv73yZ_QI"
+  title="YouTube video player"
+  frameBorder="0"
+  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+  allowFullScreen
+></iframe>
+```
+
+----------------------------------------
+
+TITLE: Enable Corepack for Project CVA
+DESCRIPTION: This command enables Corepack, a tool for managing package managers, which is a prerequisite for installing dependencies in the CVA project. It should be run prior to any other installation steps.
+SOURCE: https://github.com/joe-bell/cva/blob/main/CONTRIBUTING.md#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+corepack enable
+```
+
+----------------------------------------
+
+TITLE: Install Project CVA Dependencies with pnpm
+DESCRIPTION: This command installs all necessary project dependencies using pnpm, a fast, disk-space efficient package manager. It should be executed after enabling Corepack.
+SOURCE: https://github.com/joe-bell/cva/blob/main/CONTRIBUTING.md#_snippet_1
+
+LANGUAGE: sh
+CODE:
+```
+pnpm i
+```
+
+----------------------------------------
+
+TITLE: Type Check Project CVA with TypeScript
+DESCRIPTION: This script runs the TypeScript compiler to perform static type checking across the project, ensuring type safety and catching potential errors early.
+SOURCE: https://github.com/joe-bell/cva/blob/main/CONTRIBUTING.md#_snippet_4
+
+LANGUAGE: sh
+CODE:
+```
+pnpm tsc
+```
+
+----------------------------------------
+
+TITLE: Run Development Server and Tests for Project CVA
+DESCRIPTION: This script runs Vitest, a testing framework, in watch mode, allowing for continuous testing as file changes are made during development.
+SOURCE: https://github.com/joe-bell/cva/blob/main/CONTRIBUTING.md#_snippet_2
+
+LANGUAGE: sh
+CODE:
+```
+pnpm dev
+```
+
+----------------------------------------
+
+TITLE: Build Project CVA for Production
+DESCRIPTION: This script performs a production build of the CVA project, optimizing the code for deployment and release.
+SOURCE: https://github.com/joe-bell/cva/blob/main/CONTRIBUTING.md#_snippet_3
+
+LANGUAGE: sh
+CODE:
+```
+pnpm build
+```
