@@ -1,0 +1,1486 @@
+TITLE: Create Cloudflare Spectrum Application via API
+DESCRIPTION: Comprehensive API documentation for creating a new Cloudflare Spectrum application. This includes the HTTP POST method, the endpoint path, a detailed example of the JSON request body with various configuration parameters, and a sample successful JSON response body, illustrating the structure of the returned application object.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/spectrum/get-started.mdx#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+POST /zones/{zone_id}/spectrum/apps
+
+Request Body (JSON):
+{
+  "protocol": "tcp/22",
+  "dns": {
+    "type": "CNAME",
+    "name": "ssh.example.com"
+  },
+  "origin_direct": [
+    "tcp://192.0.2.1:22"
+  ],
+  "proxy_protocol": "off",
+  "ip_firewall": true,
+  "tls": "full",
+  "edge_ips": {
+    "type": "dynamic",
+    "connectivity": "all"
+  },
+  "traffic_type": "direct",
+  "argo_smart_routing": true
+}
+
+Example Response (JSON):
+{
+  "success": true,
+  "errors": [],
+  "messages": [],
+  "result": {
+    "id": "ea95132c15732412d22c1476fa83f27a",
+    "protocol": "tcp/22",
+    "dns": {
+      "type": "CNAME",
+      "name": "ssh.example.com"
+    },
+    "origin_direct": [
+      "tcp://192.0.2.1:22"
+    ],
+    "proxy_protocol": "off",
+    "ip_firewall": true,
+    "tls": "full",
+    "edge_ips": {
+      "type": "dynamic",
+      "connectivity": "all"
+    },
+    "traffic_type": "direct",
+    "argo_smart_routing": true,
+    "created_on": "2014-01-02T02:20:00Z",
+    "modified_on": "2014-01-02T02:20:00Z"
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Cloudflare API Overview and Recommended Workflow
+DESCRIPTION: This section describes the Cloudflare API's architectural style (REST, JSON, v4), authentication methods (API tokens, templates, permissions), and a recommended workflow for making initial API requests.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/api-content-strategy/api-content-types/get-started-api.mdx#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Cloudflare API Overview:
+  - Architectural Style: REST
+  - Response Format: JSON
+  - API Version: v4
+  - Description: Exposes the entire Cloudflare infrastructure via a standardized programmatic interface.
+
+Authentication:
+  - Methods: API tokens, API token templates, API token permissions
+  - Description: Explains how to authenticate with the Cloudflare API and utilize various token features.
+
+Recommended Workflow:
+  1. Sign up for a Cloudflare account.
+  2. Create an API token.
+  3. (Optional) Use API token templates and token permissions.
+  4. Make your first request.
+```
+
+----------------------------------------
+
+TITLE: Cloudflare Zone Management API
+DESCRIPTION: Comprehensive documentation for managing Cloudflare zones via the API, specifically for creating new zones for customer accounts.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/tenant/get-started.mdx#_snippet_4
+
+LANGUAGE: APIDOC
+CODE:
+```
+POST /client/v4/zones
+  - Creates a new zone (domain) for a specified account.
+  - Headers:
+    - X-Auth-Email: Your Cloudflare account email.
+    - X-Auth-Key: Your Cloudflare API key.
+    - Content-Type: application/json
+  - Request Body:
+    - name (string, required): The domain name for the new zone (e.g., "example.com").
+    - account (object, required):
+      - id (string, required): The ID of the customer account to associate the zone with.
+  - Response (Success 200 OK):
+    // Note: Full response schema not provided in source text, typical structure includes:
+    - result (object):
+      - id (string): Unique ID of the new zone.
+      - name (string): The zone name.
+      - status (string): Current status of the zone (e.g., "pending", "active").
+      - account (object): Details of the associated account.
+    - success (boolean): True if the request was successful.
+    - errors (array): List of errors, if any.
+    - messages (array): List of messages, if any.
+```
+
+----------------------------------------
+
+TITLE: Cloudflare User Management API
+DESCRIPTION: Comprehensive documentation for managing Cloudflare users via the API, focusing on creating service users for customer access.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/tenant/get-started.mdx#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+POST /client/v4/users
+  - Creates a new user account.
+  - Headers:
+    - X-Auth-Email: Your Cloudflare account email.
+    - X-Auth-Key: Your Cloudflare API key.
+    - Content-Type: application/json
+  - Request Body:
+    - email (string, required): The email address for the new user.
+  - Response (Success 200 OK):
+    - result (object):
+      - id (string): Unique ID of the new user.
+      - email (string): Email of the new user.
+      - first_name (string | null): First name of the user.
+      - last_name (string | null): Last name of the user.
+      - username (string): Username of the user.
+      - telephone (string | null): Telephone number of the user.
+      - country (string | null): Country of the user.
+      - created_on (string, ISO 8601 datetime): Timestamp of user creation.
+      - modified_on (string, ISO 8601 datetime): Timestamp of last modification.
+      - two_factor_authentication (object):
+        - enabled (boolean): Indicates if 2FA is enabled.
+        - locked (boolean): Indicates if 2FA is locked.
+      - api_key (string): API key for the new user (masked in example response).
+    - success (boolean): True if the request was successful.
+    - errors (array): List of errors, if any.
+    - messages (array): List of messages, if any.
+```
+
+----------------------------------------
+
+TITLE: Example cURL GET Request for Firewall Rules
+DESCRIPTION: A concrete example demonstrating a cURL GET request to fetch firewall rules for a specified zone. This snippet illustrates the application of the GET request template with actual endpoint and API token authentication.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/api-content-strategy/guidelines-for-curl-commands.mdx#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+curl https://api.cloudflare.com/client/v4/zones/$ZONE_ID/firewall/rules \
+--header "Authorization: Bearer $CLOUDFLARE_API_TOKEN"
+```
+
+----------------------------------------
+
+TITLE: Example API GET Request for File Download
+DESCRIPTION: This snippet illustrates a typical GET request used to download a file from an API. It includes the base URL with a placeholder for the file ID and demonstrates the inclusion of an 'x-api-key' header for client authentication.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/waf/rate-limiting-rules/best-practices.mdx#_snippet_13
+
+LANGUAGE: txt
+CODE:
+```
+GET https://api.store.com/files/<FILE_ID>
+Header: x-api-key=9375
+```
+
+----------------------------------------
+
+TITLE: Make a Basic Cloudflare API Call with Bearer Token
+DESCRIPTION: Demonstrates how to make a basic GET request to the Cloudflare API using `curl` and authorizing with an `Authorization: Bearer` header. This example uses a placeholder API token to illustrate the format.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/fundamentals/api/how-to/make-api-calls.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+curl "https://api.cloudflare.com/client/v4/zones/$ZONE_ID" \
+--header "Authorization: Bearer YQSn-xWAQiiEh9qM58wZNnyQS7FUdoqGIUAbrh7T"
+```
+
+----------------------------------------
+
+TITLE: Template for Get Started Documentation Page
+DESCRIPTION: This YAML-like template outlines the standard structure for a 'Get started' documentation page, including frontmatter, main title, prerequisites, sequential steps, and next steps for further configuration.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/documentation-content-strategy/content-types/get-started.mdx#_snippet_1
+
+LANGUAGE: yaml
+CODE:
+```
+---
+weight: xx
+pcx_content_type: get-started
+---
+
+# Get started
+
+Description
+
+## Before you begin
+
+All the things you need to do before you start configuring your product, both within Cloudflare and outside.
+
+## 1. Step description
+
+## 2. Steps until you get to activation
+
+---
+```
+
+----------------------------------------
+
+TITLE: Demonstrate APIRequest Component Usage with Various API Calls
+DESCRIPTION: This comprehensive example block showcases the `APIRequest` component's versatility by demonstrating its use for different HTTP methods (PUT, DELETE, POST, GET) and payload types (JSON, form data, URL parameters) across various Cloudflare API endpoints. It illustrates how to specify API paths, methods, and request bodies, including handling specific roles and code highlighting.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/components/api-request.mdx#_snippet_1
+
+LANGUAGE: mdx
+CODE:
+```
+import { APIRequest } from "~/components";
+
+<APIRequest
+	path="/zones/{zone_id}/api_gateway/settings/schema_validation"
+	method="PUT"
+	json={{
+		validation_default_mitigation_action: "block",
+	}}
+	code={{
+		mark: [5, "block"],
+	}}
+	roles="Domain"
+/>
+
+<APIRequest
+	path="/zones/{zone_id}/hostnames/settings/{setting_id}/{hostname}"
+	method="DELETE"
+	parameters={{
+		setting_id: "ciphers",
+	}}
+/>
+
+<APIRequest
+	path="/accounts/{account_id}/images/v2/direct_upload"
+	method="POST"
+	form={{
+		requireSignedURLs: true,
+		metadata: '{"key":"value"}',
+	}}
+/>
+
+<APIRequest
+	path="/zones/{zone_id}/cloud_connector/rules"
+	method="PUT"
+	json={[
+		{
+			expression: 'http.request.uri.path wildcard "/images/*"',
+			provider: "cloudflare_r2",
+			description: "Connect to R2 bucket containing images",
+			parameters: {
+				host: "mybucketcustomdomain.example.com",
+			},
+		},
+	]}
+/>
+
+<APIRequest
+	path="/zones/{zone_id}/page_shield/scripts"
+	method="GET"
+	parameters={{
+		direction: "asc",
+	}}
+/>
+```
+
+----------------------------------------
+
+TITLE: Cloudflare Cloud Connector Rules API Reference
+DESCRIPTION: Detailed API documentation for managing Cloudflare Cloud Connector rules. This includes the base URL, required permissions, endpoint summaries, and specific examples for GET (listing) and PUT (creating/updating/deleting) operations, along with request and response formats.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/rules/cloud-connector/create-api.mdx#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Cloudflare Cloud Connector Rules API
+
+Base URL: https://api.cloudflare.com/client/v4
+Zone ID: {zone_id} (a hexadecimal string, found in Cloudflare dashboard)
+
+Required Permissions:
+- Zone > Cloud Connector > Write
+
+Note: A token with this permission is only valid for Cloud Connector endpoints and cannot interact with the `http_cloud_connector` phase via Rulesets API.
+
+Endpoints Summary:
+- GET /zones/{zone_id}/cloud_connector/rules: List Cloud Connector rules
+- PUT /zones/{zone_id}/cloud_connector/rules: Create/update/delete Cloud Connector rules
+
+---
+
+1. List Cloud Connector Rules
+
+Method: GET
+Endpoint: /zones/{zone_id}/cloud_connector/rules
+
+Description: Returns a list of existing Cloud Connector rules.
+
+Example Request (using Cloudflare API):
+<APIRequest path="/zones/{zone_id}/cloud_connector/rules" method="GET" />
+
+Example JSON Output:
+{
+	"result": [
+		{
+			"id": "<RULE_1_ID>",
+			"provider": "aws_s3",
+			"expression": "http.request.uri.path wildcard \"/images/*\"",
+			"description": "Connect to S3 bucket containing images",
+			"enabled": true,
+			"parameters": {
+				"host": "examplebucketwithimages.s3.north-eu.amazonaws.com"
+			}
+		}
+	],
+	"success": true,
+	"errors": [],
+	"messages": []
+}
+
+---
+
+2. Create/Update/Delete Cloud Connector Rules
+
+Method: PUT
+Endpoint: /zones/{zone_id}/cloud_connector/rules
+
+Description: Replaces all existing Cloud Connector rules with the rules provided in the request body.
+             To create a new rule and keep all existing rules, you must include them all in your request body.
+             Omitting an existing rule in the request body will delete the corresponding Cloud Connector rule.
+
+Required Body Parameters for each rule:
+- expression: Rule expression (e.g., 'http.request.uri.path wildcard "/images/*"')
+- provider: Cloud storage provider. Must be one of: cloudflare_r2, aws_s3, azure_storage, gcp_storage
+- parameters.host: The host for the storage bucket (e.g., "mybucketcustomdomain.example.com")
+
+Example Request (using Cloudflare API):
+<APIRequest
+	path="/zones/{zone_id}/cloud_connector/rules"
+	method="PUT"
+	json={[
+		{
+			expression: 'http.request.uri.path wildcard \"/images/*\"',
+			provider: "cloudflare_r2",
+			description: "Connect to R2 bucket containing images",
+			parameters: {
+				host: "mybucketcustomdomain.example.com"
+			}
+		}
+	]}
+/>
+```
+
+----------------------------------------
+
+TITLE: Cloudflare Pipeline Configuration Summary and Data Ingestion Examples
+DESCRIPTION: This section provides the summary output after creating a Cloudflare Pipeline, detailing its configuration and endpoints. It also includes a `curl` command example for sending JSON data to the pipeline's HTTP ingestion endpoint and a Workers configuration snippet for binding to the pipeline.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/pipelines/getting-started.mdx#_snippet_2
+
+LANGUAGE: sh
+CODE:
+```
+🌀 Authorizing R2 bucket "my-bucket"
+🌀 Creating pipeline named "my-clickstream-pipeline"
+✅ Successfully created pipeline my-clickstream-pipeline
+
+Id:    [PIPELINE-ID]
+Name:  my-clickstream-pipeline
+Sources:
+  HTTP:
+    Endpoint:        https://[PIPELINE-ID].pipelines.cloudflare.com/
+    Authentication:  off
+    Format:          JSON
+  Worker:
+    Format:  JSON
+Destination:
+  Type:         R2
+  Bucket:       my-bucket
+  Format:       newline-delimited JSON
+  Compression:  GZIP
+Batch hints:
+  Max bytes:     100 MB
+  Max duration:  300 seconds
+  Max records:   100,000
+
+🎉 You can now send data to your Pipeline!
+
+Send data to your Pipeline's HTTP endpoint:
+curl "https://[PIPELINE-ID].pipelines.cloudflare.com/" -d '[{ ...JSON_DATA... }]'
+```
+
+LANGUAGE: JSON
+CODE:
+```
+{
+  "pipelines": [
+    {
+      "pipeline": "my-clickstream-pipeline",
+      "binding": "PIPELINE"
+    }
+  ]
+}
+```
+
+----------------------------------------
+
+TITLE: Example: Get User Audit Logs API Endpoint
+DESCRIPTION: A concrete example demonstrating the full documentation structure for an API endpoint to retrieve user audit logs, including its title, description, plan availability, HTTP method, and endpoint path.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/api-content-strategy/api-content-types/endpoints.mdx#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: Get user audit logs
+
+Description: Gets a list of audit logs for a user account.
+Plan availability: Free, Pro, Business, Enterprise
+Method: GET
+Endpoint Path: user/audit_logs
+```
+
+----------------------------------------
+
+TITLE: Example JSON Response from Workers AI Model Execution
+DESCRIPTION: This JSON object shows a typical successful response from the Cloudflare Workers AI REST API after executing a language model. It contains the model's generated response, a success status, and empty arrays for errors and messages.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/workers-ai/get-started/rest-api.mdx#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+{
+	"result": {
+		"response": "Hello, World first appeared in 1974 at Bell Labs when Brian Kernighan included it in the C programming language example. It became widely used as a basic test program due to simplicity and clarity. It represents an inviting greeting from a program to the world."
+	},
+	"success": true,
+	"errors": [],
+	"messages": []
+}
+```
+
+----------------------------------------
+
+TITLE: Get All Cloudflare Firewall Rules
+DESCRIPTION: This example demonstrates how to retrieve all firewall rules for a given zone ID using the Cloudflare API. It includes the `curl` request and the expected JSON response structure for a collection of rules.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/firewall/api/cf-firewall-rules/get.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+curl "https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/rules" \
+--header "X-Auth-Email: <EMAIL>" \
+--header "X-Auth-Key: <API_KEY>"
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "result": [
+    {
+      "id": "<RULE_ID_1>",
+      "paused": false,
+      "description": "allow API traffic without challenge",
+      "action": "allow",
+      "priority": null,
+      "filter": {
+        "id": "<FILTER_ID_1>",
+        "expression": "http.request.uri.path matches \"^/api/.*$\"",
+        "paused": false,
+        "description": "/api"
+      }
+    },
+    {
+      "id": "<RULE_ID_2>",
+      "paused": false,
+      "description": "do not challenge login from office",
+      "action": "allow",
+      "priority": null,
+      "filter": {
+        "id": "<FILTER_ID_2>",
+        "expression": "ip.src in {2400:cb00::/32 2803:f800::/32 2c0f:f248::/32 2a06:98c0::/29} and (http.request.uri.path ~ \"^.*/wp-login.php$\" or http.request.uri.path ~ \"^.*/xmlrpc.php$\")",
+        "paused": false,
+        "description": "Login from office"
+      }
+    },
+    {
+      "id": "<RULE_ID_3>",
+      "paused": false,
+      "description": "challenge login",
+      "action": "challenge",
+      "priority": null,
+      "filter": {
+        "id": "<FILTER_ID_3>",
+        "expression": "(http.request.uri.path ~ \"^.*/wp-login.php$\" or http.request.uri.path ~ \"^.*/xmlrpc.php$\")",
+        "paused": false,
+        "description": "Login"
+      }
+    },
+    {
+      "id": "<RULE_ID_4>",
+      "paused": false,
+      "description": "JS challenge site",
+      "action": "js_challenge",
+      "priority": null,
+      "filter": {
+        "id": "<FILTER_ID_4>",
+        "expression": "not http.request.uri.path matches \"^/api/.*$\"",
+        "paused": false,
+        "description": "not /api"
+      }
+    }
+  ],
+  "success": true,
+  "errors": [],
+  "messages": [],
+  "result_info": {
+    "page": 1,
+    "per_page": 25,
+    "count": 4,
+    "total_count": 4,
+    "total_pages": 1
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: API Endpoint Naming and Description Examples
+DESCRIPTION: Illustrative examples of concise titles and descriptions for various API endpoints, demonstrating active voice and clarity as per documentation guidelines.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/api-content-strategy/api-content-types/endpoints.mdx#_snippet_1
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint Examples:
+
+Get domain: Fetches a single domain.
+List workers: Fetches a list of uploaded workers.
+List pools: Lists configured pools.
+Create waiting room: Creates a new waiting room.
+Update health check: Updates configured health checks.
+```
+
+----------------------------------------
+
+TITLE: Retrieve All Cloudflare Filters for a Zone
+DESCRIPTION: This example demonstrates how to fetch all filters associated with a specific zone ID using the Cloudflare API. It requires authentication with an API key and email.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/firewall/api/cf-filters/get.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+curl "https://api.cloudflare.com/client/v4/zones/{zone_id}/filters" \
+--header "X-Auth-Email: <EMAIL>" \
+--header "X-Auth-Key: <API_KEY>"
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "result": [
+    {
+      "id": "<FILTER_ID_1>",
+      "paused": false,
+      "description": "Login from office",
+      "expression": "ip.src eq 93.184.216.0 and (http.request.uri.path ~ \"^.*/wp-login.php$\" or http.request.uri.path ~ \"^.*/xmlrpc.php$\)"
+    },
+    {
+      "id": "<FILTER_ID_2>",
+      "paused": false,
+      "description": "Login",
+      "expression": "(http.request.uri.path ~ \"^.*/wp-login.php$\" or http.request.uri.path ~ \"^.*/xmlrpc.php$\)"
+    },
+    {
+      "id": "<FILTER_ID_3>",
+      "paused": false,
+      "description": "not /api",
+      "expression": "not http.request.uri.path matches \"^/api/.*$\"
+    },
+    {
+      "id": "<FILTER_ID_4>",
+      "paused": false,
+      "description": "/api",
+      "expression": "http.request.uri.path matches \"^/api/.*$\"
+    },
+    {
+      "id": "<FILTER_ID_5>",
+      "paused": false,
+      "expression": "ip.src eq 93.184.216.0"
+    }
+  ],
+  "success": true,
+  "errors": [],
+  "messages": [],
+  "result_info": {
+    "page": 1,
+    "per_page": 25,
+    "count": 5,
+    "total_count": 5,
+    "total_pages": 1
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: API Parameter Structure and Documentation Guidelines
+DESCRIPTION: This section outlines the standard structure for documenting API parameters, detailing required and optional fields, along with writing guidelines and examples for clear and effective parameter descriptions.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/api-content-strategy/api-content-types/parameters.mdx#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+API Parameter Definition:
+  Purpose: An option passed with the endpoint to receive specific information or values.
+  Values: default, minimum, and maximum
+
+Parameter Structure:
+  Required Components:
+    Name: Name of the parameter (e.g., `actor.ip`)
+    Data type: string, integer, boolean, object, or array
+    Description: Explains the parameter's function (e.g., "Filters a request by specific IP address or valid CIDR range.")
+    Required status: Indicates if the parameter is mandatory
+  Optional Components:
+    Constraints: Lists default, minimum, or maximum values
+
+Writing Guidelines:
+  - Be concise and clear, suitable for various technical levels.
+  - Use noun phrases for strings, integers, objects, and arrays; use verbs for booleans.
+  - Avoid passive voice.
+
+Examples of Parameter Descriptions:
+  - `deviceName`: The device name.
+  - `version`: The WARP client version.
+  - `per_page`: Sets the maximum number of requested results.
+  - `enabled`: Enables or disable a load balancer.
+  - `ASN`: The Autonomous System Number (ASN) used to advertise a prefix.
+
+Full Example:
+  Name: `actor.ip`
+  Data type: `string`
+  Description: Filters a request by specific IP address or valid CIDR range.
+  Required status: Not required
+  Values: No listed default, minimum, or maximum, values.
+```
+
+----------------------------------------
+
+TITLE: Cloudflare Rulesets API Endpoint Examples
+DESCRIPTION: Illustrates the structure of Cloudflare Rulesets API endpoints, including the base URL and examples for traditional ruleset management and phase entry point rulesets. It shows how to construct API calls for different types of ruleset operations.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/ruleset-engine/rulesets-api/endpoints.mdx#_snippet_0
+
+LANGUAGE: txt
+CODE:
+```
+PUT /zones/{zone_id}/rulesets/{ruleset_id}
+PUT /zones/{zone_id}/rulesets/phases/{phase_name}/entrypoint
+https://api.cloudflare.com/client/v4
+```
+
+----------------------------------------
+
+TITLE: Initialize Miniflare and Dispatch a Fetch Event
+DESCRIPTION: This example demonstrates how to import the `Miniflare` class, initialize an instance with an inline worker script, dispatch a simulated fetch event to the worker, and retrieve the response. It also shows the essential step of disposing the Miniflare instance to clean up resources.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/workers/testing/miniflare/get-started.mdx#_snippet_2
+
+LANGUAGE: js
+CODE:
+```
+import { Miniflare } from "miniflare";
+
+const mf = new Miniflare({
+	modules: true,
+	script: `
+  export default {
+    async fetch(request, env, ctx) {
+      return new Response("Hello Miniflare!");
+    }
+  }
+  `,
+});
+
+const res = await mf.dispatchFetch("http://localhost:8787/");
+console.log(await res.text()); // Hello Miniflare!
+await mf.dispose();
+```
+
+----------------------------------------
+
+TITLE: Importing and Using ListExamples Component in Cloudflare Docs
+DESCRIPTION: This snippet demonstrates how to import the `ListExamples` React component from the `~/components` path and use it within a Cloudflare documentation page. The component is configured via its `directory` prop to fetch and display examples from a specified path, in this case, for URL forwarding rules.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/rules/url-forwarding/examples/index.mdx#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { ListExamples } from "~/components";
+
+<ListExamples directory="rules/url-forwarding/examples/" />
+```
+
+----------------------------------------
+
+TITLE: Documenting HTTP Method Types and Verb Usage
+DESCRIPTION: This section details common HTTP methods (GET, POST, PUT, PATCH, DELETE), their primary purposes, and recommended verb examples for use in API endpoint titles and descriptions. It emphasizes using root forms for titles and present tense for descriptions.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/api-content-strategy/method-types-and-command-verbs.mdx#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+HTTP Method Types and Verb Usage:
+
+GET
+  - Purpose: Retrieves a resource
+  - Verb examples: Gets, Lists, Returns, Downloads
+
+POST
+  - Purpose: Creates a resource
+  - Verb examples: Creates, Watches, Inserts, Adds
+
+PUT
+  - Purpose: Updates or creates an existing resource
+  - Verb examples: Updates, Modifies, Adds
+
+PATCH
+  - Purpose: Partially modifies an existing resource
+  - Verb examples: Updates, Edits, Changes
+
+DELETE
+  - Purpose: Removes the resource
+  - Verb examples: Deletes, Removes, Cancels
+```
+
+----------------------------------------
+
+TITLE: Embedded Function Calling Example from OpenAPI Spec
+DESCRIPTION: This TypeScript example demonstrates how to use `@cloudflare/ai-utils` to create callable tools for an LLM directly from an OpenAPI specification. It shows fetching a GitHub API spec, applying a `User-Agent` header override, and then using `runWithTools` to query the LLM, which in turn calls the GitHub API to answer questions about a user's repositories.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/workers-ai/features/function-calling/embedded/examples/openapi.mdx#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+import { createToolsFromOpenAPISpec, runWithTools } from '@cloudflare/ai-utils';
+
+type Env = {
+	AI: Ai;
+};
+
+const APP_NAME = 'cf-fn-calling-example-app';
+
+export default {
+	async fetch(request, env, ctx) {
+		const toolsFromOpenAPISpec = [
+			// You can pass the OpenAPI spec link or contents directly
+			...(await createToolsFromOpenAPISpec(
+				'https://gist.githubusercontent.com/mchenco/fd8f20c8f06d50af40b94b0671273dc1/raw/f9d4b5cd5944cc32d6b34cad0406d96fd3acaca6/partial_api.github.com.json',
+				{
+					overrides: [
+						{
+							matcher: ({ url }) => {
+								return url.hostname === 'api.github.com';
+							},
+							// for all requests on *.github.com, we'll need to add a User-Agent.
+							values: {
+								headers: {
+									'User-Agent': APP_NAME,
+								},
+							},
+						},
+					],
+				}
+			)),
+		];
+
+		const response = await runWithTools(
+			env.AI,
+			'@hf/nousresearch/hermes-2-pro-mistral-7b',
+			{
+				messages: [
+					{
+						role: 'user',
+						content: 'Who is cloudflare on Github and how many repos does the organization have?',
+					},
+				],
+				tools: toolsFromOpenAPISpec,
+			}
+		);
+
+		return new Response(JSON.stringify(response));
+	},
+} satisfies ExportedHandler<Env>;
+```
+
+----------------------------------------
+
+TITLE: Manage Customer Metadata Boundary API Configuration
+DESCRIPTION: API endpoints for reading, setting, and deleting Customer Metadata Boundary configurations at the account level. This functionality requires 'Account-level Logs:Read/Write' API permissions and is restricted to SuperAdmins and Admin roles. Changes made via API take effect after several minutes.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/data-localization/metadata-boundary/get-started.mdx#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: /accounts/{account_id}/logs/control/cmb/config
+
+GET Method:
+  Description: Retrieves the current Customer Metadata Boundary region configuration.
+  Signature: GET /accounts/{account_id}/logs/control/cmb/config
+  Parameters:
+    account_id: (path parameter) The ID of the Cloudflare account.
+  Returns: JSON object with current region configuration (e.g., {"regions": "eu", "allow_out_of_region_access": false}).
+  Example Usage (cURL):
+    curl -X GET "https://api.cloudflare.com/client/v4/accounts/{account_id}/logs/control/cmb/config" \
+    -H "X-Auth-Email: user@example.com" \
+    -H "X-Auth-Key: YOUR_API_KEY" \
+    -H "Content-Type: application/json"
+
+POST Method:
+  Description: Sets or updates the Customer Metadata Boundary region configuration. This will overwrite any previous regions. Changes take effect after several minutes.
+  Signature: POST /accounts/{account_id}/logs/control/cmb/config
+  Parameters:
+    account_id: (path parameter) The ID of the Cloudflare account.
+    Request Body (JSON):
+      regions: (string, required) The desired region for log and analytics storage. Accepted values: 'eu', 'us', 'global'.
+      allow_out_of_region_access: (boolean, required) Specifies whether to allow access from outside the configured region.
+  Example Request Body:
+    {
+      "regions": "eu",
+      "allow_out_of_region_access": false
+    }
+  Example Usage (cURL):
+    curl -X POST "https://api.cloudflare.com/client/v4/accounts/{account_id}/logs/control/cmb/config" \
+    -H "X-Auth-Email: user@example.com" \
+    -H "X-Auth-Key: YOUR_API_KEY" \
+    -H "Content-Type: application/json" \
+    --data '{"regions":"eu","allow_out_of_region_access":false}'
+
+DELETE Method:
+  Description: Deletes the current Customer Metadata Boundary region configuration, effectively reverting to default or unconfigured state.
+  Signature: DELETE /accounts/{account_id}/logs/control/cmb/config
+  Parameters:
+    account_id: (path parameter) The ID of the Cloudflare account.
+  Example Usage (cURL):
+    curl -X DELETE "https://api.cloudflare.com/client/v4/accounts/{account_id}/logs/control/cmb/config" \
+    -H "X-Auth-Email: user@example.example.com" \
+    -H "X-Auth-Key: YOUR_API_KEY" \
+    -H "Content-Type: application/json"
+```
+
+----------------------------------------
+
+TITLE: Retrieve All Advanced DNS Protection Rules via Cloudflare API
+DESCRIPTION: This example demonstrates how to fetch all currently configured Advanced DNS Protection rules for a given account using the Cloudflare API. It provides a `curl` command for the GET request and an example JSON response showing the structure of the returned rule objects, including their ID, scope, name, mode, and sensitivity settings.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/ddos-protection/advanced-ddos-systems/api/dns-protection/examples.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+curl "https://api.cloudflare.com/client/v4/accounts/{account_id}/magic/advanced_dns_protection/configs/dns_protection/rules" \
+--header "Authorization: Bearer <API_TOKEN>"
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "result": [
+    {
+      "id": "<RULE_ID>",
+      "scope": "<SCOPE>",
+      "name": "<NAME>",
+      "mode": "<MODE>",
+      "profile_sensitivity": "<SENSITIVITY>",
+      "rate_sensitivity": "<RATE>",
+      "burst_sensitivity": "<BURST>",
+      "created_on": "2023-10-01T13:10:38.762503+01:00",
+      "modified_on": "2023-10-01T13:10:38.762503+01:00"
+      }
+    ],
+  "success": true,
+  "errors": [],
+  "messages": []
+}
+```
+
+----------------------------------------
+
+TITLE: Get Advanced TCP Protection Status via Cloudflare API
+DESCRIPTION: This example demonstrates how to retrieve the current enabled/disabled status of Advanced TCP Protection for a Cloudflare account using a GET request to the API. It shows both the curl command and an example JSON response.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/ddos-protection/advanced-ddos-systems/api/tcp-protection/examples.mdx#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+{\n  "result": {\n    "enabled": false\n  },\n  "success": true,\n  "errors": [],\n  "messages": []\n}
+```
+
+----------------------------------------
+
+TITLE: Retrieve All Prefixes in Advanced TCP Protection Allowlist
+DESCRIPTION: This example fetches all IP prefixes currently configured in the allowlist for Cloudflare's Advanced TCP Protection. It uses a GET request to the /configs/allowlist endpoint and provides an example JSON response.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/ddos-protection/advanced-ddos-systems/api/tcp-protection/examples.mdx#_snippet_4
+
+LANGUAGE: bash
+CODE:
+```
+curl https://api.cloudflare.com/client/v4/accounts/{account_id}/magic/advanced_tcp_protection/configs/allowlist \n--header "Authorization: Bearer <API_TOKEN>"
+```
+
+LANGUAGE: json
+CODE:
+```
+{\n  "result": [\n    {\n      "id": "<ALLOWLIST_PREFIX_ID>",\n      "prefix": "192.0.2.127",\n      "comment": "Single IP address in allowlist",\n      "enabled": true,\n      "created_on": "<TIMESTAMP>",\n      "modified_on": "<TIMESTAMP>"\n    }\n  ],\n  "success": true,\n  "errors": [],\n  "messages": []\n}
+```
+
+----------------------------------------
+
+TITLE: Create a new React application with Vite
+DESCRIPTION: Commands to initialize a new React project named 'blog-frontend' using `create-vite`, navigate into its directory, install dependencies, and start the local development server.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/pages/tutorials/build-an-api-with-pages-functions/index.mdx#_snippet_0
+
+LANGUAGE: sh
+CODE:
+```
+npx create-vite -t react blog-frontend
+cd blog-frontend
+npm install
+npm run dev
+```
+
+----------------------------------------
+
+TITLE: Get Cloudflare Firewall Rule by ID
+DESCRIPTION: This example shows how to retrieve a specific firewall rule by its ID for a given zone using the Cloudflare API. It includes the `curl` request and the expected JSON response structure for a single rule.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/firewall/api/cf-firewall-rules/get.mdx#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+curl "https://api.cloudflare.com/client/v4/zones/{zone_id}/firewall/rules/{rule_id}" \
+--header "X-Auth-Email: <EMAIL>" \
+--header "X-Auth-Key: <API_KEY>"
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "result": {
+    "id": "<RULE_ID>",
+    "paused": false,
+    "description": "do not challenge login from office",
+    "action": "allow",
+    "priority": null,
+    "filter": {
+      "id": "<FILTER_ID>",
+      "expression": "ip.src in {2400:cb00::/32 2803:f800::/32 2c0f:f248::/32 2a06:98c0::/29} and (http.request.uri.path ~ \"^.*/wp-login.php$\" or http.request.uri.path ~ \"^.*/xmlrpc.php$\")",
+      "paused": false,
+      "description": "Login from office"
+    }
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}
+```
+
+----------------------------------------
+
+TITLE: TypeScriptExample Component Props Reference
+DESCRIPTION: Detailed API documentation for the props available on the `<TypeScriptExample>` component, including `filename`, `playground`, and `code`. Each prop's type and purpose are described, along with any specific behaviors or limitations.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/components/typescript-example.mdx#_snippet_3
+
+LANGUAGE: APIDOC
+CODE:
+```
+<TypeScriptExample> Component Props:
+
+filename:
+  type: string
+  description: An optional filename, ending in `.ts`. This will be replaced by `.js` for the JavaScript tab.
+
+playground:
+  type: boolean
+  description: If set to `true`, a 'Run Worker in Playground' button will appear on the JavaScript tab.
+
+code:
+  type: object
+  description: Props to pass to the Expressive Code component. These props apply to both code blocks, and options like `collapse` may not work as expected due to line removal from TypeScript code.
+```
+
+----------------------------------------
+
+TITLE: Cloudflare Logs API Endpoint URL Examples
+DESCRIPTION: Illustrates the base URLs for accessing Cloudflare's logs API, including received logs and logs by Ray ID, showing path and query parameter placeholders. These examples demonstrate the structure for making GET requests.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/logs/logpull/requesting-logs.mdx#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+https://api.cloudflare.com/client/v4/zones/{zone_id}/logs/received?start=<unix|rfc3339>&end=<unix|rfc3339>[&count=<int>][&sample=<float>][&fields=<FIELDS>][&timestamps=<string>][&CVE-2021-44228=<boolean>]
+```
+
+LANGUAGE: bash
+CODE:
+```
+https://api.cloudflare.com/client/v4/zones/{zone_id}/logs/rayids/{ray_id}?[&fields=<FIELDS>][&timestamps=<string>]
+```
+
+----------------------------------------
+
+TITLE: Importing React Components for Documentation
+DESCRIPTION: This snippet shows how to import specific React components, `ListExamples` and `GlossaryTooltip`, from a local path (`~/components`) for use within a documentation page, enabling dynamic content rendering.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/rules/examples.mdx#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { ListExamples, GlossaryTooltip } from "~/components";
+```
+
+----------------------------------------
+
+TITLE: Example Pub/Sub access token JSON output
+DESCRIPTION: Illustrates the JSON structure returned by the Cloudflare Pub/Sub API when generating an access token. It contains a `key` representing the `clientId` and a `value` holding the sensitive JWT access token.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/pub-sub/guide.mdx#_snippet_11
+
+LANGUAGE: json
+CODE:
+```
+{
+	"key": "01HDQFD5Y8HWBFGFBBZPSWQ22M",
+	"value": "eyJhbGciOiJFZERTQSIsImtpZCI6IjU1X29UODVqQndJbjlFYnY0V3dzanRucG9ycTBtalFlb1VvbFZRZDIxeEUifQ....NVpToBedVYGGhzHJZmpEG1aG_xPBWrE-PgG1AFYcTPEBpZ_wtN6ApeAUM0JIuJdVMkoIC9mUg4vPtXM8jLGgBw"
+}
+```
+
+----------------------------------------
+
+TITLE: Example .env File for Cloudflare API Credentials
+DESCRIPTION: Provides an example of how to structure a `.env` file to securely store Cloudflare API Token and Account ID. This file is then loaded by the Python script to access these credentials for API authentication.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/public/workers-ai-notebooks/deepseek-coder-exploration.ipynb#_snippet_3
+
+LANGUAGE: bash
+CODE:
+```
+CLOUDFLARE_API_TOKEN="YOUR-TOKEN"
+CLOUDFLARE_ACCOUNT_ID="YOUR-ACCOUNT-ID"
+```
+
+----------------------------------------
+
+TITLE: cURL Commands for Cloudflare Worker IoT Readings API
+DESCRIPTION: These cURL commands demonstrate how to interact with the Cloudflare Worker's `/readings` API endpoint. The first command performs a POST request to ingest new sensor data, including an example with optional metadata. The second command executes a GET request to retrieve sensor data, showing how to use the `limit` query parameter.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/hyperdrive/tutorials/serverless-timeseries-api-with-timescale/index.mdx#_snippet_10
+
+LANGUAGE: bash
+CODE:
+```
+curl --request POST --data @- 'https://timescale-api.<YOUR_SUBDOMAIN>.workers.dev/readings' <<EOF
+[
+  { "sensor": "6f3e43a4-d1c1-4cb6-b928-0ac0efaf84a5", "value":0.3},
+  { "sensor": "d538f9fa-f6de-46e5-9fa2-d7ee9a0f0a68", "value":10.8},
+  { "sensor": "5cb674a0-460d-4c80-8113-28927f658f5f", "value":18.8},
+  { "sensor": "03307bae-d5b8-42ad-8f17-1c810e0fbe63", "value":20.0},
+  { "sensor": "64494acc-4aa5-413c-bd09-2e5b3ece8ad7", "value":13.1},
+  { "sensor": "0a361f03-d7ec-4e61-822f-2857b52b74b3", "value":1.1},
+  { "sensor": "50f91cdc-fd19-40d2-b2b0-c90db3394981", "metadata": {"color": "blue" }, "value":10.3}
+]
+EOF
+```
+
+LANGUAGE: sh
+CODE:
+```
+curl "https://timescale-api.<YOUR_SUBDOMAIN>.workers.dev/readings?limit=10"
+```
+
+----------------------------------------
+
+TITLE: Create and manage Cloudflare Stream live inputs via API
+DESCRIPTION: Illustrates how to create a new live stream input resource using the Cloudflare Stream API with a cURL POST request, including setting metadata and recording options. Also shows the JSON response containing RTMP(S) details for streaming.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/stream/get-started.mdx#_snippet_2
+
+LANGUAGE: bash
+CODE:
+```
+curl -X POST \
+-H "Authorization: Bearer <API_TOKEN>" \
+-D '{"meta": {"name":"test stream"},"recording": { "mode": "automatic" }}' \
+https://api.cloudflare.com/client/v4/accounts/<ACCOUNT_ID>/stream/live_inputs
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "uid": "f256e6ea9341d51eea64c9454659e576",
+  "rtmps": {
+    "url": "rtmps://live.cloudflare.com:443/live/",
+    "streamKey": "MTQ0MTcjM3MjI1NDE3ODIyNTI1MjYyMjE4NTI2ODI1NDcxMzUyMzcf256e6ea9351d51eea64c9454659e576"
+  },
+  "created": "2021-09-23T05:05:53.451415Z",
+  "modified": "2021-09-23T05:05:53.451415Z",
+  "meta": {
+    "name": "test stream"
+  },
+  "status": null,
+  "recording": {
+    "mode": "automatic",
+    "requireSignedURLs": false,
+    "allowedOrigins": null
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Import and Render Example List Component in JSX
+DESCRIPTION: This snippet demonstrates how to import a `ListExamples` React component from a local path and subsequently render it within a JSX context. The `directory` prop is used to specify the source location for the examples to be listed, enabling dynamic content generation based on file system structure.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/rules/cloud-connector/examples/index.mdx#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+import { ListExamples } from "~/components";
+
+<ListExamples directory="rules/cloud-connector/examples/" />
+```
+
+----------------------------------------
+
+TITLE: Example Custom Scan Expression for Malicious Uploads
+DESCRIPTION: A text-based custom scan expression used to detect malicious uploads by extracting a JSON string from the raw HTTP request body. This expression is applicable for both dashboard and API configurations.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/waf/detections/malicious-uploads/get-started.mdx#_snippet_4
+
+LANGUAGE: txt
+CODE:
+```
+lookup_json_string(http.request.body.raw, "file")
+```
+
+----------------------------------------
+
+TITLE: Capture Basic Screenshot with Cloudflare Browser Rendering API
+DESCRIPTION: Demonstrates how to capture a basic screenshot using the Cloudflare Browser Rendering API, showing examples for both cURL and the Cloudflare TypeScript SDK. The cURL example sets simple HTML content and omits the background for transparency, while the TypeScript SDK example illustrates basic API client initialization and screenshot creation.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/browser-rendering/rest-api/screenshot-endpoint.mdx#_snippet_0
+
+LANGUAGE: bash
+CODE:
+```
+curl -X POST 'https://api.cloudflare.com/client/v4/accounts/<accountId>/browser-rendering/screenshot' \
+  -H 'Authorization: Bearer <apiToken>' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "html": "Hello World!",
+    "screenshotOptions": {
+      "omitBackground": true
+    }
+  }' \
+  --output "screenshot.png"
+```
+
+LANGUAGE: typescript
+CODE:
+```
+import Cloudflare from "cloudflare";
+
+const client = new Cloudflare({
+	apiEmail: process.env["CLOUDFLARE_EMAIL"], // This is the default and can be omitted
+	apiKey: process.env["CLOUDFLARE_API_KEY"], // This is the default and can be omitted
+});
+
+const screenshot = await client.browserRendering.screenshot.create({
+	account_id: "account_id",
+});
+
+console.log(screenshot.status);
+```
+
+----------------------------------------
+
+TITLE: APIRequest Component Properties Reference
+DESCRIPTION: Comprehensive documentation for the `<APIRequest>` component's properties, detailing their types, requirements, and purpose. This includes `path`, `method`, `parameters`, `json`, `form`, `code`, and `roles`, providing guidance on how to configure API request examples within MDX.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/components/api-request.mdx#_snippet_2
+
+LANGUAGE: APIDOC
+CODE:
+```
+<APIRequest> Component Props:
+
+path
+  required: true
+  type: string
+  description: The path for the API endpoint. This can be found in our API documentation.
+
+method
+  required: true
+  type: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD"
+  description: The HTTP method to use.
+
+parameters
+  type: Record<string, any>
+  description: The parameters to substitute - either in the URL path or as query parameters.
+  Example: For `/zones/{zone_id}/page_shield/scripts` transformed into `/zones/123/page_shield/scripts?direction=asc`, use the following:
+  ```mdx
+  parameters={{
+  	zone_id: "123",
+  	direction: "asc"
+  }}
+  ```
+  If not provided, the component will default to an environment variable. For example, `{setting_id}` will be replaced with `$SETTING_ID`.
+
+json
+  type: Record<string, any> | Record<string, any>[]
+  description: The JSON payload to send. If required properties are missing, the component will throw an error. Functionally, the `--json` option is equivalent to the `--data` option in cURL, but handles a few additional headers automatically.
+
+form
+  type: Record<string, any>
+  description: The FormData payload to send. This field is not currently validated against the schema.
+
+code
+  type: object
+  description: An object of Expressive Code props, the following props are available:
+  - Base Props (https://expressive-code.com/key-features/code-component/#available-props)
+  - Line Marker Props (https://expressive-code.com/key-features/text-markers/#props)
+  - Collapsible Sections Props (https://expressive-code.com/plugins/collapsible-sections/#props)
+
+roles
+  type: string | boolean
+  default: true
+  description: If set to `true`, which is the default, all API token roles will show. If set to `false`, API token roles will not be displayed. If set to a string, the API token roles will be filtered using it as a substring (i.e., `roles="domain"` to filter out `Account API Gateway` and only leave `Domain API Gateway`).
+```
+
+----------------------------------------
+
+TITLE: Example Cloudflare API JSON Response
+DESCRIPTION: This example provides a full JSON response from a Cloudflare API call, illustrating the typical structure including 'result', 'success', 'errors', and 'messages' fields. It also demonstrates the use of placeholders for IDs that are not directly relevant or are obtained from previous commands.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/api-content-strategy/guidelines-for-curl-commands.mdx#_snippet_12
+
+LANGUAGE: json
+CODE:
+```
+{
+  "result": {
+    "id": "<RULE_ID>",
+    "paused": false,
+    "description": "do not challenge login from office",
+    "action": "allow",
+    "priority": null,
+    "filter": {
+      "id": "<FILTER_ID>",
+      "expression": "ip.src in {2400:cb00::/32 2803:f800::/32 2c0f:f248::/32 2a06:98c0::/29} and (http.request.uri.path ~ \"^.*/wp-login.php$\" or http.request.uri.path ~ \"^.*/xmlrpc.php$\")",
+      "paused": false,
+      "description": "Login from office"
+    }
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}
+```
+
+----------------------------------------
+
+TITLE: Retrieve a Specific Cloudflare Filter by ID
+DESCRIPTION: This example shows how to retrieve a single Cloudflare filter by its unique ID within a given zone. Authentication via API key and email is required.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/firewall/api/cf-filters/get.mdx#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+curl "https://api.cloudflare.com/client/v4/zones/{zone_id}/filters/{filter_id}" \
+--header "X-Auth-Email: <EMAIL>" \
+--header "X-Auth-Key: <API_KEY>"
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "result": {
+    "id": "<FILTER_ID>",
+    "paused": false,
+    "description": "Login from office",
+    "expression": "ip.src eq 93.184.216.0 and (http.request.uri.path ~ \"^.*/wp-login.php$\" or http.request.uri.path ~ \"^.*/xmlrpc.php$\)"
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}
+```
+
+----------------------------------------
+
+TITLE: Fetch and display all blog posts in React
+DESCRIPTION: React component `Posts.js` that fetches a list of blog posts from the `/api/posts` endpoint using `useEffect` and `useState`. It then renders them as a list of clickable links, allowing navigation to individual post details.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/pages/tutorials/build-an-api-with-pages-functions/index.mdx#_snippet_2
+
+LANGUAGE: js
+CODE:
+```
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+
+const Posts = () => {
+	const [posts, setPosts] = useState([]);
+
+	useEffect(() => {
+		const getPosts = async () => {
+			const resp = await fetch("/api/posts");
+			const postsResp = await resp.json();
+			setPosts(postsResp);
+		};
+
+		getPosts();
+	}, []);
+
+	return (
+		<div>
+			<h1>Posts</h1>
+			{posts.map((post) => (
+				<div key={post.id}>
+					<h2>
+						<Link to={`/posts/${post.id}`}>{post.title}</Link>
+					</h2>
+				</div>
+			))}
+		</div>
+	);
+};
+
+export default Posts;
+```
+
+----------------------------------------
+
+TITLE: Browser Rendering REST API Endpoints Overview
+DESCRIPTION: This section outlines the core functionalities of the new Browser Rendering REST API, detailing the purpose of each primary endpoint for web interaction. While specific parameters are not fully detailed for all, the `/screenshot` endpoint's request body is inferred from the provided example.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/changelog/browser-rendering/2025-02-27-br-rest-api-beta.mdx#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+Endpoint: /screenshot
+  - Description: Captures a screenshot of a webpage from a provided URL or HTML.
+  - Method: POST
+  - Request Body (application/json):
+    - html: (string, optional) HTML content to render for the screenshot.
+    - url: (string, optional) URL of the webpage to render for the screenshot.
+    - screenshotOptions: (object, optional) Configuration options for the screenshot.
+      - type: (string, optional) The image format for the screenshot (e.g., "webp").
+      - omitBackground: (boolean, optional) Specifies whether to omit the background of the screenshot.
+
+Endpoint: /pdf
+  - Description: Converts web pages into PDF documents.
+
+Endpoint: /content
+  - Description: Retrieves the full HTML content from a specified webpage.
+
+Endpoint: /snapshot
+  - Description: Captures both the page's HTML and a screenshot in a single request.
+
+Endpoint: /scrape
+  - Description: Extracts specific elements from a webpage based on provided selectors.
+```
+
+----------------------------------------
+
+TITLE: Create a New Advanced DNS Protection Rule via Cloudflare API
+DESCRIPTION: This example shows how to create a new Advanced DNS Protection rule with a global scope using the Cloudflare API. It includes a `curl` command with a JSON request body specifying the rule's name, mode, and sensitivity parameters, along with an example JSON response for a successful creation, including the new rule's ID.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/ddos-protection/advanced-ddos-systems/api/dns-protection/examples.mdx#_snippet_1
+
+LANGUAGE: bash
+CODE:
+```
+curl "https://api.cloudflare.com/client/v4/accounts/{account_id}/magic/advanced_dns_protection/configs/dns_protection/rules" \
+--header "Authorization: Bearer <API_TOKEN>" \
+--data '{
+  "scope": "global",
+  "name": "global",
+  "mode": "<MODE>",
+  "rate_sensitivity": "<RATE>",
+  "burst_sensitivity": "<BURST>",
+  "profile_sensitivity": "<SENSITIVITY>"
+}'
+```
+
+LANGUAGE: json
+CODE:
+```
+{
+  "result": {
+    "id": "<RULE_ID>",
+    "scope": "global",
+    "name": "global",
+    "mode": "<MODE>",
+    "rate_sensitivity": "<RATE>",
+    "burst_sensitivity": "<BURST>",
+    "profile_sensitivity": "<SENSITIVITY>",
+    "created_on": "2023-10-01T13:10:38.762503+01:00",
+    "modified_on": "2023-10-01T13:10:38.762503+01:00"
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}
+```
+
+----------------------------------------
+
+TITLE: Full cURL Request Example with JSON Payload
+DESCRIPTION: A comprehensive cURL command example demonstrating a POST request to a Cloudflare API endpoint. It includes authorization, content type headers, and a JSON payload with an escaped single quote, showcasing a typical API interaction.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/api-content-strategy/guidelines-for-curl-commands.mdx#_snippet_10
+
+LANGUAGE: bash
+CODE:
+```
+curl https://api.cloudflare.com/api/v4/zones/$ZONE_ID/page_shield/policies \
+--header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+--header "Content-Type: application/json" \
+--data '{
+  "description": "My first policy in log mode",
+  "action": "log",
+  "expression": "http.host eq \"myapp.example.com\"",
+  "enabled": "true",
+  "value": "script-src myapp.example.com cdnjs.cloudflare.com https://www.google-analytics.com/analytics.js '\''self'\''"
+}'
+```
+
+----------------------------------------
+
+TITLE: API URL Placeholder Usage Example
+DESCRIPTION: Illustrates the use of placeholders in API URLs for account- or user-specific information, emphasizing the need to explain replacement instructions to the user.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/style-guide/documentation-content-strategy/component-attributes/links.mdx#_snippet_0
+
+LANGUAGE: APIDOC
+CODE:
+```
+https://api.cloudflare.com/client/v4/accounts/a0b1c2d3/rulesets
+https://api.cloudflare.com/client/v4/accounts/<ACCOUNTID>/rulesets
+```
+
+----------------------------------------
+
+TITLE: Perform GET Request with Invoke-RestMethod in PowerShell
+DESCRIPTION: Demonstrates how to use the `Invoke-RestMethod` cmdlet in PowerShell to send a GET request to the Cloudflare API. This example retrieves SSL certificate pack information for a specific zone. It assumes environment variables for `ZONE_ID`, `CLOUDFLARE_EMAIL`, and `CLOUDFLARE_API_KEY` are defined. By default, the output shows only the first level of the JSON object hierarchy.
+SOURCE: https://github.com/cloudflare/cloudflare-docs/blob/production/src/content/docs/fundamentals/api/how-to/make-api-calls.mdx#_snippet_5
+
+LANGUAGE: powershell
+CODE:
+```
+Invoke-RestMethod -URI "https://api.cloudflare.com/client/v4/zones/$Env:ZONE_ID/ssl/certificate_packs?ssl_status=all" -Method 'GET' -Headers @{'X-Auth-Email'=$Env:CLOUDFLARE_EMAIL;'X-Auth-Key'=$Env:CLOUDFLARE_API_KEY}
+```
+
+LANGUAGE: txt
+CODE:
+```
+result      : {@{id=78411cfa-5727-4dc1-8d4a-773d01f17c7c; type=universal; hosts=System.Object[];
+              primary_certificate=c173c8a1-9724-4e96-a748-2c4494186098; status=active; certificates=System.Object[];
+              created_on=2022-12-09T23:11:06.010263Z; validity_days=90; validation_method=txt;
+              certificate_authority=lets_encrypt}}
+result_info : @{page=1; per_page=20; total_pages=1; count=1; total_count=1}
+success     : True
+errors      : {}
+messages    : {}
+```
