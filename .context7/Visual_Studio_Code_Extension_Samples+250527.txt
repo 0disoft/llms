@@ -1,0 +1,1148 @@
+TITLE: Configuring VS Code Extension Activation Events (JSON)
+DESCRIPTION: This JSON snippet defines an activation event for a VS Code extension. The extension will activate when any workspace folder contains a file named '.jsfiddle'. This is essential for source control extensions that depend on a specific configuration file to identify and manage repositories.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/source-control-sample/README.md#_snippet_5
+
+LANGUAGE: JSON
+CODE:
+```
+"activationEvents": [
+    "workspaceContains:.jsfiddle"
+]
+```
+
+----------------------------------------
+
+TITLE: Configuring Build and Watch Scripts in package.json (JSON)
+DESCRIPTION: This JSON snippet defines npm scripts within `package.json` for compiling, type checking, watching, and packaging a VS Code extension. It integrates esbuild for bundling and `tsc` for type validation, enabling both development and production builds.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/esbuild-sample/README.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+"scripts": {
+    "compile": "npm run check-types && node esbuild.js",
+    "check-types": "tsc --noEmit",
+    "watch": "npm-run-all -p watch:*",
+    "watch:esbuild": "node esbuild.js --watch",
+    "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
+    "vscode:prepublish": "npm run package",
+    "package": "npm run check-types && node esbuild.js --production"
+}
+```
+
+----------------------------------------
+
+TITLE: Registering a Tree Data Provider for a VS Code View (TypeScript)
+DESCRIPTION: This TypeScript snippet registers an instance of `DepNodeProvider` as the data source for the `nodeDependencies` view. The `TreeDataProvider` interface is crucial for populating the view with hierarchical data, enabling VS Code to render and manage the tree structure dynamically.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/tree-view-sample/USAGE.md#_snippet_3
+
+LANGUAGE: typescript
+CODE:
+```
+vscode.window.registerTreeDataProvider('nodeDependencies', new DepNodeProvider());
+```
+
+----------------------------------------
+
+TITLE: Creating a TreeView Instance for Programmatic UI Operations (TypeScript)
+DESCRIPTION: This TypeScript snippet demonstrates how to create a `TreeView` instance for a view, providing programmatic access to UI operations beyond just data provision. Using `createTreeView` instead of `registerTreeDataProvider` returns an object that allows for more direct control over the view's presentation and interaction.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/tree-view-sample/USAGE.md#_snippet_4
+
+LANGUAGE: typescript
+CODE:
+```
+vscode.window.createTreeView('ftpExplorer', {
+	treeDataProvider: new FtpTreeDataProvider(),
+});
+```
+
+----------------------------------------
+
+TITLE: Initializing JSFiddle Source Control Provider in VS Code
+DESCRIPTION: This JavaScript snippet initializes the custom source control provider for a workspace folder. It creates the SCM instance, a resource group for tracking changes, an associated repository, and sets up the quick diff provider to enable diffing capabilities.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/source-control-sample/README.md#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+this.jsFiddleScm = vscode.scm.createSourceControl('jsfiddle', 'JSFiddle #' + fiddle.slug, workspaceFolder.uri);
+this.changedResources = this.jsFiddleScm.createResourceGroup('workingTree', 'Changes');
+this.fiddleRepository = new FiddleRepository(workspaceFolder, fiddle.slug);
+this.jsFiddleScm.quickDiffProvider = this.fiddleRepository;
+```
+
+----------------------------------------
+
+TITLE: Defining View Container and View Contributions in VS Code (JSON)
+DESCRIPTION: This JSON configuration defines a custom view container in the activity bar with a specific ID, title, and icon, and also registers a view within a predefined location (`tree-view`). The `when` clause controls the view's visibility based on a context value, ensuring it appears only when a `package.json` is present.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/tree-view-sample/USAGE.md#_snippet_0
+
+LANGUAGE: json
+CODE:
+```
+"contributes": {
+    "viewsContainers": {
+        "activitybar": [
+            {
+                "id": "package-explorer",
+                "title": "Package Explorer",
+                "icon": "media/dep.svg"
+            }
+        ]
+    },
+    "views": {
+        "tree-view": [
+            {
+                "id": "nodeDependencies",
+                "name": "Node Dependencies",
+                "when": "workspaceHasPackageJSON"
+            }
+        ]
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Defining Localized Strings with vscode.l10n.t in TypeScript
+DESCRIPTION: This snippet shows the three overloaded function signatures for `vscode.l10n.t()`, the API used to mark strings for translation within a VS Code extension's source code. It supports arguments for placeholders and comments for translator context, replacing older localization methods.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/l10n-sample/README.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+function t(message: string, ...args: Array<string | number>): string;
+function t(message: string, args: Record<string, any>): string;
+function t(options: { message: string; args?: Array<string | number> | Record<string, any>; comment: string[] }): string;
+```
+
+----------------------------------------
+
+TITLE: Contributing View Item Context Actions in VS Code (JSON)
+DESCRIPTION: This JSON configuration defines a menu entry for the `view/item/context` location, allowing actions to be shown for individual tree items. The `when` clause specifies that the `nodeDependencies.deleteEntry` command should be available only when the active view is `nodeDependencies` and the selected item's `contextValue` is `dependency`.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/tree-view-sample/USAGE.md#_snippet_2
+
+LANGUAGE: json
+CODE:
+```
+"contributes": {
+    "menus": {
+       "view/item/context": [
+           {
+                "command": "nodeDependencies.deleteEntry",
+                "when": "view == nodeDependencies && viewItem == dependency"
+            }
+        ]
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Contributing View Title Actions and Commands in VS Code (JSON)
+DESCRIPTION: This JSON configuration defines a command (`nodeDependencies.refreshEntry`) with an associated title and icons, and then links this command to the `view/title` menu location. The `when` clause ensures the action appears only for the `nodeDependencies` view, and `group: navigation` places it as a primary action in the view's title bar.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/tree-view-sample/USAGE.md#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+"contributes": {
+    "commands": [
+        {
+            "command": "nodeDependencies.refreshEntry",
+            "title": "Refresh",
+            "icon": {
+                "light": "resources/light/refresh.svg",
+                "dark": "resources/dark/refresh.svg"
+            }
+        }
+    ],
+    "menus": {
+        "view/title": [
+            {
+                "command": "nodeDependencies.refreshEntry",
+                "when": "view == nodeDependencies",
+                "group": "navigation"
+            }
+        ]
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Applying Decorations to Text Editor in VS Code (TypeScript)
+DESCRIPTION: This snippet shows how to apply the defined decorations to the active text editor. The `setDecorations` method of the `TextEditor` class takes the `TextEditorDecorationType` and an array of `Range` or `DecorationOptions` to render the visual styles. Note that applying new decorations with the same type will overwrite previous ones.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/decorator-sample/USAGE.md#_snippet_2
+
+LANGUAGE: TypeScript
+CODE:
+```
+activeEditor.setDecorations(smallNumberDecorationType, smallNumbers);
+```
+
+----------------------------------------
+
+TITLE: Defining Decoration Type in VS Code (TypeScript)
+DESCRIPTION: This snippet defines a TextEditorDecorationType, which specifies the visual styling for a decoration. It uses `vscode.window.createTextEditorDecorationType` and accepts a `DecorationRenderOptions` object to configure properties like border, overview ruler color, and theme-specific styles for light and dark themes.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/decorator-sample/USAGE.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+const smallNumberDecorationType = vscode.window.createTextEditorDecorationType({
+    borderWidth: '1px',
+    borderStyle: 'solid',
+    overviewRulerColor: 'blue',
+    overviewRulerLane: vscode.OverviewRulerLane.Right,
+    light: {
+        // this color will be used in light color themes
+        borderColor: 'darkblue'
+    },
+    dark: {
+        // this color will be used in dark color themes
+        borderColor: 'lightblue'
+    }
+});
+```
+
+----------------------------------------
+
+TITLE: Displaying GitHub Issues with Custom Mimetypes in Python
+DESCRIPTION: This snippet demonstrates how to use `IPython.display.display` to output a list of GitHub issues with various mimetypes, including a custom `x-application/github-issues` type for a VS Code notebook renderer. It shows how to serialize data to JSON and provide HTML and plain text representations.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-renderer-sample/sample/sample.ipynb#_snippet_0
+
+LANGUAGE: python
+CODE:
+```
+from IPython import display
+import json
+
+issues = [{
+        "url": "https://github.com/project/repo/issue/123",
+        "title": "Bug A",
+        "body": "Bug A description..."
+    },
+    {
+        "url": "https://github.com/project/repo/issue/456",
+        "title": "Bug B",
+        "body": "Bug B description..."
+    }]
+
+display.display({
+    "x-application/github-issues": json.dumps(issues),
+    "application/json": json.dumps(issues, indent=2),
+    "text/html": "<h1>[html] " + ", ".join([i["title"] for i in issues]) + "</h1>",
+    "text/plain": "[plain] " + ", ".join([i["url"] for i in issues]),
+}, raw=True)
+```
+
+----------------------------------------
+
+TITLE: Creating Decoration Ranges with Regex in VS Code (TypeScript)
+DESCRIPTION: This snippet demonstrates how to create an array of `vscode.DecorationOptions` by finding matches using a regular expression within the active editor's text. It converts the regex match indices into `vscode.Range` objects and adds an optional hover message, pushing decorations for numbers less than 3 digits long.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/decorator-sample/USAGE.md#_snippet_1
+
+LANGUAGE: TypeScript
+CODE:
+```
+const regEx = /\d+/g;
+
+const text = activeEditor.document.getText();
+const smallNumbers: vscode.DecorationOptions[] = [];
+
+let match;
+
+while (match = regEx.exec(text)) {
+    const startPos = activeEditor.document.positionAt(match.index);
+    const endPos = activeEditor.document.positionAt(match.index + match[0].length);
+
+    const decoration = { range: new vscode.Range(startPos, endPos), hoverMessage: 'Number **' + match[0] + '**' };
+    if (match[0].length < 3) {
+        smallNumbers.push(decoration);
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Configuring LSP Server Trace Format (JSONC)
+DESCRIPTION: This configuration snippet demonstrates how to set the trace format for a language server using `vscode-languageclient`. It allows specifying the output format as 'json' or 'text' and controlling the verbosity level ('verbose', 'off', 'messages') for server logs.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/lsp-log-streaming-sample/README.md#_snippet_0
+
+LANGUAGE: jsonc
+CODE:
+```
+"languageServerExample.trace.server": {
+  "format": "json", // or "text"
+  "verbosity": "verbose" // or "off" | "messages"
+}
+```
+
+----------------------------------------
+
+TITLE: Setting Source Control Status Bar Commands
+DESCRIPTION: This JavaScript snippet demonstrates how to add custom commands to the VS Code status bar associated with the source control provider. These commands typically allow users to perform actions like checking out different versions of the repository.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/source-control-sample/README.md#_snippet_2
+
+LANGUAGE: javascript
+CODE:
+```
+this.jsFiddleScm.statusBarCommands = [
+    {
+        "command": "extension.source-control.checkout",
+        "title": `↕ ${this.fiddle.slug} #${this.fiddle.version} / ${this.latestFiddleVersion}`,
+        "tooltip": "Checkout another version of this fiddle.",
+    }
+];
+```
+
+----------------------------------------
+
+TITLE: Configuring Source Control Title Commands in package.json
+DESCRIPTION: This JSON configuration defines commands that appear in the title bar of the source control view pane. It specifies the command ID, its group (e.g., 'navigation'), and a 'when' clause to ensure the command is only visible when the 'jsfiddle' SCM provider is active.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/source-control-sample/README.md#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+"contributes": {
+    "commands": [
+        ...
+    ],
+    "menus": {
+        "scm/title": [
+            {
+                "command": "extension.source-control.commit",
+                "group": "navigation",
+                "when": "scmProvider == jsfiddle"
+            },
+            {
+                "command": "extension.source-control.discard",
+                "group": "navigation",
+                "when": "scmProvider == jsfiddle"
+            },
+            {
+                "command": "extension.source-control.refresh",
+                "group": "navigation",
+                "when": "scmProvider == jsfiddle"
+            },
+            {
+                "command": "extension.source-control.browse",
+                "when": "scmProvider == jsfiddle"
+            }
+        ]
+    }
+},
+```
+
+----------------------------------------
+
+TITLE: Running VS Code Extension: F5 Command
+DESCRIPTION: This command launches the VS Code extension in a new development host window. It automatically loads the extension, allowing for immediate testing and debugging of the product icon theme. This is the primary method for initial setup and testing.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/product-icon-theme-sample/README.md#_snippet_0
+
+LANGUAGE: VS Code Command
+CODE:
+```
+F5
+```
+
+----------------------------------------
+
+TITLE: Testing Product Icon Theme: F5 Command
+DESCRIPTION: This command is used to test the product icon theme after making modifications. Pressing `F5` relaunches the extension in a development host window, applying the latest theme changes. This allows for immediate visual verification of how the updated icons appear within the VS Code UI.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/product-icon-theme-sample/README.md#_snippet_7
+
+LANGUAGE: VS Code Command
+CODE:
+```
+F5
+```
+
+----------------------------------------
+
+TITLE: Installing Dependencies for LSP Web Extension
+DESCRIPTION: This command installs all required Node.js package manager (npm) modules for both the client and server components of the VS Code LSP web extension. It is a crucial prerequisite step before compiling or running the extension, ensuring all project dependencies are met.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/lsp-web-extension-sample/README.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+npm install
+```
+
+----------------------------------------
+
+TITLE: Defining Source Control Resource State for Changed Files
+DESCRIPTION: This JavaScript object illustrates the structure of a `vscode.SourceControlResourceState` used to represent a changed document. It includes the resource URI and a command object that, when invoked, will show the differences between the original and local versions using `vscode.diff`.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/source-control-sample/README.md#_snippet_3
+
+LANGUAGE: javascript
+CODE:
+```
+{
+    resourceUri: doc.uri,
+    command: {
+        title: "Show changes",
+        command: "vscode.diff",
+        arguments: [repositoryUri, doc.uri, `Checked-out version ↔ Local changes`],
+        tooltip: "Diff your changes"
+    }
+}
+```
+
+----------------------------------------
+
+TITLE: Defining Tests in Markdown for VS Code Test Provider
+DESCRIPTION: This snippet illustrates the format for defining tests within a Markdown file that the VS Code Test Provider API can interpret. Headings (#) are used to group tests, and each line represents a test case with an expected outcome. The API processes these lines to determine pass/fail status.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/test-provider-sample/README.md#_snippet_0
+
+LANGUAGE: Markdown
+CODE:
+```
+# Easy Math
+
+2 + 2 = 4 // this test will pass
+2 + 2 = 5 // this test will fail
+
+# Harder Math
+
+230230 + 5819123 = 6049353
+```
+
+----------------------------------------
+
+TITLE: Configuring VS Code Workspace for datei:// Scheme (JSON)
+DESCRIPTION: This JSON snippet demonstrates how to configure a VS Code workspace (`.code-workspace` file) to include a folder accessible via the custom `datei://` scheme. It specifies the `uri` property within the `folders` array, which should point to an absolute path on the local disk using the `datei://` prefix. This setup is crucial for the `nodefs-provider-sample` extension to function correctly by mapping a local directory to the custom file system.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/nodefs-provider-sample/README.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+{
+    "folders": [
+        {
+            "uri": "datei://<full absolute path to folder on disk>"
+        }
+    ]
+}
+```
+
+----------------------------------------
+
+TITLE: Configuring Resource-Specific Empty Last Line in VS Code (JSON)
+DESCRIPTION: This setting configures the 'insertEmptyLastLine' feature for a specific file resource. When set to `true` for a given absolute file path, the extension will prompt to add an empty line at the end of that file. This demonstrates how to apply settings to individual files rather than globally.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/configuration-sample/README.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+"conf.resource.insertEmptyLastLine": {"${absolute_path_to_file}": true}
+```
+
+----------------------------------------
+
+TITLE: Displaying Custom Objects with _repr_mimebundle_ in Python
+DESCRIPTION: This snippet illustrates how to define a custom Python class (`GitHubIssues`) that can be directly displayed by `IPython.display.display` by implementing the `_repr_mimebundle_` method. It includes a `dataclass` for issue representation and a custom JSON encoder for proper serialization.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-renderer-sample/sample/sample.ipynb#_snippet_1
+
+LANGUAGE: python
+CODE:
+```
+from typing import List
+from dataclasses import dataclass, is_dataclass, asdict
+from IPython import display
+import json
+
+@dataclass
+class GitHubIssue:
+    url: str
+    title: str
+    body: str
+
+issues = [GitHubIssue("https://github.com/project/repo/issue/123", "Bug A", "Bug A description..."),
+    GitHubIssue("https://github.com/project/repo/issue/456", "Bug B", "Bug B description...")]
+
+class DataClassJSONEncoder(json.JSONEncoder):
+    """ Overrides the json serialization of dataclasses """
+    def default(s, o):
+        if is_dataclass(o):
+            return asdict(o)
+        return super().default(o)
+
+class GitHubIssues(object):
+    def __init__(self, issues: List[GitHubIssue]):
+        self.issues = issues
+
+    def json_dump(self) -> str:
+        return json.dumps(self.issues, cls=DataClassJSONEncoder)
+
+    def _repr_mimebundle_(self, include, exclude):
+        return {
+            "text/plain": "[plain]\\n" + "\\n".join([i.url for i in self.issues]),
+            "text/html": "<h1>[html]</h1>" + "".join(['<li>' + i.title + '</li>' for i in self.issues]),
+            "x-application/github-issues": self.json_dump(),
+        }
+
+display.display(GitHubIssues(issues))
+```
+
+----------------------------------------
+
+TITLE: Installing Node.js Dependencies for VS Code Extension - Shell
+DESCRIPTION: Installs all required Node.js packages and dependencies for the VS Code extension sample, as defined in its 'package.json' file, using npm.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/README.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+npm install
+```
+
+----------------------------------------
+
+TITLE: Installing Dependencies with npm
+DESCRIPTION: This command installs all required project dependencies listed in the `package.json` file. It should be run once after cloning the repository to set up the development environment.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/helloworld-test-cli-sample/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+npm install
+```
+
+----------------------------------------
+
+TITLE: Installing Dependencies for VS Code Extension (npm)
+DESCRIPTION: This command installs all necessary Node.js dependencies for the VS Code extension project, as defined in the `package.json` file. It is a prerequisite for compiling and running the extension.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/task-provider-sample/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+npm install
+```
+
+----------------------------------------
+
+TITLE: Setting LSP Server Trace Format for Demo (JSON)
+DESCRIPTION: This JSON configuration is required to run the sample extension. It explicitly sets the `languageServerExample.trace.server` setting to output logs in JSON format with verbose detail, enabling live viewing in the LSP Inspector.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/lsp-log-streaming-sample/README.md#_snippet_1
+
+LANGUAGE: json
+CODE:
+```
+"languageServerExample.trace.server": {
+  "format": "json",
+  "verbosity": "verbose"
+}
+```
+
+----------------------------------------
+
+TITLE: Enabling Language-Specific File Size Display in VS Code (JSON)
+DESCRIPTION: This setting controls whether the file size is displayed in the status bar for files of a specific language. Setting `conf.language.showSize` to `true` will show the size, while unsetting it will hide it. This allows for language-specific UI customizations.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/configuration-sample/README.md#_snippet_1
+
+LANGUAGE: JSON
+CODE:
+```
+"conf.language.showSize": true
+```
+
+----------------------------------------
+
+TITLE: Configuring Semantic Token Color Customizations in VS Code (JSON)
+DESCRIPTION: This configuration snippet enables semantic token highlighting in VS Code and defines custom styling rules. It sets specific foreground colors and font styles for tokens matching `*.static` and `type` within the editor's semantic highlighting system.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/semantic-tokens-sample/README.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+"editor.semanticTokenColorCustomizations": {
+	"enabled": true, // enable for all themes
+	"rules": {
+		"*.static": {
+			"foreground": "#ff0000",
+			"fontStyle": "bold"
+		},
+		"type": {
+			"foreground": "#00aa00"
+		}
+	}
+}
+```
+
+----------------------------------------
+
+TITLE: Providing Original Resource for Quick Diff
+DESCRIPTION: This JavaScript line shows the invocation of `provideOriginalResource` from the `fiddleRepository`. This method is crucial for VS Code's built-in diffing features, as it supplies the URI of the original document content from the repository, enabling both regular and quick diff views.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/source-control-sample/README.md#_snippet_4
+
+LANGUAGE: javascript
+CODE:
+```
+this.fiddleRepository.provideOriginalResource(doc.uri, null)
+```
+
+----------------------------------------
+
+TITLE: Compiling Extension Code with npm
+DESCRIPTION: This command starts a watch task that compiles the extension's source code whenever changes are detected. It is crucial for continuous development to ensure the latest code is always built.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/helloworld-test-cli-sample/README.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+npm: watch
+```
+
+----------------------------------------
+
+TITLE: Compiling VS Code Extension (npm)
+DESCRIPTION: This command executes the 'compile' script defined in the `package.json` file, typically used to transpile TypeScript source code into JavaScript. It prepares the extension for debugging or packaging.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/task-provider-sample/README.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+npm run compile
+```
+
+----------------------------------------
+
+TITLE: Running LSP Web Extension in Chrome
+DESCRIPTION: This command launches the VS Code LSP web extension within a Chrome browser instance, enabling developers to debug the extension using standard browser developer tools. This provides an alternative debugging environment compared to the VS Code Extension Development Host.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/lsp-web-extension-sample/README.md#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+npm run chrome
+```
+
+----------------------------------------
+
+TITLE: Configuring Product Icon Theme: JSON File
+DESCRIPTION: The `theme/v1-product-icon-theme.json` file defines the mapping between VS Code's internal icon IDs and the specific glyphs within the custom icon font. Modifications to this JSON file allow theme authors to associate different icons with various UI elements. Changes made to this file are applied live in the extension development host window, eliminating the need for a relaunch.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/product-icon-theme-sample/README.md#_snippet_6
+
+LANGUAGE: JSON
+CODE:
+```
+theme/v1-product-icon-theme.json
+```
+
+----------------------------------------
+
+TITLE: Compiling VS Code Extension Sample
+DESCRIPTION: This command compiles the TypeScript/JavaScript source code of the VS Code extension sample. It typically starts the compiler in watch mode, enabling automatic recompilation during development for immediate feedback on code changes.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/contentprovider-sample/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+npm run compile
+```
+
+----------------------------------------
+
+TITLE: Customizing Large Number Decoration Color in VS Code Settings (JSON)
+DESCRIPTION: This JSON snippet demonstrates how to customize a themeable color for the 'large number' decoration provided by the extension. By adding this configuration to the user settings, users can override the default background color for large number decorations, allowing for personalized theming.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/decorator-sample/README.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+"workbench.colorCustomizations": {
+    "myextension.largeNumberBackground": "#ff00ff"
+}
+```
+
+----------------------------------------
+
+TITLE: Configuring Extension Localization Path in package.json (JSONC)
+DESCRIPTION: This JSONC snippet demonstrates how to add the `l10n` property to a VS Code extension's `package.json` manifest. This property specifies the relative path to the directory containing the `bundle.l10n.<LANG>.json` files, enabling VS Code to load the correct localized strings at runtime.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/l10n-sample/README.md#_snippet_1
+
+LANGUAGE: JSONC
+CODE:
+```
+{
+    // example
+    "main": "./out/extension.js",
+    // ...
+    "l10n": "./l10n"
+}
+```
+
+----------------------------------------
+
+TITLE: Project Structure of LSP Web Extension
+DESCRIPTION: This snippet illustrates the hierarchical directory structure of the VS Code LSP web extension. It clearly delineates the client-side (Language Client) and server-side (Language Server) components, highlighting their respective source directories and main entry points, along with the central package.json manifest.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/lsp-web-extension-sample/README.md#_snippet_0
+
+LANGUAGE: plaintext
+CODE:
+```
+.\n├── client // Language Client\n│   ├── src\n│   │   └── browserClientMain.ts // Language Client entry point\n├── package.json // The extension manifest.\n└── server // Language Server\n    └── src\n        └── browserServerMain.ts // Language Server entry point
+```
+
+----------------------------------------
+
+TITLE: Generating Pseudolocalized Files with @vscode/l10n-dev (Shell)
+DESCRIPTION: This command leverages `@vscode/l10n-dev` to generate pseudolocalized versions of the `bundle.l10n.json` and `package.nls.json` files. The output files, `bundle.l10n.qps-ploc.json` and `package.nls.qps-ploc.json`, are placed in the `./l10n/` directory, enabling testing of localization changes without actual translations.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/l10n-sample/README.md#_snippet_3
+
+LANGUAGE: sh
+CODE:
+```
+npx @vscode/l10n-dev generate-pseudo -o ./l10n/ ./l10n/bundle.l10n.json ./package.nls.json
+```
+
+----------------------------------------
+
+TITLE: Generating XLF Files with @vscode/l10n-dev (Shell)
+DESCRIPTION: This command utilizes `@vscode/l10n-dev` to convert the `bundle.l10n.json` and `package.nls.json` files into a single XLF (XML Localization Interchange File Format) file named `l10n-sample.xlf`. This format is commonly used for professional translation workflows.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/l10n-sample/README.md#_snippet_4
+
+LANGUAGE: sh
+CODE:
+```
+npx @vscode/l10n-dev generate-xlf -o ./l10n-sample.xlf ./l10n/bundle.l10n.json ./package.nls.json
+```
+
+----------------------------------------
+
+TITLE: Exporting Localizable Strings with @vscode/l10n-dev (Shell)
+DESCRIPTION: This command uses the `@vscode/l10n-dev` CLI tool to extract all localizable strings from the source directory (`./src`) and output them into a `bundle.l10n.json` file within the specified output directory (`./l10n`). This file serves as the base for creating language-specific localization bundles.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/l10n-sample/README.md#_snippet_2
+
+LANGUAGE: sh
+CODE:
+```
+npx @vscode/l10n-dev export -o ./l10n ./src
+```
+
+----------------------------------------
+
+TITLE: Building Icon Font: npm Command
+DESCRIPTION: This `npm` script executes the build process to generate or update the icon font from the SVG images. Running `npm run updateFont` compiles the SVG assets located in the `icons/` folder into a single font file. This step is crucial after any changes to the source SVG icons or the `updateFont.js` configuration.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/product-icon-theme-sample/README.md#_snippet_4
+
+LANGUAGE: Shell
+CODE:
+```
+npm run updateFont
+```
+
+----------------------------------------
+
+TITLE: Implementing Time Delay in Python
+DESCRIPTION: This snippet demonstrates how to introduce a small time delay within a loop using Python's built-in `time` module. It pauses the execution for 0.1 seconds in each of the ten iterations, useful for controlling process speed or simulating delays.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-format-code-action-sample/nb-after.ipynb#_snippet_0
+
+LANGUAGE: Python
+CODE:
+```
+import time
+
+for i in range(10):
+    time.sleep(0.1)
+```
+
+----------------------------------------
+
+TITLE: Implementing a Time Delay in Python
+DESCRIPTION: This snippet demonstrates how to introduce a pause in a Python script using the `time.sleep()` function. It iterates 10 times, pausing for 0.1 seconds in each iteration, which is useful for rate limiting or simulating delays.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-format-code-action-sample/nb-before.ipynb#_snippet_0
+
+LANGUAGE: python
+CODE:
+```
+import time
+
+for i in range(10):
+    time.sleep(0.1)
+```
+
+----------------------------------------
+
+TITLE: Getting Current Working Directory in Python
+DESCRIPTION: This snippet utilizes the `os` module to retrieve the current working directory of the Python script. It calls `os.getcwd()` to get the path and then prints it to the console, useful for path-related operations.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-format-code-action-sample/nb-before.ipynb#_snippet_2
+
+LANGUAGE: python
+CODE:
+```
+current_dir = os.getcwd()
+print("Current working directory:", current_dir)
+```
+
+----------------------------------------
+
+TITLE: Getting Current Working Directory in Python
+DESCRIPTION: This snippet shows how to retrieve the current working directory of the Python script using the `os.getcwd()` function from the `os` module. It then prints the obtained directory path to the console, which is useful for path-related operations and debugging.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-format-code-action-sample/nb-after.ipynb#_snippet_1
+
+LANGUAGE: Python
+CODE:
+```
+current_dir = os.getcwd()
+print("Current working directory:", current_dir)
+```
+
+----------------------------------------
+
+TITLE: Defining Base Styles for VS Code Icons - CSS
+DESCRIPTION: This CSS defines the foundational styles for the icon preview page. It includes general body styling, layout for preview elements, and the crucial `@font-face` declaration to load the 'vscode-10' icon font, ensuring proper display and alignment of all icons.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/product-icon-theme-sample/theme/vscode-10.html#_snippet_0
+
+LANGUAGE: CSS
+CODE:
+```
+body { font-family: sans-serif; margin: 0; padding: 10px 20px; }
+.preview { line-height: 2em; }
+.preview_icon { display: inline-block; width: 32px; text-align: center; }
+.icon { display: inline-block; font-size: 16px; line-height: 1; }
+@font-face { font-family: "vscode-10"; src: url("vscode-10.woff?7e4c98247e0da9c800233af089778d2a") format("woff"); }
+.icon:before { font-family: vscode-10 !important; font-style: normal; font-weight: normal !important; vertical-align: top; }
+```
+
+----------------------------------------
+
+TITLE: Updating Icon Font Configuration: JavaScript File
+DESCRIPTION: The `build/updateFont.js` file is a JavaScript script responsible for configuring and generating the icon font. It needs to be updated to include the names of any new or changed SVG icons added to the `icons/` folder. This script ensures that the icon font accurately reflects the desired set of product icons.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/product-icon-theme-sample/README.md#_snippet_3
+
+LANGUAGE: JavaScript
+CODE:
+```
+build/updateFont.js
+```
+
+----------------------------------------
+
+TITLE: Dynamically Generating VS Code Icon Previews - JavaScript
+DESCRIPTION: This JavaScript code executes upon page load to dynamically generate CSS rules and corresponding HTML elements for displaying a range of VS Code icons. It iterates through a specific hexadecimal range (0xe000 to 0xe027), constructs CSS content for each icon's 'content' property, and appends both the generated CSS to the document's head and the HTML preview divs to the body.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/product-icon-theme-sample/theme/vscode-10.html#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+window.addEventListener("load", function () {
+    let htmContent = [];
+    let cssContent = [];
+    for (let i = 0; i < 40; i++) {
+        let hexString = (0xe000 + i).toString(16);
+        cssContent.push('.icon-' + hexString + ':before { content: "\\\\' + hexString + '"; }');
+        htmContent.push('<div class="preview"><span class="preview_icon"><span class="icon icon-' + hexString + '"></span></span><span>' + hexString + '</span></div>');
+    }
+    let style = document.createElement('style');
+    style.type = 'text/css';
+    style.media = 'screen';
+    style.innerHTML = cssContent.join('\n');
+    document.head.appendChild(style);
+    document.body.innerHTML += htmContent.join('\n');
+});
+```
+
+----------------------------------------
+
+TITLE: Viewing Icon Font: npm Command
+DESCRIPTION: This `npm` script opens a local HTML page (`theme/vscode-10.html`) in the default web browser. The page displays all the icons currently included in the generated icon font, allowing for visual verification of the font's contents. This is a helpful debugging step to ensure icons are correctly rendered and available.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/product-icon-theme-sample/README.md#_snippet_5
+
+LANGUAGE: Shell
+CODE:
+```
+npm run showFont
+```
+
+----------------------------------------
+
+TITLE: Adding/Changing SVG Icons: Icons Folder
+DESCRIPTION: This refers to the `icons/` directory where SVG image files for product icons are stored. To add new icons or modify existing ones, place or update the corresponding SVG files in this folder. These SVG assets are then used by the build script to generate the icon font.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/product-icon-theme-sample/README.md#_snippet_2
+
+LANGUAGE: File Path
+CODE:
+```
+icons/
+```
+
+----------------------------------------
+
+TITLE: Cloning VS Code Extension Samples Repository - Shell
+DESCRIPTION: Clones the official VS Code extension samples repository from GitHub to your local machine, providing access to all sample projects.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+git clone https://github.com/Microsoft/vscode-extension-samples
+```
+
+----------------------------------------
+
+TITLE: Open Project in VS Code Insiders (Shell)
+DESCRIPTION: Opens the current directory, which is the sample project, in VS Code Insiders. This is the recommended development environment for working with and debugging this VS Code extension sample.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-renderer-react-sample/README.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+code-insiders .
+```
+
+----------------------------------------
+
+TITLE: Opening Sample Folder in VS Code - Shell
+DESCRIPTION: Opens a specific sample extension folder in VS Code using the 'code' command-line tool. Replace '<any-sample-folder>' with the actual path to the desired sample.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/README.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+code <any-sample-folder>
+```
+
+----------------------------------------
+
+TITLE: Running Integration Tests with npm
+DESCRIPTION: This command executes the integration tests for the extension from the command line. Alternatively, tests can be run using the VS Code Test Explorer view for a graphical interface.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/helloworld-test-cli-sample/README.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+npm run test
+```
+
+----------------------------------------
+
+TITLE: Declaring a Constant in TypeScript
+DESCRIPTION: This snippet demonstrates the declaration of a constant variable 'a' with an integer value of 12 using the 'const' keyword in TypeScript. It's a fundamental example of variable assignment.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/getting-started-sample/media/linux.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+const a = 12;
+```
+
+----------------------------------------
+
+TITLE: Declaring a Constant in TypeScript
+DESCRIPTION: This snippet declares a constant variable 'a' and initializes it with the integer value 12. It demonstrates basic variable declaration in TypeScript.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/getting-started-sample/media/mac.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+const a = 12;
+```
+
+----------------------------------------
+
+TITLE: Importing the OS Module in Python
+DESCRIPTION: This snippet shows the basic syntax for importing the `os` module in Python. The `os` module provides a way of using operating system dependent functionality, such as reading or writing to the file system.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-format-code-action-sample/nb-before.ipynb#_snippet_1
+
+LANGUAGE: python
+CODE:
+```
+import os
+
+
+```
+
+----------------------------------------
+
+TITLE: Navigate to Project Directory (Shell)
+DESCRIPTION: Changes the current directory to the `notebook-renderer-react-sample` project folder, which is the essential first step to prepare for running the sample extension.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-renderer-react-sample/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+cd notebook-renderer-react-sample
+```
+
+----------------------------------------
+
+TITLE: Navigate to Sample Project Directory - Shell
+DESCRIPTION: This command changes the current working directory to the `notebook-renderer-sample` folder. It is the initial step required to access the project files and execute subsequent development commands.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-renderer-sample/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+cd notebook-renderer-sample
+```
+
+----------------------------------------
+
+TITLE: Defining Food Pyramid Relationships (Plaintext)
+DESCRIPTION: This plaintext snippet defines a simple food pyramid model using subject-verb-object sentences. It serves as the input data for the VS Code Call Hierarchy provider, allowing users to explore 'eats' relationships between different entities by right-clicking on nouns or verbs.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/call-hierarchy-sample/README.md#_snippet_0
+
+LANGUAGE: plaintext
+CODE:
+```
+Coyote eats deer.
+Deer eats plants.
+Coyote eats lizard.
+Lizard eats bird.
+Lizard eats frog.
+Lizard eats butterfly.
+Bird eats seeds.
+Frog eats insects.
+Butterfly eats fruit.
+```
+
+----------------------------------------
+
+TITLE: Evaluating Simple Subtraction (Plain Text)
+DESCRIPTION: This snippet illustrates a basic subtraction operation (3 - 1) that correctly evaluates to 2.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/test-provider-sample/sample/test.md#_snippet_3
+
+LANGUAGE: Plain Text
+CODE:
+```
+3 - 1 = 2
+```
+
+----------------------------------------
+
+TITLE: Evaluating Passing Addition Test (Plain Text)
+DESCRIPTION: This snippet represents a simple addition operation (2 + 2) that correctly evaluates to 4, serving as an example of a passing test case.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/test-provider-sample/sample/test.md#_snippet_0
+
+LANGUAGE: Plain Text
+CODE:
+```
+2 + 2 = 4 // this test will pass
+```
+
+----------------------------------------
+
+TITLE: Evaluating Failing Addition Test (Plain Text)
+DESCRIPTION: This snippet represents a simple addition operation (2 + 2) that intentionally evaluates to 5, serving as an example of a failing test case.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/test-provider-sample/sample/test.md#_snippet_1
+
+LANGUAGE: Plain Text
+CODE:
+```
+2 + 2 = 5 // this test will fail
+```
+
+----------------------------------------
+
+TITLE: Evaluating Large Number Addition (Plain Text)
+DESCRIPTION: This snippet demonstrates a more complex addition operation involving larger integers, showing the correct sum.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/test-provider-sample/sample/test.md#_snippet_2
+
+LANGUAGE: Plain Text
+CODE:
+```
+230230 + 5819123 = 6049353
+```
+
+----------------------------------------
+
+TITLE: Evaluating a Simple Arithmetic Expression - Generic
+DESCRIPTION: This snippet demonstrates a basic arithmetic operation (addition) and includes a single-line comment. It represents a simple assertion or calculation, often found in test cases or basic scripting examples.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/test-provider-sample/sample/test2.md#_snippet_0
+
+LANGUAGE: Generic
+CODE:
+```
+2 + 2 = 4 // this test will pass
+```
+
+----------------------------------------
+
+TITLE: Selecting Product Icon Theme: VS Code Command Palette
+DESCRIPTION: This command allows users to manually switch the active product icon theme within VS Code. It is accessed via the Command Palette and presents a list of available themes, including the one provided by the extension. This is useful for verifying theme application or switching between multiple themes.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/product-icon-theme-sample/README.md#_snippet_1
+
+LANGUAGE: VS Code Command Palette
+CODE:
+```
+Preferences: Product Icon Theme
+```
+
+----------------------------------------
+
+TITLE: Open Project in VS Code - Shell
+DESCRIPTION: This command opens the current directory (the `notebook-renderer-sample` project) in VS Code. It launches the editor, making the project ready for building, debugging, and further development.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-renderer-sample/README.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+code .
+```
+
+----------------------------------------
+
+TITLE: Open Project in VS Code Insiders (Shell)
+DESCRIPTION: Opens the current directory (the sample project folder) in VS Code Insiders. This command launches the VS Code editor, making the project ready for development and debugging.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-extend-markdown-renderer-sample/README.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+code-insiders .
+```
+
+----------------------------------------
+
+TITLE: Setting Up and Opening VS Code Extension Sample
+DESCRIPTION: These commands guide the user on how to navigate to the project directory and open it within VS Code, preparing the environment for debugging the `notebook-serializer-sample` extension.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-serializer-sample/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+cd notebook-serializer-sample
+code .
+```
+
+----------------------------------------
+
+TITLE: Navigate to Sample Directory (Shell)
+DESCRIPTION: Changes the current directory to the `notebook-extend-markdown-renderer-sample` folder, which contains the sample extension project. This is the first step to prepare the environment for opening and debugging the project.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/notebook-extend-markdown-renderer-sample/README.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+cd notebook-extend-markdown-renderer-sample
+```
+
+----------------------------------------
+
+TITLE: Declaring a Constant in TypeScript
+DESCRIPTION: This snippet declares a constant variable 'a' and initializes it with the integer value 12. It serves as a basic example of variable declaration in TypeScript.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/getting-started-sample/media/windows.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+const a = 12;
+```
+
+----------------------------------------
+
+TITLE: Declaring a Constant Variable in TypeScript
+DESCRIPTION: This snippet demonstrates the declaration of a constant variable 'a' with an integer value of 12 in TypeScript. The 'const' keyword ensures that the variable's value cannot be reassigned after its initial declaration.
+SOURCE: https://github.com/microsoft/vscode-extension-samples/blob/main/getting-started-sample/media/web.md#_snippet_0
+
+LANGUAGE: TypeScript
+CODE:
+```
+const a = 12;
+```

@@ -1,0 +1,630 @@
+TITLE: Resolving Executable Paths with `which` in JavaScript
+DESCRIPTION: This JavaScript snippet demonstrates the core functionality of the `which` module, showcasing both its asynchronous callback-based API and its synchronous `sync` method. It illustrates how to find an executable like 'node', handle cases where it's not found (via error or `null` with `nothrow`), and how to provide custom `path` options to override environment variables. The module resolves the absolute path to the first found executable.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/packagedDependencies/node_modules/which/README.md#_snippet_0
+
+LANGUAGE: javascript
+CODE:
+```
+var which = require('which')
+
+// async usage
+which('node', function (er, resolvedPath) {
+  // er is returned if no "node" is found on the PATH
+  // if it is found, then the absolute path to the exec is returned
+})
+
+// sync usage
+// throws if not found
+var resolved = which.sync('node')
+
+// if nothrow option is used, returns null if not found
+resolved = which.sync('node', {nothrow: true})
+
+// Pass options to override the PATH and PATHEXT environment vars.
+which('node', { path: someOtherPath }, function (er, resolved) {
+  if (er)
+    throw er
+  console.log('found at %j', resolved)
+})
+```
+
+----------------------------------------
+
+TITLE: Publishing VS Code Extension with Custom Base Images URL
+DESCRIPTION: This command shows how to publish a VS Code extension using `vsce` while specifying a custom base URL for images. The `--baseImagesUrl` flag allows overriding the default image hosting location, useful for custom asset management.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/README.md#_snippet_2
+
+LANGUAGE: console
+CODE:
+```
+$ npx @vscode/vsce publish --baseImagesUrl https://my.custom/base/images/url
+```
+
+----------------------------------------
+
+TITLE: Configuring `@vscode/vsce` in `package.json`
+DESCRIPTION: This JSON snippet illustrates how to configure `@vscode/vsce` options directly within the `package.json` file under the `vsce` key. This allows setting common publishing options like `baseImagesUrl`, `dependencies`, and `yarn` without repeatedly using CLI flags.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/README.md#_snippet_3
+
+LANGUAGE: json
+CODE:
+```
+// package.json
+{
+  "vsce": {
+    "baseImagesUrl": "https://my.custom/base/images/url",
+    "dependencies": true,
+    "yarn": false
+  }
+}
+```
+
+----------------------------------------
+
+TITLE: Running Project Tests
+DESCRIPTION: This command executes the test suite for the `@vscode/vsce` project. It ensures that all functionalities are working as expected and helps maintain code quality during development, verifying the integrity of the codebase.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/README.md#_snippet_7
+
+LANGUAGE: console
+CODE:
+```
+$ npm test
+```
+
+----------------------------------------
+
+TITLE: Running Development Build Watcher
+DESCRIPTION: This command starts a watcher process that automatically rebuilds the project whenever source files change. It's used during development to ensure the latest code is compiled and ready for testing or execution, streamlining the development workflow.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/README.md#_snippet_5
+
+LANGUAGE: console
+CODE:
+```
+$ npm run watch:build # or `watch:test` to also build tests
+```
+
+----------------------------------------
+
+TITLE: Compiling TypeScript for VS Code SpellMD - TypeScript
+DESCRIPTION: Compiles the TypeScript source files of the `vscode-SpellMD` extension into JavaScript, which is necessary for the extension to run.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.gitlab.branch.override.images.expected.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+tsc
+```
+
+----------------------------------------
+
+TITLE: Installing Development Dependencies
+DESCRIPTION: This command installs all necessary development dependencies for the `@vscode/vsce` project. It's the first step after cloning the repository to set up the development environment, ensuring all required packages are available.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/README.md#_snippet_4
+
+LANGUAGE: console
+CODE:
+```
+$ npm install
+```
+
+----------------------------------------
+
+TITLE: Cloning the VS Code SpellMD Repository - Git
+DESCRIPTION: Clones the `vscode-SpellMD` repository from GitHub to your local machine, allowing for local development and loading of the extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.gitlab.branch.override.images.expected.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+git clone https://github.com/Microsoft/vscode-SpellMD.git
+```
+
+----------------------------------------
+
+TITLE: Installing Dependencies for VS Code SpellMD - npm
+DESCRIPTION: Installs all required Node.js dependencies for the `vscode-SpellMD` project, as defined in its `package.json` file.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.gitlab.branch.override.images.expected.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+npm install
+```
+
+----------------------------------------
+
+TITLE: Globally Installing/Upgrading TypeScript
+DESCRIPTION: This command installs or upgrades TypeScript globally using npm. It is recommended if the local TypeScript version is outdated or missing, ensuring compatibility with the `vscode-SpellMD` extension's build process.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.branch.override.images.expected.md#_snippet_3
+
+LANGUAGE: Shell
+CODE:
+```
+npm install -g typescript
+```
+
+----------------------------------------
+
+TITLE: Upgrading TypeScript Globally
+DESCRIPTION: This command globally installs or upgrades the TypeScript compiler using npm. It's recommended if the current TypeScript version is below 1.6, which is a requirement for compiling the SpellMD extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.gitlab.default.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+npm install -g typescript
+```
+
+----------------------------------------
+
+TITLE: Upgrading TypeScript Globally
+DESCRIPTION: This command installs or upgrades TypeScript globally using npm. This ensures that the required TypeScript version (1.6 or higher) is available for successful compilation of the extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.expected.md#_snippet_2
+
+LANGUAGE: shell
+CODE:
+```
+npm install -g typescript
+```
+
+----------------------------------------
+
+TITLE: Upgrading TypeScript Globally
+DESCRIPTION: This command-line snippet provides the command to globally upgrade or install TypeScript using `npm install -g typescript`. This is necessary if the current TypeScript version is below the required 1.6 for the extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.md#_snippet_3
+
+LANGUAGE: Shell
+CODE:
+```
+npm install -g typescript
+```
+
+----------------------------------------
+
+TITLE: Upgrading TypeScript Globally (Shell)
+DESCRIPTION: This command globally installs or upgrades the TypeScript compiler using npm. It's provided as a solution if the `tsc -v` command reveals an outdated TypeScript version, ensuring the environment is ready for compilation of the extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.gitlab.branch.main.expected.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+npm install -g typescript
+```
+
+----------------------------------------
+
+TITLE: Upgrading TypeScript Globally - npm
+DESCRIPTION: Installs or upgrades TypeScript globally on your system using npm, ensuring that the required TypeScript version (1.6 or higher) is available for compilation.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.gitlab.branch.override.images.expected.md#_snippet_4
+
+LANGUAGE: Shell
+CODE:
+```
+npm install -g typescript
+```
+
+----------------------------------------
+
+TITLE: Upgrading TypeScript Globally
+DESCRIPTION: This command upgrades TypeScript globally using npm. It is recommended if your current TypeScript version is below 1.6, which is a prerequisite for the extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.branch.main.expected.md#_snippet_3
+
+LANGUAGE: Shell
+CODE:
+```
+npm install -g typescript
+```
+
+----------------------------------------
+
+TITLE: Running `@vscode/vsce` from Source
+DESCRIPTION: This command executes the `@vscode/vsce` tool directly from its source files using Node.js. This is useful for testing local changes during development without needing to package or install the tool globally, providing immediate feedback on code modifications.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/README.md#_snippet_6
+
+LANGUAGE: console
+CODE:
+```
+$ node vsce
+```
+
+----------------------------------------
+
+TITLE: Cloning and Building VS Code SpellMD Extension Locally
+DESCRIPTION: This snippet provides the commands to clone the `vscode-SpellMD` repository, install its Node.js dependencies, and compile the TypeScript source code. It's essential for local development or testing of the extension. Ensure TypeScript 1.6 or higher is installed; you can check with `tsc -v` and upgrade using `npm install -g typescript` if needed.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.default.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+git clone https://github.com/Microsoft/vscode-SpellMD.git
+npm install
+tsc
+```
+
+----------------------------------------
+
+TITLE: Checking `@vscode/vsce` Version
+DESCRIPTION: This command demonstrates how to check the installed version of the `@vscode/vsce` tool using `npx`. It's a basic usage example for the command-line interface, verifying the tool's availability and version.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/README.md#_snippet_1
+
+LANGUAGE: console
+CODE:
+```
+$ npx @vscode/vsce --version
+```
+
+----------------------------------------
+
+TITLE: Cloning and Building VS Code SpellMD Extension
+DESCRIPTION: This snippet provides the commands to clone the `vscode-SpellMD` extension repository, install its Node.js dependencies, and compile the TypeScript source code. It is used for local development or manual installation outside the VS Code Gallery. TypeScript 1.6 or higher is a prerequisite.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.branch.override.content.expected.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+git clone https://github.com/Microsoft/vscode-SpellMD.git
+npm install
+tsc
+```
+
+----------------------------------------
+
+TITLE: Checking TypeScript Version
+DESCRIPTION: This command is used to verify the installed version of TypeScript. A minimum version of 1.6 is required for compiling the `vscode-SpellMD` extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.expected.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+tsc -v
+```
+
+----------------------------------------
+
+TITLE: Checking TypeScript Version
+DESCRIPTION: This command allows you to check the currently installed TypeScript version. TypeScript 1.6 or higher is required for the extension to function correctly.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.branch.main.expected.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+tsc -v
+```
+
+----------------------------------------
+
+TITLE: Checking TypeScript Version
+DESCRIPTION: This command-line snippet shows how to check the installed version of TypeScript using `tsc -v`. It's a prerequisite check to ensure TypeScript 1.6 or higher is available for compiling the extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+tsc -v
+```
+
+----------------------------------------
+
+TITLE: Checking Installed TypeScript Version
+DESCRIPTION: This command displays the version of TypeScript currently installed on the system. It's crucial for verifying that the TypeScript version meets the minimum requirement (1.6 or higher) for building the `vscode-SpellMD` extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.branch.override.images.expected.md#_snippet_2
+
+LANGUAGE: Shell
+CODE:
+```
+tsc -v
+```
+
+----------------------------------------
+
+TITLE: Checking TypeScript Version
+DESCRIPTION: This command is used to verify the currently installed version of TypeScript. It's a prerequisite check to ensure compatibility, as TypeScript 1.6 or higher is required for the SpellMD extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.gitlab.default.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+tsc -v
+```
+
+----------------------------------------
+
+TITLE: Checking TypeScript Version - Shell
+DESCRIPTION: Checks the currently installed version of TypeScript. This is important to ensure compatibility, as TypeScript 1.6 or higher is required for the extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.gitlab.branch.override.images.expected.md#_snippet_3
+
+LANGUAGE: Shell
+CODE:
+```
+tsc -v
+```
+
+----------------------------------------
+
+TITLE: Checking TypeScript Version (Shell)
+DESCRIPTION: This command is used to check the currently installed version of TypeScript. It's a diagnostic step to ensure the development environment meets the minimum TypeScript version requirement (1.6 or higher) necessary for compiling the extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.gitlab.branch.main.expected.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+tsc -v
+```
+
+----------------------------------------
+
+TITLE: Cloning and Building VS Code SpellMD Extension
+DESCRIPTION: This snippet provides the commands to clone the `vscode-SpellMD` repository, install its dependencies using npm, and compile the TypeScript source code, enabling local development and testing.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.expected.md#_snippet_0
+
+LANGUAGE: shell
+CODE:
+```
+git clone https://github.com/Microsoft/vscode-SpellMD.git
+npm install
+tsc
+```
+
+----------------------------------------
+
+TITLE: Cloning and Building VS Code SpellMD Extension (Shell)
+DESCRIPTION: This snippet provides shell commands to clone the `vscode-SpellMD` repository, install its Node.js dependencies using npm, and compile the TypeScript source code. These steps are essential for setting up a local development or testing environment for the extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.gitlab.branch.main.expected.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+git clone https://github.com/Microsoft/vscode-SpellMD.git
+npm install
+tsc
+```
+
+----------------------------------------
+
+TITLE: Cloning and Building VS Code SpellMD Extension
+DESCRIPTION: This snippet provides the commands to clone the `vscode-SpellMD` repository, install its dependencies using npm, and compile the TypeScript source code. These steps are necessary to load the extension locally for development or testing.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.images.expected.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+git clone https://github.com/Microsoft/vscode-SpellMD.git
+npm install
+tsc
+```
+
+----------------------------------------
+
+TITLE: Cloning and Installing VS Code SpellMD Extension
+DESCRIPTION: This sequence of commands allows users to clone the VS Code SpellMD extension repository from GitHub, install its Node.js dependencies using npm, and compile the TypeScript source code. This is necessary for local development or loading the extension directly into VS Code.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.gitlab.default.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+git clone https://github.com/Microsoft/vscode-SpellMD.git
+npm install
+tsc
+```
+
+----------------------------------------
+
+TITLE: Cloning and Building VS Code SpellMD Extension
+DESCRIPTION: This snippet provides the commands to clone the `vscode-SpellMD` extension repository, install its dependencies using npm, and compile the TypeScript source code. These steps are necessary to set up the extension for local development or testing.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+git clone https://github.com/Microsoft/vscode-SpellMD.git
+npm install
+tsc
+```
+
+----------------------------------------
+
+TITLE: Cloning and Building VS Code SpellMD Extension
+DESCRIPTION: This snippet provides the commands to clone the `vscode-SpellMD` repository, install its dependencies using npm, and compile the TypeScript source code. These steps are necessary to load the extension locally for development or testing.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.branch.main.expected.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+git clone https://github.com/Microsoft/vscode-SpellMD.git
+npm install
+tsc
+```
+
+----------------------------------------
+
+TITLE: Cloning and Building VS Code SpellMD Locally
+DESCRIPTION: These commands facilitate local development of the `vscode-SpellMD` extension. They clone the repository, install Node.js dependencies, and compile the TypeScript source code, preparing the extension for local testing or modification.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.branch.override.images.expected.md#_snippet_1
+
+LANGUAGE: Shell
+CODE:
+```
+git clone https://github.com/Microsoft/vscode-SpellMD.git
+npm install
+tsc
+```
+
+----------------------------------------
+
+TITLE: Cloning and Building VS Code SpellMD Extension
+DESCRIPTION: This snippet provides commands to clone the `vscode-SpellMD` extension repository, install its dependencies using npm, and compile the TypeScript source code. It's used for local development or testing of the extension.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.gitlab.branch.override.content.expected.md#_snippet_0
+
+LANGUAGE: Shell
+CODE:
+```
+git clone https://github.com/Microsoft/vscode-SpellMD.git
+npm install
+tsc
+```
+
+----------------------------------------
+
+TITLE: Enabling SpellMD Extension in VS Code Settings
+DESCRIPTION: This JSON setting enables the SpellMD checker within VS Code. It must be added to the user's `.vscode\settings.json` file to activate the extension's functionality and ensure updates are applied.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.branch.override.images.expected.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+"spellMD.enable": true
+```
+
+----------------------------------------
+
+TITLE: Enabling SpellMD Checker in VS Code Settings
+DESCRIPTION: This JSON snippet demonstrates how to enable the `spellMD` checker by setting `"spellMD.enable": true` in the `.vscode\settings.json` file. This configuration ensures that the spell checker updates and functions correctly after installation.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+"spellMD.enable": true
+```
+
+----------------------------------------
+
+TITLE: Enabling SpellMD in VS Code Settings
+DESCRIPTION: This JSON snippet shows how to enable the SpellMD checker by adding the `spellMD.enable` setting to your `.vscode\settings.json` file. Once set to `true`, the checker will update its status.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/readme/readme.branch.main.expected.md#_snippet_0
+
+LANGUAGE: JSON
+CODE:
+```
+"spellMD.enable": true
+```
+
+----------------------------------------
+
+TITLE: Installing `libsecret` Dependencies on Linux
+DESCRIPTION: These commands install the `libsecret` dependency, required by `keytar` for secure credential storage, on various Linux distributions. `keytar` is used by `@vscode/vsce` for saving credentials safely, and installing `libsecret` ensures this functionality works correctly.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/README.md#_snippet_0
+
+LANGUAGE: console
+CODE:
+```
+sudo apt-get install libsecret-1-dev
+apk add libsecret
+sudo yum install libsecret-devel
+sudo pacman -S libsecret
+```
+
+----------------------------------------
+
+TITLE: Invoking `which` from the Command Line
+DESCRIPTION: This snippet provides the command-line interface (CLI) usage syntax for the `which` utility. It shows the basic `usage` pattern, indicating that the utility accepts optional flags (`-a`, `-s`) and one or more `program` arguments to search for.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/packagedDependencies/node_modules/which/README.md#_snippet_1
+
+LANGUAGE: shell
+CODE:
+```
+usage: which [-as] program ...
+```
+
+----------------------------------------
+
+TITLE: Ignoring Errors When Checking Executability with isexe (JavaScript)
+DESCRIPTION: This snippet demonstrates how to use the `ignoreErrors` option with both asynchronous and synchronous `isexe` calls. When `ignoreErrors` is set to `true`, any errors encountered during the file check are suppressed, and the result is treated as 'not executable' instead of raising an exception.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/packagedDependencies/node_modules/which/node_modules/isexe/README.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+isexe('maybe-missing-file', { ignoreErrors: true }, callback)
+var isExe = isexe.sync('maybe-missing-file', { ignoreErrors: true })
+```
+
+----------------------------------------
+
+TITLE: Checking File Executability Synchronously Ignoring Errors (JavaScript)
+DESCRIPTION: This snippet demonstrates the `ignoreErrors` option with the synchronous `isexe.sync` method. If `ignoreErrors` is `true`, the function will return `false` instead of throwing an error if the file is missing or inaccessible, effectively treating errors as 'not executable'.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/packagedDependencies/node_modules/isexe/README.md#_snippet_3
+
+LANGUAGE: JavaScript
+CODE:
+```
+var isExe = isexe.sync('maybe-missing-file', { ignoreErrors: true })
+```
+
+----------------------------------------
+
+TITLE: Checking File Executability Asynchronously Ignoring Errors (JavaScript)
+DESCRIPTION: This snippet illustrates using the `ignoreErrors` option with the asynchronous `isexe` function. When set to `true`, any errors that would normally be raised by `fs.access` or `fs.stat` are suppressed, and the callback will simply treat the file as 'not executable' in case of an error.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/packagedDependencies/node_modules/isexe/README.md#_snippet_2
+
+LANGUAGE: JavaScript
+CODE:
+```
+isexe('maybe-missing-file', { ignoreErrors: true }, callback)
+```
+
+----------------------------------------
+
+TITLE: Checking File Executability Asynchronously with isexe (JavaScript)
+DESCRIPTION: This snippet demonstrates the basic asynchronous usage of the 'isexe' module. It takes a file path and a callback function, which receives an error (if any) and a boolean indicating if the file is executable. Errors typically signify the file's absence or other access issues.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/packagedDependencies/node_modules/isexe/README.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+var isexe = require('isexe')
+isexe('some-file-name', function (err, isExe) {
+  if (err) {
+    console.error('probably file does not exist or something', err)
+  } else if (isExe) {
+    console.error('this thing can be run')
+  } else {
+    console.error('cannot be run')
+  }
+})
+```
+
+----------------------------------------
+
+TITLE: Checking File Executability Asynchronously with isexe (JavaScript)
+DESCRIPTION: This snippet demonstrates the basic asynchronous usage of the `isexe` module to check if a file is executable. It shows how to handle potential errors (e.g., file not found) and differentiate between executable and non-executable files using a callback function.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/packagedDependencies/node_modules/which/node_modules/isexe/README.md#_snippet_0
+
+LANGUAGE: JavaScript
+CODE:
+```
+var isexe = require('isexe')
+isexe('some-file-name', function (err, isExe) {
+  if (err) {
+    console.error('probably file does not exist or something', err)
+  } else if (isExe) {
+    console.error('this thing can be run')
+  } else {
+    console.error('cannot be run')
+  }
+})
+```
+
+----------------------------------------
+
+TITLE: Checking File Executability Synchronously with isexe (JavaScript)
+DESCRIPTION: This snippet illustrates the synchronous usage of the `isexe` module. The `isexe.sync` method returns a boolean indicating executability directly, throwing errors if any occur during the check.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/packagedDependencies/node_modules/which/node_modules/isexe/README.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+var isExe = isexe.sync('some-file-name')
+```
+
+----------------------------------------
+
+TITLE: Checking File Executability Synchronously with isexe (JavaScript)
+DESCRIPTION: This snippet shows how to use the synchronous version of the 'isexe' module, `isexe.sync`. It returns a boolean indicating executability directly and throws errors if the file cannot be accessed or is not found.
+SOURCE: https://github.com/microsoft/vscode-vsce/blob/main/src/test/fixtures/packagedDependencies/node_modules/isexe/README.md#_snippet_1
+
+LANGUAGE: JavaScript
+CODE:
+```
+var isExe = isexe.sync('some-file-name')
+```
