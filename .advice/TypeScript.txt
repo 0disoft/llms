@@ -1,0 +1,50 @@
+1.  Strict Mode 완전 활성화: `tsconfig.json` 파일에서 `"strict": true`를 설정해서 엄격한 타입 검사를 활성화하세요. 이건 미묘한 버그를 조기에 잡아내는 데 필수적입니다.
+2.  `any` 타입 사용 최소화: `any` 타입은 TypeScript의 타입 검사를 비활성화해서 런타임 오류를 유발할 수 있어요. 가능한 한 `string`, `number` 또는 사용자 정의 타입처럼 더 구체적인 타입을 사용해야 합니다.
+3.  `unknown` 활용: 어떤 값이든 받을 수 있는 변수가 필요하다면 `any` 대신 `unknown`을 선택하는 게 더 안전해요. `unknown`은 해당 값을 사용하기 전에 명시적인 타입 좁히기(type narrowing)를 요구합니다.
+4.  명시적 타입 선언 및 타입 추론의 균형: 간단하고 명확한 코드에서는 TypeScript의 강력한 타입 추론 기능을 활용하고, 복잡한 객체나 함수 매개변수, 반환 타입에는 명시적 타입 선언을 사용해서 코드 가독성과 안전성을 높이세요.
+5.  리터럴 타입으로 값 제한: `type Status = "pending" | "active" | "disabled";`처럼 리터럴 타입을 사용해서 변수나 매개변수의 값을 특정 옵션으로 제한하세요. 이건 데이터의 유효성을 컴파일 시점에 검증하는 데 기여합니다.
+6.  `as const`로 정확한 타입 추론: 배열이나 객체 리터럴에 `as const`를 사용해서 TypeScript가 타입을 더 넓게 추론하는 대신 정확한 리터럴 타입으로 추론하도록 유도하세요.
+7.  제네릭(Generics)을 통한 재사용성 극대화: 여러 데이터 타입에서 작동하는 재사용 가능한 컴포넌트나 함수를 만들 때 제네릭을 적극적으로 사용해야 합니다. 이건 타입 안전성을 유지하면서 코드의 유연성을 높여줍니다.
+8.  유틸리티 타입(Utility Types) 마스터하기: `Partial`, `Pick`, `Omit`, `Record`, `Required` 같은 TypeScript 내장 유틸리티 타입을 활용해서 기존 타입을 변환하고 조작하세요. 이건 복잡한 타입 정의를 간결하게 만듭니다.
+9.  유니온(Union) 및 인터섹션(Intersection) 타입 활용: 유니온 타입(`|`)은 변수가 여러 타입 중 하나를 가질 수 있도록 하고, 인터섹션 타입(`&`)은 여러 타입을 결합해서 모든 속성을 포함하는 새로운 타입을 생성합니다. 이건 복잡한 데이터 구조를 모델링하는 데 유용합니다.
+10. 템플릿 리터럴 타입(Template Literal Types)으로 동적 문자열 타입 정의: `type Endpoint = `api/${'users' | 'posts'}`;`처럼 동적인 문자열 기반 타입을 만들어서 URL 패턴이나 이벤트 이름 등 특정 패턴을 강제하세요.
+11. `satisfies` 연산자로 타입 제약 유지하며 유연성 확보: `satisfies` 연산자를 사용해서 타입 추론의 이점을 유지하면서도 타입 제약 조건을 강제해야 합니다.
+12. 조건부 타입(Conditional Types)으로 복잡한 로직 표현: `T extends U? X : Y` 같은 조건부 타입을 사용해서 타입 기반 로직을 표현하세요. 이건 특정 조건에 따라 다른 타입을 반환하는 고급 타입 정의에 필수적입니다.
+13. 접근 제어자(Access Modifiers)로 캡슐화 강화: 클래스 내에서 `public`, `private`, `protected`, `readonly` 접근 제어자를 사용해서 멤버의 가시성과 접근 범위를 제어하세요.
+14. 열거형(Enums)으로 가독성 높은 상수 정의: `enum Status { Pending = "PENDING", Active = "ACTIVE" }`처럼 관련된 상수 집합을 정의할 때 열거형을 사용하세요.
+15. 모듈(Modules)을 통한 코드 조직화: ES6 모듈 시스템(`export`, `import`)을 사용해서 코드를 논리적인 단위로 분할하고 재사용 가능한 모듈로 구성하세요.
+16. `index.ts` (Barrel Files) 활용: `index.ts` 파일을 사용해서 관련된 모듈을 한 곳에서 내보내세요. 이건 가져오기(`import`) 구문의 길이를 줄이고 코드 조직화를 개선합니다.
+17. 일관된 코딩 스타일 유지 (ESLint & Prettier): ESLint와 Prettier를 설정해서 프로젝트 전반에 걸쳐 일관된 코딩 스타일을 강제하세요.
+18. 코드에 대한 철저한 문서화: JSDoc 주석을 사용해서 함수, 클래스, 모듈의 목적, 매개변수, 반환 값, 동작 방식 등을 명확하게 문서화하세요.
+19. 오류 처리 전략 수립: `try-catch` 블록을 사용해서 런타임 오류를 깔끔하게 처리하고 앱 충돌을 막으세요. 특정 오류 시나리오를 위한 사용자 정의 오류 타입(`CustomError`)을 정의하는 것도 좋습니다.
+20. 테스트 용이성을 위한 코드 분리: 비즈니스 로직을 컴포넌트에서 분리해서 별도의 서비스나 유틸리티 함수로 만드세요. 이건 코드의 재사용성을 높이고 단위 테스트를 쉽게 해줍니다.
+21. 지속적인 TypeScript 버전 업그레이드: TypeScript는 새로운 기능, 개선된 타입 추론, 성능 향상 등을 포함하는 업데이트를 정기적으로 출시합니다. 프로젝트를 최신 상태로 유지해서 이런 이점을 활용하세요.
+22. React Server Components (RSC)에서 타입 안전성 확보: 2025년 React 19의 핵심인 서버 컴포넌트(RSC)를 활용해서 서버와 클라이언트 간의 데이터 계약을 TypeScript로 명확히 정의하세요.
+23. `"use client"` 지시자 명확히 사용: 상호작용이 필요한 클라이언트 컴포넌트에는 파일 상단에 `"use client"` 지시자를 명시적으로 선언해야 합니다.
+24. React Actions API로 타입 안전한 데이터 변이 구현: `useActionState` 훅을 사용해서 서버에서 안전하게 실행되는 데이터 변이(mutations)를 정의하고 관리하세요.
+25. Next.js API 라우트에서 Zod 또는 TypeScript 인터페이스로 유효성 검사: Next.js API 라우트에서 들어오는 데이터의 유효성을 엄격하게 검사하기 위해 Zod 같은 런타임 유효성 검사 라이브러리나 TypeScript 인터페이스를 사용해야 합니다.
+26. `useState` 및 `useReducer` 훅에 명시적 타입 정의: `useState<T>(initialValue)`처럼 훅의 상태 변수에 명시적으로 타입을 지정해야 합니다.
+27. 컴포넌트 `props`에 인터페이스 또는 타입 별칭 사용: React 컴포넌트의 `props`를 정의할 때 인라인 타입 대신 `interface Props { ... }` 또는 `type Props = { ... };`를 사용하세요.
+28. `@types/react` 및 `@types/react-dom` 최신 버전 유지: React 프로젝트에서 TypeScript를 쓸 때 공식 타입 정의 패키지를 항상 최신 상태로 유지해야 합니다.
+29. `tsconfig.json`에서 `jsx` 옵션 올바르게 설정: React 프로젝트의 `tsconfig.json`에서 `compilerOptions.jsx`를 `preserve` 또는 적절한 값으로 설정해야 합니다.
+30. `.tsx` 파일 확장자 사용: JSX가 포함된 모든 React 파일에는 `.tsx` 파일 확장자를 사용해야 합니다.
+31. Angular CLI를 통한 프로젝트 초기화: `ng new my-app --strict --standalone` 명령어를 사용해서 TypeScript 및 엄격 모드가 기본으로 적용된 Angular 프로젝트를 시작하세요.
+32. 단일 책임 원칙(SRP) 준수: 각 Angular 파일(컴포넌트, 서비스, 디렉티브)이 단 하나의 책임만을 가지도록 설계해야 합니다.
+33. 대규모 컴포넌트를 관리 가능한 크기로 분할: 복잡하고 큰 Angular 컴포넌트는 작고 원자적인 단위로 분할해야 합니다.
+34. 컴포넌트에서 비즈니스 로직 분리: 컴포넌트는 뷰 로직에만 집중하고, 모든 비즈니스 로직은 별도의 서비스로 분리해야 합니다.
+35. 모듈(Module)을 통한 기능별 조직화: Angular의 모듈(NgModule)을 활용해서 관련 기능들을 응집력 있게 묶어야 합니다.
+36. RxJS Observable에 타입 명시: Angular에서 RxJS Observable을 쓸 때 스트림이 방출하는 데이터의 타입을 명시적으로 지정해야 합니다.
+37. `async` 파이프 사용으로 메모리 누수 방지: 템플릿에서 Observable을 구독할 때 `async` 파이프를 사용해야 합니다. 이건 컴포넌트가 없어질 때 자동으로 구독을 해지해서 메모리 누수를 막아줍니다.
+38. `take(1)` 또는 `takeUntil` 연산자 활용: 일회성 데이터 스트림의 경우 `take(1)`을 사용해서 구독이 한 번만 실행되도록 하세요. 컴포넌트 수명 주기와 연동해서 구독을 관리할 때는 `takeUntil`을 사용하세요.
+39. Composition API와 `<script setup>` 구문 활용: Vue 3의 Composition API와 `<script setup>` 구문을 사용해서 컴포넌트 로직을 관심사별로 조직화하고 TypeScript와 함께 사용해야 합니다.
+40. `ref<T>()` 및 `reactive<T>()`에 명시적 타입 지정: 반응형 상태를 선언할 때 `const count = ref<number>(0);` 또는 `const user = reactive<User>({... });`처럼 명시적으로 타입을 지정해야 합니다.
+41. `defineProps<T>()`로 `props`에 강력한 타입 적용: 컴포넌트의 `props`를 정의할 때 `defineProps<Props>()`를 사용해서 타입 안전성을 확보해야 합니다.
+42. `defineEmits<T>()`로 이벤트 방출 타입 지정: 컴포넌트가 방출하는 이벤트를 `defineEmits<{ (e: 'submit', value: string): void; }>()`처럼 명시적으로 타입 지정해야 합니다.
+43. `computed<T>()`로 파생된 값에 타입 안전성 부여: `const total = computed<number>(() =>...);`처럼 계산된 속성(`computed`)의 반환 값에 타입을 명시해야 합니다.
+44. API 응답 및 외부 데이터에 인터페이스 정의: API 응답이나 외부에서 가져오는 데이터 구조에 대해 명확한 TypeScript 인터페이스를 정의해야 합니다.
+45. 컴포저블(Composables)을 통한 타입 재사용: 재사용 가능한 로직을 컴포저블로 추출하고, 여기에 엄격한 타입을 적용해야 합니다.
+46. Svelte 5의 Runes를 통한 반응성 및 타입 활용: Svelte 5의 새로운 반응성 시스템인 Runes를 이해하고 활용해야 합니다. Runes는 TypeScript 호환성을 향상시킵니다.
+47. SvelteKit에서 SSR/CSR 타입 안전성 관리: SvelteKit의 서버 사이드 렌더링(SSR) 및 클라이언트 사이드 렌더링(CSR) 환경에서 TypeScript를 사용해서 타입 안전성을 확보해야 합니다.
+48. `svelte-preprocess`로 TypeScript 통합: Svelte 프로젝트에서 `svelte-preprocess`를 설치하고 `svelte.config.js`에 설정해서 `<script lang="ts">` 구문을 쓸 수 있도록 해야 합니다.
+49. `svelte-check`로 CLI 타입 검사 수행: 개발 워크플로우에 `svelte-check`를 통합해서 CLI에서 Svelte 컴포넌트의 타입 검사를 수행해야 합니다.
+50. Node.js `--experimental-strip-types` 플래그 활용: Node.js v22+에서 `--experimental-strip-types` 플래그를 사용해서 `.ts` 파일을 직접 실행하세요. 이건 개발 환경에서 트랜스파일러 없이 TypeScript를 실행해서 개발 속도를 높여줍니다.
