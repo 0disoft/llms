@@ -1,0 +1,34 @@
+2024년 8월부터 2025년 8월 사이에 Prisma에서 변경된 기능들을 아래와 같이 정리했습니다.
+
+### ➕ 신규 및 개선된 기능
+
+---
+
+* **Rust-free ORM**
+    * Prisma ORM의 아키텍처가 Rust 대신 TypeScript로 재작성되었습니다. 
+    * 이를 통해 번들 크기 감소, 쿼리 속도 향상, CPU 사용량 감소와 같은 성능 개선 효과를 얻을 수 있습니다.
+    * **`queryCompiler`**와 **`driverAdapters`** 프리뷰 기능을 활성화하여 사용할 수 있습니다.
+
+### 🗑️ 더 이상 지원하지 않는 기능 (삭제 및 변경)
+
+---
+
+* **Prisma Client 미들웨어**
+    * `Prisma Client`의 미들웨어 기능이 제거되었습니다.
+    * 대신 **Prisma Client 확장(Client Extensions)**을 사용하여 동일한 기능을 구현할 수 있습니다.
+    * `v4.16.0`부터 미들웨어는 더 이상 사용되지 않도록 권장되었으며, 이 기간에 완전히 제거되었습니다.
+
+* **`metrics` 프리뷰 기능**
+    * Prisma에서 제공했던 `metrics` 프리뷰 기능이 더 이상 지원되지 않습니다.
+
+* **`prisma migrate dev` 커맨드**
+    * `prisma migrate dev` 명령어가 데이터베이스를 리셋하는 기능을 더 이상 지원하지 않습니다.
+    * 대신 **`prisma migrate reset`** 명령어를 사용하여 데이터베이스를 초기화해야 합니다.
+
+* **`pg-worker` 패키지**
+    * `pg-worker` 패키지가 사용되지 않게 되었습니다.
+    * Cloudflare Workers 환경에서 Postgres를 사용하는 경우, 이제 `pg` 패키지만으로도 충분히 작동합니다.
+
+* **`prisma-client` 제너레이터 진입점**
+    * 새로운 `prisma-client` 제너레이터의 진입점이 변경되어 임포트 경로에 영향을 줍니다.
+    * 자세한 마이그레이션 방법은 공식 문서를 참조해야 합니다.
