@@ -1,0 +1,19 @@
+2024년 8월부터 2025년 8월까지 Bun의 주요 변경 사항들을 정리했습니다.
+
+### 더 이상 지원하지 않는 기능
+***
+* **`bun install --frozen-lockfile` 제거:** 이 명령어는 `bun install --frozen-lockfile` 대신 `bun install --strict`로 대체되었습니다. `--frozen-lockfile`은 이전 버전과의 호환성을 위해 유지되었으나, 이제는 `--strict`를 사용해야 합니다.
+* **`bun install --force` 제거:** `bun install --force` 명령어는 이제 더 이상 지원되지 않습니다. 대신 `bun install`을 실행하기 전에 `bun remove`와 `bun add`를 사용하여 패키지 종속성을 수동으로 관리해야 합니다.
+* **일부 비표준 Node.js API 제거:** Bun은 Node.js 호환성을 높이는 과정에서 성능 저하를 유발하는 일부 비표준 API를 제거했습니다. 제거된 API의 정확한 목록은 공식 Bun 마이그레이션 가이드를 참고해야 합니다.
+
+***
+
+### 신규 추가된 기능
+***
+* **`bun run`에 `--hot` 옵션 추가:** 이제 `bun run` 명령어에 `--hot` 옵션을 사용하여 개발 서버에서 핫 리로딩(Hot Reloading) 기능을 활성화할 수 있습니다.
+* **ESM(ECMAScript Modules) 지원 강화:** Bun은 ESM 지원을 더욱 강화하여 ES 모듈과 CommonJS 모듈 간의 상호 운용성을 개선했습니다.
+* **플랫폼별 빌드 지원:** Bun은 이제 특정 운영 체제나 아키텍처에 맞는 바이너리를 생성하는 플랫폼별 빌드 기능을 지원합니다.
+* **`bun run`에 `—production` 옵션 추가:** `bun run` 명령어에 `--production` 옵션을 추가하여 프로덕션 환경에 최적화된 빌드를 실행할 수 있습니다.
+* **`bun add`에 `--exact` 옵션 추가:** `bun add` 명령어를 사용할 때 `--exact` 옵션을 추가하여 패키지의 정확한 버전을 설치할 수 있습니다.
+* **`bun init --example <template>` 기능 추가:** `bun init` 명령어를 `--example` 옵션과 함께 사용하면 미리 정의된 템플릿을 사용하여 프로젝트를 초기화할 수 있습니다.
+* **`bun install`에 `--save-dev` 옵션 추가:** 이제 `bun install` 명령어에 `--save-dev` 옵션을 사용하여 개발 의존성(devDependencies)을 설치할 수 있습니다.
