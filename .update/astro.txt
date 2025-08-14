@@ -127,7 +127,7 @@ Astro는 단순히 프레임워크 자체의 기능뿐만 아니라, 외부 파�
 
 이 기간 동안 Astro는 여러 레거시 기능을 제거하거나 대체했습니다.
 
-- **하이브리드 렌더링 모드 통합**: Astro v5에서는 "하이브리드 렌더링 모드"가 static 모드로 통합. 페이지별로 export const prerender = false 설정으로 SSR 활성화
+- **하이브리드 렌더링 모드 통합**: hybrid와 static 모드가 통합되었습니다. 기본 output은 'static'이며, 서버 렌더링이 필요한 페이지에만 export const prerender = false;를 추가하는 방식으로 변경되어 훨씬 직관적으로 바뀌었습니다. Server Islands는 이와 별개로 컴포넌트 단위의 동적 렌더링을 담당합니다.
 - **레거시 API 및 동작 제거**: Astro 3.x 및 4.x의 여러 레거시 API가 제거되어, 개발자들은 업그레이드 시 이 부분을 신중하게 검토해야 합니다.
 
 ---
